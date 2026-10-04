@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulation &amp; Test Console | Karachi Gymkhana</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        body { background: #F8FAFC; color: #334155; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+        .dropzone { border: 2px dashed #CBD5E1; border-radius: 1rem; transition: all 0.2s; cursor: pointer; }
+        .dropzone.dragover { border-color: #4F46E5; background: #EEF2FF; }
+        .pulse-indicator { animation: pulse-kf 1.5s infinite; }
+        @keyframes pulse-kf { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div id="errBanner" class="hidden bg-rose-600 text-white text-sm font-bold px-10 py-3 flex justify-between items-center">
+        <span id="errText">Simulation notice</span>
+        <button type="button" onclick="document.getElementById('errBanner').classList.add('hidden')" class="bg-rose-800 px-3 py-1 rounded text-xs">Dismiss</button>
+    </div>
+
+    <header class="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-10 sticky top-0 z-40 shadow-sm">
+        <div class="flex items-center gap-6">
+            <img src="/api/logo" alt="Logo" class="h-12 object-contain" onerror="this.style.display='none'">
+            <div>
+                <h1 class="text-xl font-bold text-slate-800">Simulation &amp; Test Console</h1>
+                <p class="text-xs text-slate-500">RFID hardware emulation, FIFO validation, and camera audit testing</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="flex items-center bg-amber-100 border border-amber-200 px-3 py-1.5 rounded-full">
+                <div class="w-2 h-2 rounded-full bg-amber-500 pulse-indicator mr-2"></div>
+                <span class="text-xs font-bold text-amber-700">TEST ENVIRONMENT</span>
+            </div>
+            <a href="/" class="bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold px-5 py-2.5 rounded-xl shadow-lg transition">Return to Dashboard</a>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-10 space-y-8">
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h2 class="text-base font-bold text-slate-900">0. Endpoint &amp; Interface Self-Test</h2>
+                    <p class="text-xs text-slate-500">Verifies live server route availability and database accessibility.</p>
+                </div>
+                <button type="button" onclick="runSelfTest()" class="text-xs font-bold border rounded-lg px-4 py-2 bg-white hover:bg-slate-50 text-slate-700">Run Diagnostics</button>
+            </div>
+            <div id="selfTestGrid" class="grid grid-cols-2 md:grid-cols-5 gap-3 text-xs"></div>
+        </div>
+
+        <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-emerald-500">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900 mb-1">1. RFID Passage Simulation (Pure RFID Gate Access)</h2>
+                    <p class="text-sm text-slate-500">Main gate operates strictly on RFID. Select a registered member or enter a tag to test FIFO toggle (Entry &rarr; Exit &rarr; Entry).</p>
+                </div>
+                <span class="text-xs font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-full">FIFO MODE ACTIVE</span>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Registered Member (from database)</label>
+                        <select id="simMember" class="w-full border rounded-xl px-4 py-3 bg-slate-50 font-bold text-sm">
+                            <option value="">- Select a registered member -</option>
+                        </select>
+                        <p id="memberLoadStatus" class="text-xs mt-1 text-slate-400">Loading member records...</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Or Manual EPC / Unregistered E-Tag</label>
+                        <div class="flex gap-2">
+                            <input id="simTag2" placeholder="e.g. E2806890000000025799E539" class="flex-1 border rounded-xl px-4 py-3 bg-slate-50 font-mono text-xs">
+                            <button type="button" onclick="captureEPCTest(this)" id="epcBtn2" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-lg font-bold text-xs whitespace-nowrap">Read Live</button>
+                        </div>
+                        <p id="epcStatus2" class="text-xs mt-1 text-slate-400"></p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Gate Direction Mode</label>
+                        <select id="simDir2" class="w-full border rounded-xl px-4 py-3 bg-slate-50 font-bold text-sm">
+                            <option value="Auto">Auto FIFO (1st Scan: Entry &bull; 2nd Scan: Exit &bull; Repeating)</option>
+                            <option value="Entry">Forced Entry</option>
+                            <option value="Exit">Forced Exit</option>
+                        </select>
+                    </div>
+
+                    <button type="button" onclick="submitRFIDTest(this)" id="rfidSubmitBtn"
+                            class="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-4 rounded-xl font-bold shadow-lg transition">
+                        Scan RFID Tag
+                    </button>
+                </div>
+
+                <div class="bg-slate-50 rounded-2xl p-5 border flex flex-col justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Member Preview</p>
+                        <div id="memberPreview" class="flex items-center gap-4">
+                            <div class="w-16 h-16 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-400">?</div>
+                            <div><p class="text-xs text-slate-400">Select a member to preview profile</p></div>
+                        </div>
+                    </div>
+                    <div class="mt-4 p-3.5 bg-white border rounded-xl text-xs text-slate-600 space-y-1">
+                        <p class="font-bold text-slate-800">Kiosk Terminal Status:</p>
+                        <p>&bull; Registered member: Complete profile photo, name, plate, make, model &amp; welcome/farewell msg displayed.</p>
+                        <p>&bull; Unregistered tag: Displays "UNREGISTERED CAR DETECTED" and prints the scanned E-TAG.</p>
+                    </div>
+                </div>
+            </div>
+            <div id="rfidResult" class="mt-4 hidden text-sm rounded-xl px-4 py-3"></div>
+        </div>
+
+        <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-blue-500">
+            <h2 class="text-lg font-bold text-slate-900 mb-1">2. Hikvision Camera Line-Crossing Simulator</h2>
+            <p class="text-sm text-slate-500 mb-6">Test how the Hikvision line-crossing event trigger logs captured vehicle images directly into the separate Camera Vehicle Audit journal.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                <div>
+                    <div id="dropZone" class="dropzone p-8 text-center bg-slate-50 hover:bg-slate-100">
+                        <input type="file" id="evFile" accept="image/*" class="hidden">
+                        <p class="text-sm font-bold text-slate-700 mb-1">Select vehicle photo to simulate line-crossing</p>
+                        <p class="text-xs text-slate-400">Simulates Hikvision line-crossing trigger image sent to folder</p>
+                    </div>
+                    <button type="button" onclick="submitLineCrossTest(this)" class="mt-3 w-full bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl font-bold text-sm shadow">
+                        Upload to Camera Vehicle Audit
+                    </button>
+                </div>
+                <div class="bg-slate-50 rounded-2xl p-5 border flex flex-col items-center justify-center min-h-[180px]">
+                    <img id="evPreview" class="max-h-40 rounded-xl object-contain hidden mb-2" alt="Evidence Preview">
+                    <p id="evEmptyMsg" class="text-xs text-slate-400 text-center">No vehicle photo selected.<br>Select an image to test optical vehicle counting.</p>
+                </div>
+            </div>
+            <div id="linecrossResult" class="mt-4 hidden text-sm rounded-xl px-4 py-3"></div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="p-6 border-b bg-slate-50 flex justify-between items-center flex-wrap gap-4">
+                <div>
+                    <h2 class="text-base font-bold text-slate-900">Recent Simulated Gate Transits</h2>
+                    <p class="text-xs text-slate-500">Live journal showing transactions generated during this session.</p>
+                </div>
+                <div class="flex gap-3">
+                    <button type="button" onclick="loadTestReport()" class="text-xs font-bold border rounded-lg px-4 py-2 bg-white hover:bg-slate-50 text-slate-700">Refresh</button>
+                    <button type="button" onclick="clearAllLogs()" class="text-xs font-bold border border-rose-200 rounded-lg px-4 py-2 bg-rose-50 text-rose-700 hover:bg-rose-100">Clear All Logs</button>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="text-[11px] uppercase font-bold text-slate-400 bg-white border-b">
+                        <tr>
+                            <th class="p-4">Log ID</th>
+                            <th class="p-4">Timestamp</th>
+                            <th class="p-4">Identified Name</th>
+                            <th class="p-4">Plate / E-Tag</th>
+                            <th class="p-4">Access Type</th>
+                            <th class="p-4">Direction</th>
+                            <th class="p-4">Scanned Tag</th>
+                        </tr>
+                    </thead>
+                    <tbody id="testReportBody" class="divide-y"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="/static/js/simulate.js"></script>
+</body>
+</html>

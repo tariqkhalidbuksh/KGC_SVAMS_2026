@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Command Center | Karachi Gymkhana Club</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        body { background: #F8FAFC; color: #334155; }
+        .nav-btn.active { background: #ECFDF5; color: #059669; border-right: 3px solid #059669; font-weight: 700; }
+        .nav-btn:hover { background: #F1F5F9; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+        .stat-num { background: linear-gradient(135deg, #1E293B, #0F172A); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .stat-num.blue { background: linear-gradient(135deg, #2563EB, #1D4ED8); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .stat-num.green { background: linear-gradient(135deg, #059669, #047857); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .stat-num.amber { background: linear-gradient(135deg, #D97706, #B45309); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .pulse-indicator { animation: pulse-kf 1.5s infinite; }
+        @keyframes pulse-kf { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col justify-between hidden md:flex shrink-0">
+        <div>
+            <div class="h-24 flex items-center justify-center border-b border-slate-100 bg-slate-50">
+                <img src="/api/logo" alt="Club Logo" class="max-h-16 object-contain" onerror="this.style.display='none'">
+            </div>
+            <nav class="mt-4 flex flex-col text-sm">
+                <button type="button" onclick="switchTab('overview', this)" class="nav-btn active px-8 py-4 text-left flex items-center gap-3 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+                    Command Overview
+                </button>
+                <button type="button" onclick="switchTab('logs', this)" class="nav-btn px-8 py-4 text-left flex items-center gap-3 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                    Vehicle Audit Reports
+                </button>
+                <button type="button" onclick="switchTab('camera_audit', this)" class="nav-btn px-8 py-4 text-left flex items-center gap-3 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    Camera Vehicle Audit
+                </button>
+                <button type="button" onclick="switchTab('members', this)" class="nav-btn px-8 py-4 text-left flex items-center gap-3 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                    Member Directory
+                </button>
+                <button type="button" onclick="switchTab('settings', this)" class="nav-btn px-8 py-4 text-left flex items-center gap-3 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    Hardware Settings
+                </button>
+
+                <div class="mt-4 pt-4 border-t border-slate-100 flex flex-col text-xs font-bold space-y-1">
+                    <a href="/kiosk" target="_blank" class="nav-btn px-8 py-2.5 text-left text-slate-600 flex items-center justify-between">
+                        <span>Gate Terminal</span>
+                        <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                    </a>
+                    <a href="/tools" target="_blank" class="nav-btn px-8 py-2.5 text-left text-indigo-600 flex items-center justify-between">
+                        <span>Hardware Diagnostics</span>
+                        <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                    </a>
+                    <a href="/simulate" target="_blank" class="nav-btn px-8 py-2.5 text-left text-amber-600 flex items-center justify-between">
+                        <span>Simulation Console</span>
+                        <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                    </a>
+                </div>
+            </nav>
+        </div>
+
+        <div class="p-5 border-t border-slate-100 bg-slate-50 text-center">
+            <div id="sysBadge" class="inline-flex items-center bg-emerald-100 border border-emerald-200 px-3 py-1.5 rounded-full mb-2">
+                <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse mr-2"></div>
+                <span class="text-xs font-bold text-emerald-700">SYSTEM ARMED</span>
+            </div>
+            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Smart Gate Access Core</p>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col h-screen overflow-hidden">
+        <header class="h-16 flex items-center justify-between px-8 bg-white border-b border-slate-200 shrink-0">
+            <h1 id="pageTitle" class="text-lg font-bold text-slate-800">Command Overview</h1>
+            <div class="flex items-center gap-4">
+                <span id="liveClock" class="text-sm font-bold text-slate-500 font-mono"></span>
+                <div class="flex items-center bg-emerald-100 border border-emerald-200 px-3 py-1.5 rounded-full">
+                    <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse mr-2"></div>
+                    <span class="text-xs font-bold text-emerald-700">LIVE FEED</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-8">
+            <div id="tab-overview" class="space-y-6">
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-5">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-l-4 border-l-indigo-500">
+                        <p class="text-[10px] uppercase tracking-widest font-extrabold text-slate-400 mb-1">Active Members</p>
+                        <h3 id="sMembers" class="text-4xl font-black stat-num tabular-nums">--</h3>
+                        <p class="text-[11px] text-slate-400 mt-1">Registered vehicles</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-l-4 border-l-emerald-500">
+                        <p class="text-[10px] uppercase tracking-widest font-extrabold text-slate-400 mb-1">Entries Today</p>
+                        <h3 id="sEntries" class="text-4xl font-black stat-num green tabular-nums">--</h3>
+                        <p class="text-[11px] text-slate-400 mt-1">Peak: <span id="sPeak">None</span></p>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-l-4 border-l-blue-500">
+                        <p class="text-[10px] uppercase tracking-widest font-extrabold text-slate-400 mb-1">Currently Inside</p>
+                        <h3 id="sInside" class="text-4xl font-black stat-num blue tabular-nums">--</h3>
+                        <p class="text-[11px] text-slate-400 mt-1"><span id="sExits">--</span> exits today</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-l-4 border-l-teal-500">
+                        <p class="text-[10px] uppercase tracking-widest font-extrabold text-slate-400 mb-1">Parking Available</p>
+                        <h3 id="sParking" class="text-4xl font-black stat-num tabular-nums">--</h3>
+                        <p class="text-[11px] text-slate-400 mt-1">of <span id="sCap">--</span> capacity</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-l-4 border-l-amber-500">
+                        <p class="text-[10px] uppercase tracking-widest font-extrabold text-slate-400 mb-1">Alerts Today</p>
+                        <h3 id="sGuests" class="text-4xl font-black stat-num amber tabular-nums">--</h3>
+                        <p class="text-[11px] text-slate-400 mt-1">Unknown / No-RFID</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border">
+                        <div class="flex justify-between items-center mb-4">
+                            <div>
+                                <h2 class="font-bold text-slate-800">Hourly Traffic Flow</h2>
+                                <p class="text-xs text-slate-400">Vehicle entries vs exits &bull; today (PKT)</p>
+                            </div>
+                            <div class="flex gap-4 text-xs font-bold">
+                                <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500"></span>Entries</span>
+                                <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-blue-500"></span>Exits</span>
+                            </div>
+                        </div>
+                        <canvas id="hourlyChart" height="95"></canvas>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border">
+                        <h2 class="font-bold text-slate-800 mb-1">Parking Occupancy</h2>
+                        <p class="text-xs text-slate-400 mb-2">Live capacity utilization</p>
+                        <div class="relative h-56 flex items-center justify-center">
+                            <canvas id="parkingChart"></canvas>
+                            <div class="absolute text-center">
+                                <p id="parkPct" class="text-3xl font-black stat-num tabular-nums">0%</p>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Occupied</p>
+                            </div>
+                        </div>
+                        <div class="mt-2 flex justify-between text-xs font-bold text-slate-500">
+                            <span>In Facility: <span id="parkIn" class="text-blue-600 font-mono">0</span></span>
+                            <span>Available: <span id="parkFree" class="text-emerald-600 font-mono">--</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border">
+                        <h2 class="font-bold text-slate-800 mb-1">7-Day Traffic Trend</h2>
+                        <p class="text-xs text-slate-400 mb-4">Daily transit volume comparison</p>
+                        <canvas id="weeklyChart" height="70"></canvas>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border">
+                        <div class="flex justify-between items-center mb-4">
+                            <div>
+                                <h2 class="font-bold text-slate-800">Hardware Registry</h2>
+                                <p class="text-xs text-slate-400">Live device telemetry</p>
+                            </div>
+                            <span class="text-[10px] font-bold text-slate-400">3s interval</span>
+                        </div>
+                        <div id="hwGrid" class="space-y-3"></div>
+                        <div class="mt-4 pt-4 border-t text-xs">
+                            <p class="text-slate-500"><b>Camera Ingest Events:</b> <span id="hwFtp" class="font-mono font-bold text-indigo-600">0</span></p>
+                            <p class="text-slate-500 mt-1"><b>Last Scanned Tag:</b> <span id="hwLastTag" class="font-mono text-[10px]">None</span></p>
+                        </div>
+                        <a href="/tools" target="_blank" class="mt-3 block text-center text-xs font-bold text-indigo-600 border border-indigo-200 rounded-lg py-2 bg-indigo-50 hover:bg-indigo-100">Open Diagnostics Console</a>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
+                    <div class="p-5 border-b bg-slate-50 flex justify-between items-center">
+                        <div>
+                            <h2 class="font-bold text-slate-800">Live Activity Feed</h2>
+                            <p class="text-xs text-slate-400">Recent vehicle transactions with attached evidence</p>
+                        </div>
+                        <button type="button" onclick="switchTab('logs', document.querySelectorAll('.nav-btn')[1])" class="text-xs font-bold border rounded-lg px-4 py-2 bg-white hover:bg-slate-50 text-slate-700">View Full Audit Journal</button>
+                    </div>
+                    <div class="max-h-[38vh] overflow-y-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="text-[10px] uppercase font-extrabold text-slate-400 sticky top-0 bg-white border-b z-10">
+                                <tr>
+                                    <th class="p-4">Time</th>
+                                    <th class="p-4">Vehicle</th>
+                                    <th class="p-4">Identified As</th>
+                                    <th class="p-4">Method</th>
+                                    <th class="p-4">Direction</th>
+                                    <th class="p-4">Evidence</th>
+                                </tr>
+                            </thead>
+                            <tbody id="activityBody" class="divide-y"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-logs" class="hidden space-y-6">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 border-l-4 border-l-indigo-500">
+                        <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">LOG</div>
+                        <div>
+                            <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Total Transits</p>
+                            <h3 id="auditStatTotal" class="text-2xl font-black text-slate-900 tabular-nums">0</h3>
+                            <p class="text-[11px] text-slate-400">Total sessions today</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 border-l-4 border-l-emerald-500">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">INSIDE</div>
+                        <div>
+                            <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Currently Inside</p>
+                            <h3 id="auditStatInside" class="text-2xl font-black text-emerald-600 tabular-nums">0</h3>
+                            <p class="text-[11px] text-slate-400">Active in facility</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 border-l-4 border-l-blue-500">
+                        <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">EXIT</div>
+                        <div>
+                            <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Completed Visits</p>
+                            <h3 id="auditStatExited" class="text-2xl font-black text-slate-900 tabular-nums">0</h3>
+                            <p class="text-[11px] text-slate-400">Entry & exit paired</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 border-l-4 border-l-amber-500">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">ALERT</div>
+                        <div>
+                            <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Security Alerts</p>
+                            <h3 id="auditStatAlerts" class="text-2xl font-black text-amber-600 tabular-nums">0</h3>
+                            <p class="text-[11px] text-slate-400">Unregistered / No RFID</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-5 border-b bg-slate-50/80 flex justify-between items-center flex-wrap gap-4">
+                        <div>
+                            <h2 class="font-bold text-lg text-slate-900 flex items-center gap-2">
+                                <span>Vehicle Audit & Evidence Reports</span>
+                                <span class="text-xs font-extrabold bg-indigo-100 text-indigo-700 px-3 py-0.5 rounded-full" id="auditBadgeDate">Today</span>
+                            </h2>
+                            <p class="text-xs text-slate-500 mt-0.5">Comprehensive audit trail of vehicle entry/exit transits, durations of stay, and photographic proofs.</p>
+                        </div>
+
+                        <div class="flex items-center gap-3 flex-wrap">
+                            <div class="flex items-center gap-1.5 bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
+                                <button type="button" onclick="setAuditDatePreset('today')" class="px-3 py-1.5 text-xs font-bold rounded-lg text-slate-700 hover:bg-slate-100 transition">Today</button>
+                                <button type="button" onclick="setAuditDatePreset('yesterday')" class="px-3 py-1.5 text-xs font-bold rounded-lg text-slate-700 hover:bg-slate-100 transition">Yesterday</button>
+                                <input type="date" id="auditDate" onchange="loadAudit(1)" class="text-xs font-bold border-0 bg-transparent px-2 py-1 text-slate-800">
+                            </div>
+
+                            <input id="auditSearch" oninput="onAuditSearchInput()" placeholder="Search plate, name, EPC..."
+                                   class="text-sm border border-slate-200 rounded-xl pl-3 pr-4 py-2 bg-white w-64 md:w-72 shadow-sm">
+
+                            <button type="button" onclick="loadAudit(currentAuditPage)" class="text-xs font-bold border border-slate-200 rounded-xl px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 shadow-sm transition">Refresh</button>
+                        </div>
+                    </div>
+
+                    <div class="px-5 py-3 border-b bg-white flex justify-between items-center flex-wrap gap-3">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="text-xs font-extrabold text-slate-400 uppercase tracking-wider mr-1">Status:</span>
+                            <button type="button" onclick="setAuditStatusFilter('all', this)" class="audit-status-pill px-3 py-1 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow-sm transition">All Records</button>
+                            <button type="button" onclick="setAuditStatusFilter('inside', this)" class="audit-status-pill px-3 py-1 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Inside Facility</button>
+                            <button type="button" onclick="setAuditStatusFilter('exited', this)" class="audit-status-pill px-3 py-1 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Exited</button>
+                            <button type="button" onclick="setAuditStatusFilter('alert', this)" class="audit-status-pill px-3 py-1 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Alerts</button>
+                        </div>
+
+                        <div class="flex items-center gap-2 text-xs font-bold text-slate-500">
+                            <span>Per Page:</span>
+                            <select id="auditLimitSelect" onchange="changeAuditLimit()" class="border border-slate-200 rounded-lg px-2.5 py-1 bg-white text-slate-700 font-bold">
+                                <option value="25" selected>25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto min-h-[380px]">
+                        <table class="w-full text-left text-sm">
+                            <thead class="text-[11px] uppercase font-bold text-slate-400 bg-slate-100/70 border-b">
+                                <tr>
+                                    <th class="p-3.5 pl-5">Vehicle & Evidence</th>
+                                    <th class="p-3.5">Driver / Member</th>
+                                    <th class="p-3.5">Access Method</th>
+                                    <th class="p-3.5">Entry Time</th>
+                                    <th class="p-3.5">Exit Time</th>
+                                    <th class="p-3.5">Stay Duration</th>
+                                    <th class="p-3.5">Audit Status</th>
+                                    <th class="p-3.5 text-right pr-6">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="auditBody" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="p-4 border-t bg-slate-50/50" id="auditPagination"></div>
+                </div>
+            </div>
+
+            <div id="tab-camera_audit" class="hidden space-y-6">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 border-l-4 border-l-emerald-500">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">TODAY</div>
+                        <div>
+                            <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Cars Visited Today</p>
+                            <h3 id="camStatToday" class="text-2xl font-black text-emerald-600 tabular-nums">0</h3>
+                            <p class="text-[11px] text-slate-400">Line cross events today</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 border-l-4 border-l-indigo-500">
+                        <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">WEEK</div>
+                        <div>
+                            <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Cars This Week</p>
+                            <h3 id="camStatWeek" class="text-2xl font-black text-indigo-600 tabular-nums">0</h3>
+                            <p class="text-[11px] text-slate-400">Past 7 days traffic</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 border-l-4 border-l-blue-500">
+                        <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">MONTH</div>
+                        <div>
+                            <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Cars This Month</p>
+                            <h3 id="camStatMonth" class="text-2xl font-black text-blue-600 tabular-nums">0</h3>
+                            <p class="text-[11px] text-slate-400">Past 30 days traffic</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 border-l-4 border-l-amber-500">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">FTP</div>
+                        <div>
+                            <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Folder Ingest</p>
+                            <h3 class="text-base font-black text-slate-800">AUTOMATIC</h3>
+                            <p class="text-[11px] text-slate-400">Hikvision event trigger</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-5 border-b bg-slate-50/80 flex justify-between items-center flex-wrap gap-4">
+                        <div>
+                            <h2 class="font-bold text-lg text-slate-900 flex items-center gap-2">
+                                <span>Hikvision Camera Vehicle Proof Logs</span>
+                                <span class="text-xs font-extrabold bg-emerald-100 text-emerald-700 px-3 py-0.5 rounded-full" id="camBadgeDate">Today</span>
+                            </h2>
+                            <p class="text-xs text-slate-500 mt-0.5">Photographic proof of all vehicles detected by Hikvision camera line-crossing event triggers.</p>
+                        </div>
+
+                        <div class="flex items-center gap-3 flex-wrap">
+                            <div class="flex items-center gap-1.5 bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
+                                <button type="button" onclick="setCamAuditPreset('today')" class="px-3 py-1.5 text-xs font-bold rounded-lg text-slate-700 hover:bg-slate-100 transition">Today</button>
+                                <button type="button" onclick="setCamAuditPreset('yesterday')" class="px-3 py-1.5 text-xs font-bold rounded-lg text-slate-700 hover:bg-slate-100 transition">Yesterday</button>
+                                <button type="button" onclick="setCamAuditPreset('all')" class="px-3 py-1.5 text-xs font-bold rounded-lg text-slate-700 hover:bg-slate-100 transition">All Time</button>
+                                <input type="date" id="camAuditDate" onchange="loadCameraAudit(1)" class="text-xs font-bold border-0 bg-transparent px-2 py-1 text-slate-800">
+                            </div>
+
+                            <div class="flex items-center gap-2 text-xs font-bold text-slate-500">
+                                <span>Per Page:</span>
+                                <select id="camAuditLimitSelect" onchange="changeCamAuditLimit()" class="border border-slate-200 rounded-lg px-2.5 py-1.5 bg-white text-slate-700 font-bold">
+                                    <option value="12">12</option>
+                                    <option value="24" selected>24</option>
+                                    <option value="48">48</option>
+                                </select>
+                            </div>
+
+                            <button type="button" onclick="loadCameraAudit(currentCamAuditPage)" class="text-xs font-bold border border-slate-200 rounded-xl px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 shadow-sm transition">Refresh</button>
+                        </div>
+                    </div>
+
+                    <div class="p-6">
+                        <div id="camAuditGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5"></div>
+                    </div>
+
+                    <div class="p-4 border-t bg-slate-50/50" id="camAuditPagination"></div>
+                </div>
+            </div>
+
+            <div id="tab-members" class="hidden space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-white p-5 rounded-2xl border shadow-sm flex items-center gap-4 border-l-4 border-l-indigo-500">
+                        <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">MEM</div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Unique Members</p>
+                            <h3 id="statUniqueMem" class="text-2xl font-black text-slate-900">0</h3>
+                            <p class="text-[11px] text-slate-400">Club accounts</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border shadow-sm flex items-center gap-4 border-l-4 border-l-blue-500">
+                        <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">VEH</div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Registered Vehicles</p>
+                            <h3 id="statTotalVehicles" class="text-2xl font-black text-slate-900">0</h3>
+                            <p class="text-[11px] text-slate-400">Total registered cars</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border shadow-sm flex items-center gap-4 border-l-4 border-l-amber-500">
+                        <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">TAG</div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Active RFID Tags</p>
+                            <h3 id="statTaggedMem" class="text-2xl font-black text-slate-900">0</h3>
+                            <p class="text-[11px] text-slate-400">UHF tags bound</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <div class="flex justify-between items-center mb-4 pb-3 border-b">
+                            <div>
+                                <h2 id="formTitle" class="font-bold text-lg text-slate-900">Register New Member</h2>
+                                <p id="formSubtitle" class="text-xs text-slate-500">Add member with vehicle license plate and RFID tag</p>
+                            </div>
+                            <button type="button" id="cancelEditBtn" onclick="cancelEdit()" class="hidden text-xs font-bold text-rose-600 border border-rose-200 rounded-lg px-4 py-2 bg-rose-50 hover:bg-rose-100">Cancel Edit</button>
+                        </div>
+                        <form id="memberForm" onsubmit="submitMember(event)" class="grid grid-cols-2 gap-4 text-sm">
+                            <input type="hidden" id="editOldId" value="">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Member ID *</label>
+                                <input id="nMemId" required placeholder="e.g. KG-0150" class="w-full border rounded-xl p-2.5 bg-slate-50 font-mono">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Full Name *</label>
+                                <input id="nName" required placeholder="e.g. Ahmed Khan" class="w-full border rounded-xl p-2.5 bg-slate-50">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">License Plate *</label>
+                                <input id="nCar" required placeholder="e.g. BNC-916" class="w-full border rounded-xl p-2.5 bg-slate-50 font-mono">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Make / Model</label>
+                                <input id="nMake" placeholder="e.g. Toyota Corolla" class="w-full border rounded-xl p-2.5 bg-slate-50">
+                            </div>
+                            <div class="col-span-2">
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">EPC Tag * <span class="text-slate-400 normal-case font-normal">- type or scan live</span></label>
+                                <div class="flex gap-2">
+                                    <input id="nTag" required placeholder="e.g. E2806890000000025799E539" class="flex-1 border rounded-xl p-2.5 bg-slate-50 font-mono text-xs">
+                                    <button type="button" onclick="captureEPC(this)" id="epcBtn"
+                                             class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs whitespace-nowrap shadow-sm">Read Tag</button>
+                                </div>
+                                <p id="epcStatus" class="text-xs mt-1 text-slate-400"></p>
+                            </div>
+                            <div class="col-span-2">
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Profile Photo</label>
+                                <div class="flex gap-3 items-center">
+                                    <input type="file" id="nPicFile" accept="image/*"
+                                           class="text-sm border rounded-xl p-2 bg-slate-50 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-slate-200 file:text-xs file:font-bold">
+                                    <img id="nPicPreview" class="w-12 h-12 rounded-full object-cover border-2 border-slate-200 hidden">
+                                    <input type="hidden" id="nPic" value="">
+                                    <span id="picName" class="text-xs text-slate-400"></span>
+                                </div>
+                            </div>
+                            <button id="submitBtn" type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3.5 rounded-xl font-bold col-span-2 shadow-md transition">Add Member</button>
+                        </form>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <h2 class="font-bold text-lg text-slate-900 mb-1">Batch CSV / Excel Import</h2>
+                            <p class="text-xs text-slate-500 mb-4">Required columns: <span class="font-mono bg-slate-100 px-1 rounded text-[11px]">Mem_id, Name, Car_number, E_tag_id</span></p>
+                            <div class="space-y-3">
+                                <input type="file" id="importFile" accept=".csv,.xlsx,.xls"
+                                       class="w-full text-sm border rounded-xl p-2 bg-slate-50 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-slate-200 file:text-xs file:font-bold">
+                                <button type="button" onclick="importMembers()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 rounded-xl font-bold text-sm shadow">Import File</button>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button type="button" onclick="downloadTemplate()" class="text-xs font-bold text-indigo-600 border border-indigo-200 rounded-xl py-2.5 bg-indigo-50 hover:bg-indigo-100 text-center">Download Template</button>
+                                    <button type="button" onclick="alignMemberPhotos()" class="text-xs font-bold text-emerald-700 border border-emerald-300 rounded-xl py-2.5 bg-emerald-50 hover:bg-emerald-100 flex items-center justify-center gap-1 transition shadow-sm">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                        Align Photos
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="importResult" class="mt-4 hidden text-sm rounded-xl px-4 py-3"></div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-5 border-b bg-slate-50/80 flex justify-between items-center flex-wrap gap-4">
+                        <div class="flex items-center gap-3">
+                            <h2 class="font-bold text-slate-900 text-base">Member Directory</h2>
+                            <span class="text-xs font-bold bg-indigo-100 text-indigo-700 px-2.5 py-0.5 rounded-full" id="memCount">0</span>
+                            <button type="button" onclick="alignMemberPhotos()" title="Auto-align member photos from static/member_profile_img"
+                                    class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm flex items-center gap-1.5 transition">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                                Align Photos
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-3 flex-wrap">
+                            <div class="flex items-center gap-2 text-xs font-bold text-slate-500">
+                                <span>Show:</span>
+                                <select id="memLimitSelect" onchange="changeMemLimit()" class="border border-slate-200 rounded-lg px-2.5 py-1.5 bg-white text-slate-700 font-bold">
+                                    <option value="25" selected>25 per page</option>
+                                    <option value="50">50 per page</option>
+                                    <option value="100">100 per page</option>
+                                </select>
+                            </div>
+                            <input id="memSearch" oninput="onMemSearchInput()" placeholder="Search name, plate, EPC..."
+                                   class="text-sm border border-slate-200 rounded-xl pl-3 pr-4 py-2 bg-white w-64 md:w-80 shadow-sm">
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto min-h-[350px]">
+                        <table class="w-full text-left text-sm">
+                            <thead class="text-[11px] uppercase font-bold text-slate-400 bg-slate-100/70 border-b">
+                                <tr>
+                                    <th class="p-3.5 pl-4">Member</th>
+                                    <th class="p-3.5">ID</th>
+                                    <th class="p-3.5">Full Name</th>
+                                    <th class="p-3.5">Vehicle Details</th>
+                                    <th class="p-3.5">RFID EPC Tag</th>
+                                    <th class="p-3.5 text-right pr-6">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="memBody" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="p-4 border-t bg-slate-50/50" id="memPagination"></div>
+                </div>
+            </div>
+
+            <div id="tab-settings" class="hidden">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border max-w-3xl space-y-6 text-sm">
+                    <div>
+                        <h2 class="font-bold text-lg text-slate-900">System & Hardware Configuration</h2>
+                        <p class="text-xs text-slate-500">Update network addresses, streaming parameters, and facility capacities.</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Club Institutional Name</label>
+                            <input id="setClubName" class="w-full border rounded-xl p-3 bg-slate-50 font-bold">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Parking Slot Capacity</label>
+                            <input id="setCap" type="number" class="w-full border rounded-xl p-3 bg-slate-50 font-bold">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Ticker Advisory Message (comma-separated)</label>
+                            <input id="setMsg" class="w-full border rounded-xl p-3 bg-slate-50">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Entry Reader IP Address</label>
+                                <input id="setEntry" class="w-full border rounded-xl p-3 bg-slate-50 font-mono text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Exit Reader IP Address</label>
+                                <input id="setExit" class="w-full border rounded-xl p-3 bg-slate-50 font-mono text-xs">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Hikvision Camera RTSP Stream URL</label>
+                            <input id="setHik" class="w-full border rounded-xl p-3 bg-slate-50 font-mono text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Dahua Camera RTSP Stream URL</label>
+                            <input id="setDahua" class="w-full border rounded-xl p-3 bg-slate-50 font-mono text-xs">
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="saveSettings()" class="bg-slate-900 hover:bg-slate-800 text-white px-8 py-3.5 rounded-xl font-bold shadow-md transition">Save Configuration</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="auditModal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto" id="auditModalContent"></div>
+    </div>
+
+    <div id="camProofModal" class="hidden fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm" onclick="closeCamProofModal()">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-5xl w-full overflow-hidden" onclick="event.stopPropagation()">
+            <div class="p-4 border-b bg-slate-50 flex items-center justify-between">
+                <span class="text-sm font-black text-slate-800 tracking-wide uppercase">Camera Proof Inspection &bull; Dual Camera Synchronized Capture</span>
+                <button type="button" onclick="closeCamProofModal()" class="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-600 font-bold flex items-center justify-center text-sm">&times;</button>
+            </div>
+            <div class="p-6 bg-slate-950" id="camProofModalBody">
+                <div id="camProofDualGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between px-1">
+                            <span class="text-xs font-black uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                Hikvision Overview Shot (Full Vehicle)
+                            </span>
+                        </div>
+                        <div class="bg-slate-900 rounded-2xl overflow-hidden aspect-video flex items-center justify-center border border-slate-800">
+                            <img id="camProofModalImgHik" src="" alt="Hikvision Full View" class="max-h-[50vh] w-full object-contain">
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between px-1">
+                            <span class="text-xs font-black uppercase tracking-wider text-indigo-400 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+                                Dahua Gate Shot (Close-up License Plate)
+                            </span>
+                        </div>
+                        <div class="bg-slate-900 rounded-2xl overflow-hidden aspect-video flex items-center justify-center border border-slate-800" id="dahuaProofWrap">
+                            <img id="camProofModalImgDahua" src="" alt="Dahua Close-up View" class="max-h-[50vh] w-full object-contain">
+                            <p id="dahuaOfflineMsg" class="hidden text-xs text-slate-400 font-bold text-center px-4">Dahua Close-up Camera Offline / Pending Upload</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 bg-white" id="camProofModalInfo"></div>
+        </div>
+    </div>
+
+    <script src="/static/js/dashboard.js"></script>
+</body>
+</html>
