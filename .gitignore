@@ -1,0 +1,34 @@
+# Python & Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environments
+.venv/
+venv/
+ENV/
+env/
+
+# IDE & Editor caches
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs & Temporary files
+*.log
+static/ftp_uploads/*
+!static/ftp_uploads/.gitkeep
+static/camera_audits/*
+!static/camera_audits/.gitkeep
+
+# System files
+Thumbs.db
+Desktop.ini
+.DS_Store
