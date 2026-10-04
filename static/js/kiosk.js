@@ -3,19 +3,19 @@ let idleResetTimer = null;
 
 function updateClock() {
     const now = new Date();
-    const timeParts = now.toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: true
-    }).split(' ');
+    let hours = now.getHours();
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12 || 12;
+    const hoursStr = String(hours).padStart(2, '0');
 
     const clockEl = document.getElementById('kioskClock');
     const ampmEl = document.getElementById('kioskAmpm');
     const dateEl = document.getElementById('kioskDate');
 
-    if (clockEl) clockEl.innerText = timeParts[0];
-    if (ampmEl) ampmEl.innerText = timeParts[1] || 'PKT';
+    if (clockEl) clockEl.innerText = `${hoursStr}:${minutes}:${seconds}`;
+    if (ampmEl) ampmEl.innerText = ampm;
     if (dateEl) {
         dateEl.innerText = now.toLocaleDateString('en-US', {
             weekday: 'short',

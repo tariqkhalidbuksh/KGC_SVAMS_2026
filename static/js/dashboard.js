@@ -33,7 +33,9 @@ function switchTab(name, btn) {
 
 function updateLiveClock() {
     const clockEl = document.getElementById('liveClock');
-    if (clockEl) clockEl.innerText = new Date().toLocaleTimeString();
+    if (clockEl) {
+        clockEl.innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }
 }
 setInterval(updateLiveClock, 1000);
 updateLiveClock();

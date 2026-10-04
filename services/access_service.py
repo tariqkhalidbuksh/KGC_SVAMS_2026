@@ -21,7 +21,7 @@ def log_camera_audit_event(
 ):
     if not image_path or not os.path.exists(image_path):
         return
-    now_dt = datetime.now(config.PKT_TZ)
+    now_dt = datetime.now()
     date_str = now_dt.strftime("%Y-%m-%d")
     hour_str = now_dt.strftime("%H:00")
     timestamp_str = now_dt.strftime("%Y-%m-%d %H:%M:%S")
@@ -83,11 +83,11 @@ def execute_access_decision(
                     try:
                         last_log_str = last_tag_log['timestamp']
                         try:
-                            last_log_dt = datetime.strptime(last_log_str, "%Y-%m-%d %H:%M:%S").replace(tzinfo=config.PKT_TZ)
+                            last_log_dt = datetime.strptime(last_log_str, "%Y-%m-%d %H:%M:%S")
                         except ValueError:
-                            last_log_dt = datetime.strptime(last_log_str, "%Y-%m-%d %I:%M:%S %p").replace(tzinfo=config.PKT_TZ)
+                            last_log_dt = datetime.strptime(last_log_str, "%Y-%m-%d %I:%M:%S %p")
                         
-                        elapsed_sec = (datetime.now(config.PKT_TZ) - last_log_dt).total_seconds()
+                        elapsed_sec = (datetime.now() - last_log_dt).total_seconds()
                         last_dir = last_tag_log['direction']
                         cooldown_window = getattr(config, 'CROSS_READ_COOLDOWN', 45.0)
 

@@ -3,8 +3,10 @@ import threading
 from collections import deque
 from datetime import datetime, timezone, timedelta
 
-PKT_TZ = timezone(timedelta(hours=5))
-TZ_OFFSET_STRING = "+5 hours"
+# System Local Timezone (dynamically aligned to host machine's system clock)
+LOCAL_TZ = datetime.now().astimezone().tzinfo
+PKT_TZ = LOCAL_TZ
+TZ_OFFSET_STRING = "localtime"
 
 DB_FILE = "gate_access.db"
 STATIC_DIR = "static"
@@ -45,7 +47,12 @@ FTP_EVENT_COUNT = {"count": 0}
 ENROLL_MODE = {"active": False}
 
 def get_pkt_now() -> str:
-    return datetime.now(PKT_TZ).strftime("%Y-%m-%d %H:%M:%S")
+    """Returns the current timestamp exactly matching the host system's clock."""
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 def get_pkt_today() -> str:
-    return datetime.now(PKT_TZ).strftime("%Y-%m-%d")
+    """Returns today's date exactly matching the host system's clock."""
+    return datetime.now().strftime("%Y-%m-%d")
+
+get_local_now = get_pkt_now
+get_local_today = get_pkt_today

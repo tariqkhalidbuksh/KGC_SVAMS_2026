@@ -51,7 +51,7 @@ def init_db():
                     E_tag_id TEXT UNIQUE NOT NULL,
                     Status TEXT DEFAULT 'Active',
                     Profile_pic TEXT,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)""")
+                    created_at TIMESTAMP DEFAULT (datetime('now', 'localtime')))""")
                 conn.execute("CREATE INDEX IF NOT EXISTS idx_members_memid ON members(Mem_id)")
                 conn.execute("CREATE INDEX IF NOT EXISTS idx_members_etag ON members(E_tag_id)")
                 conn.execute("CREATE INDEX IF NOT EXISTS idx_members_car ON members(Car_number)")
@@ -67,7 +67,7 @@ def init_db():
                     image_path TEXT,
                     plate_image_path TEXT,
                     scanned_tag TEXT,
-                    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)""")
+                    timestamp DATETIME DEFAULT (datetime('now', 'localtime')))""")
                 conn.execute("CREATE INDEX IF NOT EXISTS idx_logs_timestamp ON daily_logs(timestamp)")
                 conn.execute("CREATE INDEX IF NOT EXISTS idx_logs_tag ON daily_logs(scanned_tag)")
 
@@ -76,7 +76,7 @@ def init_db():
                     tag_scanned TEXT,
                     system_response TEXT,
                     direction TEXT DEFAULT 'Unknown',
-                    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)""")
+                    timestamp DATETIME DEFAULT (datetime('now', 'localtime')))""")
 
                 conn.execute("""CREATE TABLE IF NOT EXISTS camera_audit_logs (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -84,7 +84,7 @@ def init_db():
                     plate_image_path TEXT,
                     direction TEXT DEFAULT 'Unknown',
                     event_type TEXT DEFAULT 'Line Crossing',
-                    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    timestamp DATETIME DEFAULT (datetime('now', 'localtime')),
                     date_str TEXT,
                     hour_str TEXT)""")
                 conn.execute("CREATE INDEX IF NOT EXISTS idx_cam_audit_date ON camera_audit_logs(date_str)")

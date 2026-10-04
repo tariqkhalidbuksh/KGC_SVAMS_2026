@@ -45,24 +45,24 @@ async def get_stats():
                     config.MEMBERS_METRICS_CACHE["timestamp"] = now_epoch
 
             entries_today = conn.execute(
-                "SELECT COUNT(*) as c FROM daily_logs WHERE direction='Entry' AND (date(timestamp)=? OR date(timestamp, '+5 hours')=?)",
-                (pkt_today, pkt_today)
+                "SELECT COUNT(*) as c FROM daily_logs WHERE direction='Entry' AND date(timestamp)=?",
+                (pkt_today,)
             ).fetchone()['c']
 
             exits_today = conn.execute(
-                "SELECT COUNT(*) as c FROM daily_logs WHERE direction='Exit' AND (date(timestamp)=? OR date(timestamp, '+5 hours')=?)",
-                (pkt_today, pkt_today)
+                "SELECT COUNT(*) as c FROM daily_logs WHERE direction='Exit' AND date(timestamp)=?",
+                (pkt_today,)
             ).fetchone()['c']
 
             guests_today = conn.execute(
-                "SELECT COUNT(*) as c FROM daily_logs WHERE (date(timestamp)=? OR date(timestamp, '+5 hours')=?) "
+                "SELECT COUNT(*) as c FROM daily_logs WHERE date(timestamp)=? "
                 "AND (access_type LIKE '%Unknown%' OR access_type LIKE '%No RFID%')",
-                (pkt_today, pkt_today)
+                (pkt_today,)
             ).fetchone()['c']
 
             peak_row = conn.execute("""SELECT strftime('%H', timestamp) as h, COUNT(*) as c FROM daily_logs
-                WHERE direction='Entry' AND (date(timestamp)=? OR date(timestamp, '+5 hours')=?)
-                GROUP BY h ORDER BY c DESC LIMIT 1""", (pkt_today, pkt_today)).fetchone()
+                WHERE direction='Entry' AND date(timestamp)=?
+                GROUP BY h ORDER BY c DESC LIMIT 1""", (pkt_today,)).fetchone()
 
             peak_hour_str = f"{peak_row['h']}:00" if peak_row else "None"
             peak_count_val = peak_row['c'] if peak_row else 0
@@ -91,14 +91,14 @@ async def get_chart_data():
 
             entries_h = {r['h']: r['c'] for r in conn.execute(
                 """SELECT strftime('%H', timestamp) as h, COUNT(*) as c FROM daily_logs
-                   WHERE direction='Entry' AND (date(timestamp)=? OR date(timestamp, '+5 hours')=?) GROUP BY h""",
-                (pkt_today, pkt_today)
+                   WHERE direction='Entry' AND date(timestamp)=? GROUP BY h""",
+                (pkt_today,)
             ).fetchall()}
 
             exits_h = {r['h']: r['c'] for r in conn.execute(
                 """SELECT strftime('%H', timestamp) as h, COUNT(*) as c FROM daily_logs
-                   WHERE direction='Exit' AND (date(timestamp)=? OR date(timestamp, '+5 hours')=?) GROUP BY h""",
-                (pkt_today, pkt_today)
+                   WHERE direction='Exit' AND date(timestamp)=? GROUP BY h""",
+                (pkt_today,)
             ).fetchall()}
 
             days, entries_d, exits_d = [], [], []
@@ -106,7 +106,7 @@ async def get_chart_data():
                 """SELECT date(timestamp) as d,
                        SUM(CASE WHEN direction='Entry' THEN 1 ELSE 0 END) as e,
                        SUM(CASE WHEN direction='Exit' THEN 1 ELSE 0 END) as x
-                   FROM daily_logs WHERE date(timestamp) >= date('now', '+5 hours', '-6 days')
+                   FROM daily_logs WHERE date(timestamp) >= date('now', 'localtime', '-6 days')
                    GROUP BY d ORDER BY d"""
             ).fetchall():
                 days.append(row['d'][5:])
@@ -136,11 +136,11 @@ async def get_camera_audit_stats():
             ).fetchone()['c']
 
             week_count = conn.execute(
-                "SELECT COUNT(*) as c FROM camera_audit_logs WHERE date_str >= date('now', '+5 hours', '-6 days')"
+                "SELECT COUNT(*) as c FROM camera_audit_logs WHERE date_str >= date('now', 'localtime', '-6 days')"
             ).fetchone()['c']
 
             month_count = conn.execute(
-                "SELECT COUNT(*) as c FROM camera_audit_logs WHERE date_str >= date('now', '+5 hours', '-29 days')"
+                "SELECT COUNT(*) as c FROM camera_audit_logs WHERE date_str >= date('now', 'localtime', '-29 days')"
             ).fetchone()['c']
 
             return {
