@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 import config
 from services.camera_service import grab_hikvision_snapshot, save_snapshot
 
@@ -28,3 +28,56 @@ async def capture_diagnostic_frame(cam: str):
         "width": img.shape[1],
         "height": img.shape[0]
     }
+
+@router.api_route("/event/hikvision", methods=["GET", "POST", "PUT"])
+@router.api_route("/camera/trigger", methods=["GET", "POST"])
+async def receive_camera_trigger(request: Request):
+    """
+    Sub-100ms ultra-low latency HTTP event receiver for Hikvision Alarm Center / HTTP Listening.
+    Instantly triggers dual synchronized Dahua plate and Hikvision overview captures.
+    """
+    import os
+    import time
+    import cv2
+    from services.access_service import process_camera_line_crossing
+    from services.camera_service import grab_verified_snapshot, is_valid_image
+
+    direction = "Line Crossing"
+    temp_path = None
+
+    try:
+        content_type = request.headers.get("content-type", "").lower()
+        if "multipart/form-data" in content_type:
+            form = await request.form()
+            for field in form:
+                val = form[field]
+                if hasattr(val, "filename") and hasattr(val, "read"):
+                    data = await val.read()
+                    if len(data) > 1000:
+                        temp_path = os.path.join(config.FTP_UPLOAD_DIR, f"http_hook_{int(time.time()*1000)}.jpg")
+                        with open(temp_path, "wb") as f:
+                            f.write(data)
+                        break
+        else:
+            body = await request.body()
+            body_str = body.decode(errors="ignore").lower()
+            if any(k in body_str for k in ["rule2", "rule02", "b-a", "exit", "leaving"]):
+                direction = "Exit"
+            elif any(k in body_str for k in ["rule1", "rule01", "a-b", "entry", "entering"]):
+                direction = "Entry"
+    except Exception:
+        pass
+
+    if not temp_path:
+        hik_frame = grab_verified_snapshot("Hikvision", max_timeout_sec=1.5)
+        if is_valid_image(hik_frame):
+            temp_path = os.path.join(config.FTP_UPLOAD_DIR, f"http_hook_{int(time.time()*1000)}.jpg")
+            cv2.imwrite(temp_path, hik_frame, [cv2.IMWRITE_JPEG_QUALITY, 95])
+
+    if temp_path and os.path.exists(temp_path):
+        import threading
+        threading.Thread(target=process_camera_line_crossing, args=(temp_path, direction), daemon=True).start()
+        return {"ok": True, "status": "triggered", "mode": "instant_http"}
+
+    return {"ok": False, "status": "no_frame_available"}
+

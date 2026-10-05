@@ -96,7 +96,10 @@ def execute_access_decision(
                         if not bypass_cooldown and elapsed_sec < cooldown_window:
                             return last_tag_log['id']
 
-                        if direction in ("Auto", None, ""):
+                        # If the last log was more than 12 hours ago, treat as a fresh visit starting with Entry
+                        if elapsed_sec > 43200:
+                            resolved_direction = "Entry"
+                        elif direction in ("Auto", None, ""):
                             resolved_direction = "Exit" if last_dir == "Entry" else "Entry"
                         elif direction == last_dir:
                             resolved_direction = "Exit" if last_dir == "Entry" else "Entry"
@@ -105,7 +108,7 @@ def execute_access_decision(
                     except Exception:
                         resolved_direction = direction or "Entry"
                 else:
-                    resolved_direction = direction if direction in ("Entry", "Exit") else "Entry"
+                    resolved_direction = "Entry" if direction in ("Auto", None, "", "Entry") else direction
 
                 conn.execute(
                     "INSERT INTO raw_reader_logs (tag_scanned, system_response, direction, timestamp) VALUES (?, ?, ?, ?)",
@@ -200,6 +203,9 @@ def process_camera_line_crossing(hikvision_image_path: str, forced_direction: st
     if not hikvision_image_path or not os.path.exists(hikvision_image_path):
         return
 
+    # STEP 1: IMMEDIATELY capture Dahua close-up frame (< 1ms from live RAM stream)
+    # Grabbing this at the exact microsecond of the trigger eliminates the 5-9s delay
+    dahua_img = grab_verified_snapshot("Dahua", max_timeout_sec=1.5)
     now = time.time()
     
     # 1. Real-time MD5 trigger de-duplication: prevents duplicate rapid bursts from Hikvision
@@ -214,8 +220,8 @@ def process_camera_line_crossing(hikvision_image_path: str, forced_direction: st
     if img_md5:
         with config.CACHE_LOCK:
             for prev_md5, prev_time in list(config.RECENT_CAM_TRIGGERS):
-                # Suppress identical image or burst triggers within 5 seconds
-                if prev_md5 == img_md5 or (now - prev_time < 5.0):
+                # Suppress identical image or burst triggers within 3 seconds
+                if prev_md5 == img_md5 or (now - prev_time < 3.0):
                     try:
                         if os.path.exists(hikvision_image_path):
                             os.remove(hikvision_image_path)
@@ -248,16 +254,15 @@ def process_camera_line_crossing(hikvision_image_path: str, forced_direction: st
     direction = forced_direction or "Line Crossing"
     event_type = "Hikvision Line Crossing"
 
-    # Dahua Close-up Plate Image (Simultaneous instant capture from RAM / camera)
-    dahua_img = grab_verified_snapshot("Dahua", max_retries=2)
+    # Save Dahua Close-up Plate Image if captured
     if is_valid_image(dahua_img):
         dahua_target_path = os.path.join(target_dir, f"dahua_plate_{stamp}.jpg")
         try:
-            cv2.imwrite(dahua_target_path, dahua_img)
+            cv2.imwrite(dahua_target_path, dahua_img, [cv2.IMWRITE_JPEG_QUALITY, 95])
             dahua_rel_path = f"static/camera_audits/dahua_plate_{stamp}.jpg"
             event_type = "Hikvision Overview + Dahua Plate Close-up"
         except Exception as exc_dahua:
-            print(f"[DAHUA PLATE CAPTURE ERROR] {exc_dahua}")
+            print(f"[DAHUA PLATE SAVE ERROR] {exc_dahua}")
 
     log_camera_audit_event(
         image_path=hik_rel_path,

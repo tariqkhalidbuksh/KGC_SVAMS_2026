@@ -101,8 +101,8 @@ def init_db():
                     'traffic_msg': 'SPEED LIMIT 5 KM/H,WELCOME TO KARACHI GYMKHANA CLUB',
                     'club_name': 'Karachi Gymkhana Club',
                     'parking_capacity': '500',
-                    'dahua_cam_url': 'rtsp://admin:TheKG1886@192.168.0.218:554/cam/realmonitor?channel=1&subtype=1',
-                    'hikvision_cam_url': 'rtsp://admin:TheKG1886@192.168.0.220:554/Streaming/Channels/102',
+                    'dahua_cam_url': 'rtsp://admin:TheKG1886@192.168.0.218:554/cam/realmonitor?channel=1&subtype=0',
+                    'hikvision_cam_url': 'rtsp://admin:TheKG1886@192.168.0.220:554/Streaming/Channels/101',
                     'entry_reader_ip': '192.168.0.217',
                     'exit_reader_ip': '192.168.0.216',
                 }

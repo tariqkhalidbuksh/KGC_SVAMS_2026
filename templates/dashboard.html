@@ -504,11 +504,11 @@
                             <thead class="text-[11px] uppercase font-bold text-slate-400 bg-slate-100/70 border-b">
                                 <tr>
                                     <th class="p-3.5 pl-4">Member</th>
-                                    <th class="p-3.5">ID</th>
+                                    <th class="p-3.5">Member ID</th>
                                     <th class="p-3.5">Full Name</th>
-                                    <th class="p-3.5">Vehicle Details</th>
-                                    <th class="p-3.5">RFID EPC Tag</th>
-                                    <th class="p-3.5 text-right pr-6">Actions</th>
+                                    <th class="p-3.5">Registered Vehicles</th>
+                                    <th class="p-3.5">RFID Status</th>
+                                    <th class="p-3.5 text-right pr-6">Action</th>
                                 </tr>
                             </thead>
                             <tbody id="memBody" class="divide-y divide-slate-100"></tbody>
@@ -567,6 +567,11 @@
 
     <div id="auditModal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto" id="auditModalContent"></div>
+    </div>
+
+    <!-- Member Vehicles Fleet Modal -->
+    <div id="memberFleetModal" class="hidden fixed inset-0 z-[105] flex items-center justify-center p-4 md:p-6 bg-slate-900/60 backdrop-blur-sm" onclick="closeMemberFleetModal()">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[92vh] overflow-y-auto" id="memberFleetModalContent" onclick="event.stopPropagation()"></div>
     </div>
 
     <div id="camProofModal" class="hidden fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm" onclick="closeCamProofModal()">

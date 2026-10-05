@@ -350,16 +350,41 @@ async function loadAudit(page = currentAuditPage) {
         }
 
         bodyEl.innerHTML = auditData.map(a => {
-            const e = a.entry, x = a.exit;
+            let e = a.entry, x = a.exit;
+            if (e && x && e.timestamp && x.timestamp && String(e.timestamp) > String(x.timestamp)) {
+                const tmp = e; e = x; x = tmp;
+            }
             const thumb = e || x;
             if (!thumb) return '';
 
             const isMember = e && !['GUEST-LOG', 'AI-CAM'].includes(e.mem_id);
-            const isUnreg = (e && e.access_type.includes('Unknown')) || (!e && x && x.access_type.includes('Unknown'));
-            const isNoTag = (e && e.access_type.includes('No RFID')) || (!e && x && x.access_type.includes('No RFID'));
+            const isUnreg = (e && (e.access_type || '').includes('Unknown')) || (!e && x && (x.access_type || '').includes('Unknown'));
+            const isNoTag = (e && (e.access_type || '').includes('No RFID')) || (!e && x && (x.access_type || '').includes('No RFID'));
 
             const pfp = thumb.profile_pic;
             const initial = (thumb.name || '?').charAt(0).toUpperCase();
+
+            let rowDur = a.duration;
+            if (!rowDur || rowDur === '--') {
+                if (e && x && e.timestamp && x.timestamp) {
+                    const t1 = new Date(e.timestamp.replace(' ', 'T')).getTime();
+                    const t2 = new Date(x.timestamp.replace(' ', 'T')).getTime();
+                    if (!isNaN(t1) && !isNaN(t2)) {
+                        const diffMin = Math.round(Math.abs(t2 - t1) / 60000);
+                        const hrs = Math.floor(diffMin / 60);
+                        const mins = diffMin % 60;
+                        rowDur = hrs > 0 ? `${hrs}h ${String(mins).padStart(2, '0')}m` : `${mins}m`;
+                    }
+                } else if (e && !x && e.timestamp) {
+                    const t1 = new Date(e.timestamp.replace(' ', 'T')).getTime();
+                    if (!isNaN(t1)) {
+                        const diffMin = Math.round(Math.max(0, Date.now() - t1) / 60000);
+                        const hrs = Math.floor(diffMin / 60);
+                        const mins = diffMin % 60;
+                        rowDur = `${hrs > 0 ? `${hrs}h ${String(mins).padStart(2, '0')}m` : `${mins}m`} (Active)`;
+                    }
+                }
+            }
 
             let statusPill = '';
             if (a.status === 'Inside Facility' || a.status === 'Alert / Inside') {
@@ -420,7 +445,7 @@ async function loadAudit(page = currentAuditPage) {
                     </div>` : '<span class="text-emerald-600 font-bold text-xs">Parked Inside</span>'}
                 </td>
                 <td class="p-3.5">
-                    ${a.duration ? `<span class="font-bold text-xs bg-indigo-50 text-indigo-700 border border-indigo-200/70 px-2.5 py-1 rounded-lg tabular-nums">${a.duration}</span>` :
+                    ${rowDur ? `<span class="font-bold text-xs bg-indigo-50 text-indigo-700 border border-indigo-200/70 px-2.5 py-1 rounded-lg tabular-nums">${rowDur}</span>` :
                     '<span class="text-slate-400 text-xs">-</span>'}
                 </td>
                 <td class="p-3.5">${statusPill}</td>
@@ -477,11 +502,37 @@ function renderAuditPagination(total, page, totalPages, limit) {
 }
 
 function openAudit(a) {
-    const e = a.entry, x = a.exit, v = e || x;
+    let e = a.entry, x = a.exit;
+    if (e && x && e.timestamp && x.timestamp && String(e.timestamp) > String(x.timestamp)) {
+        const tmp = e; e = x; x = tmp;
+    }
+    const v = e || x;
     const isUnreg = Boolean((v.access_type || '').includes('Unknown') || (v.name || '').includes('Unregistered'));
     const isNoTag = Boolean((v.access_type || '').includes('No RFID') || !v.scanned_tag || v.scanned_tag === 'NO_TAG');
     const isMember = !isUnreg && !isNoTag && v.mem_id && !['GUEST-LOG', 'AI-CAM'].includes(v.mem_id);
     const epc = (v.scanned_tag && v.scanned_tag !== 'NO_TAG') ? v.scanned_tag : '';
+
+    let modalDur = a.duration;
+    if (!modalDur || modalDur === '--') {
+        if (e && x && e.timestamp && x.timestamp) {
+            const t1 = new Date(e.timestamp.replace(' ', 'T')).getTime();
+            const t2 = new Date(x.timestamp.replace(' ', 'T')).getTime();
+            if (!isNaN(t1) && !isNaN(t2)) {
+                const diffMin = Math.round(Math.abs(t2 - t1) / 60000);
+                const hrs = Math.floor(diffMin / 60);
+                const mins = diffMin % 60;
+                modalDur = hrs > 0 ? `${hrs}h ${String(mins).padStart(2, '0')}m` : `${mins}m`;
+            }
+        } else if (e && !x && e.timestamp) {
+            const t1 = new Date(e.timestamp.replace(' ', 'T')).getTime();
+            if (!isNaN(t1)) {
+                const diffMin = Math.round(Math.max(0, Date.now() - t1) / 60000);
+                const hrs = Math.floor(diffMin / 60);
+                const mins = diffMin % 60;
+                modalDur = `${hrs > 0 ? `${hrs}h ${String(mins).padStart(2, '0')}m` : `${mins}m`} (Active)`;
+            }
+        }
+    }
 
     const hasEntryCam = !!(e && e.image_path);
     const hasExitCam = !!(x && x.image_path);
@@ -545,7 +596,7 @@ function openAudit(a) {
 
                 <div class="col-span-3 bg-slate-50 rounded-2xl p-5 border text-center">
                     <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-3">Stay Duration</p>
-                    <p class="text-3xl font-black ${a.duration ? 'text-indigo-600' : 'text-slate-400'} py-2">${a.duration || '--'}</p>
+                    <p class="text-3xl font-black ${modalDur ? 'text-indigo-600' : 'text-slate-400'} py-2">${modalDur || '--'}</p>
                     <div class="space-y-2 text-xs border-t pt-3 text-left">
                         <div class="flex justify-between"><span class="text-slate-400 font-bold">Entry:</span><span class="font-bold">${e ? String(e.timestamp).substring(11, 19) : '--'}</span></div>
                         <div class="flex justify-between"><span class="text-slate-400 font-bold">Exit:</span><span class="font-bold">${x ? String(x.timestamp).substring(11, 19) : '--'}</span></div>
@@ -661,35 +712,52 @@ async function loadMembers(page = currentMemPage) {
         }
 
         bodyEl.innerHTML = members.map(m => {
-            const hasTag = m.E_tag_id && m.E_tag_id.trim().length > 0;
             const initial = m.Name ? m.Name.charAt(0).toUpperCase() : '?';
+            const vehicles = m.vehicles || [];
+            const vCount = m.vehicle_count || vehicles.length || 1;
+            const tCount = m.tagged_count !== undefined ? m.tagged_count : vehicles.filter(v => v.E_tag_id && v.E_tag_id.trim()).length;
+            
+            const platesPreview = vehicles.map(v => v.Car_number).filter(Boolean).slice(0, 3).join(', ') + (vehicles.length > 3 ? ` +${vehicles.length - 3} more` : '');
+            const allPlates = vehicles.map(v => `${v.Car_number} (${v.Make_Model || 'No Model'})`).join(' | ');
+
+            let tagBadge = '';
+            if (tCount === vCount && vCount > 0) {
+                tagBadge = `<span class="font-bold text-xs bg-emerald-50 text-emerald-700 border border-emerald-200/80 px-2.5 py-1 rounded-lg inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>All ${vCount} Tagged</span>`;
+            } else if (tCount > 0) {
+                tagBadge = `<span class="font-bold text-xs bg-amber-50 text-amber-700 border border-amber-200/80 px-2.5 py-1 rounded-lg inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-amber-500"></span>${tCount}/${vCount} Tagged</span>`;
+            } else {
+                tagBadge = `<span class="font-bold text-xs bg-rose-50 text-rose-700 border border-rose-200/80 px-2.5 py-1 rounded-lg inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-rose-500"></span>No Tags Assigned</span>`;
+            }
 
             return `
-            <tr class="hover:bg-slate-50 transition-colors">
-                <td class="p-3 pl-4">
-                    ${m.Profile_pic ? `<img src="/${m.Profile_pic}" class="w-10 h-10 rounded-full object-cover border shadow-sm">` :
-                    `<div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-700 text-sm">${initial}</div>`}
+            <tr class="hover:bg-slate-50 transition-colors cursor-pointer group" onclick='openMemberFleetModal(${JSON.stringify(m).replace(/'/g, "&#39;")})'>
+                <td class="p-3.5 pl-4">
+                    ${m.Profile_pic ? `<img src="/${m.Profile_pic}" class="w-10 h-10 rounded-full object-cover border border-slate-200 shadow-sm">` :
+                    `<div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-700 text-sm shadow-xs">${initial}</div>`}
                 </td>
-                <td class="p-3">
+                <td class="p-3.5">
                     <span class="font-mono text-xs font-bold text-indigo-600 bg-indigo-50 border border-indigo-200 rounded-lg px-2.5 py-1 inline-block">${m.Mem_id}</span>
                 </td>
-                <td class="p-3">
-                    <div class="font-bold text-slate-900">${m.Name}</div>
+                <td class="p-3.5">
+                    <div class="font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">${m.Name}</div>
                     <div class="text-[11px] font-bold text-emerald-600 uppercase">Active Member</div>
                 </td>
-                <td class="p-3">
-                    <div class="font-mono font-bold text-slate-800 bg-slate-100 border rounded-lg px-2.5 py-1 text-xs inline-block">${m.Car_number}</div>
-                    ${m.Make_Model ? `<div class="text-[11px] text-slate-500 mt-0.5">${m.Make_Model}</div>` : ''}
-                </td>
-                <td class="p-3">
-                    ${hasTag ? `<div class="font-mono text-xs text-slate-700 bg-slate-50 border rounded-lg px-2.5 py-1 inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>${m.E_tag_id}</div>` :
-                    `<span class="text-xs text-amber-600 font-bold bg-amber-50 border border-amber-200 rounded-lg px-2.5 py-1 inline-block">No Tag Assigned</span>`}
-                </td>
-                <td class="p-3 text-right pr-6">
-                    <div class="flex gap-2 justify-end">
-                        <button type="button" onclick='editMember(${JSON.stringify(m).replace(/'/g, "&#39;")})' class="text-xs font-bold text-indigo-600 border border-indigo-200 rounded-lg px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 transition">Edit</button>
-                        <button type="button" onclick="delMember(${m.id}, '${m.Car_number || m.Mem_id}')" class="text-xs font-bold text-rose-600 border border-rose-200 rounded-lg px-3 py-1.5 bg-rose-50 hover:bg-rose-100 transition">Delete</button>
+                <td class="p-3.5">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="font-bold text-xs bg-indigo-50 text-indigo-700 border border-indigo-200/80 px-2.5 py-1 rounded-lg inline-flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-indigo-600"></span>${vCount} ${vCount === 1 ? 'Vehicle' : 'Vehicles'}
+                        </span>
+                        ${platesPreview ? `<span class="text-xs text-slate-500 font-mono font-semibold truncate max-w-[200px]" title="${allPlates}">${platesPreview}</span>` : ''}
                     </div>
+                </td>
+                <td class="p-3.5">
+                    ${tagBadge}
+                </td>
+                <td class="p-3.5 text-right pr-6" onclick="event.stopPropagation()">
+                    <button type="button" onclick='openMemberFleetModal(${JSON.stringify(m).replace(/'/g, "&#39;")})'
+                            class="text-xs font-bold text-indigo-600 hover:text-indigo-800 border border-indigo-200 rounded-xl px-3.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 shadow-sm transition inline-flex items-center gap-1.5">
+                        View Fleet &rarr;
+                    </button>
                 </td>
             </tr>`;
         }).join('');
@@ -697,6 +765,170 @@ async function loadMembers(page = currentMemPage) {
         renderMemPagination(total, page, totalPages, currentMemLimit);
     } catch (err) {
         bodyEl.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-rose-500 font-bold">Error loading members: ${err.message}</td></tr>`;
+    }
+}
+
+function closeMemberFleetModal() {
+    const modal = document.getElementById('memberFleetModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function openMemberFleetModal(m) {
+    const modal = document.getElementById('memberFleetModal');
+    const content = document.getElementById('memberFleetModalContent');
+    if (!modal || !content) return;
+
+    const vehicles = m.vehicles || [];
+    const initial = m.Name ? m.Name.charAt(0).toUpperCase() : '?';
+    const vCount = vehicles.length;
+    const taggedCount = vehicles.filter(v => v.E_tag_id && v.E_tag_id.trim()).length;
+
+    content.innerHTML = `
+    <div class="relative">
+        <div class="h-2 rounded-t-3xl bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-500"></div>
+        <div class="p-6 md:p-8">
+            <div class="flex justify-between items-start border-b border-slate-200/80 pb-6 mb-6">
+                <div class="flex items-center gap-5">
+                    ${m.Profile_pic ? `<img src="/${m.Profile_pic}" class="w-16 h-16 rounded-2xl object-cover border border-slate-200 shadow-sm">` :
+                    `<div class="w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center font-black text-2xl text-slate-700 shadow-xs">${initial}</div>`}
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <h2 class="text-2xl font-black text-slate-900 tracking-tight">${m.Name}</h2>
+                            <span class="font-mono text-xs font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2.5 py-0.5 rounded-lg">#${m.Mem_id}</span>
+                        </div>
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Karachi Gymkhana Club &bull; Member Vehicle Fleet</p>
+                        <div class="flex gap-2 mt-2.5">
+                            <span class="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase">Active Member</span>
+                            <span class="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">${vCount} ${vCount === 1 ? 'Registered Vehicle' : 'Registered Vehicles'}</span>
+                            <span class="text-[10px] font-black px-2.5 py-0.5 rounded-full ${taggedCount === vCount ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-700 border border-amber-200'}">${taggedCount} of ${vCount} Tagged</span>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" onclick="closeMemberFleetModal()" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-700 font-bold flex items-center justify-center text-xl transition">&times;</button>
+            </div>
+
+            <div class="flex justify-between items-center mb-5 flex-wrap gap-3">
+                <div>
+                    <h3 class="text-base font-extrabold text-slate-800">Authorized Vehicles</h3>
+                    <p class="text-xs text-slate-500">All registered motor vehicles and RFID transponders authorized under this membership</p>
+                </div>
+                <button type="button" onclick='addVehicleToMember("${m.Mem_id}", "${m.Name.replace(/"/g, '&quot;')}", "${m.Profile_pic || ''}")'
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm flex items-center gap-2 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    Register Another Vehicle
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                ${vehicles.map((v, idx) => {
+                    const hasTag = v.E_tag_id && v.E_tag_id.trim().length > 0;
+                    return `
+                    <div class="bg-slate-50/70 border border-slate-200 hover:border-indigo-300 rounded-2xl p-5 transition shadow-xs flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Vehicle #${idx + 1}</span>
+                                    <span class="font-mono font-extrabold text-xl text-indigo-700 bg-white border border-indigo-100 px-3 py-1 rounded-xl shadow-xs inline-block tracking-wider">${v.Car_number}</span>
+                                </div>
+                                <span class="text-[10px] font-black px-2.5 py-1 rounded-full ${hasTag ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-amber-100 text-amber-800 border border-amber-200'}">
+                                    ${hasTag ? 'TAGGED' : 'NO TAG'}
+                                </span>
+                            </div>
+
+                            <div class="mb-3">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Make & Model</span>
+                                <span class="text-sm font-bold text-slate-800">${v.Make_Model || 'Make/Model not specified'}</span>
+                            </div>
+
+                            <div class="bg-white border border-slate-200/80 rounded-xl p-3 mb-4 shadow-xs">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">RFID EPC Transponder</span>
+                                    ${hasTag ? '<span class="w-2 h-2 rounded-full bg-emerald-500"></span>' : '<span class="w-2 h-2 rounded-full bg-amber-400"></span>'}
+                                </div>
+                                ${hasTag ? `<span class="font-mono text-xs font-bold text-slate-800 break-all select-all">${v.E_tag_id}</span>` :
+                                '<span class="text-xs text-amber-600 font-bold">No RFID tag assigned to this car</span>'}
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end gap-2 pt-3 border-t border-slate-200/60">
+                            <button type="button" onclick='editVehicleFromFleet(${JSON.stringify(v).replace(/'/g, "&#39;")}, ${JSON.stringify(m).replace(/'/g, "&#39;")})'
+                                    class="text-xs font-bold text-indigo-600 hover:text-indigo-800 bg-white hover:bg-indigo-50 border border-indigo-200 rounded-xl px-3.5 py-1.5 shadow-xs transition">
+                                Edit Vehicle
+                            </button>
+                            <button type="button" onclick="delVehicleFromFleet(${v.id}, '${v.Car_number}', '${m.Mem_id}')"
+                                    class="text-xs font-bold text-rose-600 hover:text-rose-800 bg-white hover:bg-rose-50 border border-rose-200 rounded-xl px-3.5 py-1.5 shadow-xs transition">
+                                Delete
+                            </button>
+                        </div>
+                    </div>`;
+                }).join('')}
+            </div>
+
+            <div class="mt-6 pt-4 border-t flex justify-end">
+                <button type="button" onclick="closeMemberFleetModal()"
+                        class="px-6 py-2.5 rounded-xl border border-slate-200 font-bold text-slate-700 bg-white hover:bg-slate-50 transition text-sm shadow-xs">
+                    Close Fleet View
+                </button>
+            </div>
+        </div>
+    </div>`;
+
+    modal.classList.remove('hidden');
+}
+
+function addVehicleToMember(memId, name, pic) {
+    closeMemberFleetModal();
+    cancelEdit();
+    document.getElementById('nMemId').value = memId;
+    document.getElementById('nName').value = name;
+    if (pic) {
+        document.getElementById('nPic').value = pic;
+        document.getElementById('nPicPreview').src = '/' + pic;
+        document.getElementById('nPicPreview').classList.remove('hidden');
+        document.getElementById('picName').innerText = 'Photo on file';
+    }
+    document.getElementById('formTitle').innerText = 'Add Vehicle to ' + name;
+    document.getElementById('formSubtitle').innerText = 'Registering additional car for Member #' + memId;
+    document.getElementById('submitBtn').innerText = 'Register Vehicle';
+    document.getElementById('submitBtn').className = 'bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3.5 rounded-xl font-bold col-span-2 shadow-lg';
+    document.getElementById('cancelEditBtn').classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function editVehicleFromFleet(v, m) {
+    closeMemberFleetModal();
+    editMember({
+        ...v,
+        Name: m.Name,
+        Profile_pic: m.Profile_pic
+    });
+}
+
+async function delVehicleFromFleet(id, carNumber, memId) {
+    if (!confirm(`Are you sure you want to remove vehicle ${carNumber} from this member?`)) return;
+    try {
+        const res = await fetch('/api/members/' + id, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.ok) {
+            const fleetRes = await fetch('/api/members/' + encodeURIComponent(memId) + '/vehicles');
+            if (fleetRes.ok) {
+                const fleetData = await fleetRes.json();
+                openMemberFleetModal({
+                    Mem_id: fleetData.mem_id,
+                    Name: fleetData.name,
+                    Profile_pic: fleetData.profile_pic,
+                    Status: fleetData.status,
+                    vehicles: fleetData.vehicles
+                });
+            } else {
+                closeMemberFleetModal();
+            }
+            loadMembers();
+        } else {
+            alert('Failed to delete vehicle: ' + (data.detail || 'Unknown error'));
+        }
+    } catch (e) {
+        alert('Network error while deleting vehicle');
     }
 }
 

@@ -25,6 +25,7 @@ DB_LOCK = threading.Lock()
 FUSION_LOCK = threading.Lock()
 BUFFER_LOCK = threading.Lock()
 CACHE_LOCK = threading.Lock()
+FRAME_LOCK = threading.Lock()
 
 # 45-second universal cooldown across readers (prevents dual entry/exit and rapid multi-reads)
 CROSS_READ_COOLDOWN = 45.0
@@ -42,6 +43,8 @@ RECENT_CAM_TRIGGERS = deque(maxlen=30)
 READER_STATUS = {"Entry": "DISCONNECTED", "Exit": "DISCONNECTED"}
 CAM_STATUS = {"Hikvision": "UNKNOWN", "Dahua": "UNKNOWN"}
 LATEST_JPEG_BUFFERS = {"Hikvision": None, "Dahua": None}
+LATEST_RAW_FRAMES = {"Hikvision": None, "Dahua": None}
+LATEST_FRAME_TIMES = {"Hikvision": 0.0, "Dahua": 0.0}
 RECENT_TAGS = deque(maxlen=30)
 FTP_EVENT_COUNT = {"count": 0}
 ENROLL_MODE = {"active": False}

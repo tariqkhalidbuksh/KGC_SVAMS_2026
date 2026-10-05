@@ -127,7 +127,7 @@ async def update_member(request: Request):
             conn.close()
 
 @router.get("/members")
-async def get_members(page: int = 1, limit: int = 25, search: str = "", all: bool = False):
+async def get_members(page: int = 1, limit: int = 25, search: str = "", all: bool = False, grouped: bool = True):
     with config.DB_LOCK:
         conn = get_db_connection()
         try:
@@ -147,30 +147,77 @@ async def get_members(page: int = 1, limit: int = 25, search: str = "", all: boo
             total_active = conn.execute("SELECT COUNT(*) FROM members WHERE Status='Active' OR Status IS NULL OR Status=''").fetchone()[0]
             total_tagged = conn.execute("SELECT COUNT(*) FROM members WHERE E_tag_id != '' AND E_tag_id IS NOT NULL").fetchone()[0]
 
-            if search_clean:
-                like_pat = f"%{search_clean}%"
-                total_records = conn.execute(
-                    "SELECT COUNT(*) FROM members WHERE Name LIKE ? OR Mem_id LIKE ? OR Car_number LIKE ? OR E_tag_id LIKE ? OR Make_Model LIKE ?",
-                    (like_pat, like_pat, like_pat, like_pat, like_pat)
-                ).fetchone()[0]
-                rows = conn.execute(
-                    "SELECT id, Mem_id, Name, Car_number, Make_Model, E_tag_id, Status, Profile_pic FROM members "
-                    "WHERE Name LIKE ? OR Mem_id LIKE ? OR Car_number LIKE ? OR E_tag_id LIKE ? OR Make_Model LIKE ? "
-                    "ORDER BY Name ASC LIMIT ? OFFSET ?",
-                    (like_pat, like_pat, like_pat, like_pat, like_pat, limit, offset)
-                ).fetchall()
+            if not grouped:
+                if search_clean:
+                    like_pat = f"%{search_clean}%"
+                    total_records = conn.execute(
+                        "SELECT COUNT(*) FROM members WHERE Name LIKE ? OR Mem_id LIKE ? OR Car_number LIKE ? OR E_tag_id LIKE ? OR Make_Model LIKE ?",
+                        (like_pat, like_pat, like_pat, like_pat, like_pat)
+                    ).fetchone()[0]
+                    rows = conn.execute(
+                        "SELECT id, Mem_id, Name, Car_number, Make_Model, E_tag_id, Status, Profile_pic FROM members "
+                        "WHERE Name LIKE ? OR Mem_id LIKE ? OR Car_number LIKE ? OR E_tag_id LIKE ? OR Make_Model LIKE ? "
+                        "ORDER BY Name ASC LIMIT ? OFFSET ?",
+                        (like_pat, like_pat, like_pat, like_pat, like_pat, limit, offset)
+                    ).fetchall()
+                else:
+                    total_records = total_vehicles
+                    rows = conn.execute(
+                        "SELECT id, Mem_id, Name, Car_number, Make_Model, E_tag_id, Status, Profile_pic FROM members "
+                        "ORDER BY Name ASC LIMIT ? OFFSET ?",
+                        (limit, offset)
+                    ).fetchall()
+                mem_list = [dict(r) for r in rows]
             else:
-                total_records = conn.execute("SELECT COUNT(*) FROM members").fetchone()[0]
-                rows = conn.execute(
-                    "SELECT id, Mem_id, Name, Car_number, Make_Model, E_tag_id, Status, Profile_pic FROM members "
-                    "ORDER BY Name ASC LIMIT ? OFFSET ?",
-                    (limit, offset)
-                ).fetchall()
+                if search_clean:
+                    like_pat = f"%{search_clean}%"
+                    total_records = conn.execute(
+                        "SELECT COUNT(DISTINCT Mem_id) FROM members WHERE Name LIKE ? OR Mem_id LIKE ? OR Car_number LIKE ? OR E_tag_id LIKE ? OR Make_Model LIKE ?",
+                        (like_pat, like_pat, like_pat, like_pat, like_pat)
+                    ).fetchone()[0]
+                    rows = conn.execute(
+                        """SELECT m.Mem_id, m.Name, m.Profile_pic, m.Status,
+                                  COUNT(m.id) as vehicle_count,
+                                  SUM(CASE WHEN m.E_tag_id IS NOT NULL AND m.E_tag_id != '' THEN 1 ELSE 0 END) as tagged_count
+                           FROM members m
+                           WHERE m.Mem_id IN (
+                               SELECT DISTINCT Mem_id FROM members
+                               WHERE Name LIKE ? OR Mem_id LIKE ? OR Car_number LIKE ? OR E_tag_id LIKE ? OR Make_Model LIKE ?
+                           )
+                           GROUP BY m.Mem_id
+                           ORDER BY m.Name ASC LIMIT ? OFFSET ?""",
+                        (like_pat, like_pat, like_pat, like_pat, like_pat, limit, offset)
+                    ).fetchall()
+                else:
+                    total_records = unique_members
+                    rows = conn.execute(
+                        """SELECT m.Mem_id, m.Name, m.Profile_pic, m.Status,
+                                  COUNT(m.id) as vehicle_count,
+                                  SUM(CASE WHEN m.E_tag_id IS NOT NULL AND m.E_tag_id != '' THEN 1 ELSE 0 END) as tagged_count
+                           FROM members m
+                           GROUP BY m.Mem_id
+                           ORDER BY m.Name ASC LIMIT ? OFFSET ?""",
+                        (limit, offset)
+                    ).fetchall()
+
+                mem_list = [dict(r) for r in rows]
+                if mem_list:
+                    mem_ids = [m["Mem_id"] for m in mem_list]
+                    placeholders = ','.join('?' for _ in mem_ids)
+                    v_rows = conn.execute(
+                        f"SELECT id, Mem_id, Car_number, Make_Model, E_tag_id, Status FROM members WHERE Mem_id IN ({placeholders}) ORDER BY id ASC",
+                        mem_ids
+                    ).fetchall()
+                    v_by_mem = {}
+                    for v in v_rows:
+                        v_by_mem.setdefault(v['Mem_id'], []).append(dict(v))
+                    for m in mem_list:
+                        m["vehicles"] = v_by_mem.get(m["Mem_id"], [])
 
             total_pages = math.ceil(total_records / limit) if total_records > 0 else 1
 
             return {
-                "members": [dict(r) for r in rows],
+                "members": mem_list,
                 "total": total_records,
                 "total_vehicles": total_vehicles,
                 "unique_members": unique_members,
@@ -179,6 +226,32 @@ async def get_members(page: int = 1, limit: int = 25, search: str = "", all: boo
                 "total_pages": total_pages,
                 "active_count": total_active,
                 "tagged_count": total_tagged
+            }
+        finally:
+            conn.close()
+
+@router.get("/members/{mem_id}/vehicles")
+async def get_member_vehicles(mem_id: str):
+    with config.DB_LOCK:
+        conn = get_db_connection()
+        try:
+            member_rows = conn.execute(
+                "SELECT id, Mem_id, Name, Car_number, Make_Model, E_tag_id, Status, Profile_pic FROM members WHERE Mem_id=? ORDER BY id ASC",
+                (mem_id,)
+            ).fetchall()
+            if not member_rows:
+                raise HTTPException(404, f"Member with ID '{mem_id}' not found")
+            vehicles = [dict(r) for r in member_rows]
+            first = vehicles[0]
+            return {
+                "ok": True,
+                "mem_id": first["Mem_id"],
+                "name": first["Name"],
+                "profile_pic": first["Profile_pic"],
+                "status": first["Status"] or "Active",
+                "vehicle_count": len(vehicles),
+                "tagged_count": sum(1 for v in vehicles if v.get("E_tag_id")),
+                "vehicles": vehicles
             }
         finally:
             conn.close()

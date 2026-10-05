@@ -49,55 +49,85 @@ def save_snapshot(img, prefix: str):
     stamp = int(time.time() * 1000)
     relative_path = f"static/snapshots/{prefix}_{stamp}.jpg"
     try:
-        cv2.imwrite(relative_path, img)
+        cv2.imwrite(relative_path, img, [cv2.IMWRITE_JPEG_QUALITY, 95])
         return relative_path
     except Exception:
         return None
 
-def grab_dahua_snapshot():
+def grab_dahua_snapshot(timeout: float = 1.2):
     creds = _cam_credentials('dahua_cam_url')
     if not creds:
         return None
     user, pwd, ip = creds
-    for url in (f"http://{ip}/cgi-bin/snapshot.cgi",
-                f"http://{ip}/cgi-bin/snapshot.cgi?channel=1",
-                f"http://{ip}/onvif-http/snapshot?Profile_1"):
+    urls = [
+        f"http://{ip}/cgi-bin/snapshot.cgi?channel=1",
+        f"http://{ip}/cgi-bin/snapshot.cgi",
+        f"http://{ip}/onvif-http/snapshot?Profile_1"
+    ]
+    start_t = time.time()
+    for url in urls:
+        elapsed = time.time() - start_t
+        remaining = timeout - elapsed
+        if remaining <= 0.15:
+            break
+        req_timeout = min(remaining, 1.0)
         try:
-            res = requests.get(url, auth=requests.auth.HTTPDigestAuth(user, pwd), timeout=2.5)
+            res = requests.get(url, auth=requests.auth.HTTPDigestAuth(user, pwd), timeout=req_timeout)
             if res.status_code == 200:
                 arr = np.frombuffer(res.content, np.uint8)
                 img = cv2.imdecode(arr, cv2.IMREAD_COLOR)
                 if is_valid_image(img):
-                    config.CAM_STATUS["Dahua"] = "ONLINE"
+                    with config.FRAME_LOCK:
+                        config.CAM_STATUS["Dahua"] = "ONLINE"
                     return img
         except Exception:
             continue
-    config.CAM_STATUS["Dahua"] = "OFFLINE"
+    with config.FRAME_LOCK:
+        config.CAM_STATUS["Dahua"] = "OFFLINE"
     return None
 
-def grab_hikvision_snapshot():
+def grab_hikvision_snapshot(timeout: float = 1.2):
     creds = _cam_credentials('hikvision_cam_url')
     if not creds:
         return None
     user, pwd, ip = creds
+    start_t = time.time()
     for channel in ("101", "102"):
+        elapsed = time.time() - start_t
+        remaining = timeout - elapsed
+        if remaining <= 0.15:
+            break
+        req_timeout = min(remaining, 1.0)
         try:
             res = requests.get(f"http://{ip}/ISAPI/Streaming/channels/{channel}/picture",
-                               auth=requests.auth.HTTPDigestAuth(user, pwd), timeout=2.5)
+                               auth=requests.auth.HTTPDigestAuth(user, pwd), timeout=req_timeout)
             if res.status_code == 200:
                 arr = np.frombuffer(res.content, np.uint8)
                 img = cv2.imdecode(arr, cv2.IMREAD_COLOR)
                 if is_valid_image(img):
-                    config.CAM_STATUS["Hikvision"] = "ONLINE"
+                    with config.FRAME_LOCK:
+                        config.CAM_STATUS["Hikvision"] = "ONLINE"
                     return img
         except Exception:
             continue
-    config.CAM_STATUS["Hikvision"] = "OFFLINE"
+    with config.FRAME_LOCK:
+        config.CAM_STATUS["Hikvision"] = "OFFLINE"
     return None
 
-def grab_verified_snapshot(cam_key: str, max_retries: int = 2):
-    # 1. Zero-lag instant capture from live RTSP RAM buffer (1ms)
-    buf = config.LATEST_JPEG_BUFFERS.get(cam_key.capitalize())
+def grab_verified_snapshot(cam_key: str, max_timeout_sec: float = 1.5):
+    norm_key = cam_key.capitalize()
+    now = time.time()
+
+    # 1. Zero-lag instant capture from live RTSP RAM frame buffer (< 1ms)
+    with config.FRAME_LOCK:
+        raw_frame = config.LATEST_RAW_FRAMES.get(norm_key)
+        frame_time = config.LATEST_FRAME_TIMES.get(norm_key, 0.0)
+        if raw_frame is not None and (now - frame_time) <= 2.0:
+            if is_valid_image(raw_frame):
+                return raw_frame.copy()
+
+    # Fallback to RAM JPEG buffer if raw frame was not ready
+    buf = config.LATEST_JPEG_BUFFERS.get(norm_key)
     if buf:
         try:
             arr = np.frombuffer(buf, np.uint8)
@@ -107,39 +137,70 @@ def grab_verified_snapshot(cam_key: str, max_retries: int = 2):
         except Exception:
             pass
 
-    # 2. Fast HTTP snapshot fallback if RAM buffer is not ready yet
-    img = None
-    for _ in range(max_retries):
-        if cam_key.lower() == "dahua":
-            img = grab_dahua_snapshot()
-        else:
-            img = grab_hikvision_snapshot()
-        
-        if is_valid_image(img):
-            return img
-        time.sleep(0.08)
-    return img
+    # 2. Fast HTTP direct snapshot fallback (with strict <= 1.2s timeout)
+    if norm_key.lower() == "dahua":
+        img = grab_dahua_snapshot(timeout=max_timeout_sec)
+    else:
+        img = grab_hikvision_snapshot(timeout=max_timeout_sec)
+
+    if is_valid_image(img):
+        return img
+
+    return None
 
 def preview_stream_worker(cam_key: str, url_setting_key: str):
+    norm_key = cam_key.capitalize()
     while True:
         cam_url = get_setting(url_setting_key, "")
         if not cam_url:
             time.sleep(2)
             continue
         try:
-            os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp"
+            # Real-time zero-lag RTSP options: TCP transport, drop buffer queues, minimal delay
+            os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp|fflags;nobuffer|flags;low_delay|max_delay;100000"
             cap = cv2.VideoCapture(cam_url, cv2.CAP_FFMPEG)
+            cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+
+            last_jpeg_time = 0.0
+            consecutive_failures = 0
+
             while cap.isOpened():
-                ret, frame = cap.read()
-                if not ret:
-                    break
-                _, buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 50])
-                config.LATEST_JPEG_BUFFERS[cam_key] = buffer.tobytes()
-                time.sleep(0.33)
+                # Grab next frame packet without blocking decompression
+                grabbed = cap.grab()
+                if not grabbed:
+                    consecutive_failures += 1
+                    if consecutive_failures > 10:
+                        break
+                    time.sleep(0.02)
+                    continue
+
+                consecutive_failures = 0
+                now = time.time()
+
+                # Decode the real-time frame
+                ret, frame = cap.retrieve()
+                if not ret or frame is None:
+                    continue
+
+                # Store live raw BGR frame directly in RAM (0ms latency, always current)
+                with config.FRAME_LOCK:
+                    config.LATEST_RAW_FRAMES[norm_key] = frame
+                    config.LATEST_FRAME_TIMES[norm_key] = now
+                    config.CAM_STATUS[norm_key] = "ONLINE"
+
+                # Downsample JPEG encoding to ~3 fps for web UI preview to conserve CPU
+                if now - last_jpeg_time >= 0.33:
+                    _, buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 55])
+                    config.LATEST_JPEG_BUFFERS[norm_key] = buffer.tobytes()
+                    last_jpeg_time = now
+
             cap.release()
         except Exception:
             pass
-        time.sleep(2)
+
+        with config.FRAME_LOCK:
+            config.CAM_STATUS[norm_key] = "RECONNECTING"
+        time.sleep(1.5)
 
 def stream_video(cam_key: str):
     while True:

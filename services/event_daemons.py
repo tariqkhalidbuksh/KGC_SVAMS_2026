@@ -37,18 +37,34 @@ def folder_watcher_worker():
                 for fname in os.listdir(config.FTP_UPLOAD_DIR):
                     if fname.lower().endswith(('.jpg', '.jpeg', '.png')):
                         fpath = os.path.join(config.FTP_UPLOAD_DIR, fname)
-                        if os.path.isfile(fpath):
-                            time.sleep(0.2)
-                            forced_dir = "Line Crossing"
-                            lower_name = fname.lower()
-                            if any(k in lower_name for k in ["exit", "rule2", "b-a"]):
-                                forced_dir = "Exit"
-                            elif any(k in lower_name for k in ["entry", "rule1", "a-b"]):
-                                forced_dir = "Entry"
-                            process_camera_line_crossing(fpath, forced_dir)
+                        if not os.path.isfile(fpath):
+                            continue
+                        try:
+                            if os.path.getsize(fpath) == 0:
+                                continue
+                        except Exception:
+                            continue
+
+                        # Atomically claim the file to avoid duplicate thread triggers while writing/processing
+                        proc_path = fpath + ".processing"
+                        try:
+                            os.rename(fpath, proc_path)
+                        except OSError:
+                            # File is currently being written or locked by camera; retry on next tick
+                            continue
+
+                        forced_dir = "Line Crossing"
+                        lower_name = fname.lower()
+                        if any(k in lower_name for k in ["exit", "rule2", "b-a"]):
+                            forced_dir = "Exit"
+                        elif any(k in lower_name for k in ["entry", "rule1", "a-b"]):
+                            forced_dir = "Entry"
+
+                        # Dispatch immediately in a background daemon thread
+                        threading.Thread(target=process_camera_line_crossing, args=(proc_path, forced_dir), daemon=True).start()
         except Exception:
             pass
-        time.sleep(1.0)
+        time.sleep(0.08)
 
 class HikvisionEmailHandler:
     async def handle_DATA(self, server, session, envelope):

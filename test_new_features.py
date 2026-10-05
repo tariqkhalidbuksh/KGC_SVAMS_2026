@@ -1,6 +1,8 @@
 import os
 import time
 import pytest
+import cv2
+import numpy as np
 from fastapi.testclient import TestClient
 
 from app import app
@@ -208,4 +210,165 @@ def test_camera_audit_deduplication_preserves_dahua_plate():
     # Cleanup test files
     for p in (img1, img2, plate_img):
         if os.path.exists(p): os.remove(p)
+
+def test_dahua_capture_latency_under_two_seconds():
+    """
+    Verifies that Dahua frame capture executes in less than 2 seconds (in practice < 0.1s).
+    """
+    import numpy as np
+    import cv2
+    import time
+    from services.camera_service import grab_verified_snapshot
+    from services.access_service import process_camera_line_crossing
+    import config
+
+    # Simulate live frame in RAM buffer
+    dummy_frame = np.full((480, 640, 3), 120, dtype=np.uint8)
+    cv2.putText(dummy_frame, "DAHUA LIVE TEST", (50, 200), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+    
+    with config.FRAME_LOCK:
+        config.LATEST_RAW_FRAMES["Dahua"] = dummy_frame
+        config.LATEST_FRAME_TIMES["Dahua"] = time.time()
+        config.CAM_STATUS["Dahua"] = "ONLINE"
+
+    t0 = time.time()
+    captured_img = grab_verified_snapshot("Dahua", max_timeout_sec=1.5)
+    t_snap = time.time() - t0
+
+    assert captured_img is not None
+    # RAM capture must be under 0.1s (100ms), far below 2 seconds
+    assert t_snap < 0.1
+
+    # Now test full process_camera_line_crossing execution speed
+    hik_dummy = "static/ftp_uploads/test_latency_hik.jpg"
+    cv2.imwrite(hik_dummy, dummy_frame)
+
+    t1 = time.time()
+    process_camera_line_crossing(hik_dummy, forced_direction="Entry")
+    t_process = time.time() - t1
+
+    # Entire pipeline including Dahua snapshot & DB insert must be well below 2 seconds
+    assert t_process < 1.0
+
+    # Verify latest camera audit record contains the plate close-up
+    # Clean up test audit record
+    with get_db_connection() as conn:
+        latest = conn.execute("SELECT * FROM camera_audit_logs ORDER BY id DESC LIMIT 1").fetchone()
+        if latest:
+            conn.execute("DELETE FROM camera_audit_logs WHERE id=?", (latest["id"],))
+            conn.commit()
+
+def test_unregistered_vehicle_stay_duration_always_visible():
+    """
+    Verifies that an unregistered vehicle with two timestamps (e.g. 12:04:40 and 13:08:21)
+    always displays a valid, visible stay duration (e.g. 1h 03m / 1h 04m) and is never None or '--',
+    even if directions were recorded in reverse order.
+    """
+    unreg_tag = "E280110520008341E3C50B69"
+    with get_db_connection() as conn:
+        with conn:
+            conn.execute("DELETE FROM daily_logs WHERE scanned_tag=?", (unreg_tag,))
+            # Insert the exact two records from user's screenshot
+            conn.execute("""INSERT INTO daily_logs 
+                (mem_id, name, vehicle_number, access_type, direction, gate_no, scanned_tag, timestamp)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+                ("GUEST-LOG", "Unregistered Visitor", unreg_tag, "RFID Unknown", "Exit", "Gate-01", unreg_tag, "2026-10-05 12:04:40"))
+            conn.execute("""INSERT INTO daily_logs 
+                (mem_id, name, vehicle_number, access_type, direction, gate_no, scanned_tag, timestamp)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+                ("GUEST-LOG", "Unregistered Visitor", unreg_tag, "RFID Unknown", "Entry", "Gate-01", unreg_tag, "2026-10-05 13:08:21"))
+
+    # Fetch audit report via /api/audit
+    res = client.get("/api/audit?date=2026-10-05&status=all")
+    assert res.status_code == 200
+    data = res.json()
+    unreg_audit = next((a for a in data["audits"] if (a["entry"] and a["entry"]["scanned_tag"] == unreg_tag) or (a["exit"] and a["exit"]["scanned_tag"] == unreg_tag)), None)
+
+    assert unreg_audit is not None
+    # Stay duration must be visible and properly formatted (not None, not empty, not '--')
+    assert unreg_audit["duration"] is not None
+    assert "1h" in unreg_audit["duration"]
+    assert unreg_audit["status"] == "Exited"
+    # Entry timestamp must be chronologically earlier than Exit timestamp
+    assert str(unreg_audit["entry"]["timestamp"]) < str(unreg_audit["exit"]["timestamp"])
+    assert "12:04:40" in str(unreg_audit["entry"]["timestamp"])
+    assert "13:08:21" in str(unreg_audit["exit"]["timestamp"])
+
+    # Clean up test records
+    with get_db_connection() as conn:
+        with conn:
+            conn.execute("DELETE FROM daily_logs WHERE scanned_tag=?", (unreg_tag,))
+
+def test_unique_members_directory_and_vehicles_modal_api():
+    """
+    Verifies that the members directory shows unique members (not repeated per vehicle),
+    attaches all vehicle details to each member, and provides the /api/members/{mem_id}/vehicles endpoint.
+    """
+    test_mem_id = "MEM-FLEET-TEST-77"
+    cars = [
+        {"mem_id": test_mem_id, "name": "Fleet Owner", "car_number": "FLT-111", "e_tag_id": "TAG-FLT-111", "make_model": "Toyota Land Cruiser"},
+        {"mem_id": test_mem_id, "name": "Fleet Owner", "car_number": "FLT-222", "e_tag_id": "TAG-FLT-222", "make_model": "BMW 7 Series"},
+        {"mem_id": test_mem_id, "name": "Fleet Owner", "car_number": "FLT-333", "e_tag_id": "TAG-FLT-333", "make_model": "Mercedes S500"}
+    ]
+    for c in cars:
+        res = client.post("/api/add-member", json=c)
+        assert res.status_code == 200
+
+    try:
+        # 1. Query members directory with search
+        res = client.get(f"/api/members?search={test_mem_id}")
+        assert res.status_code == 200
+        data = res.json()
+        
+        # Must return exactly ONE member row for this member, not 3 rows!
+        member_matches = [m for m in data["members"] if m["Mem_id"] == test_mem_id]
+        assert len(member_matches) == 1
+        
+        m = member_matches[0]
+        assert m["Name"] == "Fleet Owner"
+        assert m["vehicle_count"] == 3
+        assert m["tagged_count"] == 3
+        assert len(m["vehicles"]) == 3
+        car_numbers = [v["Car_number"] for v in m["vehicles"]]
+        assert "FLT-111" in car_numbers
+        assert "FLT-222" in car_numbers
+        assert "FLT-333" in car_numbers
+
+        # 2. Test dedicated fleet modal API endpoint
+        fleet_res = client.get(f"/api/members/{test_mem_id}/vehicles")
+        assert fleet_res.status_code == 200
+        fleet_data = fleet_res.json()
+        assert fleet_data["ok"] is True
+        assert fleet_data["mem_id"] == test_mem_id
+        assert fleet_data["vehicle_count"] == 3
+        assert len(fleet_data["vehicles"]) == 3
+    finally:
+        # Cleanup
+        client.delete(f"/api/members/{test_mem_id}")
+
+def test_instant_http_camera_trigger():
+    """
+    Verifies that the /api/tools/event/hikvision endpoint receives HTTP event alerts
+    and processes them instantly without waiting for FTP transfers.
+    """
+    dummy_frame = np.full((480, 640, 3), 120, dtype=np.uint8)
+    cv2.putText(dummy_frame, "HTTP TRIGGER TEST", (50, 200), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+    with config.FRAME_LOCK:
+        config.LATEST_RAW_FRAMES["Hikvision"] = dummy_frame
+        config.LATEST_FRAME_TIMES["Hikvision"] = time.time()
+        config.CAM_STATUS["Hikvision"] = "ONLINE"
+        config.LATEST_RAW_FRAMES["Dahua"] = dummy_frame
+        config.LATEST_FRAME_TIMES["Dahua"] = time.time()
+        config.CAM_STATUS["Dahua"] = "ONLINE"
+
+    # Test HTTP alert trigger
+    res = client.post("/api/tools/event/hikvision", json={"eventType": "linedetection", "rule": "rule1"})
+    assert res.status_code == 200
+    data = res.json()
+    assert data["ok"] is True
+    assert data["mode"] == "instant_http"
+
+
+
+
 

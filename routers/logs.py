@@ -11,12 +11,22 @@ def _fmt_duration(entry_ts, exit_ts):
         time_format = "%Y-%m-%d %H:%M:%S"
         dt_entry = datetime.strptime(str(entry_ts)[:19], time_format)
         dt_exit = datetime.strptime(str(exit_ts)[:19], time_format)
-        diff_seconds = int((dt_exit - dt_entry).total_seconds())
-        if diff_seconds < 0:
-            return None
+        diff_seconds = abs(int((dt_exit - dt_entry).total_seconds()))
         hours = diff_seconds // 3600
         minutes = (diff_seconds % 3600) // 60
         return f"{hours}h {minutes:02d}m" if hours else f"{minutes}m"
+    except Exception:
+        return None
+
+def _fmt_active_duration(entry_ts):
+    try:
+        time_format = "%Y-%m-%d %H:%M:%S"
+        dt_entry = datetime.strptime(str(entry_ts)[:19], time_format)
+        diff_seconds = max(0, int((datetime.now() - dt_entry).total_seconds()))
+        hours = diff_seconds // 3600
+        minutes = (diff_seconds % 3600) // 60
+        dur_str = f"{hours}h {minutes:02d}m" if hours else f"{minutes}m"
+        return f"{dur_str} (Active)"
     except Exception:
         return None
 
@@ -120,29 +130,55 @@ async def get_audit(date: str = "", page: int = 1, limit: int = 25, search: str 
         exit_event = None
         key = _identity_key(entry_event)
         if key:
+            # 1. Search for candidate exit occurring AFTER the entry
             for candidate_exit in exits:
                 if candidate_exit['id'] in matched_exit_ids:
                     continue
                 if _identity_key(candidate_exit) == key:
-                    exit_event = candidate_exit
-                    matched_exit_ids.add(candidate_exit['id'])
-                    break
+                    if str(candidate_exit['timestamp']) >= str(entry_event['timestamp']):
+                        exit_event = candidate_exit
+                        matched_exit_ids.add(candidate_exit['id'])
+                        break
+
+            # 2. Fallback: if no exit found AFTER entry, but an unmatched exit exists with same key (e.g. inverted logs)
+            if not exit_event:
+                for candidate_exit in exits:
+                    if candidate_exit['id'] in matched_exit_ids:
+                        continue
+                    if _identity_key(candidate_exit) == key:
+                        exit_event = candidate_exit
+                        matched_exit_ids.add(candidate_exit['id'])
+                        break
+
+        # If entry and exit timestamps are reversed, align chronologically so entry is earlier and exit is later
+        actual_entry = entry_event
+        actual_exit = exit_event
+        if actual_entry and actual_exit:
+            if str(actual_entry['timestamp']) > str(actual_exit['timestamp']):
+                actual_entry, actual_exit = actual_exit, actual_entry
 
         is_unregistered = bool(
-            entry_event and (
-                'Unknown' in (entry_event.get('access_type') or '') or
-                'No RFID' in (entry_event.get('access_type') or '') or
-                'Unregistered' in (entry_event.get('name') or '')
+            (actual_entry or actual_exit) and (
+                'Unknown' in ((actual_entry or actual_exit).get('access_type') or '') or
+                'No RFID' in ((actual_entry or actual_exit).get('access_type') or '') or
+                'Unregistered' in ((actual_entry or actual_exit).get('name') or '')
             )
         )
-        audit_status = "Exited" if exit_event else "Inside Facility"
-        if is_unregistered and not exit_event:
+        audit_status = "Exited" if actual_exit else "Inside Facility"
+        if is_unregistered and not actual_exit:
             audit_status = "Alert / Inside"
 
+        if actual_exit:
+            duration = _fmt_duration(actual_entry['timestamp'], actual_exit['timestamp'])
+        elif actual_entry:
+            duration = _fmt_active_duration(actual_entry['timestamp'])
+        else:
+            duration = None
+
         paired_audits.append({
-            "entry": entry_event,
-            "exit": exit_event,
-            "duration": _fmt_duration(entry_event['timestamp'], exit_event['timestamp']) if exit_event else None,
+            "entry": actual_entry,
+            "exit": actual_exit,
+            "duration": duration,
             "status": audit_status,
             "is_alert": is_unregistered
         })
