@@ -41,6 +41,18 @@ if "%PYTHON_EXE%"=="" (
     )
 )
 
+:: Check if reportlab and easyocr are installed
+"%PYTHON_EXE%" -c "import reportlab" >nul 2>nul
+if %ERRORLEVEL% neq 0 (
+    echo [INFO] Installing missing PDF reporting engine (reportlab)...
+    "%PYTHON_EXE%" -m pip install reportlab>=4.1.0
+)
+"%PYTHON_EXE%" -c "import easyocr" >nul 2>nul
+if %ERRORLEVEL% neq 0 (
+    echo [INFO] Installing missing OCR AI engine (easyocr)...
+    "%PYTHON_EXE%" -m pip install easyocr>=1.7.0
+)
+
 :: 2. Display System Banner
 cls
 echo ============================================================================

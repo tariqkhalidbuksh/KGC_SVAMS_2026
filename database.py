@@ -90,8 +90,25 @@ def init_db():
                 conn.execute("CREATE INDEX IF NOT EXISTS idx_cam_audit_date ON camera_audit_logs(date_str)")
 
                 cam_cols = [col['name'] for col in conn.execute("PRAGMA table_info(camera_audit_logs)").fetchall()]
-                if 'plate_image_path' not in cam_cols:
-                    conn.execute("ALTER TABLE camera_audit_logs ADD COLUMN plate_image_path TEXT")
+                new_cam_cols = [
+                    ('plate_image_path', 'TEXT'),
+                    ('detected_plate', 'TEXT'),
+                    ('ocr_status', 'TEXT'),
+                    ('matched_mem_id', 'TEXT'),
+                    ('matched_name', 'TEXT'),
+                    ('matched_make_model', 'TEXT'),
+                    ('matched_profile_pic', 'TEXT')
+                ]
+                for col_name, col_type in new_cam_cols:
+                    if col_name not in cam_cols:
+                        conn.execute(f"ALTER TABLE camera_audit_logs ADD COLUMN {col_name} {col_type}")
+                conn.execute("CREATE INDEX IF NOT EXISTS idx_cam_audit_plate ON camera_audit_logs(detected_plate)")
+
+                daily_cols = [col['name'] for col in conn.execute("PRAGMA table_info(daily_logs)").fetchall()]
+                if 'plate_image_path' not in daily_cols:
+                    conn.execute("ALTER TABLE daily_logs ADD COLUMN plate_image_path TEXT")
+                if 'detected_plate' not in daily_cols:
+                    conn.execute("ALTER TABLE daily_logs ADD COLUMN detected_plate TEXT")
 
                 conn.execute("""CREATE TABLE IF NOT EXISTS settings (
                     config_key TEXT PRIMARY KEY,

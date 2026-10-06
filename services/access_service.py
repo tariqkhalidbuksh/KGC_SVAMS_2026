@@ -24,12 +24,14 @@ def log_camera_audit_event(
         conn = get_db_connection()
         try:
             with conn:
-                conn.execute("""INSERT INTO camera_audit_logs 
+                cursor = conn.execute("""INSERT INTO camera_audit_logs 
                     (image_path, plate_image_path, direction, event_type, timestamp, date_str, hour_str)
                     VALUES (?, ?, ?, ?, ?, ?, ?)""",
                     (image_path, plate_image_path, direction, event_type, timestamp_str, date_str, hour_str))
+                return cursor.lastrowid
         except Exception as exc:
             print(f"[CAM AUDIT ERROR] {exc}")
+            return None
         finally:
             conn.close()
 
@@ -149,24 +151,6 @@ def execute_access_decision(
                     (mem_id, name, car, access_type, resolved_direction, "Gate-01", path_full, path_plate, "NO_TAG", pkt_now))
                 conn.commit()
                 new_id = cursor.lastrowid
-
-                with config.CACHE_LOCK:
-                    config.LATEST_LOG_CACHE = {
-                        "id": new_id,
-                        "mem_id": mem_id,
-                        "name": name,
-                        "vehicle_number": car,
-                        "access_type": access_type,
-                        "direction": resolved_direction,
-                        "gate_no": "Gate-01",
-                        "image_path": path_full,
-                        "plate_image_path": path_plate,
-                        "scanned_tag": "NO_TAG",
-                        "timestamp": pkt_now,
-                        "make_model": None,
-                        "profile_pic": None
-                    }
-
                 return new_id
         finally:
             conn.close()
@@ -244,13 +228,17 @@ def process_camera_line_crossing(hikvision_image_path: str, forced_direction: st
     direction = forced_direction or "Line Crossing"
     event_type = "Hikvision Line Crossing"
 
-    log_camera_audit_event(
+    new_audit_id = log_camera_audit_event(
         image_path=hik_rel_path,
         plate_image_path=None,
         direction=direction,
         event_type=event_type
     )
     config.FTP_EVENT_COUNT["count"] += 1
+
+    if new_audit_id:
+        from services.ocr_service import submit_image_to_ocr
+        submit_image_to_ocr(new_audit_id, hik_target_path)
 
 def deduplicate_camera_audit_logs() -> int:
     """

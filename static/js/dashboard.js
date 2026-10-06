@@ -1285,6 +1285,70 @@ async function saveSettings() {
 let currentCamAuditPage = 1;
 let currentCamAuditLimit = 24;
 let currentCamAuditDate = '';
+let currentCamAuditItems = [];
+let camAuditSearchTimer = null;
+
+function onCamAuditSearchInput() {
+    clearTimeout(camAuditSearchTimer);
+    camAuditSearchTimer = setTimeout(() => {
+        loadCameraAudit(1);
+    }, 300);
+}
+
+async function triggerOcrBatch() {
+    const btn = document.getElementById('triggerOcrBatch') || event?.currentTarget;
+    const oldHtml = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<svg class="w-3.5 h-3.5 text-indigo-600 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg><span>Queueing OCR...</span>`;
+    }
+    try {
+        const res = await fetch('/api/camera-audit/reprocess-ocr', { method: 'POST' });
+        const data = await res.json();
+        if (btn) {
+            btn.innerHTML = `<span>Queued (${data.queued || 0})</span>`;
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = oldHtml;
+            }, 2500);
+        }
+        loadCameraAudit(currentCamAuditPage);
+    } catch (err) {
+        console.error('OCR Batch trigger failed:', err);
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = oldHtml;
+        }
+    }
+}
+
+async function extractCardOcr(logId, ev) {
+    if (ev) ev.stopPropagation();
+    const btn = document.getElementById(`ocr-btn-${logId}`);
+    const origHtml = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<span class="animate-pulse">Scanning...</span>`;
+    }
+    try {
+        const res = await fetch(`/api/camera-audit/${logId}/extract-ocr`, { method: 'POST' });
+        const data = await res.json();
+        if (data.ok) {
+            loadCameraAudit(currentCamAuditPage);
+        } else {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = origHtml;
+            }
+        }
+    } catch (err) {
+        console.error('Extract OCR failed:', err);
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = origHtml;
+        }
+    }
+}
 
 function setCamAuditPreset(preset) {
     const input = document.getElementById('camAuditDate');
@@ -1312,18 +1376,26 @@ function changeCamAuditLimit() {
     loadCameraAudit(1);
 }
 
+function openCamProofModalById(id) {
+    const item = currentCamAuditItems.find(l => String(l.id) === String(id));
+    if (item) {
+        openCamProofModal(item);
+    }
+}
+
 async function loadCameraAudit(page = currentCamAuditPage) {
     currentCamAuditPage = page;
     const inputVal = document.getElementById('camAuditDate')?.value;
     const dateParam = currentCamAuditDate === 'all' && !inputVal ? 'all' : (inputVal || '');
+    const searchVal = document.getElementById('camAuditSearch')?.value || '';
     const gridEl = document.getElementById('camAuditGrid');
     if (!gridEl) return;
 
-    gridEl.innerHTML = `<div class="col-span-full py-16 text-center text-slate-400 font-bold">Loading camera proof logs...</div>`;
+    gridEl.innerHTML = `<div class="col-span-full py-16 text-center text-slate-400 font-bold">Loading enriched camera proof logs...</div>`;
 
     try {
         const [logsRes, statsRes] = await Promise.all([
-            fetch(`/api/camera-audit-logs?date=${encodeURIComponent(dateParam)}&page=${page}&limit=${currentCamAuditLimit}`),
+            fetch(`/api/camera-audit-logs?date=${encodeURIComponent(dateParam)}&page=${page}&limit=${currentCamAuditLimit}&search=${encodeURIComponent(searchVal)}`),
             fetch('/api/camera-audit-stats')
         ]);
         const data = await logsRes.json();
@@ -1335,13 +1407,14 @@ async function loadCameraAudit(page = currentCamAuditPage) {
         if (document.getElementById('camBadgeDate')) document.getElementById('camBadgeDate').innerText = dateParam === 'all' ? 'All Time' : (data.date || 'Today');
 
         const logs = data.logs || [];
+        currentCamAuditItems = logs;
         const total = data.total || 0;
         const totalPages = data.pages || Math.ceil(total / currentCamAuditLimit) || 1;
 
         if (!logs.length) {
             gridEl.innerHTML = `<div class="col-span-full py-20 text-center bg-slate-50 border border-dashed border-slate-200 rounded-3xl">
-                <p class="text-sm font-bold text-slate-500">No camera line-crossing proof captures found for ${dateParam === 'all' ? 'the selected filter' : data.date}.</p>
-                <p class="text-xs text-slate-400 mt-1">Incoming snapshots sent by Hikvision line-crossing triggers are ingested automatically.</p>
+                <p class="text-sm font-bold text-slate-500">No camera line-crossing proof captures found ${searchVal ? `matching "${searchVal}"` : `for ${dateParam === 'all' ? 'the selected filter' : data.date}`}.</p>
+                <p class="text-xs text-slate-400 mt-1">Incoming snapshots sent by Hikvision line-crossing triggers are ingested and enriched with AI license plate OCR automatically.</p>
             </div>`;
             renderCamAuditPagination(0, 1, 1, currentCamAuditLimit);
             return;
@@ -1357,15 +1430,114 @@ async function loadCameraAudit(page = currentCamAuditPage) {
 
             const cleanFileName = item.image_path ? item.image_path.split('/').pop() : '';
 
+            // Status badge in top right of image
+            let statusBadge = '';
+            if (item.ocr_status === 'MATCHED') {
+                statusBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500 text-white shadow-sm flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>REGISTERED MEMBER</span>`;
+            } else if (item.ocr_status === 'UNREGISTERED') {
+                statusBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500 text-white shadow-sm">UNREGISTERED</span>`;
+            } else if (item.ocr_status === 'NO_PLATE_DETECTED') {
+                statusBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-slate-600 text-slate-100 shadow-sm">NO PLATE</span>`;
+            } else {
+                statusBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-indigo-500 text-white shadow-sm animate-pulse">OCR PENDING</span>`;
+            }
+
+            // Embossed License Plate Badge Overlay
+            let plateBadge = '';
+            if (item.detected_plate) {
+                plateBadge = `
+                <div class="bg-slate-950/90 border border-amber-400/50 backdrop-blur-md px-2.5 py-1 rounded-lg shadow-xl flex items-center gap-1.5">
+                    <span class="text-[9px] font-black text-amber-400 uppercase tracking-widest font-mono">PK</span>
+                    <span class="text-xs font-mono font-black text-amber-300 tracking-wider">${item.detected_plate}</span>
+                </div>`;
+            } else {
+                plateBadge = `
+                <div class="bg-slate-950/80 border border-slate-700 backdrop-blur-md px-2 py-0.5 rounded-lg shadow flex items-center gap-1">
+                    <span class="text-[10px] font-mono text-slate-400">NO PLATE</span>
+                </div>`;
+            }
+
+            // Enriched Member or Vehicle Details Box
+            let enrichmentHtml = '';
+            if (item.ocr_status === 'MATCHED' && item.matched_name) {
+                const avatar = item.matched_profile_pic ?
+                    `<img src="/${item.matched_profile_pic}" alt="${item.matched_name}" class="w-11 h-11 rounded-xl object-cover border-2 border-emerald-400/70 shadow-sm" onerror="this.src='/static/img/default-avatar.svg'">` :
+                    `<div class="w-11 h-11 rounded-xl bg-emerald-600 text-white font-black flex items-center justify-center text-sm shadow-sm">${(item.matched_name || '?').charAt(0).toUpperCase()}</div>`;
+
+                enrichmentHtml = `
+                <div class="mt-3 bg-emerald-50/70 border border-emerald-100 rounded-2xl p-3 flex items-start gap-3">
+                    <div class="relative shrink-0">
+                        ${avatar}
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <h4 class="text-xs font-black text-slate-900 truncate" title="${item.matched_name}">${item.matched_name}</h4>
+                        <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                            <span class="text-[10px] font-mono font-bold bg-white text-indigo-700 border border-indigo-200/70 px-1.5 py-0.2 rounded shadow-2xs">#${item.matched_mem_id || 'MEM'}</span>
+                            <span class="text-[10px] font-black text-emerald-700 uppercase tracking-wide">Club Member</span>
+                        </div>
+                        <p class="text-[11px] font-semibold text-slate-600 mt-1 truncate flex items-center gap-1" title="${item.matched_make_model || 'Registered Vehicle'}">
+                            <svg class="w-3 h-3 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                            <span>${item.matched_make_model || 'Registered Vehicle'}</span>
+                        </p>
+                    </div>
+                </div>`;
+            } else if (item.ocr_status === 'UNREGISTERED') {
+                enrichmentHtml = `
+                <div class="mt-3 bg-amber-50/60 border border-amber-200/70 rounded-2xl p-3 flex items-start gap-3">
+                    <div class="w-11 h-11 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-black text-xs shrink-0 border border-amber-200">
+                        VIS
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-xs font-black text-slate-800">Unregistered Visitor</h4>
+                            <span class="text-[9px] font-bold bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded">Guest</span>
+                        </div>
+                        <p class="text-[11px] text-slate-600 mt-0.5">Plate: <span class="font-mono font-bold text-slate-800">${item.detected_plate || 'UNKNOWN'}</span></p>
+                        <p class="text-[10px] text-amber-700 font-medium mt-0.5">Vehicle not in member database</p>
+                    </div>
+                </div>`;
+            } else if (item.ocr_status === 'NO_PLATE_DETECTED') {
+                enrichmentHtml = `
+                <div class="mt-3 bg-slate-50 border border-slate-200 rounded-2xl p-3 flex items-center justify-between gap-2">
+                    <div class="min-w-0">
+                        <h4 class="text-xs font-bold text-slate-700">No Plate Detected</h4>
+                        <p class="text-[10px] text-slate-400 mt-0.5">Plate angle obscured or non-standard</p>
+                    </div>
+                    <button type="button" id="ocr-btn-${item.id}" onclick="extractCardOcr(${item.id}, event)" class="shrink-0 text-[11px] font-bold text-indigo-600 hover:text-indigo-800 bg-white border border-indigo-200 rounded-lg px-2.5 py-1 shadow-2xs hover:bg-indigo-50 transition">
+                        Re-scan
+                    </button>
+                </div>`;
+            } else {
+                enrichmentHtml = `
+                <div class="mt-3 bg-indigo-50/40 border border-indigo-100 rounded-2xl p-3 flex items-center justify-between gap-2">
+                    <div class="min-w-0">
+                        <h4 class="text-xs font-bold text-indigo-900 flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-indigo-500 animate-ping"></span>
+                            OCR Ready
+                        </h4>
+                        <p class="text-[10px] text-slate-500 mt-0.5">Awaiting background extraction</p>
+                    </div>
+                    <button type="button" id="ocr-btn-${item.id}" onclick="extractCardOcr(${item.id}, event)" class="shrink-0 text-[11px] font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg px-2.5 py-1 shadow-sm transition">
+                        Scan Plate
+                    </button>
+                </div>`;
+            }
+
             return `
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md hover:border-slate-300 transition duration-200 flex flex-col group">
-                <div class="relative bg-slate-900 aspect-video overflow-hidden cursor-pointer" onclick="openCamProofModal('${hikImgSrc}', '${item.timestamp}', '${item.direction}', '${item.event_type || 'Line Crossing'}')">
+                <div class="relative bg-slate-900 aspect-video overflow-hidden cursor-pointer" onclick="openCamProofModalById(${item.id})">
                     <img src="${hikImgSrc}" alt="Vehicle Proof" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.src='/static/img/no-car.svg'">
                     <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                        <span class="bg-white/90 text-slate-900 px-3 py-1.5 rounded-xl text-xs font-bold shadow-lg">View Proof</span>
+                        <span class="bg-white/90 text-slate-900 px-3 py-1.5 rounded-xl text-xs font-bold shadow-lg">View Proof &amp; Details</span>
                     </div>
                     <div class="absolute top-2.5 left-2.5">
                         ${dirBadge}
+                    </div>
+                    <div class="absolute top-2.5 right-2.5">
+                        ${statusBadge}
+                    </div>
+                    <div class="absolute bottom-2.5 left-2.5">
+                        ${plateBadge}
                     </div>
                     <div class="absolute bottom-2.5 right-2.5 flex items-center gap-1">
                         <span class="bg-slate-900/80 backdrop-blur-sm text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-md text-[10px] font-mono font-bold">
@@ -1379,11 +1551,11 @@ async function loadCameraAudit(page = currentCamAuditPage) {
                             <span class="text-xs font-bold text-slate-800">${item.timestamp}</span>
                             <span class="text-[10px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-200/60 px-2 py-0.5 rounded-md">${item.event_type || 'Line Crossing'}</span>
                         </div>
-                        <p class="text-[11px] text-slate-400 font-mono mt-1.5 truncate" title="${cleanFileName}">${cleanFileName}</p>
+                        ${enrichmentHtml}
                     </div>
                     <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
-                        <span class="text-[11px] font-bold text-slate-500">Camera Audit Proof</span>
-                        <button type="button" onclick="openCamProofModal('${hikImgSrc}', '${item.timestamp}', '${item.direction}', '${item.event_type || 'Line Crossing'}')" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition">
+                        <span class="text-[11px] text-slate-400 font-mono truncate max-w-[150px]" title="${cleanFileName}">${cleanFileName}</span>
+                        <button type="button" onclick="openCamProofModalById(${item.id})" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition">
                             View Proof &rarr;
                         </button>
                     </div>
@@ -1433,11 +1605,25 @@ function renderCamAuditPagination(total, page, totalPages, limit) {
     `;
 }
 
-function openCamProofModal(hikImgSrc, timestamp, direction, eventType) {
+function openCamProofModal(itemOrHikImg, timestamp, direction, eventType) {
     const modal = document.getElementById('camProofModal');
     const hikImgEl = document.getElementById('camProofModalImgHik');
     const infoEl = document.getElementById('camProofModalInfo');
     if (!modal) return;
+
+    let item = {};
+    if (typeof itemOrHikImg === 'object' && itemOrHikImg !== null) {
+        item = itemOrHikImg;
+    } else {
+        item = {
+            image_path: (itemOrHikImg || '').replace(/^\//, ''),
+            timestamp: timestamp || '',
+            direction: direction || 'Line Crossing',
+            event_type: eventType || 'Hikvision Line Crossing'
+        };
+    }
+
+    const hikImgSrc = item.image_path ? '/' + item.image_path : '';
 
     if (hikImgEl) {
         hikImgEl.src = hikImgSrc || '';
@@ -1445,17 +1631,96 @@ function openCamProofModal(hikImgSrc, timestamp, direction, eventType) {
     }
 
     if (infoEl) {
+        const plateHtml = item.detected_plate ? `
+            <div class="bg-slate-900 border border-amber-400/50 px-3 py-1.5 rounded-xl shadow-md flex items-center gap-2">
+                <span class="text-[10px] font-black text-amber-400 font-mono">PK</span>
+                <span class="text-sm font-mono font-black text-amber-300 tracking-wider">${item.detected_plate}</span>
+            </div>
+        ` : `
+            <div class="bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-xl flex items-center gap-1.5 text-xs text-slate-500 font-bold">
+                No Plate Detected
+            </div>
+        `;
+
+        let memberSection = '';
+        if (item.ocr_status === 'MATCHED' && item.matched_name) {
+            memberSection = `
+                <div class="mt-4 p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200 flex items-center justify-between flex-wrap gap-4">
+                    <div class="flex items-center gap-3.5">
+                        ${item.matched_profile_pic ? 
+                            `<img src="/${item.matched_profile_pic}" alt="${item.matched_name}" class="w-14 h-14 rounded-2xl object-cover border-2 border-emerald-400 shadow-sm" onerror="this.src='/static/img/default-avatar.svg'">` :
+                            `<div class="w-14 h-14 rounded-2xl bg-emerald-600 text-white font-black flex items-center justify-center text-lg shadow-sm">${(item.matched_name || '?').charAt(0).toUpperCase()}</div>`
+                        }
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h3 class="text-sm font-black text-slate-900">${item.matched_name}</h3>
+                                <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-600 text-white shadow-2xs">Verified Member</span>
+                            </div>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="text-xs font-mono font-bold text-indigo-700 bg-white border border-indigo-200 px-2 py-0.5 rounded-lg shadow-2xs">#${item.matched_mem_id}</span>
+                                <span class="text-xs font-semibold text-slate-600 flex items-center gap-1">
+                                    <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                                    ${item.matched_make_model || 'Registered Vehicle'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs font-bold text-emerald-800 bg-emerald-100/80 border border-emerald-200 px-3 py-1.5 rounded-xl inline-block">
+                            Database Match Confirmed
+                        </span>
+                    </div>
+                </div>
+            `;
+        } else if (item.ocr_status === 'UNREGISTERED') {
+            memberSection = `
+                <div class="mt-4 p-4 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-between flex-wrap gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-200 text-amber-800 font-black flex items-center justify-center text-sm">VIS</div>
+                        <div>
+                            <h3 class="text-sm font-black text-slate-800">Unregistered Guest Vehicle</h3>
+                            <p class="text-xs text-slate-500 mt-0.5">License plate <span class="font-mono font-bold text-slate-800">${item.detected_plate || 'UNKNOWN'}</span> is not registered to any active member.</p>
+                        </div>
+                    </div>
+                    <span class="text-xs font-bold text-amber-800 bg-amber-100 border border-amber-200 px-3 py-1.5 rounded-xl">Non-Member Entry</span>
+                </div>
+            `;
+        } else {
+            memberSection = `
+                <div class="mt-4 p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between flex-wrap gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-slate-200 text-slate-600 font-bold flex items-center justify-center text-xs">AI</div>
+                        <div>
+                            <h3 class="text-xs font-bold text-slate-700">License Plate OCR</h3>
+                            <p class="text-[11px] text-slate-400 mt-0.5">Extract vehicle plate number using Deep Learning OCR.</p>
+                        </div>
+                    </div>
+                    ${item.id ? `
+                    <button type="button" onclick="extractCardOcr(${item.id}, event); closeCamProofModal();" class="px-3.5 py-1.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-sm transition">
+                        Run OCR Extraction Now
+                    </button>` : ''}
+                </div>
+            `;
+        }
+
         infoEl.innerHTML = `
-            <div class="flex items-center justify-between flex-wrap gap-2">
-                <div>
-                    <h3 class="text-sm font-bold text-slate-800">Hikvision Camera Proof</h3>
-                    <p class="text-xs text-slate-400 font-mono mt-0.5">Recorded: ${timestamp || ''} PKT &bull; Event: ${eventType || 'Line Crossing'} &bull; Direction: ${direction || 'Line Crossing'}</p>
+            <div class="space-y-3">
+                <div class="flex items-center justify-between flex-wrap gap-3 pb-3 border-b border-slate-100">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h3 class="text-sm font-bold text-slate-800">Hikvision Vehicle Overview &bull; Forensic Audit Proof</h3>
+                            <span class="text-[10px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded-md">${item.event_type || 'Line Crossing'}</span>
+                        </div>
+                        <p class="text-xs text-slate-400 font-mono mt-0.5">Timestamp: ${item.timestamp || ''} PKT &bull; Passage: ${item.direction || 'Line Crossing'}</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        ${plateHtml}
+                        ${hikImgSrc ? `<a href="${hikImgSrc}" download target="_blank" class="px-3 py-2 text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl hover:bg-emerald-100 transition shadow-2xs">
+                            Download HD Capture
+                        </a>` : ''}
+                    </div>
                 </div>
-                <div class="flex items-center gap-2">
-                    ${hikImgSrc ? `<a href="${hikImgSrc}" download target="_blank" class="px-3 py-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl hover:bg-emerald-100 transition">
-                        Download Hikvision Overview
-                    </a>` : ''}
-                </div>
+                ${memberSection}
             </div>
         `;
     }

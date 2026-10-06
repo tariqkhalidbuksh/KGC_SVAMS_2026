@@ -14,6 +14,7 @@ from services.event_daemons import start_ftp_server, start_smtp_server, folder_w
 from routers import logs, members, stats, settings, tools, simulate
 
 from services.member_service import align_member_photos
+from services.ocr_service import ocr_worker_daemon
 
 DB_FILE = config.DB_FILE
 PENDING_RFID_BUFFER = config.PENDING_RFID_BUFFER
@@ -29,6 +30,7 @@ async def lifespan(app_instance: FastAPI):
     threading.Thread(target=rfid_tcp_client_worker, args=("Entry", "entry_reader_ip"), daemon=True, name="RFIDEntryWorker").start()
     threading.Thread(target=rfid_tcp_client_worker, args=("Exit", "exit_reader_ip"), daemon=True, name="RFIDExitWorker").start()
     threading.Thread(target=preview_stream_worker, args=("Hikvision", "hikvision_cam_url"), daemon=True, name="HikStreamWorker").start()
+    threading.Thread(target=ocr_worker_daemon, daemon=True, name="OCRWorkerDaemon").start()
     threading.Thread(target=buffer_cleaner_worker, daemon=True, name="BufferCleaner").start()
     yield
 

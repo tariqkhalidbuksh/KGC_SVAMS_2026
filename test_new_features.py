@@ -406,6 +406,127 @@ def test_audit_pdf_generation_endpoint():
             with conn:
                 conn.execute("DELETE FROM daily_logs WHERE id=?", (test_log_id,))
 
+def test_ocr_plate_normalization_and_pakistan_formatting():
+    from services.ocr_service import normalize_plate, format_pakistan_plate
+    assert normalize_plate("BHF - 755") == "BHF755"
+    assert normalize_plate("sindh-lee 450") == "SINDHLEE450"
+    assert format_pakistan_plate("BHF755") == "BHF-755"
+    assert format_pakistan_plate("ABC 1234") == "ABC-1234"
+    assert format_pakistan_plate("18LEE450") == "18-LEE-450"
+
+def test_camera_audit_member_matching_and_search_api():
+    from services.ocr_service import match_plate_to_member
+    # 1. Insert a test member into members table
+    test_mem_id = "MEM-OCR-TEST-01"
+    with get_db_connection() as conn:
+        with conn:
+            conn.execute("DELETE FROM members WHERE Mem_id=?", (test_mem_id,))
+            conn.execute("""
+                INSERT INTO members (Mem_id, Name, Car_number, Make_Model, Status, E_Tag_id)
+                VALUES (?, ?, ?, ?, ?, ?)
+            """, (test_mem_id, "Tariq Member", "BHF-755", "Honda Civic Turbo", "Active", "TAG-OCR-01"))
+
+    # 2. Test matching logic
+    member = match_plate_to_member("BHF-755")
+    assert member is not None
+    assert member["Mem_id"] == test_mem_id
+    assert member["Make_Model"] == "Honda Civic Turbo"
+
+    # Also test normalized match (without hyphens)
+    member_norm = match_plate_to_member("BHF 755")
+    assert member_norm is not None
+    assert member_norm["Mem_id"] == test_mem_id
+
+    # 3. Create camera audit log and test enrichment
+    with get_db_connection() as conn:
+        with conn:
+            cur = conn.execute("""
+                INSERT INTO camera_audit_logs (timestamp, date_str, event_type, direction, image_path, ocr_status)
+                VALUES (datetime('now'), date('now'), 'Line Crossing', 'Entry', 'static/camera_audits/test_sample.jpg', 'PENDING')
+            """)
+            audit_id = cur.lastrowid
+
+    try:
+        # Simulate OCR result enrichment directly
+        with get_db_connection() as conn:
+            with conn:
+                conn.execute("""
+                    UPDATE camera_audit_logs SET
+                        detected_plate = 'BHF-755',
+                        ocr_status = 'MATCHED',
+                        matched_mem_id = ?,
+                        matched_name = ?,
+                        matched_make_model = ?
+                    WHERE id = ?
+                """, (member["Mem_id"], member["Name"], member["Make_Model"], audit_id))
+
+        # 4. Search API should find this record by plate, member name, and member ID
+        res_plate = client.get(f"/api/camera-audit-logs?date=all&search=BHF-755")
+        assert res_plate.status_code == 200
+        logs = res_plate.json().get("logs", [])
+        assert any(l["id"] == audit_id and l["detected_plate"] == "BHF-755" for l in logs)
+
+        res_name = client.get(f"/api/camera-audit-logs?date=all&search=Tariq Member")
+        assert res_name.status_code == 200
+        assert any(l["id"] == audit_id for l in res_name.json().get("logs", []))
+
+        # 5. Test reprocess-ocr API
+        res_rep = client.post("/api/camera-audit/reprocess-ocr")
+        assert res_rep.status_code == 200
+        assert "queued" in res_rep.json()
+
+        # 6. Test single audit extract-ocr API
+        res_single = client.post(f"/api/camera-audit/{audit_id}/extract-ocr")
+        assert res_single.status_code == 200
+        assert res_single.json()["ok"] is True
+    finally:
+        with get_db_connection() as conn:
+            with conn:
+                conn.execute("DELETE FROM camera_audit_logs WHERE id=?", (audit_id,))
+                conn.execute("DELETE FROM members WHERE Mem_id=?", (test_mem_id,))
+
+def test_kiosk_display_strictly_rfid_only():
+    """
+    Verifies the user's strict rule: Kiosk display is ONLY triggered by RFID scans.
+    Camera line-crossing events must NEVER populate the Kiosk latest log cache.
+    """
+    import config
+    from services.access_service import process_camera_line_crossing, execute_access_decision
+
+    # 1. Reset cache
+    with config.CACHE_LOCK:
+        config.LATEST_LOG_CACHE = None
+
+    # 2. Trigger optical camera line-crossing
+    dummy_img = "static/camera_audits/test_kiosk_protect.jpg"
+    os.makedirs(os.path.dirname(dummy_img), exist_ok=True)
+    with open(dummy_img, "wb") as f:
+        f.write(b"camera_bytes")
+
+    try:
+        process_camera_line_crossing(dummy_img, forced_direction="Entry")
+        
+        # Kiosk cache MUST remain None - camera trigger must NEVER alter the Kiosk!
+        with config.CACHE_LOCK:
+            assert config.LATEST_LOG_CACHE is None
+
+        # 3. Now scan an RFID tag
+        test_tag = "RFID_KIOSK_TRIGGER_TAG"
+        log_id = execute_access_decision(test_tag, direction="Entry")
+        
+        # Now Kiosk cache MUST be updated with the RFID scan
+        with config.CACHE_LOCK:
+            assert config.LATEST_LOG_CACHE is not None
+            assert config.LATEST_LOG_CACHE["id"] == log_id
+            assert config.LATEST_LOG_CACHE["scanned_tag"] == test_tag
+    finally:
+        if os.path.exists(dummy_img):
+            os.remove(dummy_img)
+        with get_db_connection() as conn:
+            with conn:
+                conn.execute("DELETE FROM camera_audit_logs WHERE image_path LIKE '%test_kiosk_protect%'")
+                conn.execute("DELETE FROM daily_logs WHERE scanned_tag='RFID_KIOSK_TRIGGER_TAG'")
+
 
 
 

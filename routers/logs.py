@@ -1,4 +1,5 @@
 import math
+import time
 from datetime import datetime
 from fastapi import APIRouter, HTTPException, Response, Request
 import config
@@ -245,7 +246,7 @@ async def get_audit(date: str = "", page: int = 1, limit: int = 25, search: str 
     }
 
 @router.get("/camera-audit-logs")
-async def get_camera_audit_logs(date: str = "", page: int = 1, limit: int = 24):
+async def get_camera_audit_logs(date: str = "", page: int = 1, limit: int = 24, search: str = ""):
     with config.DB_LOCK:
         conn = get_db_connection()
         try:
@@ -256,21 +257,25 @@ async def get_camera_audit_logs(date: str = "", page: int = 1, limit: int = 24):
             limit = min(max(4, limit), 100)
             offset = (page - 1) * limit
 
-            if target_date == "all":
-                total = conn.execute("SELECT COUNT(*) as c FROM camera_audit_logs").fetchone()['c']
-                rows = conn.execute(
-                    "SELECT * FROM camera_audit_logs ORDER BY id DESC LIMIT ? OFFSET ?",
-                    (limit, offset)
-                ).fetchall()
-            else:
-                total = conn.execute(
-                    "SELECT COUNT(*) as c FROM camera_audit_logs WHERE date_str=?",
-                    (target_date,)
-                ).fetchone()['c']
-                rows = conn.execute(
-                    "SELECT * FROM camera_audit_logs WHERE date_str=? ORDER BY id DESC LIMIT ? OFFSET ?",
-                    (target_date, limit, offset)
-                ).fetchall()
+            where_clauses = []
+            params = []
+
+            if target_date != "all":
+                where_clauses.append("date_str = ?")
+                params.append(target_date)
+
+            if search and search.strip():
+                clean_s = search.strip()
+                where_clauses.append("(detected_plate LIKE ? OR matched_name LIKE ? OR matched_mem_id LIKE ? OR image_path LIKE ?)")
+                params.extend([f"%{clean_s}%", f"%{clean_s}%", f"%{clean_s}%", f"%{clean_s}%"])
+
+            where_str = f"WHERE {' AND '.join(where_clauses)}" if where_clauses else ""
+
+            total = conn.execute(f"SELECT COUNT(*) as c FROM camera_audit_logs {where_str}", params).fetchone()['c']
+            
+            query = f"SELECT * FROM camera_audit_logs {where_str} ORDER BY id DESC LIMIT ? OFFSET ?"
+            query_params = list(params) + [limit, offset]
+            rows = conn.execute(query, query_params).fetchall()
 
             return {
                 "date": target_date,
@@ -280,6 +285,44 @@ async def get_camera_audit_logs(date: str = "", page: int = 1, limit: int = 24):
                 "pages": max(1, math.ceil(total / limit)),
                 "logs": [dict(r) for r in rows]
             }
+        finally:
+            conn.close()
+
+@router.post("/camera-audit/reprocess-ocr")
+async def reprocess_ocr():
+    with config.DB_LOCK:
+        conn = get_db_connection()
+        try:
+            rows = conn.execute("SELECT id, image_path FROM camera_audit_logs WHERE detected_plate IS NULL OR detected_plate = '' ORDER BY id DESC LIMIT 50").fetchall()
+            from services.ocr_service import submit_image_to_ocr
+            count = 0
+            for r in rows:
+                submit_image_to_ocr(r['id'], r['image_path'])
+                count += 1
+            return {"ok": True, "queued": count}
+        finally:
+            conn.close()
+
+@router.post("/camera-audit/{log_id}/extract-ocr")
+async def extract_single_audit_ocr(log_id: int):
+    with config.DB_LOCK:
+        conn = get_db_connection()
+        try:
+            row = conn.execute("SELECT id, image_path FROM camera_audit_logs WHERE id = ?", (log_id,)).fetchone()
+            if not row:
+                raise HTTPException(404, "Audit log not found")
+            image_path = row["image_path"]
+        finally:
+            conn.close()
+
+    from services.ocr_service import process_single_ocr_job
+    process_single_ocr_job(log_id, image_path)
+
+    with config.DB_LOCK:
+        conn = get_db_connection()
+        try:
+            updated = conn.execute("SELECT * FROM camera_audit_logs WHERE id = ?", (log_id,)).fetchone()
+            return {"ok": True, "log": dict(updated) if updated else {}}
         finally:
             conn.close()
 
@@ -309,7 +352,7 @@ async def get_audit_log_pdf(log_id: int):
                     d.gate_no, d.image_path, d.plate_image_path, d.scanned_tag, d.timestamp,
                     m.Make_Model as make_model, m.Profile_pic as profile_pic
                 FROM daily_logs d LEFT JOIN members m ON d.mem_id = m.Mem_id AND d.vehicle_number = m.Car_number
-                WHERE date(d.timestamp)=? ORDER BY d.id ASC""", (target_date,)).fetchall()
+                WHERE d.timestamp LIKE ? ORDER BY d.id ASC""", (f"{target_date}%",)).fetchall()
             logs = [dict(r) for r in same_day_rows]
         finally:
             conn.close()
@@ -361,8 +404,24 @@ async def get_audit_log_pdf(log_id: int):
         "is_alert": is_unregistered
     }
 
-    from services.pdf_service import generate_audit_pdf
-    pdf_bytes = generate_audit_pdf(audit_payload)
+    try:
+        from services.pdf_service import generate_audit_pdf
+        pdf_bytes = generate_audit_pdf(audit_payload)
+    except ModuleNotFoundError as err:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(
+            status_code=500,
+            detail=f"ReportLab PDF library missing on server ({err}). Run 'pip install reportlab' to enable PDF generation."
+        )
+    except Exception as err:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to generate audit PDF: {str(err)}"
+        )
+
     filename = f"Audit_Report_AUD_{str(log_id).zfill(6)}.pdf"
 
     return Response(
@@ -379,8 +438,24 @@ async def post_audit_pdf(request: Request):
     body = await request.json()
     if not body:
         raise HTTPException(400, "Audit record data is required")
-    from services.pdf_service import generate_audit_pdf
-    pdf_bytes = generate_audit_pdf(body)
+    try:
+        from services.pdf_service import generate_audit_pdf
+        pdf_bytes = generate_audit_pdf(body)
+    except ModuleNotFoundError as err:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(
+            status_code=500,
+            detail=f"ReportLab PDF library missing on server ({err}). Run 'pip install reportlab' to enable PDF generation."
+        )
+    except Exception as err:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to generate audit PDF: {str(err)}"
+        )
+
     ref = ((body.get("entry") or body.get("exit") or {}).get("id")) or int(time.time())
     filename = f"Audit_Report_AUD_{str(ref).zfill(6)}.pdf"
     return Response(
