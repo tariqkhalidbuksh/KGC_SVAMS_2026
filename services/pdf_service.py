@@ -260,50 +260,64 @@ def generate_audit_pdf(audit: dict) -> bytes:
     story.append(card_tbl)
     story.append(Spacer(1, 8))
 
-    # 4. Synchronized Optical Proof & Camera Evidence
-    story.append(Paragraph("<b>SYNCHRONIZED OPTICAL PROOF &bull; CAMERA EVIDENCE JOURNAL</b>", s_label))
+    # 4. Optical Proof & Camera Evidence
+    story.append(Paragraph("<b>OPTICAL PROOF &bull; CAMERA EVIDENCE JOURNAL</b>", s_label))
     story.append(Spacer(1, 3))
 
-    evidence_panels = []
-
-    # Check for Entry Evidence
     entry_hik = entry.get("image_path")
-    entry_dahua = entry.get("plate_image_path")
-    if entry_hik or entry_dahua:
-        im_hik = _safe_rl_image(entry_hik, max_w=col_w - 20, max_h=120)
-        im_dahua = _safe_rl_image(entry_dahua, max_w=col_w - 20, max_h=120)
-        
-        cell_hik = [
-            Paragraph("<b>HIKVISION FULL VEHICLE OVERVIEW (WIDE ANGLE)</b>", s_label),
-            Spacer(1, 2),
-            im_hik or Paragraph('<font color="#94A3B8">[No Overview Image Captured]</font>', s_label)
-        ]
-        cell_dahua = [
-            Paragraph("<b>DAHUA GATE SHOT (LICENSE PLATE CLOSE-UP)</b>", s_label),
-            Spacer(1, 2),
-            im_dahua or Paragraph('<font color="#94A3B8">[No Dahua Close-up Captured]</font>', s_label)
-        ]
-        evidence_panels.append([cell_hik, cell_dahua])
+    exit_hik = exit_rec.get("image_path") if exit_rec else None
+    has_exit_img = bool(exit_hik and exit_hik != entry_hik)
 
-    # Check for Exit Evidence
-    exit_hik = exit_rec.get("image_path")
-    exit_dahua = exit_rec.get("plate_image_path")
-    if (exit_hik or exit_dahua) and (exit_hik != entry_hik or exit_dahua != entry_dahua):
-        im_x_hik = _safe_rl_image(exit_hik, max_w=col_w - 20, max_h=120)
-        im_x_dahua = _safe_rl_image(exit_dahua, max_w=col_w - 20, max_h=120)
-        cell_x_hik = [
-            Paragraph("<b>EXIT HIKVISION OVERVIEW SHOT</b>", s_label),
+    if entry_hik and has_exit_img:
+        # Both Entry and Exit images present: Side-by-side comparison
+        im_in = _safe_rl_image(entry_hik, max_w=col_w - 20, max_h=130)
+        im_out = _safe_rl_image(exit_hik, max_w=col_w - 20, max_h=130)
+        cell_in = [
+            Paragraph("<b>ENTRY HIKVISION VEHICLE OVERVIEW</b>", s_label),
             Spacer(1, 2),
-            im_x_hik or Paragraph('<font color="#94A3B8">[No Exit Overview Image]</font>', s_label)
+            im_in or Paragraph('<font color="#94A3B8">[No Entry Overview Image]</font>', s_label)
         ]
-        cell_x_dahua = [
-            Paragraph("<b>EXIT DAHUA PLATE CLOSE-UP</b>", s_label),
+        cell_out = [
+            Paragraph("<b>EXIT HIKVISION VEHICLE OVERVIEW</b>", s_label),
             Spacer(1, 2),
-            im_x_dahua or Paragraph('<font color="#94A3B8">[No Exit Plate Close-up]</font>', s_label)
+            im_out or Paragraph('<font color="#94A3B8">[No Exit Overview Image]</font>', s_label)
         ]
-        evidence_panels.append([cell_x_hik, cell_x_dahua])
-
-    if not evidence_panels:
+        ev_table = Table([[cell_in, cell_out]], colWidths=[col_w, col_w])
+        ev_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, -1), c_card_bg),
+            ('BOX', (0, 0), (-1, -1), 1, c_border),
+            ('INNERGRID', (0, 0), (-1, -1), 0.5, c_border),
+            ('TOPPADDING', (0, 0), (-1, -1), 6),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+            ('LEFTPADDING', (0, 0), (-1, -1), 8),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 8),
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ]))
+        story.append(ev_table)
+        story.append(Spacer(1, 6))
+    elif entry_hik or (exit_hik and not entry_hik):
+        # Single transit image: High-resolution full-width panel
+        single_path = entry_hik or exit_hik
+        transit_lbl = "ENTRY" if entry_hik else "EXIT"
+        im_single = _safe_rl_image(single_path, max_w=printable_w - 20, max_h=150)
+        cell_single = [
+            Paragraph(f"<b>{transit_lbl} HIKVISION VEHICLE OVERVIEW (WIDE ANGLE EVIDENCE)</b>", s_label),
+            Spacer(1, 3),
+            im_single or Paragraph('<font color="#94A3B8">[No Overview Image Captured]</font>', s_label)
+        ]
+        ev_table = Table([[cell_single]], colWidths=[printable_w])
+        ev_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, -1), c_card_bg),
+            ('BOX', (0, 0), (-1, -1), 1, c_border),
+            ('TOPPADDING', (0, 0), (-1, -1), 6),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+            ('LEFTPADDING', (0, 0), (-1, -1), 8),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 8),
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ]))
+        story.append(ev_table)
+        story.append(Spacer(1, 6))
+    else:
         # Placeholder panel if no photos on file
         empty_box = Table([[
             Paragraph('<font color="#64748B"><b>No optical evidence images were attached to this transit record.</b><br/>RFID antenna detection was verified directly without optical line-crossing capture.</font>', s_label)
@@ -316,21 +330,7 @@ def generate_audit_pdf(audit: dict) -> bytes:
             ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ]))
         story.append(empty_box)
-    else:
-        for panel_rows in evidence_panels:
-            ev_table = Table([panel_rows], colWidths=[col_w, col_w])
-            ev_table.setStyle(TableStyle([
-                ('BACKGROUND', (0, 0), (-1, -1), c_card_bg),
-                ('BOX', (0, 0), (-1, -1), 1, c_border),
-                ('INNERGRID', (0, 0), (-1, -1), 0.5, c_border),
-                ('TOPPADDING', (0, 0), (-1, -1), 6),
-                ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-                ('LEFTPADDING', (0, 0), (-1, -1), 8),
-                ('RIGHTPADDING', (0, 0), (-1, -1), 8),
-                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-            ]))
-            story.append(ev_table)
-            story.append(Spacer(1, 6))
+        story.append(Spacer(1, 6))
 
     # 5. Chain of Custody & Authentication Footer
     story.append(Spacer(1, 4))

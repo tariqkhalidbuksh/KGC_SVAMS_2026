@@ -29,7 +29,6 @@ async def lifespan(app_instance: FastAPI):
     threading.Thread(target=rfid_tcp_client_worker, args=("Entry", "entry_reader_ip"), daemon=True, name="RFIDEntryWorker").start()
     threading.Thread(target=rfid_tcp_client_worker, args=("Exit", "exit_reader_ip"), daemon=True, name="RFIDExitWorker").start()
     threading.Thread(target=preview_stream_worker, args=("Hikvision", "hikvision_cam_url"), daemon=True, name="HikStreamWorker").start()
-    threading.Thread(target=preview_stream_worker, args=("Dahua", "dahua_cam_url"), daemon=True, name="DahuaStreamWorker").start()
     threading.Thread(target=buffer_cleaner_worker, daemon=True, name="BufferCleaner").start()
     yield
 

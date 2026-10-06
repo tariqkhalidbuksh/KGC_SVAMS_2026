@@ -618,37 +618,21 @@ function openAudit(a) {
 
             <!-- Evidence Details -->
             <div class="space-y-4 mb-6">
-                ${e && (e.image_path || e.plate_image_path) ? `
+                ${e && e.image_path ? `
                 <div class="border rounded-2xl p-4 bg-slate-50">
                     <p class="text-xs font-bold text-slate-700 mb-2 uppercase">Entry Camera Proof &bull; ${e.timestamp}</p>
-                    <div class="grid grid-cols-1 ${e.image_path && e.plate_image_path ? 'md:grid-cols-2' : ''} gap-4">
-                        ${e.image_path ? `
-                        <div>
-                            <span class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Hikvision Full Overview</span>
-                            <img src="/${e.image_path}" class="w-full h-60 object-cover rounded-xl border cursor-pointer" onclick="window.open('/${e.image_path}')">
-                        </div>` : ''}
-                        ${e.plate_image_path ? `
-                        <div>
-                            <span class="text-[10px] font-bold text-indigo-600 uppercase block mb-1">Dahua Plate Close-Up</span>
-                            <img src="/${e.plate_image_path}" class="w-full h-60 object-cover rounded-xl border cursor-pointer" onclick="window.open('/${e.plate_image_path}')">
-                        </div>` : ''}
+                    <div>
+                        <span class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Hikvision Full Overview</span>
+                        <img src="/${e.image_path}" class="w-full h-72 object-cover rounded-xl border cursor-pointer" onclick="window.open('/${e.image_path}')">
                     </div>
                 </div>` : ''}
 
-                ${x && (x.image_path || x.plate_image_path) ? `
+                ${x && x.image_path ? `
                 <div class="border rounded-2xl p-4 bg-slate-50">
                     <p class="text-xs font-bold text-slate-700 mb-2 uppercase">Exit Camera Proof &bull; ${x.timestamp}</p>
-                    <div class="grid grid-cols-1 ${x.image_path && x.plate_image_path ? 'md:grid-cols-2' : ''} gap-4">
-                        ${x.image_path ? `
-                        <div>
-                            <span class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Hikvision Full Overview</span>
-                            <img src="/${x.image_path}" class="w-full h-60 object-cover rounded-xl border cursor-pointer" onclick="window.open('/${x.image_path}')">
-                        </div>` : ''}
-                        ${x.plate_image_path ? `
-                        <div>
-                            <span class="text-[10px] font-bold text-indigo-600 uppercase block mb-1">Dahua Plate Close-Up</span>
-                            <img src="/${x.plate_image_path}" class="w-full h-60 object-cover rounded-xl border cursor-pointer" onclick="window.open('/${x.plate_image_path}')">
-                        </div>` : ''}
+                    <div>
+                        <span class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Hikvision Full Overview</span>
+                        <img src="/${x.image_path}" class="w-full h-72 object-cover rounded-xl border cursor-pointer" onclick="window.open('/${x.image_path}')">
                     </div>
                 </div>` : ''}
             </div>
@@ -1267,7 +1251,6 @@ async function loadSettings() {
         if (document.getElementById('setEntry')) document.getElementById('setEntry').value = s.entry_reader_ip || '';
         if (document.getElementById('setExit')) document.getElementById('setExit').value = s.exit_reader_ip || '';
         if (document.getElementById('setHik')) document.getElementById('setHik').value = s.hikvision_cam_url || '';
-        if (document.getElementById('setDahua')) document.getElementById('setDahua').value = s.dahua_cam_url || '';
     } catch (e) {
         console.error('loadSettings error:', e);
     }
@@ -1280,8 +1263,7 @@ async function saveSettings() {
         traffic_msg: document.getElementById('setMsg')?.value || '',
         entry_reader_ip: document.getElementById('setEntry')?.value || '',
         exit_reader_ip: document.getElementById('setExit')?.value || '',
-        hikvision_cam_url: document.getElementById('setHik')?.value || '',
-        dahua_cam_url: document.getElementById('setDahua')?.value || ''
+        hikvision_cam_url: document.getElementById('setHik')?.value || ''
     };
 
     try {
@@ -1367,7 +1349,6 @@ async function loadCameraAudit(page = currentCamAuditPage) {
 
         gridEl.innerHTML = logs.map(item => {
             const hikImgSrc = item.image_path ? '/' + item.image_path : '';
-            const dahuaImgSrc = item.plate_image_path ? '/' + item.plate_image_path : '';
             const dirBadge = item.direction === 'Entry' ?
                 '<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-200">ENTRY</span>' :
                 item.direction === 'Exit' ?
@@ -1378,10 +1359,10 @@ async function loadCameraAudit(page = currentCamAuditPage) {
 
             return `
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md hover:border-slate-300 transition duration-200 flex flex-col group">
-                <div class="relative bg-slate-900 aspect-video overflow-hidden cursor-pointer" onclick="openCamProofModal('${hikImgSrc}', '${dahuaImgSrc}', '${item.timestamp}', '${item.direction}', '${item.event_type || 'Line Crossing'}')">
+                <div class="relative bg-slate-900 aspect-video overflow-hidden cursor-pointer" onclick="openCamProofModal('${hikImgSrc}', '${item.timestamp}', '${item.direction}', '${item.event_type || 'Line Crossing'}')">
                     <img src="${hikImgSrc}" alt="Vehicle Proof" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.src='/static/img/no-car.svg'">
                     <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                        <span class="bg-white/90 text-slate-900 px-3 py-1.5 rounded-xl text-xs font-bold shadow-lg">View Dual Proof</span>
+                        <span class="bg-white/90 text-slate-900 px-3 py-1.5 rounded-xl text-xs font-bold shadow-lg">View Proof</span>
                     </div>
                     <div class="absolute top-2.5 left-2.5">
                         ${dirBadge}
@@ -1390,10 +1371,6 @@ async function loadCameraAudit(page = currentCamAuditPage) {
                         <span class="bg-slate-900/80 backdrop-blur-sm text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-md text-[10px] font-mono font-bold">
                             HIKVISION
                         </span>
-                        ${item.plate_image_path ? `
-                        <span class="bg-slate-900/80 backdrop-blur-sm text-indigo-400 border border-indigo-500/30 px-2 py-0.5 rounded-md text-[10px] font-mono font-bold">
-                            DAHUA
-                        </span>` : ''}
                     </div>
                 </div>
                 <div class="p-4 flex-1 flex flex-col justify-between">
@@ -1406,7 +1383,7 @@ async function loadCameraAudit(page = currentCamAuditPage) {
                     </div>
                     <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
                         <span class="text-[11px] font-bold text-slate-500">Camera Audit Proof</span>
-                        <button type="button" onclick="openCamProofModal('${hikImgSrc}', '${dahuaImgSrc}', '${item.timestamp}', '${item.direction}', '${item.event_type || 'Line Crossing'}')" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition">
+                        <button type="button" onclick="openCamProofModal('${hikImgSrc}', '${item.timestamp}', '${item.direction}', '${item.event_type || 'Line Crossing'}')" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition">
                             View Proof &rarr;
                         </button>
                     </div>
@@ -1456,11 +1433,9 @@ function renderCamAuditPagination(total, page, totalPages, limit) {
     `;
 }
 
-function openCamProofModal(hikImgSrc, dahuaImgSrc, timestamp, direction, eventType) {
+function openCamProofModal(hikImgSrc, timestamp, direction, eventType) {
     const modal = document.getElementById('camProofModal');
     const hikImgEl = document.getElementById('camProofModalImgHik');
-    const dahuaImgEl = document.getElementById('camProofModalImgDahua');
-    const dahuaOfflineMsg = document.getElementById('dahuaOfflineMsg');
     const infoEl = document.getElementById('camProofModalInfo');
     if (!modal) return;
 
@@ -1469,34 +1444,16 @@ function openCamProofModal(hikImgSrc, dahuaImgSrc, timestamp, direction, eventTy
         hikImgEl.onerror = () => { hikImgEl.src = '/static/img/no-car.svg'; };
     }
 
-    if (dahuaImgEl && dahuaOfflineMsg) {
-        if (dahuaImgSrc && dahuaImgSrc !== 'null' && dahuaImgSrc !== 'undefined' && dahuaImgSrc !== '') {
-            dahuaImgEl.src = dahuaImgSrc;
-            dahuaImgEl.classList.remove('hidden');
-            dahuaOfflineMsg.classList.add('hidden');
-            dahuaImgEl.onerror = () => {
-                dahuaImgEl.classList.add('hidden');
-                dahuaOfflineMsg.classList.remove('hidden');
-            };
-        } else {
-            dahuaImgEl.classList.add('hidden');
-            dahuaOfflineMsg.classList.remove('hidden');
-        }
-    }
-
     if (infoEl) {
         infoEl.innerHTML = `
             <div class="flex items-center justify-between flex-wrap gap-2">
                 <div>
-                    <h3 class="text-sm font-bold text-slate-800">Synchronized Dual Camera Proof</h3>
+                    <h3 class="text-sm font-bold text-slate-800">Hikvision Camera Proof</h3>
                     <p class="text-xs text-slate-400 font-mono mt-0.5">Recorded: ${timestamp || ''} PKT &bull; Event: ${eventType || 'Line Crossing'} &bull; Direction: ${direction || 'Line Crossing'}</p>
                 </div>
                 <div class="flex items-center gap-2">
                     ${hikImgSrc ? `<a href="${hikImgSrc}" download target="_blank" class="px-3 py-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl hover:bg-emerald-100 transition">
                         Download Hikvision Overview
-                    </a>` : ''}
-                    ${dahuaImgSrc && dahuaImgSrc !== 'null' && dahuaImgSrc !== '' ? `<a href="${dahuaImgSrc}" download target="_blank" class="px-3 py-1.5 text-xs font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 rounded-xl hover:bg-indigo-100 transition">
-                        Download Dahua Plate Close-up
                     </a>` : ''}
                 </div>
             </div>

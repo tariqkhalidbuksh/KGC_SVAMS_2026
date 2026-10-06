@@ -39,7 +39,3 @@ async def save_settings(request: Request):
 @router.get("/stream/hikvision")
 async def stream_hikvision():
     return StreamingResponse(stream_video("Hikvision"), media_type="multipart/x-mixed-replace; boundary=frame")
-
-@router.get("/stream/dahua")
-async def stream_dahua():
-    return StreamingResponse(stream_video("Dahua"), media_type="multipart/x-mixed-replace; boundary=frame")

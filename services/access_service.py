@@ -6,12 +6,6 @@ from datetime import datetime
 import cv2
 import config
 from database import get_db_connection
-from services.camera_service import (
-    is_valid_image,
-    save_snapshot,
-    grab_verified_snapshot,
-    analyze_vehicle_direction
-)
 
 def log_camera_audit_event(
     image_path: str,
@@ -203,9 +197,6 @@ def process_camera_line_crossing(hikvision_image_path: str, forced_direction: st
     if not hikvision_image_path or not os.path.exists(hikvision_image_path):
         return
 
-    # STEP 1: IMMEDIATELY capture Dahua close-up frame (< 1ms from live RAM stream)
-    # Grabbing this at the exact microsecond of the trigger eliminates the 5-9s delay
-    dahua_img = grab_verified_snapshot("Dahua", max_timeout_sec=1.5)
     now = time.time()
     
     # 1. Real-time MD5 trigger de-duplication: prevents duplicate rapid bursts from Hikvision
@@ -250,23 +241,12 @@ def process_camera_line_crossing(hikvision_image_path: str, forced_direction: st
         pass
 
     hik_rel_path = f"static/camera_audits/hikvision_full_{stamp}.jpg"
-    dahua_rel_path = None
     direction = forced_direction or "Line Crossing"
     event_type = "Hikvision Line Crossing"
 
-    # Save Dahua Close-up Plate Image if captured
-    if is_valid_image(dahua_img):
-        dahua_target_path = os.path.join(target_dir, f"dahua_plate_{stamp}.jpg")
-        try:
-            cv2.imwrite(dahua_target_path, dahua_img, [cv2.IMWRITE_JPEG_QUALITY, 95])
-            dahua_rel_path = f"static/camera_audits/dahua_plate_{stamp}.jpg"
-            event_type = "Hikvision Overview + Dahua Plate Close-up"
-        except Exception as exc_dahua:
-            print(f"[DAHUA PLATE SAVE ERROR] {exc_dahua}")
-
     log_camera_audit_event(
         image_path=hik_rel_path,
-        plate_image_path=dahua_rel_path,
+        plate_image_path=None,
         direction=direction,
         event_type=event_type
     )
@@ -275,8 +255,7 @@ def process_camera_line_crossing(hikvision_image_path: str, forced_direction: st
 def deduplicate_camera_audit_logs() -> int:
     """
     Cleans up duplicate overview images in camera_audit_logs.
-    If multiple triggers occurred within a tight burst window, keeps the primary record
-    and preserves any Dahua close-up plate image (plate_image_path).
+    If multiple triggers occurred within a tight burst window, keeps the primary record.
     Returns count of removed duplicate rows.
     """
     removed_count = 0
@@ -304,10 +283,6 @@ def deduplicate_camera_audit_logs() -> int:
                         pass
 
                     if is_same_path or is_time_dup:
-                        # If this duplicate has a Dahua close plate image, transfer it to the retained row
-                        if r['plate_image_path'] and not prev_row['plate_image_path']:
-                            conn.execute("UPDATE camera_audit_logs SET plate_image_path=? WHERE id=?", 
-                                         (r['plate_image_path'], prev_row['id']))
                         to_delete.append(r['id'])
                         continue
 

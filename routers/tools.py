@@ -34,7 +34,7 @@ async def capture_diagnostic_frame(cam: str):
 async def receive_camera_trigger(request: Request):
     """
     Sub-100ms ultra-low latency HTTP event receiver for Hikvision Alarm Center / HTTP Listening.
-    Instantly triggers dual synchronized Dahua plate and Hikvision overview captures.
+    Instantly triggers Hikvision line-crossing overview capture.
     """
     import os
     import time

@@ -418,7 +418,7 @@ async function fireHttpCameraTrigger(btn) {
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-slate-400 font-bold uppercase text-[10px]">Server Action:</span>
-                        <span class="text-slate-700 font-semibold">Dual Camera Synchronized Capture Triggered</span>
+                        <span class="text-slate-700 font-semibold">Hikvision Line Crossing Capture Triggered</span>
                     </div>
                 </div>
             `;
@@ -427,7 +427,7 @@ async function fireHttpCameraTrigger(btn) {
         if (resultBox) {
             resultBox.classList.remove('hidden');
             resultBox.className = 'mt-4 text-xs rounded-xl px-4 py-3 bg-emerald-50 border border-emerald-200 text-emerald-900 font-bold';
-            resultBox.innerHTML = `Instant HTTP Trigger Dispatched: Hikvision Line-Crossing event acknowledged in ${elapsed}ms. Dahua close-up and Hikvision overview captured in parallel.`;
+            resultBox.innerHTML = `Instant HTTP Trigger Dispatched: Hikvision Line-Crossing event acknowledged in ${elapsed}ms. Vehicle overview captured.`;
         }
 
         setTimeout(async () => {
@@ -439,7 +439,6 @@ async function fireHttpCameraTrigger(btn) {
                     if (latest && previewBox) {
                         previewBox.classList.remove('hidden');
                         if ($('httpPrevHik') && latest.image_path) $('httpPrevHik').src = '/' + latest.image_path;
-                        if ($('httpPrevDahua') && latest.plate_image_path) $('httpPrevDahua').src = '/' + latest.plate_image_path;
                     }
                 }
             } catch (err) {}

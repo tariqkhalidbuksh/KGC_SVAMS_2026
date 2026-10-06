@@ -553,10 +553,6 @@
                             <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Hikvision Camera RTSP Stream URL</label>
                             <input id="setHik" class="w-full border rounded-xl p-3 bg-slate-50 font-mono text-xs">
                         </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Dahua Camera RTSP Stream URL</label>
-                            <input id="setDahua" class="w-full border rounded-xl p-3 bg-slate-50 font-mono text-xs">
-                        </div>
                     </div>
 
                     <button type="button" onclick="saveSettings()" class="bg-slate-900 hover:bg-slate-800 text-white px-8 py-3.5 rounded-xl font-bold shadow-md transition">Save Configuration</button>
@@ -575,35 +571,21 @@
     </div>
 
     <div id="camProofModal" class="hidden fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm" onclick="closeCamProofModal()">
-        <div class="bg-white rounded-3xl shadow-2xl max-w-5xl w-full overflow-hidden" onclick="event.stopPropagation()">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-4xl w-full overflow-hidden" onclick="event.stopPropagation()">
             <div class="p-4 border-b bg-slate-50 flex items-center justify-between">
-                <span class="text-sm font-black text-slate-800 tracking-wide uppercase">Camera Proof Inspection &bull; Dual Camera Synchronized Capture</span>
+                <span class="text-sm font-black text-slate-800 tracking-wide uppercase">Camera Proof Inspection &bull; Hikvision Overview Capture</span>
                 <button type="button" onclick="closeCamProofModal()" class="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-600 font-bold flex items-center justify-center text-sm">&times;</button>
             </div>
             <div class="p-6 bg-slate-950" id="camProofModalBody">
-                <div id="camProofDualGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="space-y-2">
-                        <div class="flex items-center justify-between px-1">
-                            <span class="text-xs font-black uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                                Hikvision Overview Shot (Full Vehicle)
-                            </span>
-                        </div>
-                        <div class="bg-slate-900 rounded-2xl overflow-hidden aspect-video flex items-center justify-center border border-slate-800">
-                            <img id="camProofModalImgHik" src="" alt="Hikvision Full View" class="max-h-[50vh] w-full object-contain">
-                        </div>
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between px-1">
+                        <span class="text-xs font-black uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                            Hikvision Vehicle Overview Shot
+                        </span>
                     </div>
-                    <div class="space-y-2">
-                        <div class="flex items-center justify-between px-1">
-                            <span class="text-xs font-black uppercase tracking-wider text-indigo-400 flex items-center gap-1.5">
-                                <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
-                                Dahua Gate Shot (Close-up License Plate)
-                            </span>
-                        </div>
-                        <div class="bg-slate-900 rounded-2xl overflow-hidden aspect-video flex items-center justify-center border border-slate-800" id="dahuaProofWrap">
-                            <img id="camProofModalImgDahua" src="" alt="Dahua Close-up View" class="max-h-[50vh] w-full object-contain">
-                            <p id="dahuaOfflineMsg" class="hidden text-xs text-slate-400 font-bold text-center px-4">Dahua Close-up Camera Offline / Pending Upload</p>
-                        </div>
+                    <div class="bg-slate-900 rounded-2xl overflow-hidden aspect-video flex items-center justify-center border border-slate-800">
+                        <img id="camProofModalImgHik" src="" alt="Hikvision Full View" class="max-h-[60vh] w-full object-contain">
                     </div>
                 </div>
             </div>

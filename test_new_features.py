@@ -177,7 +177,7 @@ def test_universal_cross_reader_cooldown_entry_then_exit():
         assert len(rows) == 1
         assert rows[0]["direction"] == "Entry"
 
-def test_camera_audit_deduplication_preserves_dahua_plate():
+def test_camera_audit_deduplication():
     from services.access_service import deduplicate_camera_audit_logs, log_camera_audit_event
     with get_db_connection() as conn:
         with conn:
@@ -188,32 +188,29 @@ def test_camera_audit_deduplication_preserves_dahua_plate():
     os.makedirs("static/camera_audits", exist_ok=True)
     img1 = "static/camera_audits/test_dedup_overview_1.jpg"
     img2 = "static/camera_audits/test_dedup_overview_2.jpg"
-    plate_img = "static/camera_audits/test_dedup_dahua_plate.jpg"
     with open(img1, "wb") as f: f.write(b"overview_bytes_1")
     with open(img2, "wb") as f: f.write(b"overview_bytes_2")
-    with open(plate_img, "wb") as f: f.write(b"plate_bytes")
 
-    # Trigger 1: overview without plate
+    # Trigger 1: overview
     log_camera_audit_event(img1, plate_image_path=None, direction="Entry")
-    # Trigger 2 (immediate repeat within 1s): overview with Dahua plate
-    log_camera_audit_event(img2, plate_image_path=plate_img, direction="Entry")
+    # Trigger 2 (immediate repeat within 1s): duplicate overview
+    log_camera_audit_event(img2, plate_image_path=None, direction="Entry")
 
     removed = deduplicate_camera_audit_logs()
     assert removed >= 1
 
-    # Verify Dahua plate was preserved in the retained record
+    # Verify single record remains
     with get_db_connection() as conn:
         remaining = conn.execute("SELECT * FROM camera_audit_logs WHERE image_path LIKE '%test_dedup%'").fetchall()
         assert len(remaining) == 1
-        assert remaining[0]["plate_image_path"] == plate_img
 
     # Cleanup test files
-    for p in (img1, img2, plate_img):
+    for p in (img1, img2):
         if os.path.exists(p): os.remove(p)
 
-def test_dahua_capture_latency_under_two_seconds():
+def test_hikvision_capture_latency_under_two_seconds():
     """
-    Verifies that Dahua frame capture executes in less than 2 seconds (in practice < 0.1s).
+    Verifies that Hikvision frame capture and event logging executes in less than 2 seconds (in practice < 0.1s).
     """
     import numpy as np
     import cv2
@@ -224,15 +221,15 @@ def test_dahua_capture_latency_under_two_seconds():
 
     # Simulate live frame in RAM buffer
     dummy_frame = np.full((480, 640, 3), 120, dtype=np.uint8)
-    cv2.putText(dummy_frame, "DAHUA LIVE TEST", (50, 200), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+    cv2.putText(dummy_frame, "HIKVISION LIVE TEST", (50, 200), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
     
     with config.FRAME_LOCK:
-        config.LATEST_RAW_FRAMES["Dahua"] = dummy_frame
-        config.LATEST_FRAME_TIMES["Dahua"] = time.time()
-        config.CAM_STATUS["Dahua"] = "ONLINE"
+        config.LATEST_RAW_FRAMES["Hikvision"] = dummy_frame
+        config.LATEST_FRAME_TIMES["Hikvision"] = time.time()
+        config.CAM_STATUS["Hikvision"] = "ONLINE"
 
     t0 = time.time()
-    captured_img = grab_verified_snapshot("Dahua", max_timeout_sec=1.5)
+    captured_img = grab_verified_snapshot("Hikvision", max_timeout_sec=1.5)
     t_snap = time.time() - t0
 
     assert captured_img is not None
@@ -247,10 +244,9 @@ def test_dahua_capture_latency_under_two_seconds():
     process_camera_line_crossing(hik_dummy, forced_direction="Entry")
     t_process = time.time() - t1
 
-    # Entire pipeline including Dahua snapshot & DB insert must be well below 2 seconds
+    # Entire pipeline including snapshot & DB insert must be well below 2 seconds
     assert t_process < 1.0
 
-    # Verify latest camera audit record contains the plate close-up
     # Clean up test audit record
     with get_db_connection() as conn:
         latest = conn.execute("SELECT * FROM camera_audit_logs ORDER BY id DESC LIMIT 1").fetchone()
@@ -357,9 +353,6 @@ def test_instant_http_camera_trigger():
         config.LATEST_RAW_FRAMES["Hikvision"] = dummy_frame
         config.LATEST_FRAME_TIMES["Hikvision"] = time.time()
         config.CAM_STATUS["Hikvision"] = "ONLINE"
-        config.LATEST_RAW_FRAMES["Dahua"] = dummy_frame
-        config.LATEST_FRAME_TIMES["Dahua"] = time.time()
-        config.CAM_STATUS["Dahua"] = "ONLINE"
 
     # Test HTTP alert trigger
     res = client.post("/api/tools/event/hikvision", json={"eventType": "linedetection", "rule": "rule1"})

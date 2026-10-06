@@ -10,7 +10,7 @@
 
 ## 📌 Executive Summary
 
-**KGC-SVAMS** is an enterprise-grade, high-throughput vehicle gate access management platform engineered specifically for the **Karachi Gymkhana Club (KGC)**. The platform integrates long-range UHF RFID hardware, multi-angle RTSP IP security cameras (Hikvision & Dahua ANPR), AI vehicle detection, and low-latency asynchronous processing to automate vehicle authentication, prevent unauthorized access, and ensure smooth traffic flow at security gates.
+**KGC-SVAMS** is an enterprise-grade, high-throughput vehicle gate access management platform engineered specifically for the **Karachi Gymkhana Club (KGC)**. The platform integrates long-range UHF RFID hardware, Hikvision IP security cameras (Line-Crossing & Vehicle Overview), AI vehicle detection, and low-latency asynchronous processing to automate vehicle authentication, prevent unauthorized access, and ensure smooth traffic flow at security gates.
 
 ---
 
@@ -19,13 +19,13 @@
 ```
                                  [ HARDWARE LAYER ]
   +--------------------------+                      +--------------------------+
-  |  UHF RFID Long-Range     |                      |  Dual RTSP IP Cameras    |
-  |  Antenna (Entry / Exit)  |                      |  Hikvision (Wide Scene)  |
-  |  TCP/IP Sockets          |                      |  Dahua (Close-Up Plate)  |
+  |  UHF RFID Long-Range     |                      |  Hikvision IP Camera     |
+  |  Antenna (Entry / Exit)  |                      |  (Wide Scene Overview)   |
+  |  TCP/IP Sockets          |                      |  Line-Crossing Detection |
   +------------+-------------+                      +------------+-------------+
                |                                                 |
                | TCP Raw Read                                    | RTSP Frames /
-               | Stream (Port 6000)                              | FTP Push (Port 2121)
+               | Stream (Port 6000)                              | HTTP Push / FTP (Port 2121)
                v                                                 v
   +----------------------------------------------------------------------------+
   |                          KGC-SVAMS FASTAPI BACKEND                         |
@@ -74,10 +74,9 @@
 - **45-Second Cross-Reader Cooldown**: If a vehicle sits between entry and exit antennas, dual-entry or rapid flip-flopping is strictly rejected. Once scanned, any opposite-gate trigger for the same tag within 45 seconds is throttled.
 - **3.5-Second Gate Passage Debounce**: Prevents burst reads from logging duplicate access events when a car passes slowly under the antenna.
 
-### 3. Dual-Camera Scene Fusion & Smart Deduplication
+### 3. Hikvision Optical Line-Crossing & Vehicle Overview
 - **Hikvision (Wide Angle)**: Triggers on line-crossing events, capturing wide-angle scene contexts and vehicle positioning.
-- **Dahua (ANPR Close-Up)**: Simultaneously grabs close-range frame crops targeted at the vehicle's license plate.
-- **Smart Image Deduplication**: Redundant identical scene frames captured within rapid trigger intervals are automatically discarded, while close-up license plate captures are preserved without degradation.
+- **Smart Image Deduplication**: Redundant identical scene frames captured within rapid trigger intervals are automatically discarded to keep storage lean and responsive.
 
 ### 4. Zero-Lag Real-Time Kiosk UI
 - Glassmorphic luxury visual theme optimized for outdoor/indoor gate display monitors.
@@ -144,7 +143,6 @@ RFID_VAMS/
 | **Entry RFID Reader** | `192.168.0.217:6000` | TCP Socket | UHF Long-range entry vehicle tag detection |
 | **Exit RFID Reader** | `192.168.0.216:6000` | TCP Socket | UHF Long-range exit vehicle tag detection |
 | **Hikvision IP Camera** | `192.168.0.220:554` | RTSP / FTP (2121) | Wide scene context & line-crossing snapshots |
-| **Dahua ANPR Camera** | `192.168.0.218:554` | RTSP | High-resolution close-up license plate crop |
 | **VAMS Core Server** | `0.0.0.0:8000` | HTTP / WebSocket | Web dashboard, kiosk display, and REST APIs |
 
 ---

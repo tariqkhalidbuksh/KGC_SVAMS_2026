@@ -54,38 +54,6 @@ def save_snapshot(img, prefix: str):
     except Exception:
         return None
 
-def grab_dahua_snapshot(timeout: float = 1.2):
-    creds = _cam_credentials('dahua_cam_url')
-    if not creds:
-        return None
-    user, pwd, ip = creds
-    urls = [
-        f"http://{ip}/cgi-bin/snapshot.cgi?channel=1",
-        f"http://{ip}/cgi-bin/snapshot.cgi",
-        f"http://{ip}/onvif-http/snapshot?Profile_1"
-    ]
-    start_t = time.time()
-    for url in urls:
-        elapsed = time.time() - start_t
-        remaining = timeout - elapsed
-        if remaining <= 0.15:
-            break
-        req_timeout = min(remaining, 1.0)
-        try:
-            res = requests.get(url, auth=requests.auth.HTTPDigestAuth(user, pwd), timeout=req_timeout)
-            if res.status_code == 200:
-                arr = np.frombuffer(res.content, np.uint8)
-                img = cv2.imdecode(arr, cv2.IMREAD_COLOR)
-                if is_valid_image(img):
-                    with config.FRAME_LOCK:
-                        config.CAM_STATUS["Dahua"] = "ONLINE"
-                    return img
-        except Exception:
-            continue
-    with config.FRAME_LOCK:
-        config.CAM_STATUS["Dahua"] = "OFFLINE"
-    return None
-
 def grab_hikvision_snapshot(timeout: float = 1.2):
     creds = _cam_credentials('hikvision_cam_url')
     if not creds:
@@ -114,8 +82,8 @@ def grab_hikvision_snapshot(timeout: float = 1.2):
         config.CAM_STATUS["Hikvision"] = "OFFLINE"
     return None
 
-def grab_verified_snapshot(cam_key: str, max_timeout_sec: float = 1.5):
-    norm_key = cam_key.capitalize()
+def grab_verified_snapshot(cam_key: str = "Hikvision", max_timeout_sec: float = 1.5):
+    norm_key = cam_key.capitalize() if cam_key else "Hikvision"
     now = time.time()
 
     # 1. Zero-lag instant capture from live RTSP RAM frame buffer (< 1ms)
@@ -138,11 +106,7 @@ def grab_verified_snapshot(cam_key: str, max_timeout_sec: float = 1.5):
             pass
 
     # 2. Fast HTTP direct snapshot fallback (with strict <= 1.2s timeout)
-    if norm_key.lower() == "dahua":
-        img = grab_dahua_snapshot(timeout=max_timeout_sec)
-    else:
-        img = grab_hikvision_snapshot(timeout=max_timeout_sec)
-
+    img = grab_hikvision_snapshot(timeout=max_timeout_sec)
     if is_valid_image(img):
         return img
 

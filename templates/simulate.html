@@ -170,7 +170,7 @@
                             class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-4 rounded-xl font-bold shadow-lg transition flex items-center justify-center gap-2">
                         <span>Fire Instant HTTP Trigger</span>
                     </button>
-                    <p class="text-xs text-slate-400">Triggers immediate parallel capture of Dahua close-up frame and Hikvision overview frame with 0s FTP lag.</p>
+                    <p class="text-xs text-slate-400">Triggers immediate capture of Hikvision overview frame with sub-100ms HTTP latency.</p>
                 </div>
 
                 <div class="bg-slate-50 rounded-2xl p-5 border flex flex-col justify-between min-h-[240px]">
@@ -180,20 +180,14 @@
                             <span id="httpLatencyBadge" class="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-600">IDLE</span>
                         </div>
                         <div id="httpResultDetails" class="text-xs text-slate-500 space-y-2">
-                            <p>Ready to simulate HTTP push event. Click "Fire Instant HTTP Trigger" to benchmark capture latency and camera synchronization.</p>
+                            <p>Ready to simulate HTTP push event. Click "Fire Instant HTTP Trigger" to benchmark capture latency.</p>
                         </div>
                     </div>
 
                     <div id="httpDualPreview" class="hidden mt-4 pt-4 border-t border-slate-200">
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <span class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Hikvision Overview</span>
-                                <img id="httpPrevHik" src="" class="w-full h-24 object-cover rounded-xl border border-slate-200 bg-slate-900" alt="Hikvision Overview">
-                            </div>
-                            <div>
-                                <span class="text-[10px] font-bold text-indigo-600 uppercase block mb-1">Dahua Plate Close-up</span>
-                                <img id="httpPrevDahua" src="" class="w-full h-24 object-cover rounded-xl border border-slate-200 bg-slate-900" alt="Dahua Close-up">
-                            </div>
+                        <div>
+                            <span class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Hikvision Overview</span>
+                            <img id="httpPrevHik" src="" class="w-full h-32 object-cover rounded-xl border border-slate-200 bg-slate-900" alt="Hikvision Overview">
                         </div>
                         <div class="mt-3 text-right">
                             <a href="/" target="_blank" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition">View in Camera Vehicle Audit &rarr;</a>
