@@ -450,7 +450,13 @@ async function loadAudit(page = currentAuditPage) {
                 </td>
                 <td class="p-3.5">${statusPill}</td>
                 <td class="p-3.5 text-right pr-6" onclick="event.stopPropagation()">
-                    <button type="button" onclick='openAudit(${JSON.stringify(a).replace(/'/g, "&#39;")})' class="text-xs font-bold text-indigo-600 hover:text-indigo-800 border border-indigo-200 rounded-xl px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 shadow-sm transition">Report</button>
+                    <div class="flex items-center justify-end gap-2">
+                        <button type="button" onclick='openAudit(${JSON.stringify(a).replace(/'/g, "&#39;")})' class="text-xs font-bold text-indigo-600 hover:text-indigo-800 border border-indigo-200 rounded-xl px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 shadow-sm transition">Report</button>
+                        <a href="/api/audit/${thumb.id}/pdf" target="_blank" title="Download Executive Gold-Standard PDF Report" class="text-xs font-bold text-amber-800 hover:text-amber-900 border border-amber-300 rounded-xl px-2.5 py-1.5 bg-gradient-to-r from-amber-50 to-yellow-50 hover:from-amber-100 hover:to-yellow-100 shadow-xs transition inline-flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                            PDF
+                        </a>
+                    </div>
                 </td>
             </tr>`;
         }).join('');
@@ -556,9 +562,15 @@ function openAudit(a) {
                             </span>
                             <span class="text-[9px] font-black px-2.5 py-1 rounded-full bg-slate-100 text-slate-700">${(v.direction || 'ENTRY').toUpperCase()}</span>
                         </div>
-                    </div>
                 </div>
                 <div class="text-right text-xs text-slate-500 space-y-1">
+                    <div class="flex items-center justify-end gap-2 mb-1.5">
+                        <a href="/api/audit/${v.id}/pdf" target="_blank"
+                           class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-extrabold bg-gradient-to-r from-amber-100 to-yellow-100 text-amber-900 border border-amber-300 hover:from-amber-200 hover:to-yellow-200 shadow-xs transition">
+                            <svg class="w-3.5 h-3.5 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                            Export PDF
+                        </a>
+                    </div>
                     <p><b>Report Ref:</b> <span class="font-mono font-bold text-slate-700">AUD-${String(v.id).padStart(6, '0')}</span></p>
                     <p><b>Generated:</b> ${new Date().toLocaleString()}</p>
                     <p><b>Visit Date:</b> ${String(v.timestamp).substring(0, 10)}</p>
@@ -641,8 +653,15 @@ function openAudit(a) {
                 </div>` : ''}
             </div>
 
-            <div class="flex justify-end gap-3 pt-4 border-t">
-                <button type="button" onclick="closeAudit()" class="px-6 py-2.5 rounded-xl font-bold text-sm border bg-white hover:bg-slate-50">Close</button>
+            <div class="flex justify-between items-center pt-5 border-t flex-wrap gap-3">
+                <a href="/api/audit/${v.id}/pdf" target="_blank"
+                   class="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm text-amber-950 bg-gradient-to-r from-amber-200 via-yellow-100 to-amber-300 hover:from-amber-300 hover:to-yellow-200 border border-amber-400/80 shadow-md transition">
+                    <svg class="w-4 h-4 text-amber-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    Download Gold-Standard PDF Certificate
+                </a>
+                <div class="flex items-center gap-3">
+                    <button type="button" onclick="closeAudit()" class="px-6 py-2.5 rounded-xl font-bold text-sm border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 shadow-xs">Close</button>
+                </div>
             </div>
         </div>
     </div>`;

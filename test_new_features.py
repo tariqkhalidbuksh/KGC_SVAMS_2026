@@ -368,6 +368,52 @@ def test_instant_http_camera_trigger():
     assert data["ok"] is True
     assert data["mode"] == "instant_http"
 
+def test_audit_pdf_generation_endpoint():
+    """
+    Verifies that the /api/audit/{log_id}/pdf and /api/audit/pdf endpoints
+    generate clean, gold-standard PDF certificates containing valid PDF headers.
+    """
+    # 1. Insert a test log entry
+    with get_db_connection() as conn:
+        with conn:
+            cursor = conn.execute("""INSERT INTO daily_logs 
+                (mem_id, name, vehicle_number, access_type, direction, gate_no, scanned_tag, timestamp)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+                ('MEM-9999', 'Executive Member', 'KGC-777', 'RFID Verified Member', 'Entry', 'Gate-01', 'EPC9999', '2026-10-06 10:00:00')
+            )
+            test_log_id = cursor.lastrowid
+
+    try:
+        # 2. Test GET /api/audit/{log_id}/pdf
+        res = client.get(f"/api/audit/{test_log_id}/pdf")
+        assert res.status_code == 200
+        assert res.headers["content-type"] == "application/pdf"
+        assert res.content.startswith(b"%PDF-")
+        assert len(res.content) > 1000
+
+        # 3. Test POST /api/audit/pdf
+        post_res = client.post("/api/audit/pdf", json={
+            "entry": {
+                "id": test_log_id,
+                "mem_id": "MEM-9999",
+                "name": "Executive Member",
+                "vehicle_number": "KGC-777",
+                "timestamp": "2026-10-06 10:00:00",
+                "gate_no": "Gate-01"
+            },
+            "duration": "1h 15m",
+            "status": "Exited"
+        })
+        assert post_res.status_code == 200
+        assert post_res.headers["content-type"] == "application/pdf"
+        assert post_res.content.startswith(b"%PDF-")
+        assert len(post_res.content) > 1000
+    finally:
+        with get_db_connection() as conn:
+            with conn:
+                conn.execute("DELETE FROM daily_logs WHERE id=?", (test_log_id,))
+
+
 
 
 

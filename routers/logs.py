@@ -1,6 +1,6 @@
 import math
 from datetime import datetime
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, Response, Request
 import config
 from database import get_db_connection
 
@@ -289,3 +289,106 @@ async def api_deduplicate_camera_audits():
     from services.access_service import deduplicate_camera_audit_logs
     removed = deduplicate_camera_audit_logs()
     return {"ok": True, "removed_duplicates": removed}
+
+@router.get("/audit/{log_id}/pdf")
+async def get_audit_log_pdf(log_id: int):
+    with config.DB_LOCK:
+        conn = get_db_connection()
+        try:
+            target = conn.execute("""SELECT d.id, d.mem_id, d.name, d.vehicle_number, d.access_type, d.direction,
+                    d.gate_no, d.image_path, d.plate_image_path, d.scanned_tag, d.timestamp,
+                    m.Make_Model as make_model, m.Profile_pic as profile_pic
+                FROM daily_logs d LEFT JOIN members m ON d.mem_id = m.Mem_id AND d.vehicle_number = m.Car_number
+                WHERE d.id = ?""", (log_id,)).fetchone()
+            if not target:
+                raise HTTPException(404, f"Audit log #{log_id} not found")
+            target_dict = dict(target)
+
+            target_date = str(target_dict["timestamp"])[:10]
+            same_day_rows = conn.execute("""SELECT d.id, d.mem_id, d.name, d.vehicle_number, d.access_type, d.direction,
+                    d.gate_no, d.image_path, d.plate_image_path, d.scanned_tag, d.timestamp,
+                    m.Make_Model as make_model, m.Profile_pic as profile_pic
+                FROM daily_logs d LEFT JOIN members m ON d.mem_id = m.Mem_id AND d.vehicle_number = m.Car_number
+                WHERE date(d.timestamp)=? ORDER BY d.id ASC""", (target_date,)).fetchall()
+            logs = [dict(r) for r in same_day_rows]
+        finally:
+            conn.close()
+
+    entry_rec = None
+    exit_rec = None
+    if target_dict["direction"] == "Entry":
+        entry_rec = target_dict
+        key = _identity_key(entry_rec)
+        if key:
+            for l in logs:
+                if l["direction"] == "Exit" and _identity_key(l) == key:
+                    exit_rec = l
+                    break
+    else:
+        exit_rec = target_dict
+        key = _identity_key(exit_rec)
+        if key:
+            for l in logs:
+                if l["direction"] == "Entry" and _identity_key(l) == key:
+                    entry_rec = l
+                    break
+
+    if entry_rec and exit_rec and str(entry_rec["timestamp"]) > str(exit_rec["timestamp"]):
+        entry_rec, exit_rec = exit_rec, entry_rec
+
+    is_unregistered = bool(
+        (entry_rec or exit_rec) and (
+            'Unknown' in ((entry_rec or exit_rec).get('access_type') or '') or
+            'No RFID' in ((entry_rec or exit_rec).get('access_type') or '') or
+            'Unregistered' in ((entry_rec or exit_rec).get('name') or '')
+        )
+    )
+    audit_status = "Exited" if exit_rec else "Inside Facility"
+    if is_unregistered and not exit_rec:
+        audit_status = "Alert / Inside"
+
+    duration = None
+    if entry_rec and exit_rec:
+        duration = _fmt_duration(entry_rec['timestamp'], exit_rec['timestamp'])
+    elif entry_rec:
+        duration = _fmt_active_duration(entry_rec['timestamp'])
+
+    audit_payload = {
+        "entry": entry_rec,
+        "exit": exit_rec,
+        "duration": duration,
+        "status": audit_status,
+        "is_alert": is_unregistered
+    }
+
+    from services.pdf_service import generate_audit_pdf
+    pdf_bytes = generate_audit_pdf(audit_payload)
+    filename = f"Audit_Report_AUD_{str(log_id).zfill(6)}.pdf"
+
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f"inline; filename={filename}",
+            "Cache-Control": "no-cache"
+        }
+    )
+
+@router.post("/audit/pdf")
+async def post_audit_pdf(request: Request):
+    body = await request.json()
+    if not body:
+        raise HTTPException(400, "Audit record data is required")
+    from services.pdf_service import generate_audit_pdf
+    pdf_bytes = generate_audit_pdf(body)
+    ref = ((body.get("entry") or body.get("exit") or {}).get("id")) or int(time.time())
+    filename = f"Audit_Report_AUD_{str(ref).zfill(6)}.pdf"
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f"inline; filename={filename}",
+            "Cache-Control": "no-cache"
+        }
+    )
+

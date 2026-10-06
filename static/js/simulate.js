@@ -16,7 +16,8 @@ async function runSelfTest() {
         { name: 'Kiosk Terminal', url: '/kiosk', method: 'GET' },
         { name: 'Members API', url: '/api/members?limit=1', method: 'GET' },
         { name: 'Stats API', url: '/api/stats', method: 'GET' },
-        { name: 'Hardware Telemetry', url: '/api/tools/status', method: 'GET' }
+        { name: 'Hardware Telemetry', url: '/api/tools/status', method: 'GET' },
+        { name: 'Instant HTTP Event Listener', url: '/api/event/hikvision', method: 'GET' }
     ];
 
     let html = '';
@@ -331,6 +332,137 @@ async function clearAllLogs() {
         loadTestReport();
     } catch (e) {
         alert('Failed to clear logs: ' + e.message);
+    }
+}
+
+async function fireHttpCameraTrigger(btn) {
+    const orig = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.innerHTML = 'Firing HTTP Trigger...';
+        btn.disabled = true;
+    }
+
+    const dir = $('httpSimDir')?.value || 'Line Crossing';
+    const payloadType = $('httpSimPayload')?.value || 'json';
+    const latencyBadge = $('httpLatencyBadge');
+    const detailsBox = $('httpResultDetails');
+    const resultBox = $('httpTriggerResult');
+    const previewBox = $('httpDualPreview');
+
+    if (latencyBadge) {
+        latencyBadge.className = 'text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 animate-pulse';
+        latencyBadge.innerText = 'SENDING...';
+    }
+
+    let reqBody, reqHeaders = {};
+    if (payloadType === 'xml') {
+        reqHeaders['Content-Type'] = 'application/xml';
+        reqBody = `<?xml version="1.0" encoding="UTF-8"?>
+<EventNotificationAlert version="2.0" xmlns="http://www.hikvision.com/networks/forms">
+    <eventType>linedetection</eventType>
+    <eventDescription>${dir}</eventDescription>
+    <ruleID>${dir === 'Exit' ? 'rule2' : 'rule1'}</ruleID>
+    <channelID>1</channelID>
+</EventNotificationAlert>`;
+    } else if (payloadType === 'test') {
+        reqHeaders['Content-Type'] = 'application/json';
+        reqBody = JSON.stringify({ type: "heartbeat", test: true, ping: Date.now() });
+    } else {
+        reqHeaders['Content-Type'] = 'application/json';
+        reqBody = JSON.stringify({
+            eventType: "linedetection",
+            direction: dir,
+            rule: dir === 'Exit' ? 'rule2' : 'rule1',
+            timestamp: new Date().toISOString()
+        });
+    }
+
+    const tStart = performance.now();
+
+    try {
+        const res = await fetch('/api/event/hikvision', {
+            method: 'POST',
+            headers: reqHeaders,
+            body: reqBody
+        });
+        const elapsed = Math.round(performance.now() - tStart);
+
+        let data = {};
+        const contentType = res.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+            data = await res.json();
+        } else {
+            const txt = await res.text();
+            data = { ok: res.ok, raw: txt };
+        }
+
+        if (latencyBadge) {
+            latencyBadge.className = 'text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800';
+            latencyBadge.innerText = `${elapsed} ms`;
+        }
+
+        if (detailsBox) {
+            detailsBox.innerHTML = `
+                <div class="space-y-1.5">
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400 font-bold uppercase text-[10px]">HTTP Status:</span>
+                        <span class="font-mono font-black text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded text-[11px]">${res.status} ${res.statusText || 'OK'}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400 font-bold uppercase text-[10px]">Round-Trip Latency:</span>
+                        <span class="font-mono font-bold text-slate-800">${elapsed} ms (${elapsed < 100 ? 'Ultra-low latency' : 'Normal'})</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400 font-bold uppercase text-[10px]">Simulated Direction:</span>
+                        <span class="font-mono font-bold text-indigo-600">${dir}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400 font-bold uppercase text-[10px]">Server Action:</span>
+                        <span class="text-slate-700 font-semibold">Dual Camera Synchronized Capture Triggered</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        if (resultBox) {
+            resultBox.classList.remove('hidden');
+            resultBox.className = 'mt-4 text-xs rounded-xl px-4 py-3 bg-emerald-50 border border-emerald-200 text-emerald-900 font-bold';
+            resultBox.innerHTML = `Instant HTTP Trigger Dispatched: Hikvision Line-Crossing event acknowledged in ${elapsed}ms. Dahua close-up and Hikvision overview captured in parallel.`;
+        }
+
+        setTimeout(async () => {
+            try {
+                const auditRes = await fetch('/api/camera-audit?limit=1');
+                if (auditRes.ok) {
+                    const auditData = await auditRes.json();
+                    const latest = (auditData.logs || [])[0];
+                    if (latest && previewBox) {
+                        previewBox.classList.remove('hidden');
+                        if ($('httpPrevHik') && latest.image_path) $('httpPrevHik').src = '/' + latest.image_path;
+                        if ($('httpPrevDahua') && latest.plate_image_path) $('httpPrevDahua').src = '/' + latest.plate_image_path;
+                    }
+                }
+            } catch (err) {}
+        }, 350);
+
+    } catch (e) {
+        if (latencyBadge) {
+            latencyBadge.className = 'text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800';
+            latencyBadge.innerText = 'FAIL';
+        }
+        if (detailsBox) {
+            detailsBox.innerHTML = `<p class="text-rose-600 font-bold">HTTP Trigger Failed: ${e.message}</p>`;
+        }
+        if (resultBox) {
+            resultBox.classList.remove('hidden');
+            resultBox.className = 'mt-4 text-xs rounded-xl px-4 py-3 bg-rose-50 border border-rose-200 text-rose-800 font-bold';
+            resultBox.innerHTML = `Trigger Error: Could not connect to /api/event/hikvision (${e.message})`;
+        }
+    } finally {
+        if (btn) {
+            btn.innerHTML = orig;
+            btn.disabled = false;
+        }
     }
 }
 

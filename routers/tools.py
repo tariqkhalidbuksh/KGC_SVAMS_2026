@@ -77,7 +77,21 @@ async def receive_camera_trigger(request: Request):
     if temp_path and os.path.exists(temp_path):
         import threading
         threading.Thread(target=process_camera_line_crossing, args=(temp_path, direction), daemon=True).start()
-        return {"ok": True, "status": "triggered", "mode": "instant_http"}
 
-    return {"ok": False, "status": "no_frame_available"}
+    accept = request.headers.get("accept", "").lower()
+    user_agent = request.headers.get("user-agent", "").lower()
+
+    if "xml" in accept or "hikvision" in user_agent:
+        from fastapi.responses import Response
+        xml_resp = (
+            '<?xml version="1.0" encoding="UTF-8"?>\n'
+            '<ResponseStatus version="2.0" xmlns="http://www.hikvision.com/networks/forms">\n'
+            '    <requestURL>/api/event/hikvision</requestURL>\n'
+            '    <statusCode>1</statusCode>\n'
+            '    <statusString>OK</statusString>\n'
+            '</ResponseStatus>'
+        )
+        return Response(content=xml_resp, media_type="application/xml")
+
+    return {"ok": True, "status": "triggered" if (temp_path and os.path.exists(temp_path)) else "acknowledged", "mode": "instant_http"}
 

@@ -43,6 +43,13 @@ app.include_router(settings.router)
 app.include_router(tools.router)
 app.include_router(simulate.router)
 
+@app.api_route("/api/event/hikvision", methods=["GET", "POST", "PUT"])
+@app.api_route("/api/camera/trigger", methods=["GET", "POST"])
+@app.api_route("/ISAPI/Event/notification/alertStream", methods=["GET", "POST", "PUT"])
+async def direct_camera_trigger(request: Request):
+    from routers.tools import receive_camera_trigger
+    return await receive_camera_trigger(request)
+
 def render_template(template_name: str) -> str:
     path = os.path.join("templates", template_name)
     with open(path, "r", encoding="utf-8") as f:
