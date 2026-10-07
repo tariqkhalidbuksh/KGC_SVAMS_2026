@@ -59,3 +59,9 @@ def get_pkt_today() -> str:
 
 get_local_now = get_pkt_now
 get_local_today = get_pkt_today
+
+def invalidate_member_cache():
+    with CACHE_LOCK:
+        MEMBERS_METRICS_CACHE["data"] = None
+        MEMBERS_METRICS_CACHE["timestamp"] = 0.0
+        MEMBERS_METRICS_CACHE["db_file"] = None

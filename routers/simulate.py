@@ -35,7 +35,8 @@ async def simulate_rfid_full(request: Request):
             })
         return {"ok": True, "buffered": True, "queue_len": len(config.PENDING_RFID_BUFFER)}
     else:
-        log_id = execute_access_decision(tag, direction, path_full, path_plate, is_ai_trigger=False)
+        bypass = bool(body.get("bypass_cooldown", False))
+        log_id = execute_access_decision(tag, direction, path_full, path_plate, is_ai_trigger=False, bypass_cooldown=bypass)
         return {"ok": True, "log_id": log_id, "mode": "direct"}
 
 @router.post("/simulate-linecross")

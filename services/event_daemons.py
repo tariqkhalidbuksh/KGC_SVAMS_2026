@@ -22,13 +22,16 @@ class HikvisionFTPHandler(FTPHandler):
             threading.Thread(target=process_camera_line_crossing, args=(file, forced_dir), daemon=True).start()
 
 def start_ftp_server():
-    authorizer = DummyAuthorizer()
-    authorizer.add_user("admin", "admin123", config.FTP_UPLOAD_DIR, perm="elradfmw")
-    handler = HikvisionFTPHandler
-    handler.authorizer = authorizer
-    handler.passive_ports = range(2122, 2130)
-    server = FTPServer(("0.0.0.0", 2121), handler)
-    server.serve_forever()
+    try:
+        authorizer = DummyAuthorizer()
+        authorizer.add_user("admin", "admin123", config.FTP_UPLOAD_DIR, perm="elradfmw")
+        handler = HikvisionFTPHandler
+        handler.authorizer = authorizer
+        handler.passive_ports = range(2122, 2130)
+        server = FTPServer(("0.0.0.0", 2121), handler)
+        server.serve_forever()
+    except Exception as e:
+        print(f"[FTP Daemon Notice] Port 2121 not bound ({e}). HTTP camera events active.")
 
 def folder_watcher_worker():
     while True:

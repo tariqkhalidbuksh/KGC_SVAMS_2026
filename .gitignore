@@ -41,3 +41,8 @@ Desktop.ini
 *.sqlite
 *.sqlite3
 gate_access.db
+*.bak
+
+# Model weights
+weights/
+*.pt

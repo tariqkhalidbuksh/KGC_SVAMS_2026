@@ -1,6 +1,8 @@
 import math
 import time
+import io
 from datetime import datetime
+import pandas as pd
 from fastapi import APIRouter, HTTPException, Response, Request
 import config
 from database import get_db_connection
@@ -122,87 +124,13 @@ async def get_audit(date: str = "", page: int = 1, limit: int = 25, search: str 
         finally:
             conn.close()
 
-    entries = [l for l in logs if l['direction'] == 'Entry']
-    exits = [l for l in logs if l['direction'] == 'Exit']
-    matched_exit_ids = set()
-    paired_audits = []
-
-    for entry_event in entries:
-        exit_event = None
-        key = _identity_key(entry_event)
-        if key:
-            # 1. Search for candidate exit occurring AFTER the entry
-            for candidate_exit in exits:
-                if candidate_exit['id'] in matched_exit_ids:
-                    continue
-                if _identity_key(candidate_exit) == key:
-                    if str(candidate_exit['timestamp']) >= str(entry_event['timestamp']):
-                        exit_event = candidate_exit
-                        matched_exit_ids.add(candidate_exit['id'])
-                        break
-
-            # 2. Fallback: if no exit found AFTER entry, but an unmatched exit exists with same key (e.g. inverted logs)
-            if not exit_event:
-                for candidate_exit in exits:
-                    if candidate_exit['id'] in matched_exit_ids:
-                        continue
-                    if _identity_key(candidate_exit) == key:
-                        exit_event = candidate_exit
-                        matched_exit_ids.add(candidate_exit['id'])
-                        break
-
-        # If entry and exit timestamps are reversed, align chronologically so entry is earlier and exit is later
-        actual_entry = entry_event
-        actual_exit = exit_event
-        if actual_entry and actual_exit:
-            if str(actual_entry['timestamp']) > str(actual_exit['timestamp']):
-                actual_entry, actual_exit = actual_exit, actual_entry
-
-        is_unregistered = bool(
-            (actual_entry or actual_exit) and (
-                'Unknown' in ((actual_entry or actual_exit).get('access_type') or '') or
-                'No RFID' in ((actual_entry or actual_exit).get('access_type') or '') or
-                'Unregistered' in ((actual_entry or actual_exit).get('name') or '')
-            )
-        )
-        audit_status = "Exited" if actual_exit else "Inside Facility"
-        if is_unregistered and not actual_exit:
-            audit_status = "Alert / Inside"
-
-        if actual_exit:
-            duration = _fmt_duration(actual_entry['timestamp'], actual_exit['timestamp'])
-        elif actual_entry:
-            duration = _fmt_active_duration(actual_entry['timestamp'])
-        else:
-            duration = None
-
-        paired_audits.append({
-            "entry": actual_entry,
-            "exit": actual_exit,
-            "duration": duration,
-            "status": audit_status,
-            "is_alert": is_unregistered
-        })
-
-    for orphan_exit in exits:
-        if orphan_exit['id'] not in matched_exit_ids:
-            is_unregistered = bool(
-                'Unknown' in (orphan_exit.get('access_type') or '') or
-                'No RFID' in (orphan_exit.get('access_type') or '') or
-                'Unregistered' in (orphan_exit.get('name') or '')
-            )
-            paired_audits.append({
-                "entry": None,
-                "exit": orphan_exit,
-                "duration": None,
-                "status": "Exit Only",
-                "is_alert": is_unregistered
-            })
+    paired_audits = _build_paired_audits(logs)
 
     total_transits = len(paired_audits)
-    currently_inside = sum(1 for a in paired_audits if a['status'] in ("Inside Facility", "Alert / Inside"))
+    currently_inside = sum(1 for a in paired_audits if a['status'] in ("Inside Facility", "Alert / Inside", "Overstay (>8h)"))
     exited_count = sum(1 for a in paired_audits if a['status'] == "Exited")
     alert_count = sum(1 for a in paired_audits if a['is_alert'])
+    overstay_count = sum(1 for a in paired_audits if a.get('is_overstay'))
 
     filtered = paired_audits
     search_term = search.strip().lower()
@@ -217,11 +145,13 @@ async def get_audit(date: str = "", page: int = 1, limit: int = 25, search: str 
     status_filter = status.strip().lower()
     if status_filter != "all":
         if status_filter == "inside":
-            filtered = [a for a in filtered if a['status'] in ("Inside Facility", "Alert / Inside")]
+            filtered = [a for a in filtered if a['status'] in ("Inside Facility", "Alert / Inside", "Overstay (>8h)")]
         elif status_filter == "exited":
             filtered = [a for a in filtered if a['status'] == "Exited"]
         elif status_filter == "alert":
             filtered = [a for a in filtered if a['is_alert']]
+        elif status_filter == "overstay":
+            filtered = [a for a in filtered if a.get('is_overstay')]
 
     filtered.sort(key=lambda a: (a['entry'] or a['exit'])['id'], reverse=True)
 
@@ -239,11 +169,196 @@ async def get_audit(date: str = "", page: int = 1, limit: int = 25, search: str 
         "currently_inside": currently_inside,
         "exited_count": exited_count,
         "alert_count": alert_count,
+        "overstay_count": overstay_count,
         "page": page,
         "limit": limit,
         "total_pages": total_pages,
         "audits": paginated_items
     }
+
+def _build_paired_audits(logs):
+    entries = [l for l in logs if l['direction'] == 'Entry']
+    exits = [l for l in logs if l['direction'] == 'Exit']
+    matched_exit_ids = set()
+    paired_audits = []
+
+    for entry_event in entries:
+        exit_event = None
+        key = _identity_key(entry_event)
+        if key:
+            for candidate_exit in exits:
+                if candidate_exit['id'] in matched_exit_ids:
+                    continue
+                if _identity_key(candidate_exit) == key:
+                    if str(candidate_exit['timestamp']) >= str(entry_event['timestamp']):
+                        exit_event = candidate_exit
+                        matched_exit_ids.add(candidate_exit['id'])
+                        break
+
+            if not exit_event:
+                for candidate_exit in exits:
+                    if candidate_exit['id'] in matched_exit_ids:
+                        continue
+                    if _identity_key(candidate_exit) == key:
+                        exit_event = candidate_exit
+                        matched_exit_ids.add(candidate_exit['id'])
+                        break
+
+        actual_entry = entry_event
+        actual_exit = exit_event
+        if actual_entry and actual_exit:
+            if str(actual_entry['timestamp']) > str(actual_exit['timestamp']):
+                actual_entry, actual_exit = actual_exit, actual_entry
+
+        is_unregistered = bool(
+            (actual_entry or actual_exit) and (
+                'Unknown' in ((actual_entry or actual_exit).get('access_type') or '') or
+                'No RFID' in ((actual_entry or actual_exit).get('access_type') or '') or
+                'Unregistered' in ((actual_entry or actual_exit).get('name') or '')
+            )
+        )
+
+        is_overstay = False
+        if not actual_exit and actual_entry:
+            try:
+                t_entry = datetime.strptime(str(actual_entry['timestamp'])[:19], "%Y-%m-%d %H:%M:%S")
+                diff_h = (datetime.now() - t_entry).total_seconds() / 3600.0
+                if diff_h >= 8.0:
+                    is_overstay = True
+            except Exception:
+                pass
+
+        audit_status = "Exited" if actual_exit else ("Overstay (>8h)" if is_overstay else "Inside Facility")
+        if is_unregistered and not actual_exit:
+            audit_status = "Alert / Inside"
+
+        if actual_exit:
+            duration = _fmt_duration(actual_entry['timestamp'], actual_exit['timestamp'])
+        elif actual_entry:
+            duration = _fmt_active_duration(actual_entry['timestamp'])
+        else:
+            duration = None
+
+        paired_audits.append({
+            "entry": actual_entry,
+            "exit": actual_exit,
+            "duration": duration,
+            "status": audit_status,
+            "is_alert": is_unregistered,
+            "is_overstay": is_overstay
+        })
+
+    for orphan_exit in exits:
+        if orphan_exit['id'] not in matched_exit_ids:
+            is_unregistered = bool(
+                'Unknown' in (orphan_exit.get('access_type') or '') or
+                'No RFID' in (orphan_exit.get('access_type') or '') or
+                'Unregistered' in (orphan_exit.get('name') or '')
+            )
+            paired_audits.append({
+                "entry": None,
+                "exit": orphan_exit,
+                "duration": None,
+                "status": "Exit Only",
+                "is_alert": is_unregistered,
+                "is_overstay": False
+            })
+
+    return paired_audits
+
+@router.get("/audit/export")
+async def export_audit(date: str = "", format: str = "xlsx", search: str = "", status: str = "all"):
+    with config.DB_LOCK:
+        conn = get_db_connection()
+        try:
+            pkt_today = config.get_pkt_today()
+            target_date = date or pkt_today
+            base_query = """SELECT d.id, d.mem_id, d.name, d.vehicle_number, d.access_type, d.direction,
+                    d.gate_no, d.image_path, d.plate_image_path, d.scanned_tag, d.timestamp,
+                    m.Make_Model as make_model, m.Profile_pic as profile_pic
+                FROM daily_logs d LEFT JOIN members m ON d.mem_id = m.Mem_id AND d.vehicle_number = m.Car_number"""
+            if target_date == "all":
+                rows = conn.execute(base_query + " ORDER BY d.id ASC").fetchall()
+            else:
+                rows = conn.execute(
+                    base_query + " WHERE date(d.timestamp)=? OR date(d.timestamp, '+5 hours')=? ORDER BY d.id ASC",
+                    (target_date, target_date)
+                ).fetchall()
+            logs = [dict(r) for r in rows]
+        finally:
+            conn.close()
+
+    paired_audits = _build_paired_audits(logs)
+    filtered = paired_audits
+
+    search_term = search.strip().lower()
+    if search_term:
+        filtered = []
+        for audit in paired_audits:
+            record = audit['entry'] or audit['exit'] or {}
+            combined_text = f"{record.get('name', '')} {record.get('mem_id', '')} {record.get('vehicle_number', '')} {record.get('scanned_tag', '')} {record.get('make_model', '')}".lower()
+            if search_term in combined_text:
+                filtered.append(audit)
+
+    status_filter = status.strip().lower()
+    if status_filter != "all":
+        if status_filter == "inside":
+            filtered = [a for a in filtered if a['status'] in ("Inside Facility", "Alert / Inside", "Overstay (>8h)")]
+        elif status_filter == "exited":
+            filtered = [a for a in filtered if a['status'] == "Exited"]
+        elif status_filter == "alert":
+            filtered = [a for a in filtered if a['is_alert']]
+        elif status_filter == "overstay":
+            filtered = [a for a in filtered if a.get('is_overstay')]
+
+    filtered.sort(key=lambda a: (a['entry'] or a['exit'])['id'], reverse=True)
+
+    records = []
+    for a in filtered:
+        ent = a['entry'] or {}
+        ext = a['exit'] or {}
+        records.append({
+            "Date": (ent.get('timestamp') or ext.get('timestamp') or '')[:10],
+            "Member ID": ent.get('mem_id') or ext.get('mem_id') or 'GUEST',
+            "Member Name": ent.get('name') or ext.get('name') or 'Visitor',
+            "Vehicle Number": ent.get('vehicle_number') or ext.get('vehicle_number') or 'N/A',
+            "Make / Model": ent.get('make_model') or ext.get('make_model') or 'N/A',
+            "Entry Time": ent.get('timestamp') or 'N/A',
+            "Exit Time": ext.get('timestamp') or 'N/A',
+            "Duration": a.get('duration') or 'N/A',
+            "Status": a.get('status') or 'N/A',
+            "Access Type": ent.get('access_type') or ext.get('access_type') or 'RFID Verified',
+            "Scanned RFID Tag": ent.get('scanned_tag') or ext.get('scanned_tag') or 'N/A',
+            "Gate": ent.get('gate_no') or ext.get('gate_no') or 'Gate-01'
+        })
+
+    df = pd.DataFrame(records)
+    if df.empty:
+        df = pd.DataFrame(columns=[
+            "Date", "Member ID", "Member Name", "Vehicle Number", "Make / Model",
+            "Entry Time", "Exit Time", "Duration", "Status", "Access Type", "Scanned RFID Tag", "Gate"
+        ])
+
+    export_fmt = (format or "xlsx").lower()
+    if export_fmt == "csv":
+        csv_data = df.to_csv(index=False)
+        filename = f"KGC_Vehicle_Audit_{target_date}.csv"
+        return Response(
+            content=csv_data,
+            media_type="text/csv",
+            headers={"Content-Disposition": f'attachment; filename="{filename}"'}
+        )
+    else:
+        out = io.BytesIO()
+        with pd.ExcelWriter(out, engine='openpyxl') as writer:
+            df.to_excel(writer, index=False, sheet_name="Vehicle Audit")
+        out.seek(0)
+        filename = f"KGC_Vehicle_Audit_{target_date}.xlsx"
+        return Response(
+            content=out.getvalue(),
+            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            headers={"Content-Disposition": f'attachment; filename="{filename}"'}
+        )
 
 @router.get("/camera-audit-logs")
 async def get_camera_audit_logs(date: str = "", page: int = 1, limit: int = 24, search: str = ""):
@@ -266,7 +381,7 @@ async def get_camera_audit_logs(date: str = "", page: int = 1, limit: int = 24, 
 
             if search and search.strip():
                 clean_s = search.strip()
-                where_clauses.append("(detected_plate LIKE ? OR matched_name LIKE ? OR matched_mem_id LIKE ? OR image_path LIKE ?)")
+                where_clauses.append("(event_type LIKE ? OR direction LIKE ? OR image_path LIKE ? OR timestamp LIKE ?)")
                 params.extend([f"%{clean_s}%", f"%{clean_s}%", f"%{clean_s}%", f"%{clean_s}%"])
 
             where_str = f"WHERE {' AND '.join(where_clauses)}" if where_clauses else ""
@@ -285,44 +400,6 @@ async def get_camera_audit_logs(date: str = "", page: int = 1, limit: int = 24, 
                 "pages": max(1, math.ceil(total / limit)),
                 "logs": [dict(r) for r in rows]
             }
-        finally:
-            conn.close()
-
-@router.post("/camera-audit/reprocess-ocr")
-async def reprocess_ocr():
-    with config.DB_LOCK:
-        conn = get_db_connection()
-        try:
-            rows = conn.execute("SELECT id, image_path FROM camera_audit_logs WHERE detected_plate IS NULL OR detected_plate = '' ORDER BY id DESC LIMIT 50").fetchall()
-            from services.ocr_service import submit_image_to_ocr
-            count = 0
-            for r in rows:
-                submit_image_to_ocr(r['id'], r['image_path'])
-                count += 1
-            return {"ok": True, "queued": count}
-        finally:
-            conn.close()
-
-@router.post("/camera-audit/{log_id}/extract-ocr")
-async def extract_single_audit_ocr(log_id: int):
-    with config.DB_LOCK:
-        conn = get_db_connection()
-        try:
-            row = conn.execute("SELECT id, image_path FROM camera_audit_logs WHERE id = ?", (log_id,)).fetchone()
-            if not row:
-                raise HTTPException(404, "Audit log not found")
-            image_path = row["image_path"]
-        finally:
-            conn.close()
-
-    from services.ocr_service import process_single_ocr_job
-    process_single_ocr_job(log_id, image_path)
-
-    with config.DB_LOCK:
-        conn = get_db_connection()
-        try:
-            updated = conn.execute("SELECT * FROM camera_audit_logs WHERE id = ?", (log_id,)).fetchone()
-            return {"ok": True, "log": dict(updated) if updated else {}}
         finally:
             conn.close()
 
@@ -396,12 +473,40 @@ async def get_audit_log_pdf(log_id: int):
     elif entry_rec:
         duration = _fmt_active_duration(entry_rec['timestamp'])
 
+    # Fetch all movements for this vehicle on that date to embed in the report
+    veh_num = (entry_rec or exit_rec or {}).get("vehicle_number")
+    m_id = (entry_rec or exit_rec or {}).get("mem_id")
+    daily_movements = []
+    if veh_num or m_id:
+        with config.DB_LOCK:
+            conn = get_db_connection()
+            try:
+                where_clauses = ["d.timestamp LIKE ?"]
+                params = [f"{target_date}%"]
+                if veh_num and veh_num != "NO PLATE":
+                    where_clauses.append("LOWER(d.vehicle_number) = LOWER(?)")
+                    params.append(veh_num.strip())
+                elif m_id:
+                    where_clauses.append("d.mem_id = ?")
+                    params.append(m_id.strip())
+                rows = conn.execute(f"""
+                    SELECT d.id, d.mem_id, d.name, d.vehicle_number, d.access_type, d.direction,
+                           d.gate_no, d.image_path, d.scanned_tag, d.timestamp
+                    FROM daily_logs d
+                    WHERE {' AND '.join(where_clauses)}
+                    ORDER BY d.id ASC
+                """, params).fetchall()
+                daily_movements = [dict(r) for r in rows]
+            finally:
+                conn.close()
+
     audit_payload = {
         "entry": entry_rec,
         "exit": exit_rec,
         "duration": duration,
         "status": audit_status,
-        "is_alert": is_unregistered
+        "is_alert": is_unregistered,
+        "daily_movements": daily_movements
     }
 
     try:
@@ -424,6 +529,189 @@ async def get_audit_log_pdf(log_id: int):
 
     filename = f"Audit_Report_AUD_{str(log_id).zfill(6)}.pdf"
 
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f"inline; filename={filename}",
+            "Cache-Control": "no-cache"
+        }
+    )
+
+@router.get("/audit/day-movements")
+async def get_day_movements(vehicle_number: str = "", mem_id: str = "", date: str = ""):
+    with config.DB_LOCK:
+        conn = get_db_connection()
+        try:
+            target_date = date or config.get_pkt_today()
+            where_clauses = ["d.timestamp LIKE ?"]
+            params = [f"{target_date}%"]
+
+            if vehicle_number and vehicle_number.strip():
+                where_clauses.append("LOWER(d.vehicle_number) = LOWER(?)")
+                params.append(vehicle_number.strip())
+            elif mem_id and mem_id.strip():
+                where_clauses.append("d.mem_id = ?")
+                params.append(mem_id.strip())
+
+            where_str = f"WHERE {' AND '.join(where_clauses)}"
+            rows = conn.execute(f"""
+                SELECT d.id, d.mem_id, d.name, d.vehicle_number, d.access_type, d.direction,
+                       d.gate_no, d.image_path, d.scanned_tag, d.timestamp
+                FROM daily_logs d
+                {where_str}
+                ORDER BY d.id ASC
+            """, params).fetchall()
+
+            movements = [dict(r) for r in rows]
+            return {
+                "date": target_date,
+                "vehicle_number": vehicle_number,
+                "mem_id": mem_id,
+                "total": len(movements),
+                "movements": movements
+            }
+        finally:
+            conn.close()
+
+@router.get("/audit/available-images")
+async def get_available_audit_images(date: str = "", search: str = "", limit: int = 60):
+    with config.DB_LOCK:
+        conn = get_db_connection()
+        try:
+            target_date = date or config.get_pkt_today()
+            where_clauses = []
+            params = []
+
+            if target_date != "all":
+                where_clauses.append("(c.date_str = ? OR c.timestamp LIKE ?)")
+                params.extend([target_date, f"{target_date}%"])
+
+            if search and search.strip():
+                clean_s = f"%{search.strip()}%"
+                where_clauses.append("(c.direction LIKE ? OR c.event_type LIKE ? OR c.image_path LIKE ? OR c.timestamp LIKE ?)")
+                params.extend([clean_s, clean_s, clean_s, clean_s])
+
+            where_str = f"WHERE {' AND '.join(where_clauses)}" if where_clauses else ""
+
+            cam_rows = conn.execute(f"""
+                SELECT id, timestamp, direction, event_type, image_path, 'camera' as source
+                FROM camera_audit_logs c
+                {where_str}
+                ORDER BY id DESC LIMIT ?
+            """, params + [limit]).fetchall()
+
+            results = [dict(r) for r in cam_rows]
+
+            # Also fetch distinct daily_logs images from that day
+            daily_rows = conn.execute("""
+                SELECT id, timestamp, direction, access_type as event_type, image_path, 'gate' as source, vehicle_number
+                FROM daily_logs
+                WHERE image_path IS NOT NULL AND image_path != '' AND timestamp LIKE ?
+                ORDER BY id DESC LIMIT ?
+            """, [f"{target_date}%", limit]).fetchall()
+
+            seen_paths = {r.get("image_path") for r in results if r.get("image_path")}
+            for dr in daily_rows:
+                dr_dict = dict(dr)
+                if dr_dict.get("image_path") and dr_dict["image_path"] not in seen_paths:
+                    seen_paths.add(dr_dict["image_path"])
+                    results.append(dr_dict)
+
+            results.sort(key=lambda x: str(x.get("timestamp", "")), reverse=True)
+            return {
+                "date": target_date,
+                "total": len(results),
+                "images": results[:limit]
+            }
+        finally:
+            conn.close()
+
+@router.post("/audit/custom-report/pdf")
+async def post_custom_audit_pdf(request: Request):
+    payload = await request.json()
+    if not payload:
+        raise HTTPException(400, "Report payload is required")
+
+    incident = payload.get("incident") or payload.get("entry") or payload.get("exit") or payload
+    log_id = payload.get("log_id") or incident.get("id") or int(time.time())
+    target_date = str(incident.get("timestamp", ""))[:10] or config.get_pkt_today()
+    v_num = incident.get("vehicle_number") or ""
+    m_id = incident.get("mem_id") or ""
+
+    # Fetch daily movements if not provided
+    daily_movements = payload.get("daily_movements")
+    if daily_movements is None and (v_num or m_id):
+        with config.DB_LOCK:
+            conn = get_db_connection()
+            try:
+                where_clauses = ["d.timestamp LIKE ?"]
+                params = [f"{target_date}%"]
+                if v_num and v_num != "NO PLATE":
+                    where_clauses.append("LOWER(d.vehicle_number) = LOWER(?)")
+                    params.append(v_num.strip())
+                elif m_id:
+                    where_clauses.append("d.mem_id = ?")
+                    params.append(m_id.strip())
+                rows = conn.execute(f"""
+                    SELECT d.id, d.mem_id, d.name, d.vehicle_number, d.access_type, d.direction,
+                           d.gate_no, d.image_path, d.scanned_tag, d.timestamp
+                    FROM daily_logs d
+                    WHERE {' AND '.join(where_clauses)}
+                    ORDER BY d.id ASC
+                """, params).fetchall()
+                daily_movements = [dict(r) for r in rows]
+            finally:
+                conn.close()
+
+    user_entry_img = payload.get("entry_image_path")
+    user_exit_img = payload.get("exit_image_path")
+
+    entry_rec = payload.get("entry")
+    exit_rec = payload.get("exit")
+    if not entry_rec and not exit_rec:
+        if (incident.get("direction") or "").lower() == "exit":
+            exit_rec = incident
+        else:
+            entry_rec = incident
+
+    duration = payload.get("duration")
+    if not duration:
+        if entry_rec and exit_rec:
+            duration = _fmt_duration(entry_rec.get("timestamp"), exit_rec.get("timestamp"))
+        elif entry_rec:
+            duration = _fmt_active_duration(entry_rec.get("timestamp"))
+
+    audit_payload = {
+        "entry": entry_rec,
+        "exit": exit_rec,
+        "duration": duration,
+        "status": payload.get("status") or ("Exited" if exit_rec and entry_rec else "Inside Facility"),
+        "entry_image_path": user_entry_img,
+        "exit_image_path": user_exit_img,
+        "daily_movements": daily_movements or [],
+        "investigator_notes": payload.get("notes") or payload.get("investigator_notes") or ""
+    }
+
+    try:
+        from services.pdf_service import generate_audit_pdf
+        pdf_bytes = generate_audit_pdf(audit_payload)
+    except ModuleNotFoundError as err:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(
+            status_code=500,
+            detail=f"ReportLab PDF library missing on server ({err}). Run 'pip install reportlab' to enable PDF generation."
+        )
+    except Exception as err:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to generate audit PDF: {str(err)}"
+        )
+
+    filename = f"Official_Investigation_Report_AUD_{str(log_id).zfill(6)}.pdf"
     return Response(
         content=pdf_bytes,
         media_type="application/pdf",
@@ -466,4 +754,5 @@ async def post_audit_pdf(request: Request):
             "Cache-Control": "no-cache"
         }
     )
+
 

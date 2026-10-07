@@ -15,13 +15,18 @@ async def get_stats():
             start_today = f"{pkt_today} 00:00:00"
             end_today = f"{pkt_today} 23:59:59"
 
-            # Cached Member Counts: refresh every 60s instead of scanning 8,000+ rows every 5s
+            # Cached Member Counts: refresh every 30s instead of scanning 8,000+ rows every 5s
+            import sys
+            app_mod = sys.modules.get('app')
+            curr_db_file = getattr(app_mod, 'DB_FILE', getattr(config, 'DB_FILE', 'gate_access.db'))
+
             now_epoch = time.time()
             with config.CACHE_LOCK:
                 cached_metrics = config.MEMBERS_METRICS_CACHE.get("data")
                 cache_time = config.MEMBERS_METRICS_CACHE.get("timestamp", 0.0)
+                cached_db = config.MEMBERS_METRICS_CACHE.get("db_file")
 
-            if cached_metrics and (now_epoch - cache_time < 60.0):
+            if cached_metrics and (cached_db == curr_db_file) and (now_epoch - cache_time < 30.0):
                 members_count = cached_metrics["members_count"]
                 unique_mems = cached_metrics["unique_mems"]
                 total_vehicles = cached_metrics["total_vehicles"]
@@ -37,12 +42,15 @@ async def get_stats():
                 total_vehicles = conn.execute("SELECT COUNT(*) as c FROM members").fetchone()['c']
 
                 with config.CACHE_LOCK:
-                    config.MEMBERS_METRICS_CACHE["data"] = {
-                        "members_count": members_count,
-                        "unique_mems": unique_mems,
-                        "total_vehicles": total_vehicles
+                    config.MEMBERS_METRICS_CACHE = {
+                        "data": {
+                            "members_count": members_count,
+                            "unique_mems": unique_mems,
+                            "total_vehicles": total_vehicles
+                        },
+                        "timestamp": now_epoch,
+                        "db_file": curr_db_file
                     }
-                    config.MEMBERS_METRICS_CACHE["timestamp"] = now_epoch
 
             entries_today = conn.execute(
                 "SELECT COUNT(*) as c FROM daily_logs WHERE direction='Entry' AND date(timestamp)=?",
@@ -67,6 +75,78 @@ async def get_stats():
             peak_hour_str = f"{peak_row['h']}:00" if peak_row else "None"
             peak_count_val = peak_row['c'] if peak_row else 0
 
+            overstay_row = conn.execute("""
+                SELECT COUNT(*) as c FROM daily_logs d
+                WHERE d.direction = 'Entry'
+                  AND d.timestamp <= datetime('now', '-8 hours')
+                  AND NOT EXISTS (
+                      SELECT 1 FROM daily_logs e
+                      WHERE e.direction = 'Exit'
+                        AND (
+                            (e.mem_id = d.mem_id AND d.mem_id NOT IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED'))
+                            OR (e.scanned_tag = d.scanned_tag AND d.scanned_tag NOT IN ('NO_TAG', ''))
+                        )
+                        AND e.timestamp >= d.timestamp
+                  )
+            """).fetchone()
+            overstay_count = overstay_row['c'] if overstay_row else 0
+
+            # Calculate Average Stay Duration from paired visits today
+            paired_rows = conn.execute("""
+                SELECT d.timestamp as in_time, e.timestamp as out_time
+                FROM daily_logs d
+                JOIN daily_logs e ON (
+                    (d.mem_id = e.mem_id AND d.mem_id NOT IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', ''))
+                    OR (d.scanned_tag = e.scanned_tag AND d.scanned_tag NOT IN ('NO_TAG', ''))
+                    OR (d.vehicle_number = e.vehicle_number AND d.vehicle_number != 'NO PLATE' AND d.vehicle_number != '')
+                )
+                WHERE d.direction = 'Entry' AND e.direction = 'Exit'
+                  AND date(d.timestamp) = ? AND date(e.timestamp) = ?
+                  AND e.timestamp >= d.timestamp
+            """, (pkt_today, pkt_today)).fetchall()
+
+            avg_duration_str = "--"
+            if paired_rows:
+                total_diff_sec = 0
+                valid_count = 0
+                for pr in paired_rows:
+                    try:
+                        t1 = datetime.strptime(str(pr['in_time'])[:19], "%Y-%m-%d %H:%M:%S")
+                        t2 = datetime.strptime(str(pr['out_time'])[:19], "%Y-%m-%d %H:%M:%S")
+                        sec = abs(int((t2 - t1).total_seconds()))
+                        if 60 <= sec <= 86400:
+                            total_diff_sec += sec
+                            valid_count += 1
+                    except Exception:
+                        pass
+                if valid_count > 0:
+                    avg_sec = total_diff_sec // valid_count
+                    h = avg_sec // 3600
+                    m = (avg_sec % 3600) // 60
+                    avg_duration_str = f"{h}h {m:02d}m" if h else f"{m}m"
+
+            # Registered vs Unregistered Tag Adoption & Gap Breakdown
+            unreg_count = conn.execute("""
+                SELECT COUNT(*) as c FROM daily_logs
+                WHERE date(timestamp) = ?
+                  AND (
+                    access_type LIKE '%Unknown%'
+                    OR access_type LIKE '%No RFID%'
+                    OR mem_id IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', '')
+                    OR scanned_tag IN ('NO_TAG', '', NULL)
+                  )
+            """, (pkt_today,)).fetchone()['c']
+
+            total_transits_today = entries_today + exits_today
+            reg_count = max(0, total_transits_today - unreg_count)
+            adoption_rate = round((reg_count / total_transits_today * 100.0), 1) if total_transits_today > 0 else 100.0
+            gap_rate = round((unreg_count / total_transits_today * 100.0), 1) if total_transits_today > 0 else 0.0
+
+            try:
+                unreg_tags_buffer = conn.execute("SELECT COUNT(*) as c FROM unregistered_tags").fetchone()['c']
+            except Exception:
+                unreg_tags_buffer = 0
+
             return {
                 "active_members": members_count,
                 "unique_members": unique_mems,
@@ -75,8 +155,16 @@ async def get_stats():
                 "total_exits_today": exits_today,
                 "currently_in_club": max(0, entries_today - exits_today),
                 "guests_today": guests_today,
+                "overstay_count": overstay_count,
                 "peak_hour": peak_hour_str,
-                "peak_count": peak_count_val
+                "peak_count": peak_count_val,
+                "avg_duration": avg_duration_str,
+                "paired_visits_count": len(paired_rows) if paired_rows else 0,
+                "registered_transits_today": reg_count,
+                "unregistered_transits_today": unreg_count,
+                "tag_adoption_rate": adoption_rate,
+                "registration_gap_rate": gap_rate,
+                "unassigned_tags_buffer": unreg_tags_buffer
             }
         finally:
             conn.close()
@@ -113,13 +201,44 @@ async def get_chart_data():
                 entries_d.append(row['e'])
                 exits_d.append(row['x'])
 
+            # Tag Adoption Breakdown
+            unreg_count = conn.execute("""
+                SELECT COUNT(*) as c FROM daily_logs
+                WHERE date(timestamp) = ?
+                  AND (
+                    access_type LIKE '%Unknown%'
+                    OR access_type LIKE '%No RFID%'
+                    OR mem_id IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', '')
+                    OR scanned_tag IN ('NO_TAG', '', NULL)
+                  )
+            """, (pkt_today,)).fetchone()['c']
+
+            entries_today = sum(entries_h.values())
+            exits_today = sum(exits_h.values())
+            total_transits = entries_today + exits_today
+            reg_count = max(0, total_transits - unreg_count)
+            adoption_rate = round((reg_count / total_transits * 100.0), 1) if total_transits > 0 else 100.0
+            gap_rate = round((unreg_count / total_transits * 100.0), 1) if total_transits > 0 else 0.0
+
+            try:
+                unreg_tags_buffer = conn.execute("SELECT COUNT(*) as c FROM unregistered_tags").fetchone()['c']
+            except Exception:
+                unreg_tags_buffer = 0
+
             return {
                 "hours": hours,
                 "hourly_entries": [entries_h.get(h, 0) for h in hours],
                 "hourly_exits": [exits_h.get(h, 0) for h in hours],
                 "days": days,
                 "daily_entries": entries_d,
-                "daily_exits": exits_d
+                "daily_exits": exits_d,
+                "fleet_adoption": {
+                    "registered_transits": reg_count,
+                    "unregistered_transits": unreg_count,
+                    "adoption_rate": adoption_rate,
+                    "gap_rate": gap_rate,
+                    "unassigned_buffer": unreg_tags_buffer
+                }
             }
         finally:
             conn.close()

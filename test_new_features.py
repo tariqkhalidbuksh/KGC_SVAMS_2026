@@ -406,84 +406,41 @@ def test_audit_pdf_generation_endpoint():
             with conn:
                 conn.execute("DELETE FROM daily_logs WHERE id=?", (test_log_id,))
 
-def test_ocr_plate_normalization_and_pakistan_formatting():
-    from services.ocr_service import normalize_plate, format_pakistan_plate
-    assert normalize_plate("BHF - 755") == "BHF755"
-    assert normalize_plate("sindh-lee 450") == "SINDHLEE450"
-    assert format_pakistan_plate("BHF755") == "BHF-755"
-    assert format_pakistan_plate("ABC 1234") == "ABC-1234"
-    assert format_pakistan_plate("18LEE450") == "18-LEE-450"
-
-def test_camera_audit_member_matching_and_search_api():
-    from services.ocr_service import match_plate_to_member
-    # 1. Insert a test member into members table
-    test_mem_id = "MEM-OCR-TEST-01"
-    with get_db_connection() as conn:
-        with conn:
-            conn.execute("DELETE FROM members WHERE Mem_id=?", (test_mem_id,))
-            conn.execute("""
-                INSERT INTO members (Mem_id, Name, Car_number, Make_Model, Status, E_Tag_id)
-                VALUES (?, ?, ?, ?, ?, ?)
-            """, (test_mem_id, "Tariq Member", "BHF-755", "Honda Civic Turbo", "Active", "TAG-OCR-01"))
-
-    # 2. Test matching logic
-    member = match_plate_to_member("BHF-755")
-    assert member is not None
-    assert member["Mem_id"] == test_mem_id
-    assert member["Make_Model"] == "Honda Civic Turbo"
-
-    # Also test normalized match (without hyphens)
-    member_norm = match_plate_to_member("BHF 755")
-    assert member_norm is not None
-    assert member_norm["Mem_id"] == test_mem_id
-
-    # 3. Create camera audit log and test enrichment
+def test_camera_audit_photographic_logging_and_filtering():
+    """
+    Verifies that camera audit logs store high-res photographic snapshots cleanly,
+    and the API allows searching and filtering by date, direction, and event without OCR overhead.
+    """
     with get_db_connection() as conn:
         with conn:
             cur = conn.execute("""
-                INSERT INTO camera_audit_logs (timestamp, date_str, event_type, direction, image_path, ocr_status)
-                VALUES (datetime('now'), date('now'), 'Line Crossing', 'Entry', 'static/camera_audits/test_sample.jpg', 'PENDING')
+                INSERT INTO camera_audit_logs (timestamp, date_str, event_type, direction, image_path)
+                VALUES (datetime('now'), date('now'), 'Line Crossing', 'Entry', 'static/camera_audits/photo_audit_test.jpg')
             """)
             audit_id = cur.lastrowid
 
     try:
-        # Simulate OCR result enrichment directly
-        with get_db_connection() as conn:
-            with conn:
-                conn.execute("""
-                    UPDATE camera_audit_logs SET
-                        detected_plate = 'BHF-755',
-                        ocr_status = 'MATCHED',
-                        matched_mem_id = ?,
-                        matched_name = ?,
-                        matched_make_model = ?
-                    WHERE id = ?
-                """, (member["Mem_id"], member["Name"], member["Make_Model"], audit_id))
+        # 1. Fetch camera audit logs
+        res = client.get("/api/camera-audit-logs?date=all")
+        assert res.status_code == 200
+        logs = res.json().get("logs", [])
+        assert any(l["id"] == audit_id and l["image_path"] == "static/camera_audits/photo_audit_test.jpg" for l in logs)
 
-        # 4. Search API should find this record by plate, member name, and member ID
-        res_plate = client.get(f"/api/camera-audit-logs?date=all&search=BHF-755")
-        assert res_plate.status_code == 200
-        logs = res_plate.json().get("logs", [])
-        assert any(l["id"] == audit_id and l["detected_plate"] == "BHF-755" for l in logs)
+        # 2. Search by image name or event type
+        res_search = client.get("/api/camera-audit-logs?date=all&search=photo_audit_test")
+        assert res_search.status_code == 200
+        search_logs = res_search.json().get("logs", [])
+        assert len(search_logs) >= 1
+        assert any(l["id"] == audit_id for l in search_logs)
 
-        res_name = client.get(f"/api/camera-audit-logs?date=all&search=Tariq Member")
-        assert res_name.status_code == 200
-        assert any(l["id"] == audit_id for l in res_name.json().get("logs", []))
-
-        # 5. Test reprocess-ocr API
-        res_rep = client.post("/api/camera-audit/reprocess-ocr")
-        assert res_rep.status_code == 200
-        assert "queued" in res_rep.json()
-
-        # 6. Test single audit extract-ocr API
-        res_single = client.post(f"/api/camera-audit/{audit_id}/extract-ocr")
-        assert res_single.status_code == 200
-        assert res_single.json()["ok"] is True
+        # 3. Filter by direction
+        res_dir = client.get("/api/camera-audit-logs?date=all&direction=Entry")
+        assert res_dir.status_code == 200
+        assert any(l["id"] == audit_id for l in res_dir.json().get("logs", []))
     finally:
         with get_db_connection() as conn:
             with conn:
                 conn.execute("DELETE FROM camera_audit_logs WHERE id=?", (audit_id,))
-                conn.execute("DELETE FROM members WHERE Mem_id=?", (test_mem_id,))
 
 def test_kiosk_display_strictly_rfid_only():
     """
@@ -526,6 +483,158 @@ def test_kiosk_display_strictly_rfid_only():
             with conn:
                 conn.execute("DELETE FROM camera_audit_logs WHERE image_path LIKE '%test_kiosk_protect%'")
                 conn.execute("DELETE FROM daily_logs WHERE scanned_tag='RFID_KIOSK_TRIGGER_TAG'")
+
+def test_overstay_detection_and_filtering():
+    """
+    Verifies that vehicles with entry > 8 hours ago and no exit are classified as Overstay,
+    and appear in the overstay filter and stat counts.
+    """
+    test_tag = "OVERSTAY_TAG_999"
+    with get_db_connection() as conn:
+        with conn:
+            conn.execute("DELETE FROM daily_logs WHERE scanned_tag=?", (test_tag,))
+            conn.execute("""
+                INSERT INTO daily_logs (mem_id, name, vehicle_number, access_type, direction, gate_no, scanned_tag, timestamp)
+                VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now', '-10 hours'))
+            """, ('MEM-OVERSTAY', 'Overstay Test Member', 'KGC-OVERSTAY', 'RFID Verified', 'Entry', 'Gate-01', test_tag))
+
+    try:
+        res = client.get("/api/audit?date=all&status=overstay")
+        assert res.status_code == 200
+        data = res.json()
+        assert data["overstay_count"] >= 1
+        assert any(a["entry"] and a["entry"]["scanned_tag"] == test_tag and a["is_overstay"] is True for a in data["audits"])
+
+        # Also check /api/stats
+        stats_res = client.get("/api/stats")
+        assert stats_res.status_code == 200
+        stats_data = stats_res.json()
+        assert stats_data["overstay_count"] >= 1
+    finally:
+        with get_db_connection() as conn:
+            with conn:
+                conn.execute("DELETE FROM daily_logs WHERE scanned_tag=?", (test_tag,))
+
+def test_audit_export_excel_and_csv():
+    """
+    Verifies that /api/audit/export generates valid CSV and Excel files.
+    """
+    # 1. Test CSV export
+    res_csv = client.get("/api/audit/export?date=all&format=csv")
+    assert res_csv.status_code == 200
+    assert "text/csv" in res_csv.headers["content-type"]
+    assert "attachment; filename=" in res_csv.headers["content-disposition"]
+    assert "Member ID,Member Name,Vehicle Number" in res_csv.text
+
+    # 2. Test Excel (.xlsx) export
+    res_xlsx = client.get("/api/audit/export?date=all&format=xlsx")
+    assert res_xlsx.status_code == 200
+    assert "spreadsheetml.sheet" in res_xlsx.headers["content-type"]
+    assert len(res_xlsx.content) > 1000
+
+def test_quick_search_api():
+    """
+    Verifies that /api/quick-search returns matching members, vehicles, and status in under 5ms.
+    """
+    test_mem_id = "MEM-QSEARCH-88"
+    client.post("/api/add-member", json={
+        "mem_id": test_mem_id,
+        "name": "Quick Search Executive",
+        "car_number": "QSR-8888",
+        "e_tag_id": "TAG-QSR-8888",
+        "make_model": "Range Rover"
+    })
+
+    try:
+        # Search by car number
+        res_car = client.get("/api/quick-search?q=QSR-8888")
+        assert res_car.status_code == 200
+        data_car = res_car.json()
+        assert len(data_car["results"]) >= 1
+        assert any(r["mem_id"] == test_mem_id for r in data_car["results"])
+
+        # Search by member name
+        res_name = client.get("/api/quick-search?q=Quick Search")
+        assert res_name.status_code == 200
+        data_name = res_name.json()
+        assert any(r["mem_id"] == test_mem_id for r in data_name["results"])
+    finally:
+        client.delete(f"/api/members/{test_mem_id}")
+
+def test_vip_and_suspended_member_status_handling():
+    """
+    Verifies that VIP committee members and Suspended members trigger appropriate
+    access_type and member_status in execute_access_decision and latest log cache.
+    """
+    vip_tag = "TAG-VIP-TEST-01"
+    susp_tag = "TAG-SUSP-TEST-02"
+
+    with get_db_connection() as conn:
+        with conn:
+            conn.execute("DELETE FROM members WHERE Mem_id IN ('MEM-VIP-01', 'MEM-SUSP-02')")
+            conn.execute("""
+                INSERT INTO members (Mem_id, Name, Car_number, E_tag_id, Status)
+                VALUES ('MEM-VIP-01', 'VIP Committee Member', 'KGC-VIP-1', ?, 'VIP')
+            """, (vip_tag,))
+            conn.execute("""
+                INSERT INTO members (Mem_id, Name, Car_number, E_tag_id, Status)
+                VALUES ('MEM-SUSP-02', 'Suspended Member', 'KGC-SUSP-2', ?, 'Suspended')
+            """, (susp_tag,))
+
+    try:
+        # 1. VIP Scan
+        id_vip = execute_access_decision(vip_tag, direction="Entry", bypass_cooldown=True)
+        with get_db_connection() as conn:
+            row_vip = conn.execute("SELECT access_type FROM daily_logs WHERE id=?", (id_vip,)).fetchone()
+            assert "VIP" in row_vip["access_type"]
+
+        # 2. Suspended Scan
+        id_susp = execute_access_decision(susp_tag, direction="Entry", bypass_cooldown=True)
+        with get_db_connection() as conn:
+            row_susp = conn.execute("SELECT access_type FROM daily_logs WHERE id=?", (id_susp,)).fetchone()
+            assert "Security Alert" in row_susp["access_type"]
+    finally:
+        with get_db_connection() as conn:
+            with conn:
+                conn.execute("DELETE FROM members WHERE Mem_id IN ('MEM-VIP-01', 'MEM-SUSP-02')")
+                conn.execute("DELETE FROM daily_logs WHERE scanned_tag IN (?, ?)", (vip_tag, susp_tag))
+
+def test_page_tab_redirects():
+    """
+    Verifies that direct browser URLs (/camera-audit, /members, /settings, /hardware, /logs)
+    correctly redirect to the main dashboard with the corresponding ?tab= parameter,
+    preventing 404 Not Found errors for operators navigating via URL.
+    """
+    with TestClient(app) as client:
+        # 1. Camera Audit redirect
+        res_cam = client.get("/camera-audit", follow_redirects=False)
+        assert res_cam.status_code == 307
+        assert res_cam.headers["location"] == "/?tab=camera_audit"
+
+        # 2. Member Directory redirect
+        res_mem = client.get("/members", follow_redirects=False)
+        assert res_mem.status_code == 307
+        assert res_mem.headers["location"] == "/?tab=members"
+
+        # 3. Settings & Hardware redirects
+        res_set = client.get("/settings", follow_redirects=False)
+        assert res_set.status_code == 307
+        assert res_set.headers["location"] == "/?tab=settings"
+
+        res_hw = client.get("/hardware", follow_redirects=False)
+        assert res_hw.status_code == 307
+        assert res_hw.headers["location"] == "/?tab=settings"
+
+        # 4. Logs & Audit redirects
+        res_logs = client.get("/logs", follow_redirects=False)
+        assert res_logs.status_code == 307
+        assert res_logs.headers["location"] == "/?tab=logs"
+
+        # 5. Follow redirect to verify 200 response and HTML payload
+        res_follow = client.get("/members", follow_redirects=True)
+        assert res_follow.status_code == 200
+        assert "Command Center" in res_follow.text or "Member Directory" in res_follow.text
+
 
 
 

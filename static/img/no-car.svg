@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 225" width="100%" height="100%">
+  <rect width="100%" height="100%" fill="#F1F5F9"/>
+  <g fill="none" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" transform="translate(130, 60)">
+    <!-- Car body outline -->
+    <path d="M10 55 L25 25 Q35 15 50 15 L90 15 Q105 15 115 25 L130 55 L140 60 Q145 62 145 70 L145 85 Q145 90 140 90 L130 90 Q130 75 115 75 Q100 75 100 90 L40 90 Q40 75 25 75 Q10 75 10 90 L0 90 Q-5 90 -5 85 L-5 70 Q-5 62 0 60 Z"/>
+    <!-- Wheels -->
+    <circle cx="25" cy="90" r="14" fill="#E2E8F0" stroke="#94A3B8" stroke-width="2.5"/>
+    <circle cx="25" cy="90" r="5" fill="#94A3B8"/>
+    <circle cx="115" cy="90" r="14" fill="#E2E8F0" stroke="#94A3B8" stroke-width="2.5"/>
+    <circle cx="115" cy="90" r="5" fill="#94A3B8"/>
+    <!-- Windows -->
+    <path d="M28 50 L38 27 Q43 23 52 23 L68 23 L68 50 Z" fill="#E2E8F0"/>
+    <path d="M74 50 L74 23 L88 23 Q97 23 102 27 L112 50 Z" fill="#E2E8F0"/>
+  </g>
+  <text x="200" y="185" text-anchor="middle" fill="#64748B" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="12" font-weight="700" letter-spacing="1">NO IMAGE CAPTURED</text>
+</svg>

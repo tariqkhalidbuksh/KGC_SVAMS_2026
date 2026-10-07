@@ -267,79 +267,154 @@ def generate_audit_pdf(audit: dict) -> bytes:
         ('VALIGN', (0, 0), (-1, -1), 'TOP'),
     ]))
     story.append(card_tbl)
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 6))
 
-    # 4. Optical Proof & Camera Evidence
+    # 4. Daily Movement Chronology (All-Day In/Out Movement Journal)
+    daily_movements = audit.get("daily_movements") or []
+    if daily_movements:
+        story.append(Paragraph("<b>DAILY MOVEMENT CHRONOLOGY &bull; ALL-DAY IN/OUT JOURNAL</b>", s_label))
+        story.append(Spacer(1, 2))
+
+        s_th = ParagraphStyle('TH', parent=s_label, fontSize=7, leading=9, textColor=c_slate)
+        s_td = ParagraphStyle('TD', parent=s_value, fontSize=7.5, leading=10, textColor=c_slate)
+        s_td_mono = ParagraphStyle('TDMono', parent=s_mono, fontSize=7.5, leading=10, textColor=c_slate)
+
+        move_table_data = [[
+            Paragraph("<b>#</b>", s_th),
+            Paragraph("<b>TIME (PKT)</b>", s_th),
+            Paragraph("<b>DIRECTION</b>", s_th),
+            Paragraph("<b>GATE STATION</b>", s_th),
+            Paragraph("<b>ACCESS PROTOCOL</b>", s_th),
+            Paragraph("<b>VERIFICATION STATUS</b>", s_th)
+        ]]
+
+        for idx, m in enumerate(daily_movements[:10], start=1):
+            ts = str(m.get("timestamp", ""))
+            time_part = ts[11:19] if len(ts) >= 19 else ts
+            direction = (m.get("direction") or "ENTRY").upper()
+            dir_color = "#059669" if "ENTRY" in direction else "#2563EB"
+            gate = m.get("gate_no") or "Gate-01"
+            acc_type = m.get("access_type") or "UHF RFID Access"
+            status_text = "Authorized Entry" if "ENTRY" in direction else "Authorized Exit"
+            if "Denied" in acc_type or "Unknown" in acc_type:
+                status_text = "Alert / Review"
+
+            move_table_data.append([
+                Paragraph(f"<b>{idx:02d}</b>", s_td_mono),
+                Paragraph(time_part, s_td_mono),
+                Paragraph(f'<font color="{dir_color}"><b>{direction}</b></font>', s_td),
+                Paragraph(gate, s_td),
+                Paragraph(acc_type, s_td),
+                Paragraph(f'<font color="#059669"><b>{status_text}</b></font>' if "Authorized" in status_text else f'<font color="#DC2626"><b>{status_text}</b></font>', s_td)
+            ])
+
+        move_tbl = Table(move_table_data, colWidths=[24, 75, 70, 70, 150, 150])
+        move_tbl.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#F1F5F9")),
+            ('LINEBELOW', (0, 0), (-1, 0), 1, c_border),
+            ('BOX', (0, 0), (-1, -1), 1, c_border),
+            ('INNERGRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#EDF2F7")),
+            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, c_card_bg]),
+            ('TOPPADDING', (0, 0), (-1, -1), 2.5),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
+            ('LEFTPADDING', (0, 0), (-1, -1), 6),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 6),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ]))
+        story.append(move_tbl)
+        story.append(Spacer(1, 6))
+
+    # 5. Optical Proof & Camera Evidence (User-Selected Proof Supported)
     story.append(Paragraph("<b>OPTICAL PROOF &bull; CAMERA EVIDENCE JOURNAL</b>", s_label))
     story.append(Spacer(1, 3))
 
-    entry_hik = entry.get("image_path")
-    exit_hik = exit_rec.get("image_path") if exit_rec else None
+    user_entry_img = audit.get("entry_image_path") or audit.get("user_entry_image")
+    user_exit_img = audit.get("exit_image_path") or audit.get("user_exit_image")
+
+    entry_hik = user_entry_img or entry.get("image_path")
+    exit_hik = user_exit_img or (exit_rec.get("image_path") if exit_rec else None)
     has_exit_img = bool(exit_hik and exit_hik != entry_hik)
 
     if entry_hik and has_exit_img:
         # Both Entry and Exit images present: Side-by-side comparison
-        im_in = _safe_rl_image(entry_hik, max_w=col_w - 20, max_h=130)
-        im_out = _safe_rl_image(exit_hik, max_w=col_w - 20, max_h=130)
+        im_in = _safe_rl_image(entry_hik, max_w=col_w - 20, max_h=120)
+        im_out = _safe_rl_image(exit_hik, max_w=col_w - 20, max_h=120)
         cell_in = [
-            Paragraph("<b>ENTRY HIKVISION VEHICLE OVERVIEW</b>", s_label),
+            Paragraph("<b>ENTRY CAMERA OPTICAL EVIDENCE (VERIFIED)</b>", s_label),
             Spacer(1, 2),
-            im_in or Paragraph('<font color="#94A3B8">[No Entry Overview Image]</font>', s_label)
+            im_in or Paragraph('<font color="#94A3B8">[No Entry Image Available]</font>', s_label)
         ]
         cell_out = [
-            Paragraph("<b>EXIT HIKVISION VEHICLE OVERVIEW</b>", s_label),
+            Paragraph("<b>EXIT CAMERA OPTICAL EVIDENCE (VERIFIED)</b>", s_label),
             Spacer(1, 2),
-            im_out or Paragraph('<font color="#94A3B8">[No Exit Overview Image]</font>', s_label)
+            im_out or Paragraph('<font color="#94A3B8">[No Exit Image Available]</font>', s_label)
         ]
         ev_table = Table([[cell_in, cell_out]], colWidths=[col_w, col_w])
         ev_table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, -1), c_card_bg),
             ('BOX', (0, 0), (-1, -1), 1, c_border),
             ('INNERGRID', (0, 0), (-1, -1), 0.5, c_border),
-            ('TOPPADDING', (0, 0), (-1, -1), 6),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+            ('TOPPADDING', (0, 0), (-1, -1), 5),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
             ('LEFTPADDING', (0, 0), (-1, -1), 8),
             ('RIGHTPADDING', (0, 0), (-1, -1), 8),
             ('VALIGN', (0, 0), (-1, -1), 'TOP'),
         ]))
         story.append(ev_table)
-        story.append(Spacer(1, 6))
+        story.append(Spacer(1, 5))
     elif entry_hik or (exit_hik and not entry_hik):
         # Single transit image: High-resolution full-width panel
         single_path = entry_hik or exit_hik
         transit_lbl = "ENTRY" if entry_hik else "EXIT"
-        im_single = _safe_rl_image(single_path, max_w=printable_w - 20, max_h=150)
+        im_single = _safe_rl_image(single_path, max_w=printable_w - 20, max_h=135)
         cell_single = [
-            Paragraph(f"<b>{transit_lbl} HIKVISION VEHICLE OVERVIEW (WIDE ANGLE EVIDENCE)</b>", s_label),
-            Spacer(1, 3),
+            Paragraph(f"<b>{transit_lbl} CAMERA OPTICAL EVIDENCE (OPERATOR VERIFIED)</b>", s_label),
+            Spacer(1, 2),
             im_single or Paragraph('<font color="#94A3B8">[No Overview Image Captured]</font>', s_label)
         ]
         ev_table = Table([[cell_single]], colWidths=[printable_w])
         ev_table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, -1), c_card_bg),
             ('BOX', (0, 0), (-1, -1), 1, c_border),
-            ('TOPPADDING', (0, 0), (-1, -1), 6),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+            ('TOPPADDING', (0, 0), (-1, -1), 5),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
             ('LEFTPADDING', (0, 0), (-1, -1), 8),
             ('RIGHTPADDING', (0, 0), (-1, -1), 8),
             ('VALIGN', (0, 0), (-1, -1), 'TOP'),
         ]))
         story.append(ev_table)
-        story.append(Spacer(1, 6))
+        story.append(Spacer(1, 5))
     else:
         # Placeholder panel if no photos on file
         empty_box = Table([[
-            Paragraph('<font color="#64748B"><b>No optical evidence images were attached to this transit record.</b><br/>RFID antenna detection was verified directly without optical line-crossing capture.</font>', s_label)
+            Paragraph('<font color="#64748B"><b>No optical evidence images were selected for this transit record.</b><br/>RFID gate detection was verified directly by gate antenna readers.</font>', s_label)
         ]], colWidths=[printable_w])
         empty_box.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, -1), c_card_bg),
             ('BOX', (0, 0), (-1, -1), 1, c_border),
-            ('TOPPADDING', (0, 0), (-1, -1), 14),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 14),
+            ('TOPPADDING', (0, 0), (-1, -1), 10),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
             ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ]))
         story.append(empty_box)
-        story.append(Spacer(1, 6))
+        story.append(Spacer(1, 5))
+
+    # Optional Investigator Remarks
+    notes = (audit.get("investigator_notes") or audit.get("notes") or "").strip()
+    if notes:
+        notes_box = Table([[
+            Paragraph(f"<b>INVESTIGATOR REMARKS &bull; SECURITY NOTES:</b> {notes}", s_value)
+        ]], colWidths=[printable_w])
+        notes_box.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor("#F1F5F9")),
+            ('BOX', (0, 0), (-1, -1), 1, c_border),
+            ('TOPPADDING', (0, 0), (-1, -1), 4),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+            ('LEFTPADDING', (0, 0), (-1, -1), 8),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 8),
+        ]))
+        story.append(notes_box)
+        story.append(Spacer(1, 4))
 
     # 5. Chain of Custody & Authentication Footer
     story.append(Spacer(1, 4))

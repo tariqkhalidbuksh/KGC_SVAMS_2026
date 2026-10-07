@@ -51,10 +51,29 @@ def init_db():
                     E_tag_id TEXT UNIQUE NOT NULL,
                     Status TEXT DEFAULT 'Active',
                     Profile_pic TEXT,
+                    Current_Location TEXT DEFAULT 'Outside',
                     created_at TIMESTAMP DEFAULT (datetime('now', 'localtime')))""")
                 conn.execute("CREATE INDEX IF NOT EXISTS idx_members_memid ON members(Mem_id)")
                 conn.execute("CREATE INDEX IF NOT EXISTS idx_members_etag ON members(E_tag_id)")
                 conn.execute("CREATE INDEX IF NOT EXISTS idx_members_car ON members(Car_number)")
+
+                # Dynamic column check for Current_Location in members
+                existing_mem_cols = [col['name'] for col in conn.execute("PRAGMA table_info(members)").fetchall()]
+                if 'Current_Location' not in existing_mem_cols:
+                    conn.execute("ALTER TABLE members ADD COLUMN Current_Location TEXT DEFAULT 'Outside'")
+                conn.execute("CREATE INDEX IF NOT EXISTS idx_members_current_loc ON members(Current_Location)")
+                conn.execute("UPDATE members SET Current_Location = 'Outside' WHERE Current_Location IS NULL OR Current_Location = ''")
+
+                # Table for tracking unknown RFID tags and rapid 1-click assignment
+                conn.execute("""CREATE TABLE IF NOT EXISTS unregistered_tags (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    tag TEXT UNIQUE NOT NULL,
+                    first_seen DATETIME DEFAULT (datetime('now', 'localtime')),
+                    last_seen DATETIME DEFAULT (datetime('now', 'localtime')),
+                    direction TEXT DEFAULT 'Unknown',
+                    read_count INTEGER DEFAULT 1)""")
+                conn.execute("CREATE INDEX IF NOT EXISTS idx_unreg_tag ON unregistered_tags(tag)")
+                conn.execute("CREATE INDEX IF NOT EXISTS idx_unreg_last_seen ON unregistered_tags(last_seen)")
 
                 conn.execute("""CREATE TABLE IF NOT EXISTS daily_logs (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -128,6 +147,10 @@ def init_db():
                 conn.execute("UPDATE daily_logs SET timestamp = datetime(timestamp, '+5 hours') WHERE timestamp LIKE '2026-10-02 16:%'")
         finally:
             conn.close()
+
+    # Initialize authentication & user accounts tables
+    from services.auth_service import init_auth_tables
+    init_auth_tables()
 
 def get_setting(key: str, default: str = "") -> str:
     with config.DB_LOCK:

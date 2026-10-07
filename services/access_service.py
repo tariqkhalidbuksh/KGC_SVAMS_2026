@@ -55,13 +55,24 @@ def execute_access_decision(
                     (clean_tag, clean_tag, clean_tag)
                 ).fetchone()
 
-                if member and (member['Status'] == 'Active' or not member['Status']):
+                if member:
+                    raw_status = (member['Status'] or 'Active').strip()
                     name = member['Name']
                     mem_id = member['Mem_id']
                     car = member['Car_number']
-                    access_type = "RFID Verified"
                     make_model = member['Make_Model']
                     profile_pic = member['Profile_pic']
+                    
+                    status_upper = raw_status.upper()
+                    if status_upper in ('VIP', 'COMMITTEE', 'PRESIDENT', 'SECRETARY', 'EXECUTIVE'):
+                        access_type = "VIP Member"
+                        resolved_status = "VIP"
+                    elif status_upper in ('SUSPENDED', 'BARRED', 'WATCHLIST', 'BLOCKED'):
+                        access_type = f"Security Alert ({raw_status})"
+                        resolved_status = "Suspended"
+                    else:
+                        access_type = "RFID Verified"
+                        resolved_status = "Active"
                 else:
                     name = "Unregistered Visitor"
                     mem_id = "GUEST-LOG"
@@ -69,6 +80,9 @@ def execute_access_decision(
                     access_type = "RFID Unknown"
                     make_model = None
                     profile_pic = None
+                    resolved_status = "Unregistered"
+
+                member_loc = (member['Current_Location'] or '').strip() if member else ""
 
                 last_tag_log = conn.execute(
                     "SELECT id, direction, timestamp FROM daily_logs WHERE scanned_tag=? ORDER BY id DESC LIMIT 1",
@@ -91,20 +105,57 @@ def execute_access_decision(
                         # Suppresses duplicate scans, multi-reads, and cross-reader bounce between Entry & Exit
                         if not bypass_cooldown and elapsed_sec < cooldown_window:
                             return last_tag_log['id']
-
-                        # If the last log was more than 12 hours ago, treat as a fresh visit starting with Entry
-                        if elapsed_sec > 43200:
-                            resolved_direction = "Entry"
-                        elif direction in ("Auto", None, ""):
-                            resolved_direction = "Exit" if last_dir == "Entry" else "Entry"
-                        elif direction == last_dir:
-                            resolved_direction = "Exit" if last_dir == "Entry" else "Entry"
-                        else:
-                            resolved_direction = direction or ("Exit" if last_dir == "Entry" else "Entry")
                     except Exception:
-                        resolved_direction = direction or "Entry"
+                        pass
+
+                # DIRECTION RESOLUTION:
+                if member:
+                    # Case 1: Bypass cooldown with forced explicit direction (e.g. manual simulation / QA)
+                    if bypass_cooldown and direction in ("Entry", "Exit"):
+                        resolved_direction = direction
+                    # Case 2: Strict State Machine (Known Physical State)
+                    elif member_loc == "Inside":
+                        # Car is physically inside club -> next transit MUST be Exit
+                        resolved_direction = "Exit"
+                    elif member_loc == "Outside":
+                        # Car is physically outside club -> next transit MUST be Entry
+                        resolved_direction = "Entry"
+                    # Case 3: Cold Start / Initial State Not Yet Established -> First-Reader-Wins
+                    else:
+                        if direction == "Exit":
+                            resolved_direction = "Exit"
+                        elif direction == "Entry":
+                            resolved_direction = "Entry"
+                        elif last_tag_log and last_tag_log['direction'] == "Entry":
+                            resolved_direction = "Exit"
+                        else:
+                            resolved_direction = "Entry"
+
+                    new_loc = "Outside" if resolved_direction == "Exit" else "Inside"
+                    conn.execute(
+                        "UPDATE members SET Current_Location=? WHERE UPPER(E_tag_id)=? OR (Mem_id=? AND UPPER(Car_number)=?)",
+                        (new_loc, clean_tag, mem_id, car.upper())
+                    )
                 else:
-                    resolved_direction = "Entry" if direction in ("Auto", None, "", "Entry") else direction
+                    # Unregistered Tag Handling
+                    if direction in ("Entry", "Exit"):
+                        resolved_direction = direction
+                    elif last_tag_log:
+                        resolved_direction = "Exit" if last_tag_log['direction'] == "Entry" else "Entry"
+                    else:
+                        resolved_direction = "Entry"
+
+                    new_loc = "Outside" if resolved_direction == "Exit" else "Inside"
+
+                    # Track into unregistered_tags table for 1-click assignment in Member Directory
+                    conn.execute("""
+                        INSERT INTO unregistered_tags (tag, first_seen, last_seen, direction, read_count)
+                        VALUES (?, ?, ?, ?, 1)
+                        ON CONFLICT(tag) DO UPDATE SET
+                            last_seen = excluded.last_seen,
+                            direction = excluded.direction,
+                            read_count = unregistered_tags.read_count + 1
+                    """, (clean_tag, pkt_now, pkt_now, resolved_direction))
 
                 conn.execute(
                     "INSERT INTO raw_reader_logs (tag_scanned, system_response, direction, timestamp) VALUES (?, ?, ?, ?)",
@@ -133,7 +184,9 @@ def execute_access_decision(
                         "scanned_tag": clean_tag,
                         "timestamp": pkt_now,
                         "make_model": make_model,
-                        "profile_pic": profile_pic
+                        "profile_pic": profile_pic,
+                        "member_status": resolved_status,
+                        "current_location": new_loc
                     }
 
                 return new_id
@@ -235,10 +288,7 @@ def process_camera_line_crossing(hikvision_image_path: str, forced_direction: st
         event_type=event_type
     )
     config.FTP_EVENT_COUNT["count"] += 1
-
-    if new_audit_id:
-        from services.ocr_service import submit_image_to_ocr
-        submit_image_to_ocr(new_audit_id, hik_target_path)
+    return new_audit_id
 
 def deduplicate_camera_audit_logs() -> int:
     """

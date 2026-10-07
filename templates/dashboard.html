@@ -21,6 +21,60 @@
         .stat-num.amber { background: linear-gradient(135deg, #D97706, #B45309); -webkit-background-clip: text; background-clip: text; color: transparent; }
         .pulse-indicator { animation: pulse-kf 1.5s infinite; }
         @keyframes pulse-kf { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+        .nav-btn-mobile { color: #64748B; background: #FFFFFF; border: 1px solid #E2E8F0; }
+        .nav-btn-mobile.active { background: #ECFDF5; color: #059669; border-color: #059669; font-weight: 700; }
+        .pulse-badge {
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+            animation: pulse-green-kiosk 2s infinite;
+        }
+        @keyframes pulse-green-kiosk {
+            0% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        @keyframes radar-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.85); opacity: 0.7; }
+            50% { transform: scale(1.18); opacity: 0.25; }
+            100% { transform: scale(0.85); opacity: 0.7; }
+        }
+        .radar-sweep {
+            animation: radar-spin 4s linear infinite;
+        }
+        .pulse-ring-1 {
+            animation: pulse-ring 3.2s ease-in-out infinite;
+        }
+        .pulse-ring-2 {
+            animation: pulse-ring 3.2s ease-in-out infinite 1s;
+        }
+        .pulse-ring-3 {
+            animation: pulse-ring 3.2s ease-in-out infinite 2s;
+        }
+        .sindh-license-plate {
+            background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+            border: 3px solid #0F172A;
+            border-radius: 14px;
+            box-shadow: inset 0 0 0 2px #CBD5E1, 0 6px 18px -3px rgba(15, 23, 42, 0.12);
+            position: relative;
+            overflow: hidden;
+            user-select: none;
+        }
+        .plate-emboss-text {
+            color: #020617;
+            text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.95), -1px -1px 0px rgba(0, 0, 0, 0.25);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 800;
+        }
+        .ajrak-banner-svg {
+            background-color: #7A0000;
+            background-image: radial-gradient(#FFFFFF 18%, transparent 19%), radial-gradient(#000000 18%, transparent 19%);
+            background-size: 8px 8px;
+            background-position: 0 0, 4px 4px;
+            border-bottom: 2px solid #0F172A;
+        }
     </style>
 </head>
 <body class="flex h-screen overflow-hidden">
@@ -30,25 +84,29 @@
                 <img src="/api/logo" alt="Club Logo" class="max-h-16 object-contain" onerror="this.style.display='none'">
             </div>
             <nav class="mt-4 flex flex-col text-sm">
-                <button type="button" onclick="switchTab('overview', this)" class="nav-btn active px-8 py-4 text-left flex items-center gap-3 transition">
+                <button type="button" onclick="switchTab('overview', this)" data-tab="overview" class="nav-btn active px-8 py-4 text-left flex items-center gap-3 transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
                     Command Overview
                 </button>
-                <button type="button" onclick="switchTab('logs', this)" class="nav-btn px-8 py-4 text-left flex items-center gap-3 transition">
+                <button type="button" onclick="switchTab('logs', this)" data-tab="logs" class="nav-btn px-8 py-4 text-left flex items-center gap-3 transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                     Vehicle Audit Reports
                 </button>
-                <button type="button" onclick="switchTab('camera_audit', this)" class="nav-btn px-8 py-4 text-left flex items-center gap-3 transition">
+                <button type="button" onclick="switchTab('camera_audit', this)" data-tab="camera_audit" class="nav-btn px-8 py-4 text-left flex items-center gap-3 transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                     Camera Vehicle Audit
                 </button>
-                <button type="button" onclick="switchTab('members', this)" class="nav-btn px-8 py-4 text-left flex items-center gap-3 transition">
+                <button type="button" onclick="switchTab('members', this)" data-tab="members" class="nav-btn px-8 py-4 text-left flex items-center gap-3 transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
                     Member Directory
                 </button>
-                <button type="button" onclick="switchTab('settings', this)" class="nav-btn px-8 py-4 text-left flex items-center gap-3 transition">
+                <button type="button" onclick="switchTab('settings', this)" data-tab="settings" class="nav-btn px-8 py-4 text-left flex items-center gap-3 transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                     Hardware Settings
+                </button>
+                <button type="button" onclick="switchTab('settings', this); switchSettingsSubtab('users');" data-tab="users" class="nav-btn px-8 py-4 text-left flex items-center gap-3 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                    User Access Rights
                 </button>
 
                 <div class="mt-4 pt-4 border-t border-slate-100 flex flex-col text-xs font-bold space-y-1">
@@ -77,66 +135,471 @@
         </div>
     </aside>
 
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobileDrawer" class="hidden fixed inset-0 z-[150] flex" onclick="closeMobileMenu()">
+        <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs"></div>
+        <div class="relative w-72 max-w-[85vw] bg-white h-full shadow-2xl flex flex-col justify-between z-10" onclick="event.stopPropagation()">
+            <div>
+                <div class="h-20 flex items-center justify-between px-6 border-b border-slate-100 bg-slate-50">
+                    <div class="flex items-center gap-3">
+                        <img src="/api/logo" alt="Club Logo" class="max-h-12 object-contain" onerror="this.style.display='none'">
+                        <div>
+                            <h2 class="text-sm font-bold text-slate-800 leading-tight">Command Center</h2>
+                            <p class="text-[10px] text-slate-400 font-semibold uppercase">Karachi Gymkhana</p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="closeMobileMenu()" class="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-600 font-bold flex items-center justify-center text-sm">&times;</button>
+                </div>
+                <nav class="mt-3 flex flex-col text-sm">
+                    <button type="button" onclick="switchTab('overview', this); closeMobileMenu();" data-tab="overview" class="nav-btn active px-6 py-3.5 text-left flex items-center gap-3 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+                        Command Overview
+                    </button>
+                    <button type="button" onclick="switchTab('logs', this); closeMobileMenu();" data-tab="logs" class="nav-btn px-6 py-3.5 text-left flex items-center gap-3 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                        Vehicle Audit Reports
+                    </button>
+                    <button type="button" onclick="switchTab('camera_audit', this); closeMobileMenu();" data-tab="camera_audit" class="nav-btn px-6 py-3.5 text-left flex items-center gap-3 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                        Camera Vehicle Audit
+                    </button>
+                    <button type="button" onclick="switchTab('members', this); closeMobileMenu();" data-tab="members" class="nav-btn px-6 py-3.5 text-left flex items-center gap-3 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                        Member Directory
+                    </button>
+                    <button type="button" onclick="switchTab('settings', this); closeMobileMenu();" data-tab="settings" class="nav-btn px-6 py-3.5 text-left flex items-center gap-3 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                        Hardware Settings
+                    </button>
+                    <button type="button" onclick="switchTab('settings', this); switchSettingsSubtab('users'); closeMobileMenu();" data-tab="users" class="nav-btn px-6 py-3.5 text-left flex items-center gap-3 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                        User Access Rights
+                    </button>
+                    <div class="mt-4 pt-4 border-t border-slate-100 flex flex-col text-xs font-bold space-y-1">
+                        <a href="/kiosk" target="_blank" class="px-6 py-2.5 text-slate-600 flex items-center justify-between">Gate Terminal</a>
+                        <a href="/tools" target="_blank" class="px-6 py-2.5 text-indigo-600 flex items-center justify-between">Hardware Diagnostics</a>
+                        <a href="/simulate" target="_blank" class="px-6 py-2.5 text-amber-600 flex items-center justify-between">Simulation Console</a>
+                    </div>
+                </nav>
+            </div>
+            <div class="p-4 border-t border-slate-100 bg-slate-50 text-center">
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Smart Gate Access Core</p>
+            </div>
+        </div>
+    </div>
+
     <main class="flex-1 flex flex-col h-screen overflow-hidden">
-        <header class="h-16 flex items-center justify-between px-8 bg-white border-b border-slate-200 shrink-0">
-            <h1 id="pageTitle" class="text-lg font-bold text-slate-800">Command Overview</h1>
-            <div class="flex items-center gap-4">
-                <span id="liveClock" class="text-sm font-bold text-slate-500 font-mono"></span>
-                <div class="flex items-center bg-emerald-100 border border-emerald-200 px-3 py-1.5 rounded-full">
-                    <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse mr-2"></div>
-                    <span class="text-xs font-bold text-emerald-700">LIVE FEED</span>
+        <header class="h-16 flex items-center justify-between px-4 md:px-8 bg-white border-b border-slate-200 shrink-0 relative z-30">
+            <div class="flex items-center gap-3">
+                <button type="button" onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100 border border-slate-200" title="Toggle Navigation Menu">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
+                <div>
+                    <h1 id="pageTitle" class="text-base md:text-lg font-bold text-slate-800 leading-tight">Command Overview</h1>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider md:hidden">Karachi Gymkhana Club</p>
+                </div>
+            </div>
+
+            <!-- Global Quick Search Bar (Ctrl+K) -->
+            <div class="flex-1 max-w-md mx-8 relative hidden md:block">
+                <div class="relative flex items-center">
+                    <svg class="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <input type="text" id="globalSearchInput" placeholder="Quick Search member, vehicle plate, or EPC tag..." class="w-full bg-slate-50 hover:bg-slate-100 focus:bg-white border border-slate-200 focus:border-indigo-500 rounded-xl pl-10 pr-16 py-2 text-xs font-semibold text-slate-800 placeholder-slate-400 outline-none transition shadow-2xs">
+                    <span class="absolute right-2.5 px-1.5 py-0.5 text-[10px] font-bold font-mono text-slate-400 bg-white border border-slate-200 rounded shadow-2xs pointer-events-none">Ctrl K</span>
+                </div>
+                <div id="globalSearchResults" class="hidden absolute left-0 right-0 top-11 bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden z-50"></div>
+            </div>
+
+            <div class="flex items-center gap-3 md:gap-4">
+                <span id="liveClock" class="text-xs md:text-sm font-bold text-slate-500 font-mono hidden sm:inline"></span>
+                <div class="flex items-center bg-emerald-100 border border-emerald-200 px-2.5 md:px-3 py-1 md:py-1.5 rounded-full">
+                    <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse mr-1.5 md:mr-2"></div>
+                    <span class="text-[10px] md:text-xs font-bold text-emerald-700">LIVE FEED</span>
+                </div>
+
+                <!-- User Profile & Sign Out Widget -->
+                <div class="flex items-center gap-2 pl-2 border-l border-slate-200">
+                    <div class="flex items-center gap-2.5 bg-slate-50 border border-slate-200 py-1 px-2.5 rounded-xl">
+                        <div id="userAvatar" class="w-7 h-7 rounded-lg bg-indigo-600 text-white font-black text-xs flex items-center justify-center uppercase shadow-2xs">AD</div>
+                        <div class="hidden sm:block text-left">
+                            <p id="userFullName" class="text-xs font-extrabold text-slate-800 leading-tight">Admin</p>
+                            <span id="userRoleBadge" class="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.2 rounded font-mono bg-indigo-100 text-indigo-700">ADMIN</span>
+                        </div>
+                    </div>
+                    <button type="button" id="userLogoutBtn" onclick="logout()" class="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-200 transition" title="Sign Out of Command Center">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                    </button>
                 </div>
             </div>
         </header>
 
+        <!-- Responsive Mobile Quick Tab Bar -->
+        <div class="md:hidden flex items-center gap-1.5 overflow-x-auto px-4 py-2 bg-slate-100/90 border-b border-slate-200 shrink-0 z-20">
+            <button type="button" onclick="switchTab('overview', this)" data-tab="overview" class="nav-btn-mobile active px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition">Overview</button>
+            <button type="button" onclick="switchTab('logs', this)" data-tab="logs" class="nav-btn-mobile px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition">Audit Reports</button>
+            <button type="button" onclick="switchTab('camera_audit', this)" data-tab="camera_audit" class="nav-btn-mobile px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition">Camera Audit</button>
+            <button type="button" onclick="switchTab('members', this)" data-tab="members" class="nav-btn-mobile px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition">Members</button>
+            <button type="button" onclick="switchTab('settings', this)" data-tab="settings" class="nav-btn-mobile px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition">Settings</button>
+        </div>
+
+        <!-- Floating Toast Notification Container -->
+        <div id="toastContainer" class="fixed top-20 right-8 z-[200] flex flex-col gap-2.5 pointer-events-none"></div>
+
         <div class="flex-1 overflow-y-auto p-8">
+            <!-- View-Only Privilege Banner (Displayed if role is Viewer) -->
+            <div id="viewerReadOnlyBanner" class="hidden mb-6 p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-semibold flex items-center justify-between shadow-xs">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                    </div>
+                    <div>
+                        <p class="font-extrabold text-amber-950">Viewer Access Mode (Read-Only Rights)</p>
+                        <p class="text-[11px] text-amber-800">You are signed in with read-only privileges. Telemetry, audit logs, and member profiles are viewable, but modifying records and changing hardware settings are disabled.</p>
+                    </div>
+                </div>
+                <span class="text-[10px] font-black uppercase tracking-wider bg-amber-200/80 text-amber-950 px-2.5 py-1 rounded-full font-mono">VIEW ONLY</span>
+            </div>
+
             <div id="tab-overview" class="space-y-6">
-                <div class="grid grid-cols-2 md:grid-cols-5 gap-5">
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-l-4 border-l-indigo-500">
-                        <p class="text-[10px] uppercase tracking-widest font-extrabold text-slate-400 mb-1">Active Members</p>
-                        <h3 id="sMembers" class="text-4xl font-black stat-num tabular-nums">--</h3>
-                        <p class="text-[11px] text-slate-400 mt-1">Registered vehicles</p>
+                <!-- 6-Card Executive Telemetry Grid -->
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-indigo-500">
+                        <p class="text-[10px] uppercase tracking-widest font-extrabold text-slate-400 mb-1">Registered Fleet</p>
+                        <h3 id="sMembers" class="text-3xl font-black stat-num tabular-nums">--</h3>
+                        <p class="text-[10px] text-slate-400 mt-1">Active vehicles</p>
                     </div>
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-l-4 border-l-emerald-500">
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-emerald-500">
                         <p class="text-[10px] uppercase tracking-widest font-extrabold text-slate-400 mb-1">Entries Today</p>
-                        <h3 id="sEntries" class="text-4xl font-black stat-num green tabular-nums">--</h3>
-                        <p class="text-[11px] text-slate-400 mt-1">Peak: <span id="sPeak">None</span></p>
+                        <h3 id="sEntries" class="text-3xl font-black stat-num green tabular-nums">--</h3>
+                        <p class="text-[10px] text-slate-400 mt-1">Peak: <span id="sPeak">None</span></p>
                     </div>
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-l-4 border-l-blue-500">
-                        <p class="text-[10px] uppercase tracking-widest font-extrabold text-slate-400 mb-1">Currently Inside</p>
-                        <h3 id="sInside" class="text-4xl font-black stat-num blue tabular-nums">--</h3>
-                        <p class="text-[11px] text-slate-400 mt-1"><span id="sExits">--</span> exits today</p>
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-blue-500">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-[10px] uppercase tracking-widest font-extrabold text-slate-400 mb-1">Currently Inside</p>
+                                <h3 id="sInside" class="text-3xl font-black stat-num blue tabular-nums">--</h3>
+                            </div>
+                            <span id="sOverstayBadge" class="hidden text-[9px] font-black bg-amber-100 text-amber-800 border border-amber-300 px-1.5 py-0.5 rounded-full">0 Overstay</span>
+                        </div>
+                        <p class="text-[10px] text-slate-400 mt-1"><span id="sExits">--</span> exits today</p>
                     </div>
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-l-4 border-l-teal-500">
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-indigo-600">
+                        <p class="text-[10px] uppercase tracking-widest font-extrabold text-slate-400 mb-1">Avg Stay Duration</p>
+                        <h3 id="sAvgDuration" class="text-3xl font-black text-indigo-700 tabular-nums">--</h3>
+                        <p class="text-[10px] text-slate-400 mt-1"><span id="sPairedVisits">--</span> paired visits today</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-teal-500">
                         <p class="text-[10px] uppercase tracking-widest font-extrabold text-slate-400 mb-1">Parking Available</p>
-                        <h3 id="sParking" class="text-4xl font-black stat-num tabular-nums">--</h3>
-                        <p class="text-[11px] text-slate-400 mt-1">of <span id="sCap">--</span> capacity</p>
+                        <h3 id="sParking" class="text-3xl font-black stat-num tabular-nums">--</h3>
+                        <p class="text-[10px] text-slate-400 mt-1">of <span id="sCap">--</span> capacity</p>
                     </div>
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-l-4 border-l-amber-500">
-                        <p class="text-[10px] uppercase tracking-widest font-extrabold text-slate-400 mb-1">Alerts Today</p>
-                        <h3 id="sGuests" class="text-4xl font-black stat-num amber tabular-nums">--</h3>
-                        <p class="text-[11px] text-slate-400 mt-1">Unknown / No-RFID</p>
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-amber-500">
+                        <p class="text-[10px] uppercase tracking-widest font-extrabold text-slate-400 mb-1">Tag Adoption</p>
+                        <h3 id="sAdoptionRate" class="text-3xl font-black text-amber-700 tabular-nums">--%</h3>
+                        <p class="text-[10px] text-slate-400 mt-1"><span id="sGuests">0</span> unregistered</p>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border">
-                        <div class="flex justify-between items-center mb-4">
+                <!-- Main Grid: Hourly Traffic + Live Kiosk Display Widget -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div class="lg:col-span-7 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
+                        <!-- Card Header & Legend -->
+                        <div class="flex justify-between items-start mb-3 flex-wrap gap-2">
                             <div>
-                                <h2 class="font-bold text-slate-800">Hourly Traffic Flow</h2>
-                                <p class="text-xs text-slate-400">Vehicle entries vs exits &bull; today (PKT)</p>
+                                <div class="flex items-center gap-2">
+                                    <h2 class="text-base font-extrabold text-slate-800">Hourly Traffic Flow</h2>
+                                    <span class="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-mono">Today (PKT)</span>
+                                </div>
+                                <p class="text-xs text-slate-400 mt-0.5">Vehicle transit volume distribution by hour of day</p>
                             </div>
-                            <div class="flex gap-4 text-xs font-bold">
-                                <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500"></span>Entries</span>
-                                <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-blue-500"></span>Exits</span>
+                            <div class="flex items-center gap-3 bg-slate-50 border border-slate-200/80 px-3 py-1.5 rounded-xl text-xs font-bold">
+                                <span class="flex items-center gap-1.5 text-slate-700"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>Entries</span>
+                                <span class="flex items-center gap-1.5 text-slate-700"><span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>Exits</span>
                             </div>
                         </div>
-                        <canvas id="hourlyChart" height="95"></canvas>
+
+                        <!-- Real-Time Traffic Highlights Bar to fill upper space with executive telemetry -->
+                        <div class="grid grid-cols-3 gap-3 mb-4 p-3 bg-slate-50/70 border border-slate-100 rounded-xl">
+                            <div class="flex flex-col">
+                                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Peak Traffic Hour</span>
+                                <span id="chartPeakHour" class="text-xs sm:text-sm font-extrabold text-slate-800 truncate">--:--</span>
+                            </div>
+                            <div class="flex flex-col border-l border-slate-200 pl-3">
+                                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Total Inflow</span>
+                                <span id="chartTotalInflow" class="text-xs sm:text-sm font-extrabold text-emerald-700">-- Entries</span>
+                            </div>
+                            <div class="flex flex-col border-l border-slate-200 pl-3">
+                                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Total Outflow</span>
+                                <span id="chartTotalOutflow" class="text-xs sm:text-sm font-extrabold text-blue-700">-- Exits</span>
+                            </div>
+                        </div>
+
+                        <!-- Full Height Responsive Chart Container -->
+                        <div class="relative flex-1 w-full min-h-[300px]">
+                            <canvas id="hourlyChart"></canvas>
+                        </div>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border">
+
+                    <!-- Gate-01 Live Kiosk Terminal Widget (Mirrors /kiosk Terminal) -->
+                    <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between relative overflow-hidden">
+                        <!-- Widget Header (Live Kiosk Terminal Mirror) -->
+                        <div class="flex justify-between items-center mb-3">
+                            <div>
+                                <h2 class="font-bold text-slate-800 flex items-center gap-2">
+                                    <span>Gate-01 Kiosk Terminal</span>
+                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                </h2>
+                                <p class="text-xs text-slate-400">Live RFID gate terminal mirror &bull; Synchronized</p>
+                            </div>
+                            <a href="/kiosk" target="_blank" title="Open Standalone Kiosk Terminal" class="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 transition">
+                                <span>Open Full Kiosk</span>
+                                <svg class="w-3 h-3 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                            </a>
+                        </div>
+
+                        <!-- Kiosk Display Container (Exact replica of /kiosk) -->
+                        <div class="bg-slate-50/70 border border-slate-200/90 rounded-2xl p-4 relative overflow-hidden shadow-inner flex-1 flex flex-col justify-center min-h-[350px]">
+                            
+                            <!-- 1. AUTHENTIC IDLE MODE (Exactly like /kiosk #viewIdle) -->
+                            <div id="kioskMiniIdle" class="w-full text-center space-y-3 py-1 transition-all duration-300">
+                                <!-- Animated Radar / Scanner Core -->
+                                <div class="relative w-32 h-32 mx-auto flex items-center justify-center">
+                                    <!-- Concentric Pulsing Rings -->
+                                    <div class="absolute inset-0 rounded-full border-2 border-emerald-500/20 pulse-ring-1"></div>
+                                    <div class="absolute inset-2.5 rounded-full border-2 border-emerald-500/30 pulse-ring-2"></div>
+                                    <div class="absolute inset-5 rounded-full border-2 border-indigo-500/30 pulse-ring-3"></div>
+                                    
+                                    <!-- Rotating Radar Beam -->
+                                    <div class="absolute inset-1.5 rounded-full overflow-hidden pointer-events-none">
+                                        <div class="w-full h-full radar-sweep" style="background: conic-gradient(from 0deg at 50% 50%, rgba(16, 185, 129, 0.28) 0deg, rgba(16, 185, 129, 0) 65deg);"></div>
+                                    </div>
+
+                                    <!-- Central Antenna Core -->
+                                    <div class="relative z-10 w-14 h-14 rounded-2xl bg-white border-2 border-emerald-200 shadow-md flex items-center justify-center text-emerald-600">
+                                        <svg class="w-7 h-7 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                <!-- Idle Header & Status -->
+                                <div>
+                                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-black uppercase tracking-wider pulse-badge mb-1">
+                                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                        <span>UHF RFID SENSOR ONLINE &bull; READY FOR APPROACH</span>
+                                    </div>
+                                    <h3 class="text-sm lg:text-base font-black text-slate-900 uppercase tracking-tight">Approach Barrier For Clearance</h3>
+                                    <p class="text-[11px] text-slate-500 max-w-sm mx-auto">Fast-track contactless RFID access lane armed. Please slow down to 5 km/h for barrier clearance.</p>
+                                </div>
+
+                                <!-- 3 Mini Telemetry Cards (Matching /kiosk) -->
+                                <div class="grid grid-cols-3 gap-2 pt-2 border-t border-slate-200/80 max-w-md mx-auto">
+                                    <div class="bg-white p-2 rounded-xl text-left border border-slate-200 shadow-2xs">
+                                        <div class="flex items-center gap-1.5 mb-0.5">
+                                            <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                                            <span class="text-[8px] font-black text-slate-400 uppercase tracking-wider">UHF Sensor</span>
+                                        </div>
+                                        <p class="text-[10px] font-extrabold text-slate-800">Range Active</p>
+                                        <p class="text-[9px] text-slate-400 font-mono">902-928 MHz</p>
+                                    </div>
+                                    <div class="bg-white p-2 rounded-xl text-left border border-slate-200 shadow-2xs">
+                                        <div class="flex items-center gap-1.5 mb-0.5">
+                                            <div class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></div>
+                                            <span class="text-[8px] font-black text-slate-400 uppercase tracking-wider">Barrier</span>
+                                        </div>
+                                        <p class="text-[10px] font-extrabold text-slate-800">Servo Armed</p>
+                                        <p class="text-[9px] text-slate-400 font-mono">Auto Actuate</p>
+                                    </div>
+                                    <div class="bg-white p-2 rounded-xl text-left border border-slate-200 shadow-2xs">
+                                        <div class="flex items-center gap-1.5 mb-0.5">
+                                            <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                                            <span class="text-[8px] font-black text-slate-400 uppercase tracking-wider">Lane 01</span>
+                                        </div>
+                                        <p class="text-[10px] font-extrabold text-slate-800">Fast-Track</p>
+                                        <p class="text-[9px] text-slate-400 font-mono">&lt; 5 km/h</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 2. AUTHENTIC TRIGGERED / ACTIVE MODE (Exactly like /kiosk #viewActive) -->
+                            <div id="kioskMiniActive" class="hidden w-full space-y-2.5 relative transition-all duration-300">
+                                <!-- Top Status Bar: Direction & Verification Status -->
+                                <div class="flex items-center justify-between pb-2 border-b border-slate-200/90">
+                                    <div class="flex items-center gap-2">
+                                        <span id="kioskMiniStatusBadge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-800 border-2 border-emerald-300 shadow-2xs">
+                                            <span id="kioskMiniBadgeDot" class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                                            <span id="kioskMiniBadgeText">CLEARANCE GRANTED &bull; ENTRY</span>
+                                        </span>
+                                        <span class="px-2 py-0.5 rounded-lg text-[9px] font-mono font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                                            GATE 01
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="text-[9px] font-bold text-slate-400 uppercase">Scanned:</span>
+                                        <span id="kioskMiniTime" class="text-[10px] font-mono font-extrabold text-slate-800 bg-white px-2 py-0.5 rounded-md border border-slate-200 shadow-2xs">--:--:-- PKT</span>
+                                    </div>
+                                </div>
+
+                                <!-- Registered Member Container -->
+                                <div id="kioskMiniRegContainer" class="space-y-2.5">
+                                    <!-- Driver & Vehicle Profile Row -->
+                                    <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between gap-3">
+                                        <div class="flex items-center gap-3 min-w-0">
+                                            <div class="relative shrink-0">
+                                                <div class="p-0.5 rounded-2xl bg-gradient-to-tr from-emerald-500 via-teal-400 to-indigo-500 shadow-xs">
+                                                    <img id="kioskMiniPhoto" src="" class="w-14 h-14 rounded-[14px] object-cover border border-white hidden" />
+                                                    <div id="kioskMiniAvatar" class="w-14 h-14 rounded-[14px] bg-gradient-to-br from-indigo-50 to-slate-100 border border-white flex items-center justify-center font-black text-base text-indigo-700 shadow-inner">KG</div>
+                                                </div>
+                                                <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white shadow-2xs"></span>
+                                            </div>
+                                            <div class="min-w-0">
+                                                <div class="flex items-center gap-1.5 flex-wrap">
+                                                    <span id="kioskMiniStatusPill" class="text-[8px] font-black px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 border border-emerald-200">ACTIVE MEMBER</span>
+                                                    <span class="text-[9px] font-mono font-bold text-slate-500 bg-slate-50 px-1.5 py-0.2 rounded border border-slate-200">
+                                                        ID: <span id="kioskMiniMemId" class="text-indigo-600 font-extrabold">--</span>
+                                                    </span>
+                                                </div>
+                                                <h4 id="kioskMiniName" class="text-sm font-black text-slate-900 truncate mt-0.5">Capt. Naveed Mumtaz</h4>
+                                                <p id="kioskMiniClubSubtitle" class="text-[10px] text-slate-400 font-bold truncate">Karachi Gymkhana Club Member</p>
+                                            </div>
+                                        </div>
+                                        <!-- Car Make & Model Box -->
+                                        <div class="text-right shrink-0 bg-indigo-50/50 p-2 rounded-xl border border-indigo-100 max-w-[130px]">
+                                            <span class="text-[8px] font-black uppercase tracking-wider text-indigo-600 block">CAR MODEL</span>
+                                            <p id="kioskMiniMake" class="text-xs font-black text-slate-900 truncate uppercase mt-0.5">Toyota Corolla</p>
+                                            <span class="text-[8px] font-bold text-emerald-600 block">Verified Authentic</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Lower Row: Authentic Sindh Plate & Telemetry -->
+                                    <div class="grid grid-cols-12 gap-3 items-stretch">
+                                        <!-- Sindh License Plate Box (Col 7) -->
+                                        <div class="col-span-7">
+                                            <div class="sindh-license-plate h-24 flex flex-col justify-between shadow-md">
+                                                <!-- Ajrak Banner SVG Pattern -->
+                                                <div class="h-4.5 w-full ajrak-banner-svg relative flex items-center justify-center">
+                                                    <svg class="w-full h-full opacity-65" viewBox="0 0 300 18" preserveAspectRatio="none">
+                                                        <pattern id="kioskAjrakPatternSvg" width="12" height="12" patternUnits="userSpaceOnUse">
+                                                            <rect width="12" height="12" fill="#6B0000"/>
+                                                            <polygon points="6,0 12,6 6,12 0,6" fill="#990000" stroke="#FFFFFF" stroke-width="0.5"/>
+                                                            <circle cx="6" cy="6" r="1.6" fill="#FFFFFF"/>
+                                                            <circle cx="6" cy="6" r="0.8" fill="#000000"/>
+                                                        </pattern>
+                                                        <rect width="300" height="18" fill="url(#kioskAjrakPatternSvg)"/>
+                                                    </svg>
+                                                </div>
+
+                                                <!-- Center Registration with Golden Emblem -->
+                                                <div class="flex-1 flex items-center justify-center gap-2 px-2 my-0.5">
+                                                    <span id="kioskMiniPlateSeries" class="plate-emboss-text text-2xl font-black tracking-tight uppercase">RZ</span>
+                                                    <div class="w-6 h-6 rounded-full bg-gradient-to-tr from-amber-500 via-yellow-400 to-amber-200 border border-amber-600 shadow-xs flex items-center justify-center shrink-0">
+                                                        <svg class="w-3 h-3 text-amber-950" fill="currentColor" viewBox="0 0 24 24">
+                                                            <path d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8.009 8.009 0 0 1-8 8z"/>
+                                                            <path d="M12 6a6 6 0 1 0 6 6 6.007 6.007 0 0 0-6-6zm1.5 8.5-1.5-1-1.5 1 .4-1.7-1.3-1.1 1.7-.1.7-1.6.7 1.6 1.7.1-1.3 1.1z"/>
+                                                        </svg>
+                                                    </div>
+                                                    <span id="kioskMiniPlateDigits" class="plate-emboss-text text-2xl font-black tracking-tight uppercase">624</span>
+                                                    <span id="kioskMiniPlate" class="hidden">RZ-624</span>
+                                                </div>
+
+                                                <!-- Bottom Location Header -->
+                                                <div class="text-center py-0.2 bg-slate-100/70 border-t border-slate-200">
+                                                    <span class="text-[9px] font-black tracking-[0.35em] text-slate-900 uppercase font-mono">SINDH</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- RFID & Barrier Telemetry Box (Col 5) -->
+                                        <div class="col-span-5 bg-white p-2.5 rounded-xl border border-slate-200 shadow-2xs flex flex-col justify-between">
+                                            <div>
+                                                <div class="flex items-center justify-between mb-1">
+                                                    <span class="text-[8px] font-black text-slate-400 uppercase tracking-wider">RFID EPC</span>
+                                                    <span class="text-[8px] font-black text-emerald-600 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">VERIFIED</span>
+                                                </div>
+                                                <span id="kioskMiniEpc" class="text-[9px] font-mono font-bold text-slate-800 bg-slate-50 border border-slate-200 p-1.5 rounded-lg block truncate">--</span>
+                                            </div>
+                                            <div class="pt-1.5 border-t border-slate-100 flex items-center justify-between text-[9px]">
+                                                <span class="text-slate-400 font-bold uppercase">Barrier:</span>
+                                                <span id="kioskMiniBarrier" class="font-extrabold text-emerald-600 flex items-center gap-1">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                                    RAISED / OPEN
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Unregistered Vehicle Container (When an unknown vehicle passes) -->
+                                <div id="kioskMiniUnregContainer" class="hidden bg-rose-50/50 p-4 rounded-2xl border-2 border-rose-200 text-center space-y-2">
+                                    <div class="w-10 h-10 mx-auto rounded-xl bg-rose-100 border border-rose-300 text-rose-600 flex items-center justify-center shadow-xs">
+                                        <svg class="w-5 h-5 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                    </div>
+                                    <h4 class="text-xs font-black text-slate-900 uppercase">Unregistered Tag Scanned</h4>
+                                    <div class="p-2 rounded-lg bg-white border border-rose-200 max-w-xs mx-auto">
+                                        <span class="text-[8px] font-black text-rose-600 uppercase block">UNKNOWN EPC ID</span>
+                                        <span id="kioskMiniUnregTagId" class="text-[10px] font-mono font-bold text-slate-800 truncate block">--</span>
+                                    </div>
+                                    <span class="inline-block text-[9px] font-black px-2.5 py-0.5 rounded-md bg-rose-100 text-rose-800 border border-rose-300 uppercase">
+                                        BARRIER LOCKED &bull; SECURITY INTERCEPT
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Telemetry Footer -->
+                        <div class="flex items-center justify-between text-xs text-slate-500 pt-2 border-t border-slate-100">
+                            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>Lane 01 Fast-Track</span>
+                            <span class="font-mono text-[10px] text-slate-400">902 - 928 MHz Band</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Second Row: Tag Adoption Analysis + 7-Day Trend + Parking Occupancy -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Fleet Tag Adoption & Gap Analysis Widget -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h2 class="font-bold text-slate-800">Fleet Tag Adoption &amp; Gap</h2>
+                                <p class="text-xs text-slate-400">Registered member tags vs unregistered visitors</p>
+                            </div>
+                            <span id="gapSummaryBadge" class="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">--% COVERAGE</span>
+                        </div>
+                        <div class="relative h-44 flex items-center justify-center my-1">
+                            <canvas id="adoptionChart"></canvas>
+                            <div class="absolute text-center pointer-events-none">
+                                <p id="adoptionRateVal" class="text-2xl font-black text-slate-900 tabular-nums">--%</p>
+                                <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest">Tagged</p>
+                            </div>
+                        </div>
+                        <div class="space-y-2 pt-2 border-t border-slate-100 text-xs">
+                            <div class="flex justify-between items-center">
+                                <span class="flex items-center gap-1.5 text-slate-600 font-bold"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>Registered Members:</span>
+                                <span id="adoptionRegCount" class="font-mono font-bold text-slate-900">0</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="flex items-center gap-1.5 text-slate-600 font-bold"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>Unregistered Gap:</span>
+                                <span id="adoptionUnregCount" class="font-mono font-bold text-amber-700">0</span>
+                            </div>
+                            <div class="pt-1 flex items-center justify-between text-[11px] text-slate-400">
+                                <span>Unassigned Tag Buffer:</span>
+                                <button type="button" onclick="switchTab('members'); setTimeout(() => switchMemberFleetSubtab('unknown'), 100);" class="font-bold text-indigo-600 hover:text-indigo-800 underline">
+                                    <span id="adoptionBufferCount">0</span> pending tags &rarr;
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h2 class="font-bold text-slate-800 mb-1">7-Day Traffic Trend</h2>
+                        <p class="text-xs text-slate-400 mb-4">Daily transit volume comparison</p>
+                        <canvas id="weeklyChart" height="110"></canvas>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                         <h2 class="font-bold text-slate-800 mb-1">Parking Occupancy</h2>
                         <p class="text-xs text-slate-400 mb-2">Live capacity utilization</p>
-                        <div class="relative h-56 flex items-center justify-center">
+                        <div class="relative h-48 flex items-center justify-center">
                             <canvas id="parkingChart"></canvas>
                             <div class="absolute text-center">
                                 <p id="parkPct" class="text-3xl font-black stat-num tabular-nums">0%</p>
@@ -150,30 +613,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border">
-                        <h2 class="font-bold text-slate-800 mb-1">7-Day Traffic Trend</h2>
-                        <p class="text-xs text-slate-400 mb-4">Daily transit volume comparison</p>
-                        <canvas id="weeklyChart" height="70"></canvas>
-                    </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border">
-                        <div class="flex justify-between items-center mb-4">
-                            <div>
-                                <h2 class="font-bold text-slate-800">Hardware Registry</h2>
-                                <p class="text-xs text-slate-400">Live device telemetry</p>
-                            </div>
-                            <span class="text-[10px] font-bold text-slate-400">3s interval</span>
-                        </div>
-                        <div id="hwGrid" class="space-y-3"></div>
-                        <div class="mt-4 pt-4 border-t text-xs">
-                            <p class="text-slate-500"><b>Camera Ingest Events:</b> <span id="hwFtp" class="font-mono font-bold text-indigo-600">0</span></p>
-                            <p class="text-slate-500 mt-1"><b>Last Scanned Tag:</b> <span id="hwLastTag" class="font-mono text-[10px]">None</span></p>
-                        </div>
-                        <a href="/tools" target="_blank" class="mt-3 block text-center text-xs font-bold text-indigo-600 border border-indigo-200 rounded-lg py-2 bg-indigo-50 hover:bg-indigo-100">Open Diagnostics Console</a>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                     <div class="p-5 border-b bg-slate-50 flex justify-between items-center">
                         <div>
                             <h2 class="font-bold text-slate-800">Live Activity Feed</h2>
@@ -200,7 +640,7 @@
             </div>
 
             <div id="tab-logs" class="hidden space-y-6">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
                     <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 border-l-4 border-l-indigo-500">
                         <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">LOG</div>
                         <div>
@@ -226,10 +666,18 @@
                         </div>
                     </div>
                     <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 border-l-4 border-l-amber-500">
-                        <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">ALERT</div>
+                        <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">STAY</div>
+                        <div>
+                            <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Overstay Warnings</p>
+                            <h3 id="auditStatOverstay" class="text-2xl font-black text-amber-600 tabular-nums">0</h3>
+                            <p class="text-[11px] text-slate-400">&gt;8 Hours Inside</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 border-l-4 border-l-rose-500">
+                        <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold">ALERT</div>
                         <div>
                             <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Security Alerts</p>
-                            <h3 id="auditStatAlerts" class="text-2xl font-black text-amber-600 tabular-nums">0</h3>
+                            <h3 id="auditStatAlerts" class="text-2xl font-black text-rose-600 tabular-nums">0</h3>
                             <p class="text-[11px] text-slate-400">Unregistered / No RFID</p>
                         </div>
                     </div>
@@ -239,10 +687,10 @@
                     <div class="p-5 border-b bg-slate-50/80 flex justify-between items-center flex-wrap gap-4">
                         <div>
                             <h2 class="font-bold text-lg text-slate-900 flex items-center gap-2">
-                                <span>Vehicle Audit & Evidence Reports</span>
+                                <span>Create Vehicle Investigation &amp; Audit Report</span>
                                 <span class="text-xs font-extrabold bg-indigo-100 text-indigo-700 px-3 py-0.5 rounded-full" id="auditBadgeDate">Today</span>
                             </h2>
-                            <p class="text-xs text-slate-500 mt-0.5">Comprehensive audit trail of vehicle entry/exit transits, durations of stay, and photographic proofs.</p>
+                            <p class="text-xs text-slate-500 mt-0.5">Select an RFID transit record to inspect full-day movement history, attach verified camera evidence, and generate official PDF reports.</p>
                         </div>
 
                         <div class="flex items-center gap-3 flex-wrap">
@@ -255,6 +703,17 @@
                             <input id="auditSearch" oninput="onAuditSearchInput()" placeholder="Search plate, name, EPC..."
                                    class="text-sm border border-slate-200 rounded-xl pl-3 pr-4 py-2 bg-white w-64 md:w-72 shadow-sm">
 
+                            <div class="flex items-center gap-2">
+                                <button type="button" onclick="exportAuditData('xlsx')" class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 shadow-sm transition" title="Export to Excel">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                    <span>Export Excel</span>
+                                </button>
+                                <button type="button" onclick="exportAuditData('csv')" class="inline-flex items-center gap-1.5 px-2.5 py-2 text-xs font-bold rounded-xl bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100 shadow-sm transition" title="Export to CSV">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                    <span>CSV</span>
+                                </button>
+                            </div>
+
                             <button type="button" onclick="loadAudit(currentAuditPage)" class="text-xs font-bold border border-slate-200 rounded-xl px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 shadow-sm transition">Refresh</button>
                         </div>
                     </div>
@@ -265,6 +724,7 @@
                             <button type="button" onclick="setAuditStatusFilter('all', this)" class="audit-status-pill px-3 py-1 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow-sm transition">All Records</button>
                             <button type="button" onclick="setAuditStatusFilter('inside', this)" class="audit-status-pill px-3 py-1 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Inside Facility</button>
                             <button type="button" onclick="setAuditStatusFilter('exited', this)" class="audit-status-pill px-3 py-1 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Exited</button>
+                            <button type="button" onclick="setAuditStatusFilter('overstay', this)" class="audit-status-pill px-3 py-1 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Overstaying (>8h)</button>
                             <button type="button" onclick="setAuditStatusFilter('alert', this)" class="audit-status-pill px-3 py-1 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Alerts</button>
                         </div>
 
@@ -348,9 +808,9 @@
 
                         <div class="flex items-center gap-3 flex-wrap">
                             <div class="flex items-center gap-1.5 bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
-                                <button type="button" onclick="setCamAuditPreset('today')" class="px-3 py-1.5 text-xs font-bold rounded-lg text-slate-700 hover:bg-slate-100 transition">Today</button>
-                                <button type="button" onclick="setCamAuditPreset('yesterday')" class="px-3 py-1.5 text-xs font-bold rounded-lg text-slate-700 hover:bg-slate-100 transition">Yesterday</button>
-                                <button type="button" onclick="setCamAuditPreset('all')" class="px-3 py-1.5 text-xs font-bold rounded-lg text-slate-700 hover:bg-slate-100 transition">All Time</button>
+                                <button type="button" id="camPresetToday" onclick="setCamAuditPreset('today')" class="px-3 py-1.5 text-xs font-bold rounded-lg text-slate-700 hover:bg-slate-100 transition">Today</button>
+                                <button type="button" id="camPresetYesterday" onclick="setCamAuditPreset('yesterday')" class="px-3 py-1.5 text-xs font-bold rounded-lg text-slate-700 hover:bg-slate-100 transition">Yesterday</button>
+                                <button type="button" id="camPresetAll" onclick="setCamAuditPreset('all')" class="px-3 py-1.5 text-xs font-bold rounded-lg text-slate-700 hover:bg-slate-100 transition">All Time</button>
                                 <input type="date" id="camAuditDate" onchange="loadCameraAudit(1)" class="text-xs font-bold border-0 bg-transparent px-2 py-1 text-slate-800">
                             </div>
 
@@ -363,12 +823,7 @@
                                 </select>
                             </div>
 
-                            <input id="camAuditSearch" oninput="onCamAuditSearchInput()" placeholder="Search plate, member, ID..." class="text-xs font-bold border border-slate-200 rounded-xl px-3 py-2 bg-white w-48 shadow-sm">
-
-                            <button type="button" onclick="triggerOcrBatch()" title="Extract license plates for records using AI OCR" class="text-xs font-bold border border-indigo-200 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-xl px-3 py-2 shadow-sm transition flex items-center gap-1.5">
-                                <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                                <span>AI Plate OCR</span>
-                            </button>
+                            <input id="camAuditSearch" oninput="onCamAuditSearchInput()" placeholder="Search vehicle captures..." class="text-xs font-bold border border-slate-200 rounded-xl px-3 py-2 bg-white w-48 shadow-sm">
 
                             <button type="button" onclick="loadCameraAudit(currentCamAuditPage)" class="text-xs font-bold border border-slate-200 rounded-xl px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 shadow-sm transition">Refresh</button>
                         </div>
@@ -383,7 +838,7 @@
             </div>
 
             <div id="tab-members" class="hidden space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
                     <div class="bg-white p-5 rounded-2xl border shadow-sm flex items-center gap-4 border-l-4 border-l-indigo-500">
                         <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">MEM</div>
                         <div>
@@ -400,12 +855,20 @@
                             <p class="text-[11px] text-slate-400">Total registered cars</p>
                         </div>
                     </div>
-                    <div class="bg-white p-5 rounded-2xl border shadow-sm flex items-center gap-4 border-l-4 border-l-amber-500">
-                        <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">TAG</div>
+                    <div class="bg-white p-5 rounded-2xl border shadow-sm flex items-center gap-4 border-l-4 border-l-emerald-500">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">TAG</div>
                         <div>
                             <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Active RFID Tags</p>
                             <h3 id="statTaggedMem" class="text-2xl font-black text-slate-900">0</h3>
                             <p class="text-[11px] text-slate-400">UHF tags bound</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border shadow-sm flex items-center gap-4 border-l-4 border-l-amber-500">
+                        <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">UNREG</div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Unknown RFID Tags</p>
+                            <h3 id="statUnregTags" class="text-2xl font-black text-amber-600">0</h3>
+                            <p class="text-[11px] text-slate-400">Captured at gates</p>
                         </div>
                     </div>
                 </div>
@@ -481,10 +944,11 @@
                     </div>
                 </div>
 
+                <!-- Member Directory and Unknown Tags Card -->
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                     <div class="p-5 border-b bg-slate-50/80 flex justify-between items-center flex-wrap gap-4">
                         <div class="flex items-center gap-3">
-                            <h2 class="font-bold text-slate-900 text-base">Member Directory</h2>
+                            <h2 class="font-bold text-slate-900 text-base">Member & Vehicle Directory</h2>
                             <span class="text-xs font-bold bg-indigo-100 text-indigo-700 px-2.5 py-0.5 rounded-full" id="memCount">0</span>
                             <button type="button" onclick="alignMemberPhotos()" title="Auto-align member photos from static/member_profile_img"
                                     class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm flex items-center gap-1.5 transition">
@@ -506,70 +970,265 @@
                         </div>
                     </div>
 
-                    <div class="overflow-x-auto min-h-[350px]">
-                        <table class="w-full text-left text-sm">
-                            <thead class="text-[11px] uppercase font-bold text-slate-400 bg-slate-100/70 border-b">
-                                <tr>
-                                    <th class="p-3.5 pl-4">Member</th>
-                                    <th class="p-3.5">Member ID</th>
-                                    <th class="p-3.5">Full Name</th>
-                                    <th class="p-3.5">Registered Vehicles</th>
-                                    <th class="p-3.5">RFID Status</th>
-                                    <th class="p-3.5 text-right pr-6">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="memBody" class="divide-y divide-slate-100"></tbody>
-                        </table>
+                    <!-- Subtabs switcher between Members and Unknown Tags -->
+                    <div class="flex items-center gap-2 border-b border-slate-200 bg-slate-100/60 px-5 pt-2.5">
+                        <button type="button" id="subtabMemBtn" onclick="switchMemberSubtab('members')" class="px-4 py-2 text-xs font-extrabold rounded-t-xl bg-white border-t border-l border-r border-slate-200 text-indigo-700 shadow-xs flex items-center gap-2">
+                            <span>Registered Member Fleet</span>
+                            <span class="bg-indigo-50 text-indigo-700 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold" id="memSubtabBadge">0</span>
+                        </button>
+                        <button type="button" id="subtabUnregBtn" onclick="switchMemberSubtab('unregistered')" class="px-4 py-2 text-xs font-bold rounded-t-xl text-slate-600 hover:text-slate-900 hover:bg-slate-200/50 transition flex items-center gap-2">
+                            <span>Unassigned / Unknown Tags</span>
+                            <span class="bg-amber-100 text-amber-800 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold" id="unregSubtabBadge">0</span>
+                        </button>
                     </div>
 
-                    <div class="p-4 border-t bg-slate-50/50" id="memPagination"></div>
+                    <!-- Subtab 1: Registered Members Table -->
+                    <div id="subtabViewMembers">
+                        <div class="overflow-x-auto min-h-[350px]">
+                            <table class="w-full text-left text-sm">
+                                <thead class="text-[11px] uppercase font-bold text-slate-400 bg-slate-100/70 border-b">
+                                    <tr>
+                                        <th class="p-3.5 pl-4">Member</th>
+                                        <th class="p-3.5">Member ID</th>
+                                        <th class="p-3.5">Full Name</th>
+                                        <th class="p-3.5">Registered Vehicles</th>
+                                        <th class="p-3.5">Location Status</th>
+                                        <th class="p-3.5">RFID Status</th>
+                                        <th class="p-3.5 text-right pr-6">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="memBody" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+
+                        <div class="p-4 border-t bg-slate-50/50" id="memPagination"></div>
+                    </div>
+
+                    <!-- Subtab 2: Unknown Tags Table with 1-Click Assignment -->
+                    <div id="subtabViewUnregistered" class="hidden">
+                        <div class="p-4 bg-amber-50/60 border-b border-amber-200/60 flex items-center justify-between flex-wrap gap-2 text-xs">
+                            <span class="text-amber-900 font-semibold flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                                These RFID tags were read at the gate but are not yet registered to any club member. Use 1-Click Assign to link them immediately.
+                            </span>
+                            <button type="button" onclick="loadUnregisteredTags()" class="text-xs font-bold bg-white border border-amber-300 text-amber-900 px-3 py-1.5 rounded-lg hover:bg-amber-100/60 shadow-xs transition">
+                                Refresh Tags
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto min-h-[300px]">
+                            <table class="w-full text-left text-sm">
+                                <thead class="text-[11px] uppercase font-bold text-slate-400 bg-slate-100/70 border-b">
+                                    <tr>
+                                        <th class="p-3.5 pl-5">EPC Tag ID</th>
+                                        <th class="p-3.5">First Detected</th>
+                                        <th class="p-3.5">Last Detected</th>
+                                        <th class="p-3.5">Gate Direction</th>
+                                        <th class="p-3.5">Total Scans</th>
+                                        <th class="p-3.5 text-right pr-6">1-Click Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="unregBody" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div id="tab-settings" class="hidden">
-                <div class="bg-white p-8 rounded-2xl shadow-sm border max-w-3xl space-y-6 text-sm">
-                    <div>
-                        <h2 class="font-bold text-lg text-slate-900">System & Hardware Configuration</h2>
-                        <p class="text-xs text-slate-500">Update network addresses, streaming parameters, and facility capacities.</p>
+            <div id="tab-settings" class="hidden space-y-6">
+                <!-- Settings Subtab Navigation (Hardware vs User Management) -->
+                <div class="flex items-center gap-2 border-b border-slate-200 pb-3">
+                    <button type="button" id="subtabSetHwBtn" onclick="switchSettingsSubtab('hardware')" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-white border border-slate-200 shadow-xs text-indigo-700 flex items-center gap-2 transition">
+                        <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        <span>Hardware & Network Subsystem</span>
+                    </button>
+                    <button type="button" id="subtabSetUsersBtn" onclick="switchSettingsSubtab('users')" class="px-5 py-2.5 rounded-xl text-xs font-bold text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition flex items-center gap-2">
+                        <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                        <span>User Accounts & Rights Management</span>
+                        <span id="usersBadgeCount" class="bg-indigo-50 text-indigo-700 font-mono text-[10px] px-2 py-0.5 rounded-full font-bold">3</span>
+                    </button>
+                </div>
+
+                <!-- Subtab 1: Hardware & Network Telemetry Panel -->
+                <div id="settingsViewHardware" class="space-y-6">
+                    <!-- Live Hardware Controllers Telemetry Grid -->
+                    <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
+                        <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
+                            <div>
+                                <h2 class="font-bold text-lg text-slate-900">Hardware Subsystem Telemetry</h2>
+                                <p class="text-xs text-slate-500">Live operational status of UHF RFID readers and Hikvision optical camera nodes.</p>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <button type="button" onclick="loadHardwareSettingsStatus()" class="text-xs font-bold border border-slate-200 rounded-xl px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 shadow-sm transition flex items-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                                    Check Hardware Status
+                                </button>
+                                <a href="/tools" target="_blank" class="text-xs font-bold bg-indigo-50 border border-indigo-200 text-indigo-700 hover:bg-indigo-100 rounded-xl px-4 py-2 transition flex items-center gap-1.5 shadow-sm">
+                                    <span>Diagnostics Console</span>
+                                    <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                                </a>
+                            </div>
+                        </div>
+                        <div id="settingsHwGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
                     </div>
 
-                    <div class="space-y-4">
+                    <!-- System Configuration Form -->
+                    <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 max-w-4xl space-y-6 text-sm">
                         <div>
-                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Club Institutional Name</label>
-                            <input id="setClubName" class="w-full border rounded-xl p-3 bg-slate-50 font-bold">
+                            <h2 class="font-bold text-lg text-slate-900">System & Network Configuration</h2>
+                            <p class="text-xs text-slate-500">Configure device network addresses, gate capacities, and operational parameters.</p>
                         </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Parking Slot Capacity</label>
-                            <input id="setCap" type="number" class="w-full border rounded-xl p-3 bg-slate-50 font-bold">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Ticker Advisory Message (comma-separated)</label>
-                            <input id="setMsg" class="w-full border rounded-xl p-3 bg-slate-50">
-                        </div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Entry Reader IP Address</label>
-                                <input id="setEntry" class="w-full border rounded-xl p-3 bg-slate-50 font-mono text-xs">
+
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Club Institutional Name</label>
+                                    <input id="setClubName" class="w-full border rounded-xl p-3 bg-slate-50 font-bold text-slate-800">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Parking Slot Capacity</label>
+                                    <input id="setCap" type="number" class="w-full border rounded-xl p-3 bg-slate-50 font-bold text-slate-800">
+                                </div>
                             </div>
+
                             <div>
-                                <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Exit Reader IP Address</label>
-                                <input id="setExit" class="w-full border rounded-xl p-3 bg-slate-50 font-mono text-xs">
+                                <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Ticker Advisory Message (comma-separated)</label>
+                                <input id="setMsg" class="w-full border rounded-xl p-3 bg-slate-50 text-slate-800">
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Entry Reader IP Address</label>
+                                    <input id="setEntry" class="w-full border rounded-xl p-3 bg-slate-50 font-mono text-xs text-slate-800">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Exit Reader IP Address</label>
+                                    <input id="setExit" class="w-full border rounded-xl p-3 bg-slate-50 font-mono text-xs text-slate-800">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Hikvision Camera RTSP Stream URL</label>
+                                <input id="setHik" class="w-full border rounded-xl p-3 bg-slate-50 font-mono text-xs text-slate-800">
                             </div>
                         </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Hikvision Camera RTSP Stream URL</label>
-                            <input id="setHik" class="w-full border rounded-xl p-3 bg-slate-50 font-mono text-xs">
+
+                        <div class="pt-2 flex items-center gap-4">
+                            <button type="button" id="btnSaveConfig" onclick="saveSettings()" class="bg-slate-900 hover:bg-slate-800 text-white px-8 py-3.5 rounded-xl font-bold shadow-md transition">Save Configuration</button>
+                            <span id="saveSettingsNotice" class="text-xs text-slate-500 font-semibold"></span>
                         </div>
                     </div>
 
-                    <button type="button" onclick="saveSettings()" class="bg-slate-900 hover:bg-slate-800 text-white px-8 py-3.5 rounded-xl font-bold shadow-md transition">Save Configuration</button>
+                    <!-- System Maintenance & Data Reset Card -->
+                    <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 max-w-4xl space-y-4 text-sm">
+                        <div class="flex items-start justify-between flex-wrap gap-4">
+                            <div>
+                                <h2 class="font-bold text-lg text-slate-900">System Maintenance & Demo Data Reset</h2>
+                                <p class="text-xs text-slate-500 mt-1">Purge previous test activity, gate passage history, and camera snapshots to start with a fresh slate. Member directory and system settings will be completely preserved.</p>
+                            </div>
+                            <span class="text-xs font-bold px-3 py-1 bg-amber-50 text-amber-800 border border-amber-200 rounded-full">Pre-Demo Tool</span>
+                        </div>
+
+                        <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs text-slate-600">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-slate-700">What will be reset:</span>
+                                <span>Daily passage logs, raw RFID reader scans, camera audit event records, and temporary snapshot captures.</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-emerald-700">What will remain intact:</span>
+                                <span class="text-emerald-800 font-medium">All registered members, vehicle links, RFID tags, profile photos, user accounts, and hardware settings.</span>
+                            </div>
+                        </div>
+
+                        <div class="pt-2 flex items-center gap-4 flex-wrap">
+                            <button type="button" id="btnResetActivity" onclick="resetActivityData()" class="bg-rose-600 hover:bg-rose-700 text-white px-6 py-3 rounded-xl font-bold shadow-sm transition flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                <span>Reset Activity Logs (Keep Members & Settings)</span>
+                            </button>
+                            <span id="resetActivityNotice" class="text-xs font-semibold"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Subtab 2: User Accounts & Rights Management Console -->
+                <div id="settingsViewUsers" class="hidden space-y-6">
+                    <!-- 4-Card Executive Telemetry Grid for User Accounts -->
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 border-l-4 border-l-slate-700">
+                            <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center font-black">ALL</div>
+                            <div>
+                                <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Configured Accounts</p>
+                                <h3 id="uStatTotal" class="text-2xl font-black text-slate-900 tabular-nums">--</h3>
+                                <p class="text-[11px] text-slate-400">Total authorized operators</p>
+                            </div>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 border-l-4 border-l-indigo-600">
+                            <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center font-black">ADM</div>
+                            <div>
+                                <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Administrators</p>
+                                <h3 id="uStatAdmins" class="text-2xl font-black text-indigo-700 tabular-nums">--</h3>
+                                <p class="text-[11px] text-slate-400">Full control & settings</p>
+                            </div>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 border-l-4 border-l-emerald-500">
+                            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-black">EDT</div>
+                            <div>
+                                <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Gate Operators</p>
+                                <h3 id="uStatEditors" class="text-2xl font-black text-emerald-700 tabular-nums">--</h3>
+                                <p class="text-[11px] text-slate-400">Edit rights (Members/Gates)</p>
+                            </div>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 border-l-4 border-l-blue-500">
+                            <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center font-black">VIEW</div>
+                            <div>
+                                <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Security Monitors</p>
+                                <h3 id="uStatViewers" class="text-2xl font-black text-blue-700 tabular-nums">--</h3>
+                                <p class="text-[11px] text-slate-400">View rights (Read-only)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User Directory Table Card -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="p-6 border-b bg-slate-50/80 flex justify-between items-center flex-wrap gap-4">
+                            <div>
+                                <h2 class="font-bold text-lg text-slate-900 flex items-center gap-2">
+                                    <span>Operator Directory & Rights Control</span>
+                                    <span class="text-xs font-bold bg-indigo-100 text-indigo-700 px-2.5 py-0.5 rounded-full" id="uTableCount">0</span>
+                                </h2>
+                                <p class="text-xs text-slate-500 mt-0.5">Manage operator credentials and designate permissions: View-Only monitoring vs Full Edit operational control.</p>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <input type="text" id="userSearchInput" oninput="filterUsersTable()" placeholder="Search username, name, or role..." class="text-xs font-bold border border-slate-200 rounded-xl px-3.5 py-2.5 bg-white w-56 shadow-2xs outline-none focus:border-indigo-500">
+                                <button type="button" id="addUserBtn" onclick="openAddUserModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm flex items-center gap-2 transition">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6-0H6"/></svg>
+                                    <span>Add New User</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto min-h-[300px]">
+                            <table class="w-full text-left text-sm">
+                                <thead class="text-[11px] uppercase font-bold text-slate-400 bg-slate-100/70 border-b">
+                                    <tr>
+                                        <th class="p-4 pl-6">Operator Identity</th>
+                                        <th class="p-4">Assigned Rights / Role</th>
+                                        <th class="p-4">Account Status</th>
+                                        <th class="p-4">Created Date</th>
+                                        <th class="p-4">Last Login</th>
+                                        <th class="p-4 text-right pr-6">Management Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTableBody" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <div id="auditModal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto" id="auditModalContent"></div>
+    <div id="auditModal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-3 md:p-6 bg-slate-900/60 backdrop-blur-sm" onclick="closeAudit()">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[92vh] overflow-y-auto" id="auditModalContent" onclick="event.stopPropagation()"></div>
     </div>
 
     <!-- Member Vehicles Fleet Modal -->
@@ -597,6 +1256,124 @@
                 </div>
             </div>
             <div class="p-4 bg-white" id="camProofModalInfo"></div>
+        </div>
+    </div>
+
+    <!-- Add New Operator / User Modal -->
+    <div id="addUserModal" class="hidden fixed inset-0 z-[130] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" onclick="closeAddUserModal()">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden" onclick="event.stopPropagation()">
+            <div class="p-6 border-b bg-slate-50 flex items-center justify-between">
+                <div>
+                    <h3 class="text-base font-black text-slate-900">Register New User Account</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Configure operator credentials and assign access privileges.</p>
+                </div>
+                <button type="button" onclick="closeAddUserModal()" class="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-600 font-bold flex items-center justify-center text-sm">&times;</button>
+            </div>
+            <form id="addUserForm" onsubmit="submitAddUser(event)" class="p-6 space-y-4 text-xs font-bold text-slate-700">
+                <div id="addUserError" class="hidden p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 font-semibold"></div>
+                <div>
+                    <label class="block uppercase text-[10px] tracking-wider text-slate-400 mb-1">Full Name *</label>
+                    <input type="text" id="addFullName" required placeholder="e.g. Tariq Khalid" class="w-full border border-slate-200 rounded-xl p-3 bg-slate-50 text-sm font-semibold outline-none focus:border-indigo-500">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block uppercase text-[10px] tracking-wider text-slate-400 mb-1">Username *</label>
+                        <input type="text" id="addUsername" required placeholder="e.g. tariq" class="w-full border border-slate-200 rounded-xl p-3 bg-slate-50 text-sm font-semibold font-mono outline-none focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block uppercase text-[10px] tracking-wider text-slate-400 mb-1">Initial Password *</label>
+                        <input type="password" id="addPassword" required minlength="4" placeholder="Min 4 characters" class="w-full border border-slate-200 rounded-xl p-3 bg-slate-50 text-sm font-semibold font-mono outline-none focus:border-indigo-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block uppercase text-[10px] tracking-wider text-slate-400 mb-1.5">Access Rights & Permissions *</label>
+                    <div class="space-y-2">
+                        <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition select-none">
+                            <input type="radio" name="addRole" value="Viewer" checked class="mt-0.5 text-blue-600">
+                            <div>
+                                <span class="font-extrabold text-blue-700">Viewer (View Rights Only)</span>
+                                <p class="text-[11px] font-normal text-slate-500 mt-0.5">Read-only monitoring. Can view dashboard telemetry, vehicle logs, camera captures, and search members. Cannot add/edit/delete or change settings.</p>
+                            </div>
+                        </label>
+                        <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition select-none">
+                            <input type="radio" name="addRole" value="Editor" class="mt-0.5 text-emerald-600">
+                            <div>
+                                <span class="font-extrabold text-emerald-700">Editor (Edit Rights)</span>
+                                <p class="text-[11px] font-normal text-slate-500 mt-0.5">Operational control. Can register new members, link EPC tags, update vehicles, import CSV/Excel spreadsheets, and toggle location.</p>
+                            </div>
+                        </label>
+                        <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition select-none">
+                            <input type="radio" name="addRole" value="Admin" class="mt-0.5 text-indigo-600">
+                            <div>
+                                <span class="font-extrabold text-indigo-700">Admin (Full Administrative Rights)</span>
+                                <p class="text-[11px] font-normal text-slate-500 mt-0.5">Unrestricted master access. Includes user management, hardware reader IPs, camera RTSP configuration, and system activity resets.</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="pt-2 flex items-center justify-end gap-3 border-t">
+                    <button type="button" onclick="closeAddUserModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold">Cancel</button>
+                    <button type="submit" id="submitAddUserBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-xl font-bold shadow transition">Create Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Operator / User Modal -->
+    <div id="editUserModal" class="hidden fixed inset-0 z-[130] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" onclick="closeEditUserModal()">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden" onclick="event.stopPropagation()">
+            <div class="p-6 border-b bg-slate-50 flex items-center justify-between">
+                <div>
+                    <h3 class="text-base font-black text-slate-900">Modify User Permissions</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Update access rights or reset security credentials.</p>
+                </div>
+                <button type="button" onclick="closeEditUserModal()" class="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-600 font-bold flex items-center justify-center text-sm">&times;</button>
+            </div>
+            <form id="editUserForm" onsubmit="submitEditUser(event)" class="p-6 space-y-4 text-xs font-bold text-slate-700">
+                <input type="hidden" id="editUserId">
+                <div id="editUserError" class="hidden p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 font-semibold"></div>
+                
+                <div>
+                    <label class="block uppercase text-[10px] tracking-wider text-slate-400 mb-1">Username</label>
+                    <input type="text" id="editUsername" disabled class="w-full border border-slate-200 rounded-xl p-3 bg-slate-100 text-slate-500 text-sm font-semibold font-mono cursor-not-allowed">
+                </div>
+
+                <div>
+                    <label class="block uppercase text-[10px] tracking-wider text-slate-400 mb-1">Full Name *</label>
+                    <input type="text" id="editFullName" required class="w-full border border-slate-200 rounded-xl p-3 bg-slate-50 text-sm font-semibold outline-none focus:border-indigo-500">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block uppercase text-[10px] tracking-wider text-slate-400 mb-1">Assigned Rights / Role *</label>
+                        <select id="editRole" class="w-full border border-slate-200 rounded-xl p-3 bg-slate-50 text-xs font-bold outline-none focus:border-indigo-500">
+                            <option value="Viewer">Viewer (View Rights)</option>
+                            <option value="Editor">Editor (Edit Rights)</option>
+                            <option value="Admin">Admin (Full Rights)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block uppercase text-[10px] tracking-wider text-slate-400 mb-1">Account Status *</label>
+                        <select id="editStatus" class="w-full border border-slate-200 rounded-xl p-3 bg-slate-50 text-xs font-bold outline-none focus:border-indigo-500">
+                            <option value="1">Active</option>
+                            <option value="0">Disabled</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block uppercase text-[10px] tracking-wider text-slate-400 mb-1">Reset Password (Optional)</label>
+                    <input type="password" id="editPassword" placeholder="Leave blank to retain current password" class="w-full border border-slate-200 rounded-xl p-3 bg-slate-50 text-sm font-semibold font-mono outline-none focus:border-indigo-500">
+                    <p class="text-[10px] text-slate-400 mt-1 font-normal">Enter new password only if you wish to reset this user's password.</p>
+                </div>
+
+                <div class="pt-2 flex items-center justify-end gap-3 border-t">
+                    <button type="button" onclick="closeEditUserModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold">Cancel</button>
+                    <button type="submit" id="submitEditUserBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-xl font-bold shadow transition">Save Permissions</button>
+                </div>
+            </form>
         </div>
     </div>
 

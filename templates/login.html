@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Command Center Access | Karachi Gymkhana Club</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
+        .kiosk-bg {
+            background-image: url('/static/kiosk_bg.png');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        .glass-card-pro {
+            background: linear-gradient(165deg, rgba(255, 255, 255, 0.97) 0%, rgba(248, 250, 252, 0.94) 100%);
+            backdrop-filter: blur(32px) saturate(200%);
+            -webkit-backdrop-filter: blur(32px) saturate(200%);
+            border: 1px solid rgba(255, 255, 255, 0.95);
+            box-shadow: 
+                0 0 0 1px rgba(15, 23, 42, 0.05),
+                0 30px 75px -15px rgba(2, 6, 23, 0.55),
+                0 15px 35px -8px rgba(2, 6, 23, 0.3);
+        }
+
+        .logo-emblem-wrapper {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(217, 119, 6, 0.2) 100%);
+            padding: 2.5px;
+            border-radius: 22px;
+            box-shadow: 0 12px 28px -6px rgba(15, 23, 42, 0.12);
+        }
+
+        .logo-emblem-inner {
+            background: #FFFFFF;
+            border-radius: 20px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.03);
+        }
+
+        .luxury-top-accent {
+            background: linear-gradient(90deg, #D97706 0%, #059669 40%, #10B981 70%, #D97706 100%);
+            height: 4px;
+        }
+
+        .btn-sheen {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-sheen::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 40%;
+            height: 200%;
+            background: linear-gradient(
+                60deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.25), 
+                transparent
+            );
+            transform: rotate(25deg);
+            transition: all 0.75s ease;
+        }
+        .btn-sheen:hover::after {
+            left: 130%;
+        }
+
+        .live-dot-pulse {
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+            animation: pulse-ring 2.2s infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
+            70% { transform: scale(1); box-shadow: 0 0 0 7px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen kiosk-bg flex items-center justify-center p-4 sm:p-6 relative overflow-x-hidden selection:bg-emerald-500 selection:text-white">
+
+    <!-- Atmospheric Dark Cinematic Glass Overlay -->
+    <div class="fixed inset-0 bg-gradient-to-tr from-slate-950/85 via-slate-900/80 to-slate-950/85 backdrop-blur-[5px] pointer-events-none"></div>
+
+    <!-- Radial Center Glow Behind Card -->
+    <div class="fixed inset-0 bg-radial from-emerald-500/12 via-transparent to-transparent pointer-events-none"></div>
+
+    <!-- Centered Login Card Container -->
+    <div class="relative z-10 w-full max-w-[480px] my-6">
+        
+        <!-- Luxury Frosted Glass Card -->
+        <div class="glass-card-pro rounded-[32px] overflow-hidden">
+            <!-- Top Dual-Tone Gold / Emerald Accent Line -->
+            <div class="luxury-top-accent"></div>
+
+            <div class="p-8 sm:p-12">
+                
+                <!-- Perfectly Aligned Centered Brand Lockup -->
+                <div class="flex flex-col items-center text-center mb-8">
+                    
+                    <!-- Frosted Logo Emblem Frame with Luxury Dual Accent Ring -->
+                    <div class="logo-emblem-wrapper mb-4 transition-transform hover:scale-105 duration-300">
+                        <div class="logo-emblem-inner w-24 h-24 flex items-center justify-center p-3.5">
+                            <img src="/api/logo" alt="Karachi Gymkhana Club Logo" 
+                                 class="h-14 w-auto max-w-full object-contain filter drop-shadow-xs"
+                                 onerror="this.onerror=null; this.src='/static/club_logo.png'">
+                        </div>
+                    </div>
+
+                    <!-- Est. 1886 & Security Status Pill -->
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-50 border border-emerald-200/90 text-emerald-800 text-[10px] font-black uppercase tracking-[0.18em] mb-3 shadow-2xs">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 live-dot-pulse"></span>
+                        <span>Est. 1886 &bull; Gate Terminal Live</span>
+                    </div>
+
+                    <!-- Club Title & Subtitle -->
+                    <h1 class="text-2xl sm:text-[26px] font-black text-slate-900 tracking-tight leading-tight">
+                        Karachi Gymkhana Club
+                    </h1>
+                    <p class="text-xs sm:text-[13px] font-semibold text-slate-500 mt-1.5">
+                        Smart Vehicle Access Management System
+                    </p>
+                </div>
+
+                <!-- Error Notification Box -->
+                <div id="errorAlert" class="hidden mb-6 p-3.5 rounded-2xl bg-rose-50 border border-rose-200/80 text-rose-800 text-xs font-bold flex items-center gap-3 transition shadow-xs">
+                    <div class="w-6 h-6 rounded-lg bg-rose-100 flex items-center justify-center shrink-0 text-rose-600">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    </div>
+                    <span id="errorMessage" class="leading-snug">Invalid operator credentials. Please re-enter.</span>
+                </div>
+
+                <!-- Executive Login Form -->
+                <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+                    
+                    <!-- Username Field -->
+                    <div>
+                        <label for="username" class="block text-[11px] font-extrabold uppercase tracking-wider text-slate-600 mb-1.5">
+                            Operator ID / Username
+                        </label>
+                        <div class="relative flex items-center group">
+                            <span class="absolute left-3.5 text-slate-400 group-focus-within:text-emerald-600 transition-colors pointer-events-none">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                            </span>
+                            <input type="text" id="username" required autocomplete="username" autofocus
+                                   placeholder="Enter your operator ID or username"
+                                   class="w-full bg-slate-50/70 hover:bg-slate-50 focus:bg-white border border-slate-200/90 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-500/15 rounded-xl pl-10 pr-4 py-3.5 text-sm font-semibold text-slate-900 placeholder-slate-400 outline-none transition-all duration-200 shadow-2xs">
+                        </div>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div>
+                        <label for="password" class="block text-[11px] font-extrabold uppercase tracking-wider text-slate-600 mb-1.5">
+                            Security Password
+                        </label>
+                        <div class="relative flex items-center group">
+                            <span class="absolute left-3.5 text-slate-400 group-focus-within:text-emerald-600 transition-colors pointer-events-none">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                            </span>
+                            <input type="password" id="password" required autocomplete="current-password"
+                                   placeholder="Enter security password"
+                                   class="w-full bg-slate-50/70 hover:bg-slate-50 focus:bg-white border border-slate-200/90 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-500/15 rounded-xl pl-10 pr-11 py-3.5 text-sm font-semibold text-slate-900 placeholder-slate-400 outline-none transition-all duration-200 shadow-2xs font-mono">
+                            <button type="button" onclick="togglePasswordVisibility()" 
+                                    class="absolute right-2.5 text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-slate-100 transition" 
+                                    title="Toggle password visibility">
+                                <svg id="eyeIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Aux Options Row -->
+                    <div class="flex items-center justify-between text-xs pt-1 text-slate-500">
+                        <label class="flex items-center gap-2 cursor-pointer select-none font-semibold text-slate-600 hover:text-slate-800 transition">
+                            <input type="checkbox" id="remember" class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300">
+                            <span>Keep me signed in</span>
+                        </label>
+                        <span class="font-mono text-[11px] text-slate-400 flex items-center gap-1">
+                            <svg class="w-3 h-3 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                            Gate-01 Core
+                        </span>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" id="submitBtn"
+                            class="btn-sheen w-full mt-3 bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-700 hover:from-emerald-800 hover:to-teal-800 text-white font-extrabold text-sm py-3.5 px-6 rounded-xl shadow-lg shadow-emerald-900/20 hover:shadow-xl hover:shadow-emerald-900/30 transition-all duration-200 transform active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer">
+                        <span id="btnText">Sign In to Command Center</span>
+                        <svg id="btnArrow" class="w-4 h-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                        <svg id="btnSpinner" class="hidden animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                    </button>
+                </form>
+
+                <!-- Footer Institutional Notice -->
+                <div class="mt-8 pt-5 border-t border-slate-200/80 text-center space-y-1">
+                    <p class="text-[10px] text-slate-400 font-extrabold tracking-widest uppercase">
+                        Karachi Gymkhana Club &bull; Est. 1886
+                    </p>
+                    <p class="text-[10px] text-slate-400 font-medium">
+                        Restricted Access &bull; TLS 1.3 Encrypted &bull; VAMS Core
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePasswordVisibility() {
+            const pInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+            if (pInput.type === 'password') {
+                pInput.type = 'text';
+                eyeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/>';
+            } else {
+                pInput.type = 'password';
+                eyeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>';
+            }
+        }
+
+        function showError(msg) {
+            const el = document.getElementById('errorAlert');
+            const msgEl = document.getElementById('errorMessage');
+            if (el && msgEl) {
+                msgEl.innerText = msg || 'Invalid username or password';
+                el.classList.remove('hidden');
+            }
+        }
+
+        function hideError() {
+            const el = document.getElementById('errorAlert');
+            if (el) el.classList.add('hidden');
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            hideError();
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const remember = document.getElementById('remember').checked;
+
+            if (!username || !password) {
+                showError("Please enter both username and password");
+                return;
+            }
+
+            const btn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            const btnArrow = document.getElementById('btnArrow');
+            const btnSpinner = document.getElementById('btnSpinner');
+
+            btn.disabled = true;
+            btnText.innerText = "Authenticating...";
+            if (btnArrow) btnArrow.classList.add('hidden');
+            btnSpinner.classList.remove('hidden');
+
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password, remember })
+                });
+
+                const data = await res.json();
+                if (!res.ok || !data.ok) {
+                    showError(data.detail || data.error || 'Authentication failed. Please verify credentials.');
+                    btn.disabled = false;
+                    btnText.innerText = "Sign In to Command Center";
+                    if (btnArrow) btnArrow.classList.remove('hidden');
+                    btnSpinner.classList.add('hidden');
+                    return;
+                }
+
+                // Success redirect
+                btnText.innerText = "Access Granted! Redirecting...";
+                const urlParams = new URLSearchParams(window.location.search);
+                const nextUrl = urlParams.get('next') || '/dashboard';
+                window.location.href = nextUrl;
+
+            } catch (err) {
+                console.error("Login request failed:", err);
+                showError("Network or server connection error. Please try again.");
+                btn.disabled = false;
+                btnText.innerText = "Sign In to Command Center";
+                if (btnArrow) btnArrow.classList.remove('hidden');
+                btnSpinner.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
