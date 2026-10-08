@@ -16,7 +16,7 @@ from services.camera_service import is_valid_image, preview_stream_worker
 from services.access_service import execute_access_decision, attach_images_to_log
 from services.rfid_service import rfid_tcp_client_worker, buffer_cleaner_worker
 from services.event_daemons import start_ftp_server, start_smtp_server, folder_watcher_worker
-from routers import logs, members, stats, settings, tools, simulate, auth
+from routers import logs, members, stats, settings, tools, simulate, auth, sandbox
 
 from services.member_service import align_member_photos
 
@@ -47,6 +47,7 @@ app.include_router(stats.router)
 app.include_router(settings.router)
 app.include_router(tools.router)
 app.include_router(simulate.router)
+app.include_router(sandbox.router)
 
 @app.api_route("/api/event/hikvision", methods=["GET", "POST", "PUT"])
 @app.api_route("/api/camera/trigger", methods=["GET", "POST"])
@@ -91,6 +92,15 @@ async def tools_view(request: Request):
     if not user:
         return RedirectResponse(url="/login?next=/tools")
     return HTMLResponse(content=render_template("tools.html"))
+
+@app.get("/sandbox-rfid", response_class=HTMLResponse)
+@app.get("/sandbox-RFID", response_class=HTMLResponse)
+async def sandbox_rfid_view(request: Request):
+    from routers.auth import get_current_user_optional
+    user = get_current_user_optional(request)
+    if not user:
+        return RedirectResponse(url="/login?next=/sandbox-rfid")
+    return HTMLResponse(content=render_template("sandbox_rfid.html"))
 
 @app.get("/camera-audit")
 async def camera_audit_view():
