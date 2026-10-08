@@ -100,6 +100,10 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
                     Member Directory
                 </button>
+                <button type="button" onclick="switchTab('etag_audit', this)" data-tab="etag_audit" class="nav-btn px-8 py-4 text-left flex items-center gap-3 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" /></svg>
+                    E-TAG Audit Page
+                </button>
                 <button type="button" onclick="switchTab('settings', this)" data-tab="settings" class="nav-btn px-8 py-4 text-left flex items-center gap-3 transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                     Settings
@@ -162,6 +166,10 @@
                     <button type="button" onclick="switchTab('members', this); closeMobileMenu();" data-tab="members" class="nav-btn px-6 py-3.5 text-left flex items-center gap-3 transition">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
                         Member Directory
+                    </button>
+                    <button type="button" onclick="switchTab('etag_audit', this); closeMobileMenu();" data-tab="etag_audit" class="nav-btn px-6 py-3.5 text-left flex items-center gap-3 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" /></svg>
+                        E-TAG Audit Page
                     </button>
                     <button type="button" onclick="switchTab('settings', this); closeMobileMenu();" data-tab="settings" class="nav-btn px-6 py-3.5 text-left flex items-center gap-3 transition">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
@@ -231,6 +239,7 @@
             <button type="button" onclick="switchTab('logs', this)" data-tab="logs" class="nav-btn-mobile px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition">Audit Reports</button>
             <button type="button" onclick="switchTab('camera_audit', this)" data-tab="camera_audit" class="nav-btn-mobile px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition">Camera Audit</button>
             <button type="button" onclick="switchTab('members', this)" data-tab="members" class="nav-btn-mobile px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition">Members</button>
+            <button type="button" onclick="switchTab('etag_audit', this)" data-tab="etag_audit" class="nav-btn-mobile px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition">E-TAG Audit</button>
             <button type="button" onclick="switchTab('settings', this)" data-tab="settings" class="nav-btn-mobile px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition">Settings</button>
         </div>
 
@@ -1254,6 +1263,187 @@
                                     </tr>
                                 </thead>
                                 <tbody id="usersTableBody" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- TAB: E-TAG ACTIVITY AUDIT STUDIO           -->
+            <!-- ========================================== -->
+            <div id="tab-etag_audit" class="hidden space-y-6">
+                <!-- Header Banner -->
+                <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl p-6 md:p-8 shadow-xl relative overflow-hidden border border-slate-800">
+                    <div class="absolute -right-10 -bottom-10 w-72 h-72 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="relative z-10 flex justify-between items-start flex-wrap gap-4">
+                        <div>
+                            <div class="flex items-center gap-2.5 mb-2">
+                                <span class="px-3 py-0.5 rounded-full text-[10px] font-black tracking-wider uppercase bg-indigo-500/30 text-indigo-300 border border-indigo-400/30">RFID Intelligence Center</span>
+                                <span class="px-3 py-0.5 rounded-full text-[10px] font-black tracking-wider uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">Active UHF Readers</span>
+                            </div>
+                            <h2 class="text-2xl md:text-3xl font-black tracking-tight text-white flex items-center gap-3">
+                                <span>E-TAG Activity Audit Studio</span>
+                            </h2>
+                            <p class="text-xs md:text-sm text-slate-300 mt-1 max-w-2xl font-medium">
+                                Paste any RFID EPC Tag ID to audit complete multi-day passage history, verify reader stations, inspect per-day detection frequencies, and trace associated member particulars.
+                            </p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <button type="button" onclick="loadRecentEtagTags()" class="px-4 py-2 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/20 text-white border border-white/20 shadow-sm transition flex items-center gap-2 backdrop-blur-xs">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                                <span>Refresh Telemetry</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Search Control Bar inside Banner -->
+                    <div class="mt-6 pt-6 border-t border-slate-800/80">
+                        <form id="etagSearchForm" onsubmit="onEtagSearchSubmit(event)" class="flex flex-col sm:flex-row items-stretch gap-3">
+                            <div class="relative flex-1">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                                    <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" /></svg>
+                                </div>
+                                <input type="text" id="etagSearchInput" placeholder="Paste EPC Tag ID (e.g. E2004701B8B064227E39010E)..." 
+                                       class="w-full pl-12 pr-28 py-3.5 rounded-2xl bg-slate-900/90 text-white placeholder-slate-400 text-sm font-mono font-bold border border-slate-700/80 focus:border-indigo-400 focus:outline-none shadow-inner"
+                                       autocomplete="off" spellcheck="false">
+                                <button type="button" onclick="pasteEtagFromClipboard()" class="absolute right-2.5 top-2.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-indigo-300 text-xs font-bold border border-slate-700 transition flex items-center gap-1.5" title="Paste from clipboard">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                                    <span>Paste</span>
+                                </button>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button type="button" onclick="captureEtagLive()" class="px-4 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-md transition flex items-center gap-2 whitespace-nowrap" title="Read tag currently at RFID antenna">
+                                    <svg class="w-4 h-4 text-emerald-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                    <span>Live Antenna Read</span>
+                                </button>
+                                <button type="submit" id="btnRunEtagAudit" class="px-6 py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-black shadow-md transition flex items-center gap-2 whitespace-nowrap">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                    <span>Audit Tag History</span>
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Quick Active Tags Bar -->
+                        <div class="mt-4 flex items-center gap-2 flex-wrap text-xs">
+                            <span class="text-slate-400 font-bold uppercase tracking-wider text-[10px]">Recently Detected:</span>
+                            <div id="etagRecentPills" class="flex items-center gap-1.5 flex-wrap">
+                                <span class="text-slate-500 italic text-[11px]">Loading active tags...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content Slot (Toggled between Welcome State & Active Audit State) -->
+                <div id="etagAuditWelcomeState" class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm">
+                    <div class="max-w-xl mx-auto text-center py-6">
+                        <div class="w-16 h-16 rounded-3xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto mb-4 border border-indigo-100 shadow-xs">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" /></svg>
+                        </div>
+                        <h3 class="text-lg font-black text-slate-800">Select or Paste an RFID Tag to Begin</h3>
+                        <p class="text-xs text-slate-500 mt-1.5">
+                            Enter any vehicle or guest UHF EPC identifier into the audit search box above. The system will retrieve complete multi-day detection logs, reader antenna associations, and verification evidence.
+                        </p>
+                    </div>
+
+                    <!-- Top Scanned Tags Table inside Welcome State -->
+                    <div class="mt-4 pt-6 border-t border-slate-100">
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                Top Active RFID Tags (1-Click Inspection)
+                            </h4>
+                            <span class="text-[11px] text-slate-400">Click any row to audit tag</span>
+                        </div>
+                        <div class="overflow-x-auto rounded-2xl border border-slate-200">
+                            <table class="w-full text-left text-xs">
+                                <thead class="text-[10px] uppercase font-black text-slate-400 bg-slate-50 border-b">
+                                    <tr>
+                                        <th class="py-3 px-4">RFID EPC Tag</th>
+                                        <th class="py-3 px-4">Associated Member / Identity</th>
+                                        <th class="py-3 px-4">Vehicle Plate</th>
+                                        <th class="py-3 px-4">Total Scans</th>
+                                        <th class="py-3 px-4">Latest Detection</th>
+                                        <th class="py-3 px-4 text-right pr-4">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="etagWelcomeTableBody" class="divide-y divide-slate-100">
+                                    <tr><td colspan="6" class="py-6 text-center text-slate-400">Loading top active tags...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Audit Dossier Container (Hidden initially until tag audited) -->
+                <div id="etagActiveAuditContainer" class="hidden space-y-6">
+                    <!-- Member & Vehicle Identity Dossier -->
+                    <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-sm" id="etagDossierCard"></div>
+
+                    <!-- 5-Metric Telemetry Cards Grid -->
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4" id="etagMetricsGrid"></div>
+
+                    <!-- SECTION: Daily Activity Breakdown ("how many times detected each day") -->
+                    <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-sm">
+                        <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
+                            <div>
+                                <h3 class="text-sm font-black text-slate-900 uppercase tracking-wide flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-indigo-600"></span>
+                                    <span>Daily Activity Breakdown (Detection Frequency by Date)</span>
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-0.5">Chronological summary of how many times this tag was detected each day with time span, reader stations, and stay duration.</p>
+                            </div>
+                            <span id="etagDailyCountBadge" class="text-xs font-bold px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 font-mono">0 Days Active</span>
+                        </div>
+
+                        <div class="overflow-x-auto rounded-2xl border border-slate-200">
+                            <table class="w-full text-left text-xs">
+                                <thead class="text-[10px] uppercase font-black text-slate-400 bg-slate-50 border-b">
+                                    <tr>
+                                        <th class="py-3 px-4">Date</th>
+                                        <th class="py-3 px-4">Total Detections</th>
+                                        <th class="py-3 px-4">Passage Split</th>
+                                        <th class="py-3 px-4">Day Span (First &rarr; Last)</th>
+                                        <th class="py-3 px-4">Daily Facility Stay</th>
+                                        <th class="py-3 px-4">Reader Antennas Used</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="etagDailyBreakdownBody" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- SECTION: Complete Chronological Detections Log -->
+                    <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-sm">
+                        <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
+                            <div>
+                                <h3 class="text-sm font-black text-slate-900 uppercase tracking-wide flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+                                    <span>Chronological Detection History (Full Reader Audit Journal)</span>
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-0.5">Complete timestamped audit trail of every detection event recorded for this tag across all gate readers.</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span id="etagTotalScansBadge" class="text-xs font-bold px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-mono">0 Total Scans</span>
+                                <button type="button" onclick="exportEtagAuditData('csv')" class="px-3 py-1 rounded-xl text-xs font-bold border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 shadow-2xs transition">Export CSV</button>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto rounded-2xl border border-slate-200 min-h-[120px]">
+                            <table class="w-full text-left text-xs">
+                                <thead class="text-[10px] uppercase font-black text-slate-400 bg-slate-50 border-b">
+                                    <tr>
+                                        <th class="py-3 px-4">#</th>
+                                        <th class="py-3 px-4">Timestamp (PKT)</th>
+                                        <th class="py-3 px-4">Reader / Gate</th>
+                                        <th class="py-3 px-4">Movement</th>
+                                        <th class="py-3 px-4">Access Protocol</th>
+                                        <th class="py-3 px-4">Vehicle Plate</th>
+                                        <th class="py-3 px-4">Optical Proof</th>
+                                        <th class="py-3 px-4 text-right pr-4">Official Report</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="etagChronologyBody" class="divide-y divide-slate-100"></tbody>
                             </table>
                         </div>
                     </div>

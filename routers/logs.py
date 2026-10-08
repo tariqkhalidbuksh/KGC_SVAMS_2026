@@ -89,6 +89,111 @@ def _fmt_active_duration(entry_ts):
     except Exception:
         return None
 
+def format_duration_seconds(diff_seconds: int) -> str:
+    if diff_seconds <= 0:
+        return "< 1m"
+    hours = diff_seconds // 3600
+    minutes = (diff_seconds % 3600) // 60
+    if hours > 0:
+        return f"{hours}h {minutes:02d}m" if minutes else f"{hours}h"
+    if minutes > 0:
+        return f"{minutes}m"
+    return "< 1m"
+
+def analyze_day_movements(movements):
+    """
+    Analyzes all movements for a vehicle/member on a specific date.
+    Pairs Entries and Exits chronologically, calculates per-visit stay durations,
+    and aggregates cumulative daily stay duration and visit counts.
+    """
+    if not movements:
+        return {
+            "trips": [],
+            "visits_count": 0,
+            "total_stay_seconds": 0,
+            "total_stay_duration": "-- --",
+            "first_entry_time": "--",
+            "last_exit_time": "--",
+            "is_currently_inside": False,
+            "movements": []
+        }
+
+    sorted_movs = sorted(movements, key=lambda x: (str(x.get("timestamp", "")), x.get("id") or 0))
+    trips = []
+    current_entry = None
+    total_stay_seconds = 0
+    first_entry_time = None
+    last_exit_time = None
+
+    time_format = "%Y-%m-%d %H:%M:%S"
+
+    for m in sorted_movs:
+        d = (m.get("direction") or "").strip().lower()
+        ts_str = str(m.get("timestamp", ""))
+        
+        try:
+            ts = datetime.strptime(ts_str[:19], time_format)
+        except Exception:
+            continue
+
+        if d == "entry":
+            if not first_entry_time:
+                first_entry_time = ts_str[11:19]
+            current_entry = (m, ts)
+            m["stay_duration"] = None
+        elif d == "exit":
+            last_exit_time = ts_str[11:19]
+            if current_entry:
+                entry_m, entry_ts = current_entry
+                diff_sec = max(0, int((ts - entry_ts).total_seconds()))
+                dur_str = format_duration_seconds(diff_sec)
+                
+                m["stay_duration"] = dur_str
+                m["stay_seconds"] = diff_sec
+                m["entry_ref_id"] = entry_m.get("id")
+                m["entry_time"] = str(entry_m.get("timestamp", ""))[11:19]
+                
+                total_stay_seconds += diff_sec
+                trips.append({
+                    "entry_id": entry_m.get("id"),
+                    "exit_id": m.get("id"),
+                    "entry_time": str(entry_m.get("timestamp", ""))[11:19],
+                    "exit_time": ts_str[11:19],
+                    "stay_seconds": diff_sec,
+                    "stay_duration": dur_str
+                })
+                current_entry = None
+            else:
+                m["stay_duration"] = None
+
+    active_stay = False
+    if current_entry:
+        active_stay = True
+        entry_m, entry_ts = current_entry
+        active_sec = max(0, int((datetime.now() - entry_ts).total_seconds()))
+        if str(entry_ts)[:10] == config.get_pkt_today():
+            total_stay_seconds += active_sec
+
+    visits_count = len(trips) + (1 if active_stay else 0)
+    
+    if total_stay_seconds > 0:
+        total_stay_duration = format_duration_seconds(total_stay_seconds)
+        if active_stay:
+            total_stay_duration = f"{total_stay_duration} (Active)"
+    else:
+        total_stay_duration = "< 1m" if visits_count > 0 else "-- --"
+
+    return {
+        "trips": trips,
+        "visits_count": visits_count,
+        "total_stay_seconds": total_stay_seconds,
+        "total_stay_duration": total_stay_duration,
+        "first_entry_time": first_entry_time or "--",
+        "last_exit_time": last_exit_time or "--",
+        "is_currently_inside": active_stay,
+        "movements": sorted_movs
+    }
+
 def _identity_key(log_row):
     if log_row['mem_id'] and log_row['mem_id'] not in ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED'):
         return ('member', log_row['mem_id'])
@@ -665,13 +770,21 @@ async def get_audit_log_pdf(log_id: int):
             finally:
                 conn.close()
 
+    movement_analysis = analyze_day_movements(daily_movements or [])
+
     audit_payload = {
         "entry": entry_rec,
         "exit": exit_rec,
         "duration": duration,
+        "single_trip_duration": duration,
+        "total_stay_duration": movement_analysis["total_stay_duration"],
+        "total_stay_seconds": movement_analysis["total_stay_seconds"],
+        "visits_count": movement_analysis["visits_count"],
+        "first_entry_time": movement_analysis["first_entry_time"],
+        "last_exit_time": movement_analysis["last_exit_time"],
         "status": audit_status,
         "is_alert": is_unregistered,
-        "daily_movements": daily_movements
+        "daily_movements": movement_analysis["movements"]
     }
 
     try:
@@ -728,13 +841,22 @@ async def get_day_movements(vehicle_number: str = "", mem_id: str = "", date: st
                 ORDER BY d.id ASC
             """, params).fetchall()
 
-            movements = [dict(r) for r in rows]
+            raw_movements = [dict(r) for r in rows]
+            analysis = analyze_day_movements(raw_movements)
+
             return {
                 "date": target_date,
                 "vehicle_number": vehicle_number,
                 "mem_id": mem_id,
-                "total": len(movements),
-                "movements": movements
+                "total": len(raw_movements),
+                "visits_count": analysis["visits_count"],
+                "total_stay_duration": analysis["total_stay_duration"],
+                "total_stay_seconds": analysis["total_stay_seconds"],
+                "first_entry_time": analysis["first_entry_time"],
+                "last_exit_time": analysis["last_exit_time"],
+                "is_currently_inside": analysis["is_currently_inside"],
+                "trips": analysis["trips"],
+                "movements": analysis["movements"]
             }
         finally:
             conn.close()
@@ -885,14 +1007,27 @@ async def post_custom_audit_pdf(request: Request):
 
     status_str = payload.get("status") or (raw_incident.get("status") if isinstance(raw_incident, dict) else None) or ("Exited" if exit_rec and entry_rec else "Inside Facility")
 
+    movement_analysis = analyze_day_movements(daily_movements or [])
+
+    total_stay_dur = payload.get("total_stay_duration") or movement_analysis["total_stay_duration"]
+    visits_cnt = payload.get("visits_count") or movement_analysis["visits_count"]
+    first_in = payload.get("first_entry_time") or movement_analysis["first_entry_time"]
+    last_out = payload.get("last_exit_time") or movement_analysis["last_exit_time"]
+
     audit_payload = {
         "entry": entry_rec,
         "exit": exit_rec,
         "duration": duration,
+        "single_trip_duration": payload.get("single_trip_duration") or duration,
+        "total_stay_duration": total_stay_dur,
+        "total_stay_seconds": movement_analysis["total_stay_seconds"],
+        "visits_count": visits_cnt,
+        "first_entry_time": first_in,
+        "last_exit_time": last_out,
         "status": status_str,
         "entry_image_path": user_entry_img,
         "exit_image_path": user_exit_img,
-        "daily_movements": daily_movements or [],
+        "daily_movements": movement_analysis["movements"],
         "investigator_notes": payload.get("notes") or payload.get("investigator_notes") or ""
     }
 

@@ -127,6 +127,26 @@ def generate_audit_pdf(audit: dict) -> bytes:
 
     ref_id = f"AUD-{str(thumb.get('id', 1)).zfill(6)}"
     duration = audit.get("duration") or "-- --"
+    single_duration = audit.get("single_trip_duration") or duration
+    total_stay_dur = audit.get("total_stay_duration")
+    visits_count = int(audit.get("visits_count") or 1)
+    first_entry_time = audit.get("first_entry_time") or "--"
+    last_exit_time = audit.get("last_exit_time") or "--"
+
+    daily_movements = audit.get("daily_movements") or []
+    if (not total_stay_dur or visits_count <= 1) and daily_movements:
+        try:
+            from routers.logs import analyze_day_movements
+            analysis = analyze_day_movements(daily_movements)
+            if analysis.get("visits_count", 0) > 1:
+                visits_count = analysis["visits_count"]
+                total_stay_dur = analysis["total_stay_duration"]
+                first_entry_time = analysis["first_entry_time"]
+                last_exit_time = analysis["last_exit_time"]
+                daily_movements = analysis["movements"]
+        except Exception:
+            pass
+
     status_str = (audit.get("status") or "Inside Facility").upper()
     visit_date = str(thumb.get("timestamp", ""))[:10] or config.get_pkt_today()
     gen_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -202,11 +222,15 @@ def generate_audit_pdf(audit: dict) -> bytes:
     v_badge_color = c_emerald if is_member else (c_amber if "UNKNOWN" in (thumb.get("access_type") or "").upper() else c_rose)
     v_badge_text = "RFID VERIFIED MEMBER" if is_member else ("UNKNOWN RFID TAG" if is_unreg else "OPTICAL CAPTURE")
 
+    status_cell_content = f"<b>FACILITY STATUS</b><br/>" + f'<font color="{status_bg.hexval()}"><b>{status_str}</b></font>'
+    if visits_count > 1 and total_stay_dur:
+        status_cell_content += f'<br/><font size="7" color="#4F46E5"><b>{total_stay_dur} TOTAL ({visits_count} VISITS)</b></font>'
+
     ribbon_data = [
         [
             Paragraph("<b>REPORT REFERENCE</b><br/>" + ref_id, s_mono),
             Paragraph("<b>SECURITY VERDICT</b><br/>" + f'<font color="{v_badge_color.hexval()}"><b>{v_badge_text}</b></font>', s_bold_sm),
-            Paragraph("<b>FACILITY STATUS</b><br/>" + f'<font color="{status_bg.hexval()}"><b>{status_str}</b></font>', s_bold_sm),
+            Paragraph(status_cell_content, s_bold_sm),
             Paragraph("<b>RECORD DATE</b><br/>" + visit_date, s_mono),
             Paragraph("<b>GENERATED (PKT)</b><br/>" + gen_time[11:19], s_mono),
         ]
@@ -290,18 +314,30 @@ def generate_audit_pdf(audit: dict) -> bytes:
         ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
     ]))
 
-    card_vehicle_content = [
-        Paragraph("<b>VEHICLE &bull; PASSAGE PARTICULARS</b>", s_label),
-        Spacer(1, 3),
-        plate_box,
-        Spacer(1, 4),
-        Table([
+    if visits_count > 1 and total_stay_dur:
+        card2_table_rows = [
+            [Paragraph("Make &amp; Model", s_label), Paragraph(make_str, s_bold_sm)],
+            [Paragraph("Gate Station", s_label), Paragraph(gate_str, s_value)],
+            [Paragraph("Total Daily Stay", s_label), Paragraph(f'<font color="#4F46E5"><b>{total_stay_dur}</b></font> <font color="#64748B">({visits_count} Visits Today)</font>', s_bold_sm)],
+            [Paragraph("This Transit Trip", s_label), Paragraph(f'<b>{single_duration}</b> <font color="#64748B">({entry_ts[11:19] if len(entry_ts) >= 19 else entry_ts} – {exit_ts[11:19] if len(exit_ts) >= 19 else exit_ts})</font>', s_value)],
+            [Paragraph("First Entry Today", s_label), Paragraph(first_entry_time if first_entry_time != '--' else (entry_ts[11:19] if len(entry_ts) >= 19 else entry_ts), s_mono)],
+            [Paragraph("Latest Exit Today", s_label), Paragraph(last_exit_time if last_exit_time != '--' else (exit_ts[11:19] if len(exit_ts) >= 19 else exit_ts), s_mono)],
+        ]
+    else:
+        card2_table_rows = [
             [Paragraph("Make &amp; Model", s_label), Paragraph(make_str, s_bold_sm)],
             [Paragraph("Gate Lane", s_label), Paragraph(gate_str, s_value)],
             [Paragraph("Duration of Stay", s_label), Paragraph(f'<font color="#4F46E5"><b>{duration}</b></font>', s_bold_sm)],
             [Paragraph("Entry Timestamp", s_label), Paragraph(entry_ts[11:19] if len(entry_ts) >= 19 else entry_ts, s_mono)],
             [Paragraph("Exit Timestamp", s_label), Paragraph(exit_ts[11:19] if len(exit_ts) >= 19 else exit_ts, s_mono)],
-        ], colWidths=[85, col_w - 101], style=[
+        ]
+
+    card_vehicle_content = [
+        Paragraph("<b>VEHICLE &bull; PASSAGE PARTICULARS</b>", s_label),
+        Spacer(1, 3),
+        plate_box,
+        Spacer(1, 4),
+        Table(card2_table_rows, colWidths=[85, col_w - 101], style=[
             ('TOPPADDING', (0, 0), (-1, -1), 2),
             ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
             ('LEFTPADDING', (0, 0), (-1, -1), 0),
@@ -325,9 +361,11 @@ def generate_audit_pdf(audit: dict) -> bytes:
     story.append(Spacer(1, 6))
 
     # 4. Daily Movement Chronology (All-Day In/Out Movement Journal)
-    daily_movements = audit.get("daily_movements") or []
     if daily_movements:
-        story.append(Paragraph("<b>DAILY MOVEMENT CHRONOLOGY &bull; ALL-DAY IN/OUT JOURNAL</b>", s_label))
+        journal_title = "<b>DAILY MOVEMENT CHRONOLOGY &bull; ALL-DAY IN/OUT JOURNAL</b>"
+        if visits_count > 1 and total_stay_dur:
+            journal_title += f' <font color="#4F46E5">({visits_count} Visits Recorded &bull; {total_stay_dur} Total Stay)</font>'
+        story.append(Paragraph(journal_title, s_label))
         story.append(Spacer(1, 2))
 
         s_th = ParagraphStyle('TH', parent=s_label, fontSize=7, leading=9, textColor=c_slate)
@@ -350,7 +388,11 @@ def generate_audit_pdf(audit: dict) -> bytes:
             dir_color = "#059669" if "ENTRY" in direction else "#2563EB"
             gate = m.get("gate_no") or "Gate-01"
             acc_type = m.get("access_type") or "UHF RFID Access"
-            status_text = "Authorized Entry" if "ENTRY" in direction else "Authorized Exit"
+            stay_note = m.get("stay_duration")
+            if "ENTRY" in direction:
+                status_text = "Authorized Entry"
+            else:
+                status_text = f"Authorized Exit (Stay: {stay_note})" if stay_note else "Authorized Exit"
             if "Denied" in acc_type or "Unknown" in acc_type:
                 status_text = "Alert / Review"
 

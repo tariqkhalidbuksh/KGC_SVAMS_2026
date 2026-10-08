@@ -16,7 +16,7 @@ from services.camera_service import is_valid_image, preview_stream_worker
 from services.access_service import execute_access_decision, attach_images_to_log
 from services.rfid_service import rfid_tcp_client_worker, buffer_cleaner_worker
 from services.event_daemons import start_ftp_server, start_smtp_server, folder_watcher_worker
-from routers import logs, members, stats, settings, tools, simulate, auth
+from routers import logs, members, stats, settings, tools, simulate, auth, etag
 
 from services.member_service import align_member_photos
 
@@ -47,6 +47,7 @@ app.include_router(stats.router)
 app.include_router(settings.router)
 app.include_router(tools.router)
 app.include_router(simulate.router)
+app.include_router(etag.router)
 
 @app.api_route("/api/event/hikvision", methods=["GET", "POST", "PUT"])
 @app.api_route("/api/camera/trigger", methods=["GET", "POST"])
@@ -99,6 +100,12 @@ async def camera_audit_view():
 @app.get("/members")
 async def members_view():
     return RedirectResponse(url="/?tab=members")
+
+@app.get("/etag-audit")
+@app.get("/tag-audit")
+@app.get("/tag-activity")
+async def etag_audit_view():
+    return RedirectResponse(url="/?tab=etag_audit")
 
 @app.get("/settings")
 @app.get("/hardware")

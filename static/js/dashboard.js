@@ -530,6 +530,7 @@ function switchTab(name, btn) {
     if (name === 'hardware' || name === 'hardware-settings' || name === 'hardware-setting') name = 'settings';
     if (name === 'audit' || name === 'reports') name = 'logs';
     if (name === 'camera') name = 'camera_audit';
+    if (name === 'tag_audit' || name === 'tag' || name === 'etag' || name === 'etag-audit') name = 'etag_audit';
 
     // Deselect desktop and mobile nav buttons
     document.querySelectorAll('.nav-btn, .nav-btn-mobile').forEach(b => {
@@ -563,6 +564,7 @@ function switchTab(name, btn) {
                             name === 'logs' ? 'Vehicle Audit Reports' :
                             name === 'camera_audit' ? 'Camera Vehicle Audit' :
                             name === 'members' ? 'Member Directory' :
+                            name === 'etag_audit' ? 'E-TAG Activity Audit Studio' :
                             name === 'settings' ? 'Settings' : 'Command Overview';
     }
 
@@ -594,6 +596,10 @@ function switchTab(name, btn) {
         }
     } else if (name === 'members') {
         loadMembers(1);
+    } else if (name === 'etag_audit') {
+        if (!currentAuditedTag) {
+            loadRecentEtagTags();
+        }
     } else if (name === 'settings') {
         loadSettings();
         loadHardwareSettingsStatus();
@@ -1276,6 +1282,7 @@ let currentReportEntryImg = null;
 let currentReportExitImg = null;
 let currentReportMovements = [];
 let currentReportAvailableImages = [];
+let currentReportAnalysis = null;
 
 function openAudit(a) {
     let e = a.entry, x = a.exit;
@@ -1289,6 +1296,7 @@ function openAudit(a) {
     const epc = (v.scanned_tag && v.scanned_tag !== 'NO_TAG') ? v.scanned_tag : '';
 
     currentReportIncident = a;
+    currentReportAnalysis = null;
     currentReportEntryImg = (e && e.image_path) ? e.image_path : null;
     currentReportExitImg = (x && x.image_path) ? x.image_path : null;
     currentReportMovements = [];
@@ -1362,7 +1370,7 @@ function openAudit(a) {
                     </div>
                     <div class="space-y-2 text-xs border-t border-slate-200/80 pt-3">
                         <div class="flex justify-between"><span class="text-slate-400 font-bold">Member Account</span><span class="font-mono font-bold text-slate-800">${v.mem_id || 'N/A'}</span></div>
-                        <div class="flex justify-between items-center"><span class="text-slate-400 font-bold">RFID EPC Tag</span><span class="font-mono font-bold text-emerald-700 text-[11px] truncate max-w-[60%] select-all">${epc || 'No RFID Assigned'}</span></div>
+                        <div class="flex justify-between items-center"><span class="text-slate-400 font-bold">RFID EPC Tag</span>${epc ? `<button type="button" onclick="closeAudit(); auditEtag('${epc}')" class="font-mono font-bold text-emerald-700 hover:text-emerald-900 hover:underline text-[11px] truncate max-w-[60%] select-all flex items-center gap-1" title="Click to audit this E-TAG">${epc} <span class="text-[9px] bg-emerald-100 px-1 rounded text-emerald-800 font-sans">Audit &rarr;</span></button>` : `<span class="font-mono text-slate-400 text-[11px]">No RFID Assigned</span>`}</div>
                     </div>
                 </div>
 
@@ -1378,10 +1386,11 @@ function openAudit(a) {
 
                 <div class="md:col-span-3 bg-slate-50/70 rounded-2xl p-5 border border-slate-200 text-center flex flex-col justify-between">
                     <div>
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Facility Stay Duration</p>
-                        <p class="text-3xl font-black ${modalDur ? 'text-indigo-700' : 'text-slate-400'} py-2">${modalDur || '--'}</p>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5" id="reportStayCardTitle">Facility Stay Duration</p>
+                        <p class="text-3xl font-black ${modalDur ? 'text-indigo-700' : 'text-slate-400'} py-1" id="reportStayCardValue">${modalDur || '--'}</p>
+                        <div id="reportStayCardSub" class="text-[10px] font-bold text-slate-400 mb-1">Transit Passage Duration</div>
                     </div>
-                    <div class="space-y-1.5 text-xs border-t border-slate-200/80 pt-3 text-left">
+                    <div class="space-y-1.5 text-xs border-t border-slate-200/80 pt-3 text-left" id="reportStayCardBreakdown">
                         <div class="flex justify-between"><span class="text-slate-400 font-bold">Entry:</span><span class="font-bold text-slate-800 font-mono text-[11px]">${e ? String(e.timestamp).substring(11, 19) : '--'}</span></div>
                         <div class="flex justify-between"><span class="text-slate-400 font-bold">Exit:</span><span class="font-bold text-slate-800 font-mono text-[11px]">${x ? String(x.timestamp).substring(11, 19) : '--'}</span></div>
                     </div>
@@ -1465,7 +1474,7 @@ function openAudit(a) {
 
     // Load dynamic data
     updateSelectedEvidenceUI();
-    loadReportMovements(v.vehicle_number, v.mem_id, visitDate);
+    loadReportMovements(v.vehicle_number, v.mem_id, visitDate, modalDur);
     loadReportAvailableImages(visitDate);
 }
 
@@ -1545,7 +1554,7 @@ function clearReportProofImage(type) {
     updateSelectedEvidenceUI();
 }
 
-async function loadReportMovements(vehicleNumber, memId, dateStr) {
+async function loadReportMovements(vehicleNumber, memId, dateStr, tripDuration) {
     const cont = document.getElementById('reportMovementsContainer');
     const badge = document.getElementById('reportMovementsCountBadge');
     if (!cont) return;
@@ -1560,9 +1569,41 @@ async function loadReportMovements(vehicleNumber, memId, dateStr) {
         if (!res.ok) throw new Error('Failed to fetch daily movements');
         const data = await res.json();
         currentReportMovements = data.movements || [];
+        currentReportAnalysis = data;
+
+        const stayTitle = document.getElementById('reportStayCardTitle');
+        const stayVal = document.getElementById('reportStayCardValue');
+        const staySub = document.getElementById('reportStayCardSub');
+        const stayBreakdown = document.getElementById('reportStayCardBreakdown');
+
+        if (data.visits_count > 1) {
+            if (stayTitle) {
+                stayTitle.innerHTML = `Total Daily Stay <span class="bg-indigo-100 text-indigo-700 text-[10px] font-black px-2 py-0.5 rounded-full ml-1 border border-indigo-200">${data.visits_count} Visits Today</span>`;
+            }
+            if (stayVal) {
+                stayVal.innerText = data.total_stay_duration || '--';
+                stayVal.className = 'text-3xl font-black text-indigo-700 py-1';
+            }
+            if (staySub) {
+                staySub.innerHTML = `<span class="text-indigo-600 font-extrabold">Cumulative Stay Across Complete Day</span>`;
+            }
+            if (stayBreakdown) {
+                stayBreakdown.innerHTML = `
+                    <div class="flex justify-between items-center"><span class="text-slate-400 font-bold">Total Daily Stay:</span><span class="font-black text-indigo-700 font-mono text-xs">${data.total_stay_duration} (${data.visits_count} Visits)</span></div>
+                    <div class="flex justify-between items-center"><span class="text-slate-400 font-bold">This Transit Trip:</span><span class="font-bold text-slate-800 font-mono text-[11px]">${tripDuration || currentReportIncident?.duration || '--'}</span></div>
+                    <div class="flex justify-between items-center"><span class="text-slate-400 font-bold">First Entry Today:</span><span class="font-bold text-slate-700 font-mono text-[11px]">${data.first_entry_time || '--'}</span></div>
+                    <div class="flex justify-between items-center"><span class="text-slate-400 font-bold">Latest Exit Today:</span><span class="font-bold text-slate-700 font-mono text-[11px]">${data.last_exit_time || '--'}</span></div>
+                `;
+            }
+        }
 
         if (badge) {
-            badge.innerText = `${currentReportMovements.length} Total Passages Recorded`;
+            if (data.visits_count > 1) {
+                badge.innerHTML = `<span class="font-mono text-indigo-800 font-extrabold">${currentReportMovements.length} Passages</span> &bull; <span class="text-indigo-700 font-black">${data.visits_count} Visits</span> &bull; <span class="text-indigo-700 font-black">${data.total_stay_duration} Total Stay</span>`;
+                badge.className = "text-[10px] font-black px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200";
+            } else {
+                badge.innerText = `${currentReportMovements.length} Total Passages Recorded`;
+            }
         }
 
         if (currentReportMovements.length === 0) {
@@ -1574,31 +1615,44 @@ async function loadReportMovements(vehicleNumber, memId, dateStr) {
             <table class="w-full text-left text-xs">
                 <thead class="text-[10px] uppercase font-black text-slate-400 bg-slate-50 border-b">
                     <tr>
-                        <th class="py-2 px-3">#</th>
-                        <th class="py-2 px-3">Time (PKT)</th>
-                        <th class="py-2 px-3">Movement</th>
-                        <th class="py-2 px-3">Gate Station</th>
-                        <th class="py-2 px-3">Access Protocol</th>
-                        <th class="py-2 px-3">Verification Status</th>
+                        <th class="py-2.5 px-3">#</th>
+                        <th class="py-2.5 px-3">Time (PKT)</th>
+                        <th class="py-2.5 px-3">Movement</th>
+                        <th class="py-2.5 px-3">Gate Station</th>
+                        <th class="py-2.5 px-3">Access Protocol</th>
+                        <th class="py-2.5 px-3">Visit Stay</th>
+                        <th class="py-2.5 px-3">Verification Status</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     ${currentReportMovements.map((m, idx) => {
                         const isEntry = (m.direction || '').toLowerCase() === 'entry';
                         const timeStr = String(m.timestamp || '').substring(11, 19) || m.timestamp;
+                        const isCurrent = currentReportIncident && (
+                            (currentReportIncident.entry && currentReportIncident.entry.id === m.id) ||
+                            (currentReportIncident.exit && currentReportIncident.exit.id === m.id) ||
+                            (currentReportIncident.id === m.id)
+                        );
+                        const stayBadge = m.stay_duration ? 
+                            `<span class="inline-flex items-center gap-1 font-mono font-bold text-xs text-indigo-700 bg-indigo-50 border border-indigo-200/80 px-2 py-0.5 rounded-md"><svg class="w-3 h-3 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>${m.stay_duration}</span>` :
+                            `<span class="text-slate-300 font-mono text-xs">—</span>`;
                         return `
-                            <tr class="hover:bg-slate-50/70 transition">
-                                <td class="py-2 px-3 font-mono font-bold text-slate-400">${String(idx + 1).padStart(2, '0')}</td>
-                                <td class="py-2 px-3 font-mono font-bold text-slate-800">${timeStr}</td>
-                                <td class="py-2 px-3">
+                            <tr class="${isCurrent ? 'bg-indigo-50/60 font-semibold' : 'hover:bg-slate-50/70'} transition">
+                                <td class="py-2.5 px-3 font-mono font-bold text-slate-400">
+                                    ${String(idx + 1).padStart(2, '0')}
+                                    ${isCurrent ? '<span class="text-[9px] bg-indigo-600 text-white font-black px-1.5 py-0.5 rounded ml-1 uppercase tracking-wide">Selected</span>' : ''}
+                                </td>
+                                <td class="py-2.5 px-3 font-mono font-bold text-slate-800">${timeStr}</td>
+                                <td class="py-2.5 px-3">
                                     <span class="text-[10px] font-black px-2 py-0.5 rounded-full ${isEntry ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-blue-50 text-blue-700 border border-blue-200'}">
                                         ${(m.direction || 'PASSAGE').toUpperCase()}
                                     </span>
                                 </td>
-                                <td class="py-2 px-3 font-bold text-slate-700">${m.gate_no || 'Gate-01'}</td>
-                                <td class="py-2 px-3 text-slate-600">${m.access_type || 'UHF RFID Access'}</td>
-                                <td class="py-2 px-3 font-bold ${isEntry ? 'text-emerald-700' : 'text-blue-700'}">
-                                    ${isEntry ? 'Authorized Entry' : 'Authorized Exit'}
+                                <td class="py-2.5 px-3 font-bold text-slate-700">${m.gate_no || 'Gate-01'}</td>
+                                <td class="py-2.5 px-3 text-slate-600">${m.access_type || 'UHF RFID Access'}</td>
+                                <td class="py-2.5 px-3">${stayBadge}</td>
+                                <td class="py-2.5 px-3 font-bold ${isEntry ? 'text-emerald-700' : 'text-blue-700'}">
+                                    ${isEntry ? 'Authorized Entry' : `Authorized Exit ${m.stay_duration ? `<span class="text-[11px] font-semibold text-slate-500">(${m.stay_duration} stay)</span>` : ''}`}
                                 </td>
                             </tr>
                         `;
@@ -1680,11 +1734,19 @@ async function generateCustomReportPdf() {
 
         const notes = (document.getElementById('reportNotesInput') ? document.getElementById('reportNotesInput').value : '').trim();
 
+        const isMultiVisit = Boolean(currentReportAnalysis && currentReportAnalysis.visits_count > 1);
+        const resolvedDuration = isMultiVisit ? currentReportAnalysis.total_stay_duration : (currentReportIncident?.duration || null);
+
         const payload = {
             incident: currentReportIncident,
             entry: currentReportIncident?.entry || null,
             exit: currentReportIncident?.exit || null,
-            duration: currentReportIncident?.duration || null,
+            duration: resolvedDuration,
+            single_trip_duration: currentReportIncident?.duration || null,
+            total_stay_duration: currentReportAnalysis?.total_stay_duration || null,
+            visits_count: currentReportAnalysis?.visits_count || null,
+            first_entry_time: currentReportAnalysis?.first_entry_time || null,
+            last_exit_time: currentReportAnalysis?.last_exit_time || null,
             status: currentReportIncident?.status || null,
             entry_image_path: currentReportEntryImg,
             exit_image_path: currentReportExitImg,
@@ -3487,6 +3549,468 @@ function selectQuickSearchMember(memId) {
     openMemberFleetModal(memId);
 }
 
+// ==========================================
+// E-TAG ACTIVITY AUDIT STUDIO
+// ==========================================
+let currentAuditedTag = null;
+let currentAuditedTagData = null;
+
+function showToast(message, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+    const toast = document.createElement('div');
+    const bg = type === 'success' ? 'bg-emerald-600' : (type === 'error' ? 'bg-rose-600' : 'bg-slate-900');
+    toast.className = `${bg} text-white px-4 py-2.5 rounded-2xl shadow-xl text-xs font-bold flex items-center gap-2 transform transition-all duration-300 translate-y-2 opacity-0 pointer-events-auto`;
+    toast.innerHTML = `<span>${message}</span>`;
+    container.appendChild(toast);
+    requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+    });
+    setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+async function loadRecentEtagTags() {
+    const pillsContainer = document.getElementById('etagRecentPills');
+    const welcomeTable = document.getElementById('etagWelcomeTableBody');
+    if (!pillsContainer && !welcomeTable) return;
+
+    try {
+        const res = await fetch('/api/etag/recent-tags?limit=15');
+        if (!res.ok) throw new Error('Failed to load recent tags');
+        const data = await res.json();
+        const tags = data.tags || [];
+
+        if (pillsContainer) {
+            if (tags.length === 0) {
+                pillsContainer.innerHTML = '<span class="text-slate-500 italic text-[11px]">No RFID tag scans recorded yet.</span>';
+            } else {
+                pillsContainer.innerHTML = tags.slice(0, 7).map(t => {
+                    const tagShort = t.scanned_tag.length > 16 ? t.scanned_tag.substring(0, 8) + '...' + t.scanned_tag.slice(-6) : t.scanned_tag;
+                    return `
+                        <button type="button" onclick="auditEtag('${t.scanned_tag}')" 
+                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-800/80 hover:bg-indigo-900/60 border border-slate-700/80 text-[11px] font-mono text-indigo-300 hover:text-white transition group shadow-2xs"
+                                title="${t.scanned_tag} • ${t.name || 'Visitor'} • ${t.total_scans} scans">
+                            <span class="w-1.5 h-1.5 rounded-full ${t.mem_id && t.mem_id !== 'GUEST-LOG' ? 'bg-emerald-400' : 'bg-amber-400'}"></span>
+                            <span class="font-bold">${tagShort}</span>
+                            <span class="text-[9px] px-1 rounded bg-slate-700/60 text-slate-400 font-sans font-bold">${t.total_scans}</span>
+                        </button>
+                    `;
+                }).join('');
+            }
+        }
+
+        if (welcomeTable) {
+            if (tags.length === 0) {
+                welcomeTable.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-slate-400 text-xs">No RFID tag scan records found in the database.</td></tr>';
+            } else {
+                welcomeTable.innerHTML = tags.map((t, idx) => {
+                    const isMem = Boolean(t.mem_id && t.mem_id !== 'GUEST-LOG' && t.mem_id !== 'UNREGISTERED');
+                    return `
+                        <tr class="hover:bg-slate-50/80 transition cursor-pointer" onclick="auditEtag('${t.scanned_tag}')">
+                            <td class="py-3 px-4 font-mono font-bold text-xs text-indigo-700">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full ${isMem ? 'bg-emerald-500' : 'bg-amber-500'} shrink-0"></span>
+                                    <span class="truncate max-w-[220px] select-all">${t.scanned_tag}</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <p class="font-extrabold text-slate-800">${t.name || 'Unregistered Visitor'}</p>
+                                <p class="text-[10px] text-slate-400 font-mono">${t.mem_id || 'Visitor Tag'} &bull; ${isMem ? '<span class="text-emerald-700 font-bold">Member</span>' : '<span class="text-amber-700 font-bold">Unregistered</span>'}</p>
+                            </td>
+                            <td class="py-3 px-4 font-mono font-bold text-slate-700">${t.vehicle_number || 'NO PLATE'}</td>
+                            <td class="py-3 px-4 font-bold font-mono text-slate-800"><span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">${t.total_scans} scans</span></td>
+                            <td class="py-3 px-4 font-mono text-slate-500 text-[11px]">${t.last_seen || '--'}</td>
+                            <td class="py-3 px-4 text-right pr-4">
+                                <button type="button" onclick="event.stopPropagation(); auditEtag('${t.scanned_tag}')" class="px-3 py-1 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 shadow-2xs transition">
+                                    Audit &rarr;
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+        }
+    } catch (err) {
+        console.error('Error loading recent tags:', err);
+    }
+}
+
+function onEtagSearchSubmit(e) {
+    if (e) e.preventDefault();
+    const input = document.getElementById('etagSearchInput');
+    const val = input ? input.value.trim() : '';
+    if (!val) {
+        alert('Please enter or paste an RFID EPC Tag ID');
+        return;
+    }
+    loadEtagAudit(val);
+}
+
+function auditEtag(tagId) {
+    if (!tagId) return;
+    switchTab('etag_audit');
+    loadEtagAudit(tagId);
+}
+
+async function loadEtagAudit(tagId, isSilent = false) {
+    const cleanTag = (tagId || '').trim();
+    if (!cleanTag) return;
+    currentAuditedTag = cleanTag;
+
+    const input = document.getElementById('etagSearchInput');
+    if (input) input.value = cleanTag;
+
+    const btn = document.getElementById('btnRunEtagAudit');
+    let origBtnText = '';
+    if (btn && !isSilent) {
+        origBtnText = btn.innerHTML;
+        btn.innerHTML = `<svg class="animate-spin w-4 h-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg><span>Auditing...</span>`;
+        btn.disabled = true;
+    }
+
+    try {
+        const res = await fetch(`/api/etag/audit?tag_id=${encodeURIComponent(cleanTag)}`);
+        if (!res.ok) {
+            const errJson = await res.json().catch(() => ({}));
+            throw new Error(errJson.detail || `Server error (${res.status})`);
+        }
+        const data = await res.json();
+        currentAuditedTagData = data;
+
+        // Show Active Dossier Container
+        const welcomeState = document.getElementById('etagAuditWelcomeState');
+        const activeContainer = document.getElementById('etagActiveAuditContainer');
+        if (welcomeState) welcomeState.classList.add('hidden');
+        if (activeContainer) activeContainer.classList.remove('hidden');
+
+        renderEtagDossier(data);
+        renderEtagMetrics(data);
+        renderEtagDailyBreakdown(data);
+        renderEtagChronology(data);
+
+        // Update URL query
+        try {
+            const url = new URL(window.location.href);
+            url.searchParams.set('tab', 'etag_audit');
+            url.searchParams.set('tag', cleanTag);
+            window.history.replaceState({ tab: 'etag_audit', tag: cleanTag }, '', url.toString());
+        } catch (e) {}
+
+    } catch (err) {
+        alert(`Failed to load E-TAG audit: ${err.message}`);
+    } finally {
+        if (btn && !isSilent) {
+            btn.innerHTML = origBtnText;
+            btn.disabled = false;
+        }
+    }
+}
+
+function renderEtagDossier(data) {
+    const card = document.getElementById('etagDossierCard');
+    if (!card) return;
+
+    const m = data.member || {};
+    const isReg = Boolean(data.is_registered);
+    const tag = data.tag_id;
+
+    card.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+            <!-- Col 1: Member / Driver Profile -->
+            <div class="md:col-span-5 flex items-center gap-5 border-b md:border-b-0 md:border-r border-slate-200 pb-5 md:pb-0 md:pr-6">
+                ${m.profile_pic ? 
+                    `<img src="/${m.profile_pic.replace(/^\//, '')}" class="w-20 h-20 rounded-2xl object-cover border-2 border-slate-200 shadow-md">` :
+                    `<div class="w-20 h-20 rounded-2xl ${isReg ? 'bg-indigo-100 text-indigo-700' : 'bg-amber-100 text-amber-700'} font-black text-3xl flex items-center justify-center border-2 border-slate-200 shadow-xs">${(m.name || '?').charAt(0)}</div>`
+                }
+                <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-2 mb-1 flex-wrap">
+                        <span class="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${isReg ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-700 border border-amber-200'}">
+                            ${isReg ? 'RFID Verified Member' : 'Unregistered RFID Tag'}
+                        </span>
+                        <span class="text-[10px] font-mono font-bold text-slate-400">ID: ${m.mem_id || 'N/A'}</span>
+                    </div>
+                    <h3 class="text-xl font-black text-slate-900 truncate">${m.name || 'Unregistered Tag'}</h3>
+                    <p class="text-xs text-slate-500 font-medium mt-0.5">${m.phone ? `Phone: ${m.phone} &bull; ` : ''}${m.status || 'Active'}</p>
+                </div>
+            </div>
+
+            <!-- Col 2: Vehicle Particulars -->
+            <div class="md:col-span-4 border-b md:border-b-0 md:border-r border-slate-200 pb-5 md:pb-0 md:pr-6">
+                <p class="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-2">Registered Vehicle Particulars</p>
+                <div class="inline-block px-4 py-1.5 bg-slate-100 border border-slate-300 rounded-xl shadow-2xs font-mono font-black text-xl text-slate-900 tracking-wider">
+                    ${m.vehicle_number || 'NO PLATE'}
+                </div>
+                <p class="text-xs font-bold text-slate-700 mt-2">${m.make_model || 'Make/Model not specified'}</p>
+                <p class="text-[11px] text-slate-400 mt-0.5">Automated Gate UHF Sentry Verification</p>
+            </div>
+
+            <!-- Col 3: Tag Identification & Quick Actions -->
+            <div class="md:col-span-3 space-y-3">
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Audited EPC Identifier</span>
+                        <button type="button" onclick="copyEtagId('${tag}')" class="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 transition flex items-center gap-1">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 022z"></path></svg>
+                            <span>Copy</span>
+                        </button>
+                    </div>
+                    <div class="p-2.5 rounded-xl bg-slate-900 text-emerald-400 font-mono font-bold text-xs select-all truncate border border-slate-800 shadow-inner">
+                        ${tag}
+                    </div>
+                </div>
+
+                ${!isReg ? `
+                    <button type="button" onclick="assignTagToMember('${tag}')" class="w-full py-2 px-3 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-2xs">
+                        <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+                        <span>Bind Tag to Member Record</span>
+                    </button>
+                ` : `
+                    <div class="flex items-center gap-1.5 text-xs text-emerald-700 font-bold bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl">
+                        <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        <span>Active RFID Credential Validated</span>
+                    </div>
+                `}
+            </div>
+        </div>
+    `;
+}
+
+function renderEtagMetrics(data) {
+    const grid = document.getElementById('etagMetricsGrid');
+    if (!grid) return;
+
+    const s = data.summary || {};
+    const firstStr = s.first_detected ? String(s.first_detected).substring(0, 16) : '--';
+    const lastStr = s.latest_detected ? String(s.latest_detected).substring(0, 16) : '--';
+
+    grid.innerHTML = `
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-indigo-600">
+            <p class="text-[10px] font-black uppercase tracking-wider text-slate-400">Total Scans</p>
+            <h4 class="text-2xl font-black text-indigo-700 mt-1">${s.total_detections || 0}</h4>
+            <p class="text-[11px] text-slate-400 font-medium mt-0.5">All-time detections</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-emerald-600">
+            <p class="text-[10px] font-black uppercase tracking-wider text-slate-400">Active Days</p>
+            <h4 class="text-2xl font-black text-emerald-700 mt-1">${s.days_active || 0}</h4>
+            <p class="text-[11px] text-slate-400 font-medium mt-0.5">Distinct facility dates</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-blue-600">
+            <p class="text-[10px] font-black uppercase tracking-wider text-slate-400">Primary Reader</p>
+            <h4 class="text-2xl font-black text-slate-900 mt-1 truncate">${s.most_active_reader || 'Gate-01'}</h4>
+            <p class="text-[11px] text-slate-400 font-medium mt-0.5">Most frequent station</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-slate-400">
+            <p class="text-[10px] font-black uppercase tracking-wider text-slate-400">First Detection</p>
+            <h4 class="text-sm font-black font-mono text-slate-800 mt-1.5 truncate">${firstStr}</h4>
+            <p class="text-[11px] text-slate-400 font-medium mt-0.5">Earliest recorded scan</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-amber-500">
+            <p class="text-[10px] font-black uppercase tracking-wider text-slate-400">Latest Detection</p>
+            <h4 class="text-sm font-black font-mono text-slate-800 mt-1.5 truncate">${lastStr}</h4>
+            <p class="text-[11px] text-slate-400 font-medium mt-0.5">Most recent transit</p>
+        </div>
+    `;
+}
+
+function renderEtagDailyBreakdown(data) {
+    const tbody = document.getElementById('etagDailyBreakdownBody');
+    const badge = document.getElementById('etagDailyCountBadge');
+    if (!tbody) return;
+
+    const days = data.daily_breakdown || [];
+    if (badge) badge.innerText = `${days.length} Active Days Recorded`;
+
+    if (days.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-slate-400 text-xs">No daily movement breakdown available for this tag.</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = days.map((d, idx) => {
+        const readersList = Object.entries(d.readers || {}).map(([r, c]) => `<span class="bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-bold font-mono text-[10px]">${r} (${c})</span>`).join(' ');
+        return `
+            <tr class="hover:bg-slate-50/70 transition">
+                <td class="py-3 px-4 font-mono font-bold text-xs text-slate-900">
+                    <span class="inline-flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
+                        <span>${d.date}</span>
+                    </span>
+                </td>
+                <td class="py-3 px-4">
+                    <span class="text-xs font-black px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 font-mono">
+                        ${d.total_detections} Detections
+                    </span>
+                </td>
+                <td class="py-3 px-4 text-xs font-medium text-slate-700">
+                    <span class="text-emerald-700 font-bold">${d.entries} IN</span> &bull; <span class="text-blue-700 font-bold">${d.exits} OUT</span>
+                    ${d.visits_count ? `<span class="text-slate-400 text-[11px] ml-1">(${d.visits_count} visits)</span>` : ''}
+                </td>
+                <td class="py-3 px-4 font-mono font-bold text-xs text-slate-800">
+                    ${d.first_scan_time} &rarr; ${d.last_scan_time}
+                </td>
+                <td class="py-3 px-4 font-mono font-black text-xs text-indigo-700">
+                    ${d.stay_duration && d.stay_duration !== '-- --' ? `<span class="px-2 py-0.5 rounded bg-indigo-50 border border-indigo-200">${d.stay_duration}</span>` : '<span class="text-slate-300">—</span>'}
+                </td>
+                <td class="py-3 px-4">
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                        ${readersList || '<span class="text-slate-400 font-mono">Gate-01</span>'}
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function renderEtagChronology(data) {
+    const tbody = document.getElementById('etagChronologyBody');
+    const badge = document.getElementById('etagTotalScansBadge');
+    if (!tbody) return;
+
+    const scans = data.scans || [];
+    if (badge) badge.innerText = `${scans.length} Total Scans`;
+
+    if (scans.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="py-8 text-center text-slate-400 text-xs">No scan events recorded for this tag.</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = scans.map((s, idx) => {
+        const isEntry = (s.direction || '').toLowerCase() === 'entry';
+        const timePart = s.timestamp || '--';
+        const hasImg = Boolean(s.image_path || s.plate_image_path);
+        const imgPath = s.image_path || s.plate_image_path;
+
+        return `
+            <tr class="hover:bg-slate-50/70 transition">
+                <td class="py-3 px-4 font-mono font-bold text-slate-400 text-xs">${String(idx + 1).padStart(2, '0')}</td>
+                <td class="py-3 px-4 font-mono font-bold text-slate-800 text-xs">${timePart}</td>
+                <td class="py-3 px-4 font-bold text-slate-700 text-xs">${s.gate_no || 'Gate-01'}</td>
+                <td class="py-3 px-4">
+                    <span class="text-[10px] font-black px-2 py-0.5 rounded-full ${isEntry ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-blue-50 text-blue-700 border border-blue-200'}">
+                        ${(s.direction || 'PASSAGE').toUpperCase()}
+                    </span>
+                </td>
+                <td class="py-3 px-4 text-xs text-slate-600 font-medium">${s.access_type || 'UHF RFID Access'}</td>
+                <td class="py-3 px-4 font-mono font-bold text-xs text-slate-800">${s.vehicle_number || 'NO PLATE'}</td>
+                <td class="py-3 px-4">
+                    ${hasImg ? `
+                        <img src="/${imgPath.replace(/^\//, '')}" class="w-12 h-8 rounded-lg object-cover border border-slate-200 shadow-2xs cursor-pointer hover:scale-110 transition" onclick="window.open('/${imgPath.replace(/^\//, '')}')" title="Click to view optical proof">
+                    ` : `<span class="text-slate-300 font-mono text-xs">—</span>`}
+                </td>
+                <td class="py-3 px-4 text-right pr-4">
+                    <button type="button" onclick="inspectScanRecord(${s.id})" class="px-3 py-1 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 shadow-2xs transition">
+                        Report &rarr;
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function copyEtagId(tag) {
+    if (!tag) return;
+    navigator.clipboard.writeText(tag).then(() => {
+        showToast('E-TAG EPC copied to clipboard', 'success');
+    }).catch(() => {
+        prompt('Copy E-TAG ID:', tag);
+    });
+}
+
+async function pasteEtagFromClipboard() {
+    try {
+        const text = await navigator.clipboard.readText();
+        if (text && text.trim()) {
+            loadEtagAudit(text.trim());
+        } else {
+            const manual = prompt('Paste EPC Tag ID:');
+            if (manual && manual.trim()) loadEtagAudit(manual.trim());
+        }
+    } catch (err) {
+        const manual = prompt('Paste EPC Tag ID:');
+        if (manual && manual.trim()) loadEtagAudit(manual.trim());
+    }
+}
+
+async function captureEtagLive() {
+    try {
+        const res = await fetch('/api/latest-log');
+        if (!res.ok) throw new Error('Could not fetch antenna status');
+        const data = await res.json();
+        const tag = data.scanned_tag;
+        if (tag && tag !== 'NO_TAG' && tag !== '') {
+            loadEtagAudit(tag);
+            showToast(`Live Tag Captured: ${tag}`, 'info');
+        } else {
+            alert('No active tag currently detected at RFID reader antenna.');
+        }
+    } catch (err) {
+        alert(`Failed to read antenna: ${err.message}`);
+    }
+}
+
+function assignTagToMember(tag) {
+    switchTab('members');
+    const tagInput = document.getElementById('nTag');
+    if (tagInput) {
+        tagInput.value = tag;
+        tagInput.focus();
+        showToast(`EPC ${tag} transferred to member registration form`, 'info');
+    }
+}
+
+async function inspectScanRecord(logId) {
+    try {
+        const res = await fetch(`/api/audit?search=${logId}&limit=1`);
+        if (res.ok) {
+            const data = await res.json();
+            if (data.records && data.records.length > 0) {
+                openAudit(data.records[0]);
+                return;
+            }
+        }
+    } catch (e) {}
+    window.open(`/api/audit/${logId}/pdf`, '_blank');
+}
+
+function exportEtagAuditData(format = 'csv') {
+    if (!currentAuditedTagData || !currentAuditedTagData.scans || currentAuditedTagData.scans.length === 0) {
+        alert('No scan data to export.');
+        return;
+    }
+
+    const scans = currentAuditedTagData.scans;
+    const tag = currentAuditedTagData.tag_id;
+    const mem = currentAuditedTagData.member || {};
+
+    const headers = ['#', 'Tag_EPC', 'Member_ID', 'Member_Name', 'Vehicle_Plate', 'Gate_Station', 'Direction', 'Timestamp', 'Access_Protocol'];
+    const rows = scans.map((s, idx) => [
+        idx + 1,
+        tag,
+        mem.mem_id || '',
+        `"${(mem.name || s.name || '').replace(/"/g, '""')}"`,
+        `"${(mem.vehicle_number || s.vehicle_number || '').replace(/"/g, '""')}"`,
+        s.gate_no || 'Gate-01',
+        s.direction || '',
+        s.timestamp || '',
+        `"${(s.access_type || '').replace(/"/g, '""')}"`
+    ]);
+
+    const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ETAG_Audit_${tag}_${new Date().toISOString().substring(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     initAuth();
     initCharts();
@@ -3500,8 +4024,13 @@ document.addEventListener('DOMContentLoaded', () => {
     loadAudit();
     setupGlobalSearch();
 
-    const urlTab = new URLSearchParams(window.location.search).get('tab');
-    if (urlTab) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlTab = urlParams.get('tab');
+    const urlTag = urlParams.get('tag') || urlParams.get('etag');
+    if (urlTag) {
+        switchTab('etag_audit');
+        loadEtagAudit(urlTag);
+    } else if (urlTab) {
         switchTab(urlTab);
     }
 
@@ -3526,4 +4055,12 @@ document.addEventListener('DOMContentLoaded', () => {
             loadCameraAudit(currentCamAuditPage);
         }
     }, 8000);
+
+    // Smart auto-refresh: E-TAG Audit refreshes every 10s when visible
+    setInterval(() => {
+        const etagTab = document.getElementById('tab-etag_audit');
+        if (etagTab && !etagTab.classList.contains('hidden') && currentAuditedTag) {
+            loadEtagAudit(currentAuditedTag, true);
+        }
+    }, 10000);
 });
