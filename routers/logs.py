@@ -194,16 +194,139 @@ def analyze_day_movements(movements):
         "movements": sorted_movs
     }
 
+def _clean_tag(tag):
+    t = (tag or '').strip().upper()
+    return t if t and t not in ('NO_TAG', 'NONE', 'UNKNOWN', 'N/A') else None
+
+def _clean_plate(plate):
+    p = (plate or '').strip().upper().replace('-', '').replace(' ', '')
+    return p if p and p not in ('UNKNOWN', 'UNREGISTERED', 'NOPLATE', 'NONE', 'NA', '') else None
+
+def _clean_mem(mem):
+    m = (mem or '').strip().upper()
+    return m if m and m not in ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', 'NONE', 'N/A') else None
+
+def _find_matching_exit(entry_event, candidate_exits, matched_exit_ids):
+    entry_id = entry_event.get('id')
+    e_ref = f"[Ref #{entry_id}]" if entry_id else None
+    e_tag = _clean_tag(entry_event.get('scanned_tag'))
+    e_plate = _clean_plate(entry_event.get('vehicle_number'))
+    e_mem = _clean_mem(entry_event.get('mem_id'))
+    e_ts = str(entry_event.get('timestamp') or '')
+
+    # 1. Manual Ref in access_type
+    if e_ref:
+        for c in candidate_exits:
+            if c['id'] not in matched_exit_ids and e_ref in (c.get('access_type') or ''):
+                return c
+
+    # 2. Tag match (timestamp >= entry, FIFO)
+    if e_tag:
+        for c in candidate_exits:
+            if c['id'] not in matched_exit_ids and _clean_tag(c.get('scanned_tag')) == e_tag and str(c.get('timestamp') or '') >= e_ts:
+                return c
+
+    # 3. Plate match (timestamp >= entry, FIFO)
+    if e_plate:
+        for c in candidate_exits:
+            if c['id'] not in matched_exit_ids and _clean_plate(c.get('vehicle_number')) == e_plate and str(c.get('timestamp') or '') >= e_ts:
+                return c
+
+    # 4. Member ID match (timestamp >= entry, only if tags and plates do not conflict)
+    if e_mem:
+        for c in candidate_exits:
+            if c['id'] in matched_exit_ids:
+                continue
+            if _clean_mem(c.get('mem_id')) != e_mem or str(c.get('timestamp') or '') < e_ts:
+                continue
+            c_tag = _clean_tag(c.get('scanned_tag'))
+            c_plate = _clean_plate(c.get('vehicle_number'))
+            if e_tag and c_tag and e_tag != c_tag:
+                continue
+            if e_plate and c_plate and e_plate != c_plate:
+                continue
+            return c
+
+    # 5. Fallback for clock skew (same tag or same plate)
+    if e_tag:
+        for c in candidate_exits:
+            if c['id'] not in matched_exit_ids and _clean_tag(c.get('scanned_tag')) == e_tag:
+                return c
+    if e_plate:
+        for c in candidate_exits:
+            if c['id'] not in matched_exit_ids and _clean_plate(c.get('vehicle_number')) == e_plate:
+                return c
+
+    return None
+
+def _find_matching_entry(exit_event, candidate_entries):
+    acc = exit_event.get('access_type') or ''
+    import re
+    ref_match = re.search(r'\[Ref #(\d+)\]', acc)
+    if ref_match:
+        try:
+            ref_id = int(ref_match.group(1))
+            for e in candidate_entries:
+                if e.get('id') == ref_id:
+                    return e
+        except Exception:
+            pass
+
+    x_tag = _clean_tag(exit_event.get('scanned_tag'))
+    x_plate = _clean_plate(exit_event.get('vehicle_number'))
+    x_mem = _clean_mem(exit_event.get('mem_id'))
+    x_ts = str(exit_event.get('timestamp') or '')
+
+    # 2. Tag match (timestamp <= exit, pick latest entry)
+    if x_tag:
+        matching = [e for e in candidate_entries if _clean_tag(e.get('scanned_tag')) == x_tag and str(e.get('timestamp') or '') <= x_ts]
+        if matching:
+            return max(matching, key=lambda e: (str(e.get('timestamp') or ''), e.get('id') or 0))
+
+    # 3. Plate match (timestamp <= exit, pick latest entry)
+    if x_plate:
+        matching = [e for e in candidate_entries if _clean_plate(e.get('vehicle_number')) == x_plate and str(e.get('timestamp') or '') <= x_ts]
+        if matching:
+            return max(matching, key=lambda e: (str(e.get('timestamp') or ''), e.get('id') or 0))
+
+    # 4. Mem match (timestamp <= exit, non-conflicting tag/plate)
+    if x_mem:
+        matching = []
+        for e in candidate_entries:
+            if _clean_mem(e.get('mem_id')) != x_mem or str(e.get('timestamp') or '') > x_ts:
+                continue
+            e_tag = _clean_tag(e.get('scanned_tag'))
+            e_plate = _clean_plate(e.get('vehicle_number'))
+            if x_tag and e_tag and x_tag != e_tag:
+                continue
+            if x_plate and e_plate and x_plate != e_plate:
+                continue
+            matching.append(e)
+        if matching:
+            return max(matching, key=lambda e: (str(e.get('timestamp') or ''), e.get('id') or 0))
+
+    # 5. Fallback for clock skew
+    if x_tag:
+        matching = [e for e in candidate_entries if _clean_tag(e.get('scanned_tag')) == x_tag]
+        if matching:
+            return max(matching, key=lambda e: (str(e.get('timestamp') or ''), e.get('id') or 0))
+    if x_plate:
+        matching = [e for e in candidate_entries if _clean_plate(e.get('vehicle_number')) == x_plate]
+        if matching:
+            return max(matching, key=lambda e: (str(e.get('timestamp') or ''), e.get('id') or 0))
+
+    return None
+
 def _identity_key(log_row):
-    mem = (log_row.get('mem_id') or '').strip().upper()
-    if mem and mem not in ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', 'NONE', 'N/A', ''):
-        return ('member', mem)
     tag = (log_row.get('scanned_tag') or '').strip().upper()
     if tag and tag not in ('NO_TAG', 'NONE', ''):
         return ('tag', tag)
     plate = (log_row.get('vehicle_number') or '').strip().upper()
     if plate and plate not in ('UNKNOWN', 'UNREGISTERED', 'NO PLATE', 'NO_PLATE', 'NONE', '-', 'N/A', ''):
         return ('plate', plate)
+    mem = (log_row.get('mem_id') or '').strip().upper()
+    if mem and mem not in ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', 'NONE', 'N/A', ''):
+        return ('member', mem)
     return None
 
 def _audit_sort_key(a):
@@ -397,39 +520,9 @@ def _build_paired_audits(logs):
     paired_audits = []
 
     for entry_event in entries:
-        exit_event = None
-        # 1. Match explicit manual exit reference token (pairs unregistered / unknown visitor entries)
-        entry_ref_token = f"[Ref #{entry_event['id']}]"
-        for candidate_exit in exits:
-            if candidate_exit['id'] in matched_exit_ids:
-                continue
-            acc = candidate_exit.get('access_type') or ''
-            if entry_ref_token in acc:
-                exit_event = candidate_exit
-                matched_exit_ids.add(candidate_exit['id'])
-                break
-
-        # 2. Match by identity key (member account, RFID EPC tag, or vehicle license plate)
-        if not exit_event:
-            key = _identity_key(entry_event)
-            if key:
-                for candidate_exit in exits:
-                    if candidate_exit['id'] in matched_exit_ids:
-                        continue
-                    if _identity_key(candidate_exit) == key:
-                        if str(candidate_exit['timestamp']) >= str(entry_event['timestamp']):
-                            exit_event = candidate_exit
-                            matched_exit_ids.add(candidate_exit['id'])
-                            break
-
-                if not exit_event:
-                    for candidate_exit in exits:
-                        if candidate_exit['id'] in matched_exit_ids:
-                            continue
-                        if _identity_key(candidate_exit) == key:
-                            exit_event = candidate_exit
-                            matched_exit_ids.add(candidate_exit['id'])
-                            break
+        exit_event = _find_matching_exit(entry_event, exits, matched_exit_ids)
+        if exit_event:
+            matched_exit_ids.add(exit_event['id'])
 
         actual_entry = entry_event
         actual_exit = exit_event
@@ -752,20 +845,12 @@ async def get_audit_log_pdf(log_id: int):
     exit_rec = None
     if target_dict["direction"] == "Entry":
         entry_rec = target_dict
-        key = _identity_key(entry_rec)
-        if key:
-            for l in logs:
-                if l["direction"] == "Exit" and _identity_key(l) == key:
-                    exit_rec = l
-                    break
+        candidate_exits = [l for l in logs if l["direction"] == "Exit"]
+        exit_rec = _find_matching_exit(entry_rec, candidate_exits, set())
     else:
         exit_rec = target_dict
-        key = _identity_key(exit_rec)
-        if key:
-            for l in logs:
-                if l["direction"] == "Entry" and _identity_key(l) == key:
-                    entry_rec = l
-                    break
+        candidate_entries = [l for l in logs if l["direction"] == "Entry"]
+        entry_rec = _find_matching_entry(exit_rec, candidate_entries)
 
     if entry_rec and exit_rec and str(entry_rec["timestamp"]) > str(exit_rec["timestamp"]):
         entry_rec, exit_rec = exit_rec, entry_rec
@@ -790,19 +875,36 @@ async def get_audit_log_pdf(log_id: int):
     # Fetch all movements for this vehicle on that date to embed in the report
     veh_num = (entry_rec or exit_rec or {}).get("vehicle_number")
     m_id = (entry_rec or exit_rec or {}).get("mem_id")
+    e_tag = (entry_rec or exit_rec or {}).get("scanned_tag")
+    explicit_ids = [r["id"] for r in [entry_rec, exit_rec] if r and r.get("id")]
     daily_movements = []
-    if veh_num or m_id:
+    if veh_num or m_id or e_tag or explicit_ids:
         with config.DB_LOCK:
             conn = get_db_connection()
             try:
                 where_clauses = ["d.timestamp LIKE ?"]
                 params = [f"{target_date}%"]
-                if veh_num and veh_num != "NO PLATE":
-                    where_clauses.append("LOWER(d.vehicle_number) = LOWER(?)")
-                    params.append(veh_num.strip())
-                elif m_id:
-                    where_clauses.append("d.mem_id = ?")
-                    params.append(m_id.strip())
+                match_conditions = []
+                match_params = []
+                if explicit_ids:
+                    placeholders = ', '.join(['?'] * len(explicit_ids))
+                    match_conditions.append(f"d.id IN ({placeholders})")
+                    match_params.extend(explicit_ids)
+                clean_t = _clean_tag(e_tag)
+                if clean_t:
+                    match_conditions.append("d.scanned_tag = ?")
+                    match_params.append(clean_t)
+                clean_v = _clean_plate(veh_num)
+                if clean_v:
+                    match_conditions.append("UPPER(REPLACE(REPLACE(d.vehicle_number, '-', ''), ' ', '')) = UPPER(?)")
+                    match_params.append(clean_v)
+                elif _clean_mem(m_id):
+                    match_conditions.append("d.mem_id = ?")
+                    match_params.append(_clean_mem(m_id))
+
+                if match_conditions:
+                    where_clauses.append(f"({' OR '.join(match_conditions)})")
+                    params.extend(match_params)
                 rows = conn.execute(f"""
                     SELECT d.id, d.mem_id, d.name, d.vehicle_number, d.access_type, d.direction,
                            d.gate_no, d.image_path, d.scanned_tag, d.timestamp
@@ -813,6 +915,14 @@ async def get_audit_log_pdf(log_id: int):
                 daily_movements = [dict(r) for r in rows]
             finally:
                 conn.close()
+
+    # Guarantee that entry_rec and exit_rec are included in daily_movements
+    existing_ids = {m.get("id") for m in daily_movements if isinstance(m, dict) and m.get("id")}
+    for rec in [entry_rec, exit_rec]:
+        if rec and isinstance(rec, dict) and rec.get("id") and rec.get("id") not in existing_ids:
+            daily_movements.append(rec)
+            existing_ids.add(rec.get("id"))
+    daily_movements.sort(key=lambda x: (str(x.get("timestamp", "")), x.get("id") or 0))
 
     movement_analysis = analyze_day_movements(daily_movements or [])
 
@@ -861,7 +971,14 @@ async def get_audit_log_pdf(log_id: int):
     )
 
 @router.get("/audit/day-movements")
-async def get_day_movements(vehicle_number: str = "", mem_id: str = "", date: str = ""):
+async def get_day_movements(
+    vehicle_number: str = "",
+    mem_id: str = "",
+    date: str = "",
+    tag: str = "",
+    entry_id: int = None,
+    exit_id: int = None
+):
     with config.DB_LOCK:
         conn = get_db_connection()
         try:
@@ -869,12 +986,31 @@ async def get_day_movements(vehicle_number: str = "", mem_id: str = "", date: st
             where_clauses = ["d.timestamp LIKE ?"]
             params = [f"{target_date}%"]
 
-            if vehicle_number and vehicle_number.strip():
-                where_clauses.append("LOWER(d.vehicle_number) = LOWER(?)")
-                params.append(vehicle_number.strip())
-            elif mem_id and mem_id.strip():
-                where_clauses.append("d.mem_id = ?")
-                params.append(mem_id.strip())
+            match_conditions = []
+            match_params = []
+
+            explicit_ids = [i for i in [entry_id, exit_id] if i is not None and i > 0]
+            if explicit_ids:
+                placeholders = ', '.join(['?'] * len(explicit_ids))
+                match_conditions.append(f"d.id IN ({placeholders})")
+                match_params.extend(explicit_ids)
+
+            clean_t = _clean_tag(tag)
+            if clean_t:
+                match_conditions.append("d.scanned_tag = ?")
+                match_params.append(clean_t)
+
+            clean_v = _clean_plate(vehicle_number)
+            if clean_v:
+                match_conditions.append("UPPER(REPLACE(REPLACE(d.vehicle_number, '-', ''), ' ', '')) = UPPER(?)")
+                match_params.append(clean_v)
+            elif _clean_mem(mem_id):
+                match_conditions.append("d.mem_id = ?")
+                match_params.append(_clean_mem(mem_id))
+
+            if match_conditions:
+                where_clauses.append(f"({' OR '.join(match_conditions)})")
+                params.extend(match_params)
 
             where_str = f"WHERE {' AND '.join(where_clauses)}"
             rows = conn.execute(f"""
@@ -1075,6 +1211,17 @@ async def post_custom_audit_pdf(request: Request):
         finally:
             conn.close()
 
+    if daily_movements is None:
+        daily_movements = []
+
+    # Guarantee that entry_rec and exit_rec from the incident are included in daily_movements
+    existing_ids = {m.get("id") for m in daily_movements if isinstance(m, dict) and m.get("id")}
+    for rec in [entry_rec, exit_rec]:
+        if rec and isinstance(rec, dict) and rec.get("id") and rec.get("id") not in existing_ids:
+            daily_movements.append(rec)
+            existing_ids.add(rec.get("id"))
+    daily_movements.sort(key=lambda x: (str(x.get("timestamp", "")), x.get("id") or 0))
+
     user_entry_img = payload.get("entry_image_path")
     user_exit_img = payload.get("exit_image_path")
 
@@ -1087,7 +1234,7 @@ async def post_custom_audit_pdf(request: Request):
 
     status_str = payload.get("status") or (raw_incident.get("status") if isinstance(raw_incident, dict) else None) or ("Exited" if exit_rec and entry_rec else "Inside Facility")
 
-    movement_analysis = analyze_day_movements(daily_movements or [])
+    movement_analysis = analyze_day_movements(daily_movements)
 
     total_stay_dur = payload.get("total_stay_duration") or movement_analysis["total_stay_duration"]
     visits_cnt = payload.get("visits_count") or movement_analysis["visits_count"]

@@ -1540,7 +1540,7 @@ function openAudit(a) {
 
     // Load dynamic data
     updateSelectedEvidenceUI();
-    loadReportMovements(v.vehicle_number, v.mem_id, visitDate, modalDur);
+    loadReportMovements(v.vehicle_number, v.mem_id, visitDate, modalDur, e ? e.id : null, x ? x.id : null, v.scanned_tag);
     loadReportAvailableImages(visitDate);
 }
 
@@ -1620,7 +1620,7 @@ function clearReportProofImage(type) {
     updateSelectedEvidenceUI();
 }
 
-async function loadReportMovements(vehicleNumber, memId, dateStr, tripDuration) {
+async function loadReportMovements(vehicleNumber, memId, dateStr, tripDuration, entryId = null, exitId = null, tag = null) {
     const cont = document.getElementById('reportMovementsContainer');
     const badge = document.getElementById('reportMovementsCountBadge');
     if (!cont) return;
@@ -1631,10 +1631,31 @@ async function loadReportMovements(vehicleNumber, memId, dateStr, tripDuration) 
             mem_id: memId || '',
             date: dateStr || ''
         });
+        if (entryId) queryParams.set('entry_id', entryId);
+        if (exitId) queryParams.set('exit_id', exitId);
+        if (tag) queryParams.set('tag', tag);
         const res = await fetch(`/api/audit/day-movements?${queryParams}`);
         if (!res.ok) throw new Error('Failed to fetch daily movements');
         const data = await res.json();
         currentReportMovements = data.movements || [];
+
+        // Safety check: ensure both currentReportIncident.entry and currentReportIncident.exit are in movements
+        const incEntry = currentReportIncident?.entry;
+        const incExit = currentReportIncident?.exit;
+        const existingIds = new Set(currentReportMovements.map(m => m.id));
+        if (incEntry && incEntry.id && !existingIds.has(incEntry.id)) {
+            currentReportMovements.push(incEntry);
+            existingIds.add(incEntry.id);
+        }
+        if (incExit && incExit.id && !existingIds.has(incExit.id)) {
+            if (!incExit.stay_duration && (tripDuration || currentReportIncident?.duration)) {
+                incExit.stay_duration = tripDuration || currentReportIncident?.duration;
+            }
+            currentReportMovements.push(incExit);
+            existingIds.add(incExit.id);
+        }
+        currentReportMovements.sort((a, b) => String(a.timestamp || '').localeCompare(String(b.timestamp || '')));
+
         currentReportAnalysis = data;
 
         const stayTitle = document.getElementById('reportStayCardTitle');
