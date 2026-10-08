@@ -564,10 +564,10 @@ function switchTab(name, btn) {
     const titleEl = document.getElementById('pageTitle');
     if (titleEl) {
         titleEl.innerText = name === 'overview' ? 'Command Overview' :
-                            name === 'logs' ? 'Vehicle Audit Reports' :
-                            name === 'camera_audit' ? 'Camera Vehicle Audit' :
+                            name === 'logs' ? 'RFID Audit Logs' :
+                            name === 'camera_audit' ? 'Optical Audit Logs' :
                             name === 'members' ? 'Member Directory' :
-                            name === 'etag_audit' ? 'E-TAG Activity Audit Studio' :
+                            name === 'etag_audit' ? 'E-TAG Audit Studio' :
                             name === 'settings' ? 'Settings' : 'Command Overview';
     }
 
@@ -578,6 +578,12 @@ function switchTab(name, btn) {
             url.searchParams.delete('tab');
         } else {
             url.searchParams.set('tab', name);
+        }
+        // Fix: Clear 'tag' param when navigating away from the E-TAG audit tab
+        // so the audited tag ID doesn't persist in the URL on other pages.
+        if (name !== 'etag_audit') {
+            url.searchParams.delete('tag');
+            url.searchParams.delete('etag');
         }
         window.history.replaceState({ tab: name }, '', url.toString());
     } catch (e) {}
@@ -652,8 +658,11 @@ async function loadStats() {
         if (document.getElementById('sAdoptionRate')) document.getElementById('sAdoptionRate').innerText = `${s.tag_adoption_rate !== undefined ? s.tag_adoption_rate : 100}%`;
         if (document.getElementById('gapSummaryBadge')) document.getElementById('gapSummaryBadge').innerText = `${s.tag_adoption_rate !== undefined ? s.tag_adoption_rate : 100}% COVERAGE`;
         if (document.getElementById('adoptionRateVal')) document.getElementById('adoptionRateVal').innerText = `${s.tag_adoption_rate !== undefined ? s.tag_adoption_rate : 100}%`;
-        if (document.getElementById('adoptionRegCount')) document.getElementById('adoptionRegCount').innerText = (s.registered_transits_today || 0).toLocaleString();
-        if (document.getElementById('adoptionUnregCount')) document.getElementById('adoptionUnregCount').innerText = (s.unregistered_transits_today || 0).toLocaleString();
+        const allReg = s.registered_transits_all_time !== undefined ? s.registered_transits_all_time : (s.registered_transits_today || 0);
+        const allUnreg = s.unregistered_transits_all_time !== undefined ? s.unregistered_transits_all_time : (s.unregistered_transits_today || 0);
+        if (document.getElementById('adoptionRegCount')) document.getElementById('adoptionRegCount').innerText = allReg.toLocaleString();
+        if (document.getElementById('adoptionUnregCount')) document.getElementById('adoptionUnregCount').innerText = allUnreg.toLocaleString();
+        if (document.getElementById('sGuests')) document.getElementById('sGuests').innerText = allUnreg.toLocaleString();
         if (document.getElementById('adoptionBufferCount')) document.getElementById('adoptionBufferCount').innerText = (s.unassigned_tags_buffer || 0).toLocaleString();
 
         const overstayBadge = document.getElementById('sOverstayBadge');
@@ -667,7 +676,7 @@ async function loadStats() {
         }
 
         updateParkingDonut(s.currently_in_club || 0, cap);
-        updateAdoptionDonut(s.registered_transits_today || 0, s.unregistered_transits_today || 0);
+        updateAdoptionDonut(allReg, allUnreg);
     } catch (err) {
         console.error('loadStats error:', err);
     }
@@ -1251,98 +1260,77 @@ async function loadAudit(page = currentAuditPage, isSilent = false) {
             const imgPath = thumb.image_path || thumb.plate_image_path;
 
             return `
-            <tr class="hover:bg-slate-50 transition-colors cursor-pointer" onclick='openAudit(${JSON.stringify(a).replace(/'/g, "&#39;")})'>
-                <td class="p-3.5 pl-5">
+            <tr class="hover:bg-blue-50/30 transition-colors cursor-pointer border-b border-slate-100 last:border-0" onclick='openAudit(${JSON.stringify(a).replace(/'/g, "&#39;")})'>
+                <td class="py-3 px-4 pl-5">
                     <div class="flex items-center gap-3">
-                        ${imgPath ? `<img src="/${imgPath}" class="w-14 h-10 rounded-xl object-cover border border-slate-200 shadow-sm">` :
-                        `<div class="w-14 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 text-[9px] font-bold">NO IMG</div>`}
-                        <div>
-                            <p class="font-mono font-bold text-indigo-600 bg-indigo-50 border border-indigo-200/60 px-2 py-0.5 rounded-md text-xs inline-block">${thumb.vehicle_number || 'UNKNOWN'}</p>
-                            ${thumb.make_model ? `<p class="text-[11px] text-slate-500 mt-0.5 truncate max-w-[120px]">${thumb.make_model}</p>` : ''}
+                        ${imgPath
+                            ? `<img src="/${imgPath}" class="w-12 h-9 rounded-lg object-cover border border-slate-200 shadow-sm flex-shrink-0">`
+                            : `<div class="w-12 h-9 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-[9px] font-bold text-slate-400 flex-shrink-0">NO IMG</div>`
+                        }
+                        <div class="min-w-0">
+                            <p class="font-black font-mono text-slate-900 text-xs tracking-wider">${thumb.vehicle_number || 'UNKNOWN'}</p>
+                            ${thumb.make_model ? `<p class="text-[10px] text-slate-400 font-medium mt-0.5 truncate max-w-[110px]">${thumb.make_model}</p>` : ''}
                         </div>
                     </div>
                 </td>
-                <td class="p-3.5">
-                    <div class="flex items-center gap-2.5">
-                        ${pfp ? `<img src="/${pfp}" class="w-8 h-8 rounded-full object-cover border border-slate-200">` :
-                        `<div class="w-8 h-8 rounded-full ${isUnreg || isNoTag ? 'bg-rose-100 text-rose-600' : 'bg-slate-100 text-slate-600'} flex items-center justify-center font-bold text-xs">${initial}</div>`}
-                        <div>
-                            <p class="font-bold text-slate-900 ${isUnreg || isNoTag ? 'text-rose-600' : ''}">${thumb.name || 'Unregistered'}</p>
-                            <p class="text-[10px] text-slate-400 font-mono">${thumb.mem_id || 'N/A'}</p>
+                <td class="py-3 px-4">
+                    <div class="flex items-center gap-2">
+                        ${pfp
+                            ? `<img src="/${pfp}" class="w-7 h-7 rounded-full object-cover border border-slate-200 flex-shrink-0">`
+                            : `<div class="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-xs ${isUnreg || isNoTag ? 'bg-rose-100 text-rose-600' : 'bg-indigo-50 text-indigo-600'}">${initial}</div>`
+                        }
+                        <div class="min-w-0">
+                            <p class="font-bold text-slate-800 text-xs truncate max-w-[110px] ${isUnreg || isNoTag ? 'text-rose-600' : ''}">${thumb.name || 'Unregistered'}</p>
+                            <p class="text-[10px] text-slate-400 font-mono">${thumb.mem_id || '—'}</p>
                         </div>
                     </div>
                 </td>
-                <td class="p-3.5">${methodPill}</td>
-                <td class="p-3.5">
-                    ${e ? `<div class="space-y-1">
-                        <p class="font-bold text-slate-800 tabular-nums font-mono text-xs">${String(e.timestamp).split(' ')[1] || e.timestamp}</p>
-                        <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-black bg-emerald-50 text-emerald-800 border border-emerald-200/90 shadow-2xs">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                            <span>ENTRY READER</span>
-                            <span class="text-[9px] font-extrabold text-emerald-700 bg-emerald-100/90 px-1 py-0.2 rounded font-mono">IN</span>
-                        </div>
-                        <p class="text-[9px] text-slate-400 font-mono truncate max-w-[140px]">${e.gate_no || 'Gate-01 Entry Reader'}</p>
-                    </div>` : '<span class="text-slate-300 font-mono text-xs">-</span>'}
+                <td class="py-3 px-4">${methodPill}</td>
+                <td class="py-3 px-4">
+                    ${e ? `<div>
+                        <p class="font-mono font-bold text-slate-800 text-xs tabular-nums">${String(e.timestamp).split(' ')[1] || e.timestamp}</p>
+                        <p class="text-[10px] text-emerald-700 font-bold mt-0.5 flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>Entry
+                            <span class="text-[9px] text-slate-400 font-mono font-normal">${e.gate_no || 'Gate-01'}</span>
+                        </p>
+                    </div>` : '<span class="text-slate-300 text-xs font-mono">—</span>'}
                 </td>
-                <td class="p-3.5">
+                <td class="py-3 px-4">
                     ${x ? (() => {
                         const xTime = String(x.timestamp).split(' ')[1] || x.timestamp;
-                        const xGate = x.gate_no || 'Gate-01 Exit Reader';
-                        const isManual = (x.access_type || '').includes('Manual') || xGate.includes('Out') || xGate.includes('Manual') || xGate.includes('Bulk');
-                        if (isManual) {
-                            return `<div class="space-y-1">
-                                <p class="font-bold text-slate-800 tabular-nums font-mono text-xs">${xTime}</p>
-                                <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-black bg-amber-50 text-amber-900 border border-amber-200/90 shadow-2xs">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                                    <span>MANUAL EXIT</span>
-                                    <span class="text-[9px] font-extrabold text-amber-700 bg-amber-100/90 px-1 py-0.2 rounded font-mono">OUT</span>
-                                </div>
-                                <p class="text-[9px] text-slate-400 font-mono truncate max-w-[140px]">${xGate}</p>
-                            </div>`;
-                        } else {
-                            return `<div class="space-y-1">
-                                <p class="font-bold text-slate-800 tabular-nums font-mono text-xs">${xTime}</p>
-                                <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-black bg-indigo-50 text-indigo-900 border border-indigo-200/90 shadow-2xs">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
-                                    <span>EXIT READER</span>
-                                    <span class="text-[9px] font-extrabold text-indigo-700 bg-indigo-100 px-1 py-0.2 rounded font-mono">OUT</span>
-                                </div>
-                                <p class="text-[9px] text-slate-400 font-mono truncate max-w-[140px]">${xGate}</p>
-                            </div>`;
-                        }
-                    })() : `
-                        <div class="space-y-1.5">
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-900 border border-emerald-300 shadow-2xs">
-                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-                                <span>INSIDE CLUB</span>
-                            </span>
-                            <div>
-                                <button type="button" onclick='event.stopPropagation(); triggerRowManualExit(${JSON.stringify(a).replace(/'/g, "&#39;")})'
-                                    class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black bg-amber-50 hover:bg-amber-600 text-amber-900 hover:text-white border border-amber-300 shadow-2xs transition cursor-pointer"
-                                    title="Click to record manual departure and mark vehicle as outside club">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                                    <span>Make Outside &rarr;</span>
-                                </button>
-                            </div>
-                        </div>
-                    `}
+                        const xGate = x.gate_no || 'Gate-01';
+                        const isManual = (x.access_type || '').includes('Manual') || xGate.includes('Manual') || xGate.includes('Bulk');
+                        return `<div>
+                            <p class="font-mono font-bold text-slate-800 text-xs tabular-nums">${xTime}</p>
+                            <p class="text-[10px] font-bold mt-0.5 flex items-center gap-1 ${isManual ? 'text-amber-700' : 'text-indigo-600'}">
+                                <span class="w-1.5 h-1.5 rounded-full inline-block ${isManual ? 'bg-amber-500' : 'bg-indigo-500'}"></span>${isManual ? 'Manual Exit' : 'Exit'}
+                                <span class="text-[9px] text-slate-400 font-mono font-normal">${xGate}</span>
+                            </p>
+                        </div>`;
+                    })() : `<span class="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping inline-block"></span>Still Inside
+                    </span>`}
                 </td>
-                <td class="p-3.5">
-                    ${rowDur ? `<span class="font-bold text-xs bg-indigo-50 text-indigo-700 border border-indigo-200/70 px-2.5 py-1 rounded-lg tabular-nums">${rowDur}</span>` :
-                    '<span class="text-slate-400 text-xs">-</span>'}
+                <td class="py-3 px-4">
+                    ${rowDur
+                        ? `<span class="font-bold text-xs font-mono text-slate-700 tabular-nums">${rowDur}</span>`
+                        : '<span class="text-slate-300 text-xs">—</span>'
+                    }
                 </td>
-                <td class="p-3.5">${statusPill}</td>
-                <td class="p-3.5 text-right pr-6" onclick="event.stopPropagation()">
-                    <div class="inline-flex items-center justify-end gap-2">
+                <td class="py-3 px-4">${statusPill}</td>
+                <td class="py-3 px-4 text-right pr-5" onclick="event.stopPropagation()">
+                    <div class="inline-flex items-center justify-end gap-1.5">
                         ${(a.status === 'Inside Facility' || a.status === 'Alert / Inside' || a.is_overstay || (!x && e)) ? `
-                        <button type="button" onclick='event.stopPropagation(); triggerRowManualExit(${JSON.stringify(a).replace(/'/g, "&#39;")})' class="inline-flex items-center gap-1.5 text-xs font-bold text-amber-900 hover:text-white border border-amber-300 hover:bg-amber-600 rounded-xl px-2.5 py-1.5 bg-amber-50 shadow-2xs transition" title="Manually record vehicle departure to mark outside">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                            <span>Make Outside</span>
-                        </button>
-                        ` : ''}
-                        <button type="button" onclick='openAudit(${JSON.stringify(a).replace(/'/g, "&#39;")})' class="inline-flex items-center gap-1.5 text-xs font-extrabold text-indigo-700 hover:text-indigo-900 border border-indigo-200 rounded-xl px-3.5 py-1.5 bg-indigo-50/80 hover:bg-indigo-100 shadow-2xs transition">
-                            <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            <span>Create Report</span>
+                        <button type="button" onclick='event.stopPropagation(); triggerRowManualExit(${JSON.stringify(a).replace(/'/g, "&#39;")})'
+                            class="inline-flex items-center gap-1 text-[11px] font-bold text-amber-800 hover:text-white border border-amber-300 hover:bg-amber-500 rounded-lg px-2.5 py-1.5 bg-amber-50 shadow-sm transition"
+                            title="Record manual departure">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7"/></svg>
+                            Exit
+                        </button>` : ''}
+                        <button type="button" onclick='openAudit(${JSON.stringify(a).replace(/'/g, "&#39;")})'
+                            class="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-700 hover:text-indigo-900 border border-indigo-200 rounded-lg px-2.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 shadow-sm transition">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            Report
                         </button>
                     </div>
                 </td>
@@ -1411,16 +1399,132 @@ let currentReportAnalysis = null;
 let reportGalleryDirectionFilter = 'all';
 let reportGallerySearchQuery = '';
 
+function formatReaderPill(row) {
+    if (!row) return '';
+    const dir = (row.direction || '').trim().toLowerCase();
+    const gate = row.gate_no || 'Gate-01';
+    const isManual = (row.access_type || '').includes('Manual') || gate.includes('Manual');
+    if (dir === 'entry') {
+        return `<span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 shadow-2xs"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>ENTRY READER &bull; ${gate}</span>`;
+    } else if (dir === 'exit') {
+        if (isManual) {
+            return `<span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 shadow-2xs"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>MANUAL EXIT &bull; ${gate}</span>`;
+        }
+        return `<span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-800 border border-indigo-200 shadow-2xs"><span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>EXIT READER &bull; ${gate}</span>`;
+    }
+    return `<span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-slate-50 text-slate-700 border border-slate-200">${gate}</span>`;
+
+}
+
+function renderSindhPlateHtml(carNum) {
+    const clean = (carNum || '').trim().toUpperCase();
+    if (!clean || clean === '--' || clean === 'NO PLATE') {
+        return `
+            <div class="sindh-license-plate h-24 w-full max-w-[260px] flex flex-col justify-between shadow-md my-1">
+                <div class="h-5 w-full ajrak-banner-svg relative flex items-center justify-center">
+                    <svg class="w-full h-full opacity-65" viewBox="0 0 300 20" preserveAspectRatio="none">
+                        <pattern id="auditAjrakPatternSvgEmpty" width="12" height="12" patternUnits="userSpaceOnUse">
+                            <rect width="12" height="12" fill="#6B0000"/>
+                            <polygon points="6,0 12,6 6,12 0,6" fill="#990000" stroke="#FFFFFF" stroke-width="0.5"/>
+                            <circle cx="6" cy="6" r="1.6" fill="#FFFFFF"/>
+                            <circle cx="6" cy="0.8" fill="#000000"/>
+                        </pattern>
+                        <rect width="300" height="20" fill="url(#auditAjrakPatternSvgEmpty)"/>
+                    </svg>
+                </div>
+                <div class="flex-1 flex items-center justify-center">
+                    <span class="plate-emboss-text text-xl font-black text-slate-400">NO PLATE</span>
+                </div>
+                <div class="text-center py-0.5 bg-slate-100/70 border-t border-slate-200">
+                    <span class="text-[9px] font-black tracking-[0.35em] text-slate-900 uppercase font-mono">SINDH</span>
+                </div>
+            </div>
+        `;
+    }
+
+    const parts = clean.split(/[-_\s]+/);
+    let series = parts[0] || '';
+    let digits = parts.slice(1).join(' ') || '';
+    if (!digits && series) {
+        const m = series.match(/^([A-Z]+)(\d+)$/);
+        if (m) {
+            series = m[1];
+            digits = m[2];
+        } else {
+            digits = series;
+            series = '';
+        }
+    }
+
+    return `
+        <div class="sindh-license-plate h-24 w-full max-w-[260px] flex flex-col justify-between shadow-md my-1">
+            <!-- Ajrak Pattern Top Bar -->
+            <div class="h-5 w-full ajrak-banner-svg relative flex items-center justify-center">
+                <svg class="w-full h-full opacity-65" viewBox="0 0 300 20" preserveAspectRatio="none">
+                    <pattern id="auditAjrakPatternSvg" width="12" height="12" patternUnits="userSpaceOnUse">
+                        <rect width="12" height="12" fill="#6B0000"/>
+                        <polygon points="6,0 12,6 6,12 0,6" fill="#990000" stroke="#FFFFFF" stroke-width="0.5"/>
+                        <circle cx="6" cy="6" r="1.6" fill="#FFFFFF"/>
+                        <circle cx="6" cy="0.8" fill="#000000"/>
+                    </pattern>
+                    <rect width="300" height="20" fill="url(#auditAjrakPatternSvg)"/>
+                </svg>
+            </div>
+            <!-- Center Embossed Registration & Golden Badge -->
+            <div class="flex-1 flex items-center justify-center gap-2.5 px-3 my-0.5">
+                ${series ? `<span class="plate-emboss-text text-2xl font-black tracking-tight uppercase">${series}</span>` : ''}
+                <div class="w-6 h-6 rounded-full bg-gradient-to-tr from-amber-500 via-yellow-400 to-amber-200 border border-amber-600 shadow-xs flex items-center justify-center shrink-0">
+                    <svg class="w-3.5 h-3.5 text-amber-950" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8.009 8.009 0 0 1-8 8z"/>
+                        <path d="M12 6a6 6 0 1 0 6 6 6.007 6.007 0 0 0-6-6zm1.5 8.5-1.5-1-1.5 1 .4-1.7-1.3-1.1 1.7-.1.7-1.6.7 1.6 1.7.1-1.3 1.1z"/>
+                    </svg>
+                </div>
+                ${digits ? `<span class="plate-emboss-text text-2xl font-black tracking-tight uppercase">${digits}</span>` : ''}
+            </div>
+            <!-- Bottom Location Header -->
+            <div class="text-center py-0.5 bg-slate-100/70 border-t border-slate-200">
+                <span class="text-[9px] font-black tracking-[0.35em] text-slate-900 uppercase font-mono">SINDH</span>
+            </div>
+        </div>
+    `;
+}
+
 function openAudit(a) {
     let e = a.entry, x = a.exit;
     if (e && x && e.timestamp && x.timestamp && String(e.timestamp) > String(x.timestamp)) {
         const tmp = e; e = x; x = tmp;
     }
-    const v = e || x || {};
-    const isUnreg = Boolean((v.access_type || '').includes('Unknown') || (v.name || '').includes('Unregistered'));
-    const isNoTag = Boolean((v.access_type || '').includes('No RFID') || !v.scanned_tag || v.scanned_tag === 'NO_TAG');
-    const isMember = !isUnreg && !isNoTag && v.mem_id && !['GUEST-LOG', 'AI-CAM'].includes(v.mem_id);
-    const epc = (v.scanned_tag && v.scanned_tag !== 'NO_TAG') ? v.scanned_tag : '';
+    // Pick the most complete vehicle record for presentation
+    const v = (e && e.name && !e.name.toLowerCase().includes('unregistered')) ? e :
+              ((x && x.name && !x.name.toLowerCase().includes('unregistered')) ? x : (e || x || {}));
+
+    const epc = (v.scanned_tag && v.scanned_tag !== 'NO_TAG') ? String(v.scanned_tag).trim() :
+                ((e && e.scanned_tag && e.scanned_tag !== 'NO_TAG') ? String(e.scanned_tag).trim() :
+                ((x && x.scanned_tag && x.scanned_tag !== 'NO_TAG') ? String(x.scanned_tag).trim() : ''));
+
+    // Detect if vehicle plate string is actually an EPC hex tag or empty
+    const rawPlate = String(v.vehicle_number || (e ? e.vehicle_number : '') || (x ? x.vehicle_number : '') || '').trim();
+    const isPlateAnEpc = Boolean(rawPlate && (
+        (epc && rawPlate.toLowerCase() === epc.toLowerCase()) ||
+        rawPlate.length >= 18 ||
+        /^E[0-9A-Fa-f]{15,}$/i.test(rawPlate) ||
+        /^[0-9A-Fa-f]{20,}$/i.test(rawPlate)
+    ));
+    const displayPlate = isPlateAnEpc ? '' : rawPlate;
+
+    const rawMem = String(v.mem_id || (e ? e.mem_id : '') || (x ? x.mem_id : '') || '').trim();
+    const isUnreg = Boolean(
+        (v.access_type || '').toLowerCase().includes('unknown') ||
+        (v.name || '').toLowerCase().includes('unregistered') ||
+        (v.name || '').toLowerCase().includes('guest') ||
+        ['GUEST-LOG', 'AI-CAM', 'UNREGISTERED', ''].includes(rawMem)
+    );
+    const isNoTag = Boolean(
+        (v.access_type || '').toLowerCase().includes('no rfid') ||
+        !epc ||
+        epc === 'NO_TAG'
+    );
+    const isMember = !isUnreg && !isNoTag && Boolean(rawMem && !['GUEST-LOG', 'AI-CAM', 'UNREGISTERED'].includes(rawMem));
 
     currentReportIncident = a;
     currentReportAnalysis = null;
@@ -1452,94 +1556,275 @@ function openAudit(a) {
         }
     }
 
+    const auditId = `AUD-${String(v.id || a.id || 1).padStart(6, '0')}`;
+    const isInside = Boolean(a.status === 'Inside Facility' || a.status === 'Alert / Inside' || (!x && e));
+    const entryTime = e && e.timestamp ? String(e.timestamp).substring(11, 19) : '--';
+    const exitTime = x && x.timestamp ? String(x.timestamp).substring(11, 19) : (isInside ? 'Active On Premises' : '--');
+    const pfp = v.profile_pic || v.Profile_pic || (e ? (e.profile_pic || e.Profile_pic) : null);
+
+    // ==========================================
+    // RENDER AUDIT MODAL CONTENT
+    // MODEL 1: REGISTERED MEMBER
+    // MODEL 2: UNREGISTERED / VISITOR / UNKNOWN TAG
+    // ==========================================
+    const topCardSection = isMember ? `
+        <!-- ═════════ MODEL 1: REGISTERED MEMBER TOP SECTION ═════════ -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-6">
+            <!-- Card 1: Member Identity & Profile -->
+            <div class="bg-slate-50/70 rounded-2xl p-5 border border-slate-200/90 flex flex-col justify-between shadow-2xs">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Member Profile &amp; Identity</p>
+                        <span class="text-[9px] font-bold text-emerald-700 bg-emerald-100/90 px-2 py-0.5 rounded-md border border-emerald-200">ACTIVE ACCOUNT</span>
+                    </div>
+                    <div class="flex items-center gap-3.5 mb-3">
+                        ${pfp ? `<img src="/${pfp.replace(/^\//, '')}" class="w-16 h-16 rounded-2xl object-cover border-2 border-emerald-500/20 shadow-xs shrink-0">` :
+                        `<div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center text-2xl font-black shadow-xs shrink-0">${(v.name || '?').charAt(0).toUpperCase()}</div>`}
+                        <div class="min-w-0 flex-1">
+                            <p class="font-extrabold text-base text-slate-900 leading-snug break-words">${v.name || 'Club Member'}</p>
+                            <p class="text-xs font-mono font-bold text-indigo-700 mt-0.5">ID: ${v.mem_id || 'N/A'}</p>
+                            <p class="text-[10px] font-bold text-slate-500 mt-0.5 uppercase tracking-wide">Permanent Club Member</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-2 text-xs border-t border-slate-200/90 pt-3">
+                    <div class="flex justify-between items-center"><span class="text-slate-400 font-bold">Membership No.</span><span class="font-mono font-bold text-slate-800">${v.mem_id || 'N/A'}</span></div>
+                    <div class="flex flex-col gap-1">
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-400 font-bold">Assigned E-TAG:</span>
+                            ${epc ? `
+                            <div class="flex items-center gap-1.5">
+                                <button type="button" onclick="copyEtagId('${epc}')" class="p-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-600 transition" title="Copy EPC"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg></button>
+                                <button type="button" onclick="closeAudit(); auditEtag('${epc}')" class="text-[9px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-1.5 py-0.5 rounded hover:bg-indigo-100 transition">Audit &rarr;</button>
+                            </div>` : ''}
+                        </div>
+                        ${epc ? `
+                        <div class="font-mono text-[11px] font-bold text-slate-700 bg-white border border-slate-200 rounded-lg px-2 py-1 select-all break-all leading-tight shadow-2xs">
+                            ${epc}
+                        </div>` : `<span class="font-mono text-slate-400 text-xs">No RFID Assigned</span>`}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Registered Vehicle Particulars (Authentic Sindh License Plate) -->
+            <div class="bg-slate-50/70 rounded-2xl p-5 border border-slate-200/90 flex flex-col justify-between shadow-2xs">
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Registered Vehicle Asset</p>
+                        <span class="text-[9px] font-bold text-indigo-700 bg-indigo-100/80 px-2 py-0.5 rounded-md border border-indigo-200">VERIFIED PLATE</span>
+                    </div>
+                    <div class="my-1.5 flex flex-col items-center">
+                        ${renderSindhPlateHtml(displayPlate || v.vehicle_number)}
+                        <p class="text-sm font-bold text-slate-800 mt-2 text-center leading-snug break-words">${v.make_model || 'Make/Model not specified'}</p>
+                    </div>
+                </div>
+                <div class="space-y-2 text-xs border-t border-slate-200/90 pt-3">
+                    <div class="flex justify-between items-center"><span class="text-slate-400 font-bold">Reader Station</span>${formatReaderBadge(v)}</div>
+                    <div class="flex justify-between items-center"><span class="text-slate-400 font-bold">Transit Protocol</span><span class="font-bold text-slate-800">${v.access_type || 'Encrypted UHF RFID'}</span></div>
+                </div>
+            </div>
+
+            <!-- Card 3: Facility Stay Duration -->
+            <div class="bg-slate-50/70 rounded-2xl p-5 border border-slate-200/90 text-center flex flex-col justify-between shadow-2xs">
+                <div>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5" id="reportStayCardTitle">Facility Stay Duration</p>
+                    <p class="text-3xl font-black ${modalDur ? 'text-indigo-700' : 'text-slate-400'} py-1" id="reportStayCardValue">${modalDur || '--'}</p>
+                    <div id="reportStayCardSub" class="text-[10px] font-bold text-slate-400 mb-1">Transit Passage Duration</div>
+                </div>
+                <div class="space-y-1.5 text-xs border-t border-slate-200/90 pt-3 text-left" id="reportStayCardBreakdown">
+                    <div class="flex justify-between"><span class="text-slate-400 font-bold">Entry:</span><span class="font-bold text-slate-800 font-mono text-[11px]">${entryTime}</span></div>
+                    <div class="flex justify-between"><span class="text-slate-400 font-bold">Exit:</span><span class="font-bold text-slate-800 font-mono text-[11px]">${exitTime}</span></div>
+                </div>
+            </div>
+        </div>
+    ` : `
+        <!-- ═════════ MODEL 2: UNREGISTERED / VISITOR / UNKNOWN RFID TOP SECTION ═════════ -->
+        <!-- Security Advisory Banner -->
+        <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-between flex-wrap gap-3 shadow-2xs mb-5">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                </div>
+                <div>
+                    <p class="font-extrabold text-amber-950 text-xs">Security Advisory: Unregistered Transit Event</p>
+                    <p class="text-[11px] text-amber-800 mt-0.5">This transit was logged without an active member account correlation. The scanned tag and camera captures are compiled below for security verification.</p>
+                </div>
+            </div>
+            ${epc ? `
+            <div class="flex items-center gap-2">
+                <button type="button" onclick="copyEtagId('${epc}')" class="px-3 py-1.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-amber-300 font-bold text-xs shadow-2xs transition flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                    <span>Copy EPC</span>
+                </button>
+                <button type="button" onclick="closeAudit(); auditEtag('${epc}')" class="px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-xs transition flex items-center gap-1.5">
+                    <span>Audit Tag in Studio</span> &rarr;
+                </button>
+            </div>` : ''}
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-6">
+            <!-- Card 1: Visitor / Driver Status -->
+            <div class="bg-slate-50/70 rounded-2xl p-5 border border-slate-200/90 flex flex-col justify-between shadow-2xs">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Visitor / Driver Status</p>
+                        <span class="text-[9px] font-bold text-amber-800 bg-amber-100/90 px-2 py-0.5 rounded-md border border-amber-300">UNREGISTERED</span>
+                    </div>
+                    <div class="flex items-center gap-3.5 mb-4">
+                        <div class="w-16 h-16 rounded-2xl bg-amber-100 border border-amber-200 text-amber-700 flex items-center justify-center shrink-0 shadow-xs">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <p class="font-black text-base text-slate-900 leading-snug break-words">${v.name || 'Unregistered Visitor'}</p>
+                            <p class="text-xs font-semibold text-rose-600 mt-0.5 flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-rose-500 inline-block"></span>No Member Record
+                            </p>
+                            <p class="text-[10px] font-bold text-slate-500 mt-1 uppercase tracking-wide">Guest / Unknown Vehicle</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-2 text-xs border-t border-slate-200/90 pt-3">
+                    <div class="flex justify-between items-center"><span class="text-slate-400 font-bold">Member Account</span><span class="font-mono font-bold text-slate-500">None (GUEST / VISITOR)</span></div>
+                    <div class="flex justify-between items-center"><span class="text-slate-400 font-bold">Access Protocol</span><span class="font-bold text-slate-800">${v.access_type || (epc ? 'UHF RFID Unknown' : 'Optical ANPR')}</span></div>
+                </div>
+            </div>
+
+            <!-- Card 2: Scanned Tag & Vehicle Info (No Text Overflow) -->
+            <div class="bg-slate-50/70 rounded-2xl p-5 border border-slate-200/90 flex flex-col justify-between shadow-2xs">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Scanned RFID &amp; Vehicle Info</p>
+                        <span class="text-[9px] font-bold ${epc ? 'text-amber-800 bg-amber-100/90 border-amber-300' : 'text-slate-600 bg-slate-100 border-slate-200'} px-2 py-0.5 rounded-md border">
+                            ${epc ? 'SCANNED EPC' : 'NO TAG'}
+                        </span>
+                    </div>
+                    ${epc ? `
+                    <div class="bg-white rounded-xl p-3 border border-amber-200/90 shadow-2xs mb-2">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="text-[9px] font-black uppercase tracking-wider text-amber-800">Scanned RFID EPC Code</span>
+                            <button type="button" onclick="copyEtagId('${epc}')" class="text-[10px] font-bold text-amber-700 hover:text-amber-900 transition flex items-center gap-1" title="Copy Tag EPC">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                <span>Copy</span>
+                            </button>
+                        </div>
+                        <div class="font-mono text-xs font-black text-slate-900 break-all select-all leading-relaxed bg-amber-50/60 p-2 rounded-lg border border-amber-100">
+                            ${epc}
+                        </div>
+                    </div>` : `
+                    <div class="bg-white rounded-xl p-3 border border-slate-200 shadow-2xs mb-2 text-center text-xs font-bold text-slate-400">
+                        No RFID Tag Detected (Camera Trigger Only)
+                    </div>`}
+                    <div class="text-xs text-slate-600 font-bold mt-1">
+                        ${displayPlate ? `
+                        <div class="my-2 flex flex-col items-center">
+                            ${renderSindhPlateHtml(displayPlate)}
+                        </div>` : '<div class="text-center py-1.5"><span class="text-slate-400 font-semibold italic text-[11px]">No Physical License Plate Logged</span></div>'}
+                        <span class="text-slate-500 text-[11px] block mt-1 text-center leading-snug break-words">${v.make_model || 'Make/Model not specified'}</span>
+                    </div>
+                </div>
+                <div class="space-y-2 text-xs border-t border-slate-200/90 pt-3">
+                    <div class="flex justify-between items-center"><span class="text-slate-400 font-bold">Reader Station</span>${formatReaderBadge(v)}</div>
+                    <div class="flex justify-between items-center"><span class="text-slate-400 font-bold">Tag Registration</span><span class="font-bold text-rose-600">Unallocated / External Tag</span></div>
+                </div>
+            </div>
+
+            <!-- Card 3: Facility Stay Duration -->
+            <div class="bg-slate-50/70 rounded-2xl p-5 border border-slate-200/90 text-center flex flex-col justify-between shadow-2xs">
+                <div>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5" id="reportStayCardTitle">Facility Stay Duration</p>
+                    <p class="text-3xl font-black ${modalDur ? 'text-amber-600' : 'text-slate-400'} py-1" id="reportStayCardValue">${modalDur || '--'}</p>
+                    <div id="reportStayCardSub" class="text-[10px] font-bold text-slate-400 mb-1">Transit Passage Duration</div>
+                </div>
+                <div class="space-y-1.5 text-xs border-t border-slate-200/90 pt-3 text-left" id="reportStayCardBreakdown">
+                    <div class="flex justify-between"><span class="text-slate-400 font-bold">Entry:</span><span class="font-bold text-slate-800 font-mono text-[11px]">${entryTime}</span></div>
+                    <div class="flex justify-between"><span class="text-slate-400 font-bold">Exit:</span><span class="font-bold text-slate-800 font-mono text-[11px]">${exitTime}</span></div>
+                </div>
+            </div>
+        </div>
+    `;
+
     document.getElementById('auditModalContent').innerHTML = `
     <div class="relative bg-white rounded-3xl overflow-hidden shadow-2xl">
-        <div class="h-2.5 ${a.status === 'Exited' || a.status === 'Exit Only' ? 'bg-gradient-to-r from-slate-400 to-slate-600' : 'bg-gradient-to-r from-emerald-500 to-teal-600'}"></div>
+        <!-- Top Accent Stripe -->
+        <div class="h-2.5 ${isMember ? 'bg-gradient-to-r from-emerald-500 via-teal-600 to-indigo-600' : 'bg-gradient-to-r from-amber-500 via-orange-500 to-rose-600'}"></div>
+
         <div class="p-6 md:p-8">
-            <!-- Modal Header -->
-            <div class="flex justify-between items-start border-b border-slate-200/80 pb-6 mb-6 flex-wrap gap-4">
-                <div class="flex items-center gap-5">
-                    <img src="/api/logo" class="h-14 object-contain" onerror="this.style.display='none'">
-                    <div>
-                        <div class="flex items-center gap-3">
-                            <h1 class="text-xl md:text-2xl font-black text-slate-900 tracking-tight uppercase">Official Vehicle Audit &amp; Report Studio</h1>
-                            <span class="font-mono text-xs font-bold text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-lg border border-slate-200">AUD-${String(v.id || 1).padStart(6, '0')}</span>
+            <!-- Modal Header Section (Cleanly Aligned, 2-Tier Header) -->
+            <div class="border-b border-slate-200 pb-5 mb-6">
+                <!-- Top Row: Logo + Title + Audit ID on Left, Close Button on Right -->
+                <div class="flex items-start justify-between gap-4 mb-3">
+                    <div class="flex items-start gap-3.5 min-w-0 flex-1">
+                        <div class="p-2 bg-slate-50 border border-slate-200 rounded-2xl shadow-2xs shrink-0">
+                            <img src="/api/logo" class="h-10 w-auto object-contain" onerror="this.style.display='none'">
                         </div>
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Karachi Gymkhana Club &bull; Human-Curated Evidence &amp; Transit Verification</p>
-                        <div class="flex flex-wrap gap-2 mt-2.5">
-                            <span class="text-[10px] font-black px-2.5 py-0.5 rounded-full ${isMember ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : isUnreg ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-rose-50 text-rose-700 border border-rose-200'}">
-                                ${isMember ? 'RFID VERIFIED MEMBER' : isUnreg ? 'UNKNOWN RFID TAG' : 'OPTICAL CAPTURE - NO RFID'}
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-2.5 flex-wrap">
+                                <h1 class="text-xl md:text-2xl font-black text-slate-900 tracking-tight uppercase leading-snug">
+                                    ${isMember ? 'Official Member Vehicle Audit &amp; Report' : 'Unregistered Vehicle Audit &amp; Security Studio'}
+                                </h1>
+                                <span class="font-mono text-xs font-black ${isMember ? 'text-indigo-800 bg-indigo-50 border-indigo-200' : 'text-amber-900 bg-amber-50 border-amber-300'} px-2.5 py-0.5 rounded-lg border shrink-0">${auditId}</span>
+                            </div>
+                            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">
+                                Karachi Gymkhana Club &bull; ${isMember ? 'Registered Member Verification &amp; Security Transit Proof' : 'Security Investigation &amp; Unregistered Movement Dossier'}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Pinned Close Button: Always Aligned at Top-Right of Modal Header -->
+                    <button type="button" onclick="closeAudit()" 
+                            class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-400 hover:text-rose-600 border border-slate-200/80 hover:border-rose-200 font-black flex items-center justify-center transition shadow-2xs shrink-0" 
+                            title="Close Report (Esc)">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+
+                <!-- Secondary Header Row: Status Badges (Left) & Timestamp / Facility Presence / Action (Right) -->
+                <div class="flex items-center justify-between gap-3 flex-wrap pt-2.5 border-t border-slate-100">
+                    <!-- Left: Identity Badges -->
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-1 rounded-lg ${isMember ? 'bg-emerald-50 text-emerald-800 border border-emerald-300' : (epc ? 'bg-amber-50 text-amber-900 border border-amber-300' : 'bg-rose-50 text-rose-800 border border-rose-300')}">
+                            ${isMember ? '<svg class="w-3.5 h-3.5 text-emerald-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> REGISTERED CLUB MEMBER' : (epc ? '⚠️ UNREGISTERED RFID TRANSPONDER' : '📷 OPTICAL CAPTURE ONLY')}
+                        </span>
+                        ${isMember ? `<span class="text-[10px] font-mono font-bold px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200">MEM ID: ${v.mem_id}</span>` : ''}
+                        ${formatReaderPill(v)}
+                        <span class="text-[10px] font-black px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 border border-slate-200">DATE: ${visitDate}</span>
+                    </div>
+
+                    <!-- Right: Timestamp, Facility Presence, and Make Outside Action Button -->
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-200 text-[11px]">
+                            <span class="font-bold text-slate-400 text-[9px] uppercase tracking-wider">Timestamp:</span>
+                            <span class="font-mono font-bold text-slate-800">${v.timestamp || '--'}</span>
+                        </div>
+                        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-[11px] ${isInside ? (isMember ? 'bg-emerald-50 text-emerald-800 border-emerald-300' : 'bg-amber-50 text-amber-900 border-amber-300') : 'bg-slate-50 text-slate-700 border border-slate-200'}">
+                            <span class="font-bold text-slate-400 text-[9px] uppercase tracking-wider">Presence:</span>
+                            <span class="inline-flex items-center gap-1 font-black text-[10px]">
+                                ${isInside ? `<span class="w-1.5 h-1.5 rounded-full ${isMember ? 'bg-emerald-500' : 'bg-amber-500'} animate-pulse"></span>${isMember ? 'INSIDE CLUB' : 'ACTIVE ON PREMISES'}` : 'OUTSIDE CLUB (DEPARTED)'}
                             </span>
-                            ${formatReaderBadge(v)}
-                            <span class="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">DATE: ${visitDate}</span>
                         </div>
-                    </div>
-                </div>
-                <div class="text-right text-xs text-slate-500 space-y-1">
-                    <button type="button" onclick="closeAudit()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-700 font-bold flex items-center justify-center text-lg transition ml-auto mb-2">&times;</button>
-                    <p class="text-[11px]"><span class="font-bold text-slate-400">Timestamp:</span> <span class="font-mono font-bold text-slate-700">${v.timestamp || '--'}</span></p>
-                    <p class="text-[11px]"><span class="font-bold text-slate-400">Club Presence:</span> <span class="inline-block text-[10px] font-black px-2.5 py-0.5 rounded-full ${a.status === 'Inside Facility' || a.status === 'Alert / Inside' || (!x && e) ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-slate-100 text-slate-700 border border-slate-200'}">${(a.status === 'Inside Facility' || a.status === 'Alert / Inside' || (!x && e)) ? 'INSIDE CLUB' : 'OUTSIDE CLUB'}</span></p>
-                    ${(a.status === 'Inside Facility' || a.status === 'Alert / Inside' || a.is_overstay || (!x && e)) ? `
-                    <div class="pt-1.5">
-                        <button type="button" onclick="openManualExitFromAuditModal()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-sm transition">
+                        ${isInside ? `
+                        <button type="button" onclick="openManualExitFromAuditModal()" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-2xs transition">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                            <span>Make Outside (Clear Departure)</span>
-                        </button>
-                    </div>` : ''}
-                </div>
-            </div>
-
-            <!-- Subject Particulars Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-6">
-                <div class="md:col-span-5 bg-slate-50/70 rounded-2xl p-5 border border-slate-200">
-                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Driver / Member Identity</p>
-                    <div class="flex items-center gap-4 mb-4">
-                        ${(v.profile_pic || v.Profile_pic) ? `<img src="/${(v.profile_pic || v.Profile_pic).replace(/^\//, '')}" class="w-16 h-16 rounded-2xl object-cover border border-slate-200 shadow-xs">` :
-                        `<div class="w-16 h-16 rounded-2xl ${isUnreg || isNoTag ? 'bg-amber-100 text-amber-700' : 'bg-slate-200 text-slate-700'} flex items-center justify-center text-2xl font-black">${(v.name || '?').charAt(0)}</div>`}
-                        <div>
-                            <p class="font-extrabold text-base text-slate-900">${v.name || 'Unregistered Driver'}</p>
-                            <p class="text-xs text-slate-500 font-mono mt-0.5">${v.mem_id || 'N/A'}</p>
-                            <p class="text-[10px] font-bold ${isMember ? 'text-emerald-700' : 'text-amber-700'} mt-1 uppercase tracking-wide">${isMember ? 'Club Member' : 'Visitor Tag'}</p>
-                        </div>
-                    </div>
-                    <div class="space-y-2 text-xs border-t border-slate-200/80 pt-3">
-                        <div class="flex justify-between"><span class="text-slate-400 font-bold">Member Account</span><span class="font-mono font-bold text-slate-800">${v.mem_id || 'N/A'}</span></div>
-                        <div class="flex justify-between items-center"><span class="text-slate-400 font-bold">RFID EPC Tag</span>${epc ? `<button type="button" onclick="closeAudit(); auditEtag('${epc}')" class="font-mono font-bold text-emerald-700 hover:text-emerald-900 hover:underline text-[11px] truncate max-w-[60%] select-all flex items-center gap-1" title="Click to audit this E-TAG">${epc} <span class="text-[9px] bg-emerald-100 px-1 rounded text-emerald-800 font-sans">Audit &rarr;</span></button>` : `<span class="font-mono text-slate-400 text-[11px]">No RFID Assigned</span>`}</div>
-                    </div>
-                </div>
-
-                <div class="md:col-span-4 bg-slate-50/70 rounded-2xl p-5 border border-slate-200">
-                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Vehicle Particulars</p>
-                    <p class="font-mono font-black text-2xl text-indigo-700 tracking-wider">${v.vehicle_number || 'NO PLATE'}</p>
-                    <p class="text-sm text-slate-700 font-bold mt-1">${v.make_model || 'Make/Model not specified'}</p>
-                    <div class="space-y-2 text-xs border-t border-slate-200/80 pt-3 mt-3">
-                        <div class="flex justify-between items-center"><span class="text-slate-400 font-bold">Reader Station</span>${formatReaderBadge(v)}</div>
-                        <div class="flex justify-between"><span class="text-slate-400 font-bold">Verification Protocol</span><span class="font-bold text-slate-800">${v.access_type || 'UHF RFID'}</span></div>
-                    </div>
-                </div>
-
-                <div class="md:col-span-3 bg-slate-50/70 rounded-2xl p-5 border border-slate-200 text-center flex flex-col justify-between">
-                    <div>
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5" id="reportStayCardTitle">Facility Stay Duration</p>
-                        <p class="text-3xl font-black ${modalDur ? 'text-indigo-700' : 'text-slate-400'} py-1" id="reportStayCardValue">${modalDur || '--'}</p>
-                        <div id="reportStayCardSub" class="text-[10px] font-bold text-slate-400 mb-1">Transit Passage Duration</div>
-                    </div>
-                    <div class="space-y-1.5 text-xs border-t border-slate-200/80 pt-3 text-left" id="reportStayCardBreakdown">
-                        <div class="flex justify-between"><span class="text-slate-400 font-bold">Entry:</span><span class="font-bold text-slate-800 font-mono text-[11px]">${e ? String(e.timestamp).substring(11, 19) : '--'}</span></div>
-                        <div class="flex justify-between"><span class="text-slate-400 font-bold">Exit:</span><span class="font-bold text-slate-800 font-mono text-[11px]">${x ? String(x.timestamp).substring(11, 19) : '--'}</span></div>
+                            <span>Make Outside</span>
+                        </button>` : ''}
                     </div>
                 </div>
             </div>
+
+            <!-- Subject Particulars (Tailored by Model) -->
+            ${topCardSection}
 
             <!-- SECTION 1: All-Day In/Out Movements Chronology -->
             <div class="border border-slate-200 rounded-2xl p-5 bg-white mb-6 shadow-2xs">
                 <div class="flex justify-between items-center mb-3 flex-wrap gap-2">
                     <div>
                         <h3 class="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
-                            <span class="w-2.5 h-2.5 rounded-full bg-indigo-600"></span>
+                            <span class="w-2.5 h-2.5 rounded-full ${isMember ? 'bg-indigo-600' : 'bg-amber-500'}"></span>
                             Full-Day Movement Chronology (All-Day In/Out Journal)
                         </h3>
-                        <p class="text-[11px] text-slate-500">Chronological transit sequence recorded for this vehicle across all gates on ${visitDate}</p>
+                        <p class="text-[11px] text-slate-500">
+                            ${isMember ? `Chronological transit sequence recorded for this member's vehicle across all gates on ${visitDate}` : `Chronological transit sequence recorded for this RFID tag across all gates on ${visitDate}`}
+                        </p>
                     </div>
                     <span id="reportMovementsCountBadge" class="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200">Loading Journal...</span>
                 </div>
@@ -1600,7 +1885,7 @@ function openAudit(a) {
             <!-- SECTION 3: Investigator Remarks & Notes -->
             <div class="mb-6">
                 <label class="block text-[11px] font-black uppercase tracking-wider text-slate-500 mb-2">Security Officer Remarks / Incident Notes (Included in PDF)</label>
-                <textarea id="reportNotesInput" rows="2" placeholder="Enter optional security observations or officer remarks to attach to this official PDF certificate..."
+                <textarea id="reportNotesInput" rows="2" placeholder="${isMember ? 'Enter optional security observations or officer remarks to attach to this official PDF certificate...' : 'Enter security observations, driver verification details, or visitor remarks to attach to this official PDF report...'}"
                           class="w-full text-xs font-medium border border-slate-200 rounded-xl p-3 bg-white focus:outline-none focus:border-indigo-500 shadow-2xs"></textarea>
             </div>
 
@@ -1613,7 +1898,7 @@ function openAudit(a) {
                 <div class="flex items-center gap-3">
                     <button type="button" onclick="closeAudit()" class="px-5 py-2.5 rounded-xl font-bold text-xs border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 shadow-2xs transition">Cancel</button>
                     <button type="button" id="btnGenerateCustomPdf" onclick="generateCustomReportPdf()"
-                            class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-xs text-white bg-indigo-600 hover:bg-indigo-700 border border-indigo-700 shadow-sm transition">
+                            class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-xs text-white ${isMember ? 'bg-indigo-600 hover:bg-indigo-700 border-indigo-700' : 'bg-amber-600 hover:bg-amber-700 border-amber-700'} border shadow-sm transition">
                         <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                         <span>Generate Official PDF Report</span>
                     </button>
@@ -1626,7 +1911,15 @@ function openAudit(a) {
 
     // Load dynamic data
     updateSelectedEvidenceUI();
-    loadReportMovements(v.vehicle_number, v.mem_id, visitDate, modalDur, e ? e.id : null, x ? x.id : null, v.scanned_tag);
+    loadReportMovements(
+        displayPlate || (isMember ? v.vehicle_number : ''),
+        isMember ? (v.mem_id || '') : '',
+        visitDate,
+        modalDur,
+        e ? e.id : null,
+        x ? x.id : null,
+        epc
+    );
     loadReportAvailableImages(visitDate);
 }
 
@@ -1785,51 +2078,61 @@ async function loadReportMovements(vehicleNumber, memId, dateStr, tripDuration, 
         }
 
         cont.innerHTML = `
-            <table class="w-full text-left text-xs">
-                <thead class="text-[10px] uppercase font-black text-slate-400 bg-slate-50 border-b">
-                    <tr>
-                        <th class="py-2.5 px-3">#</th>
-                        <th class="py-2.5 px-3">Time (PKT)</th>
-                        <th class="py-2.5 px-3">Reader Status</th>
-                        <th class="py-2.5 px-3">Gate Station</th>
-                        <th class="py-2.5 px-3">Access Protocol</th>
-                        <th class="py-2.5 px-3">Visit Stay</th>
-                        <th class="py-2.5 px-3">Club Presence &bull; Verification</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100">
-                    ${currentReportMovements.map((m, idx) => {
-                        const isEntry = (m.direction || '').toLowerCase() === 'entry';
-                        const timeStr = String(m.timestamp || '').substring(11, 19) || m.timestamp;
-                        const isCurrent = currentReportIncident && (
-                            (currentReportIncident.entry && currentReportIncident.entry.id === m.id) ||
-                            (currentReportIncident.exit && currentReportIncident.exit.id === m.id) ||
-                            (currentReportIncident.id === m.id)
-                        );
-                        const stayBadge = m.stay_duration ? 
-                            `<span class="inline-flex items-center gap-1 font-mono font-bold text-xs text-indigo-700 bg-indigo-50 border border-indigo-200/80 px-2 py-0.5 rounded-md"><svg class="w-3 h-3 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>${m.stay_duration}</span>` : 
-                            `<span class="text-slate-300 font-mono text-xs">—</span>`;
-                        return `
-                            <tr class="${isCurrent ? 'bg-indigo-50/60 font-semibold' : 'hover:bg-slate-50/70'} transition">
-                                <td class="py-2.5 px-3 font-mono font-bold text-slate-400">
-                                    ${String(idx + 1).padStart(2, '0')}
-                                    ${isCurrent ? '<span class="text-[9px] bg-indigo-600 text-white font-black px-1.5 py-0.5 rounded ml-1 uppercase tracking-wide">Selected</span>' : ''}
-                                </td>
-                                <td class="py-2.5 px-3 font-mono font-bold text-slate-800">${timeStr}</td>
-                                <td class="py-2.5 px-3">
-                                    ${formatReaderBadge(m)}
-                                </td>
-                                <td class="py-2.5 px-3 font-bold text-slate-700">${m.gate_no || (isEntry ? 'Gate-01 Entry Reader' : 'Gate-01 Exit Reader')}</td>
-                                <td class="py-2.5 px-3 text-slate-600">${m.access_type || 'UHF RFID Access'}</td>
-                                <td class="py-2.5 px-3">${stayBadge}</td>
-                                <td class="py-2.5 px-3 font-bold">
-                                    ${isEntry ? '<span class="inline-flex items-center gap-1 text-emerald-700 font-bold text-xs"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>Inside Club &bull; Authorized Entry</span>' : `<span class="inline-flex items-center gap-1 text-indigo-700 font-bold text-xs"><span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>Outside Club &bull; Authorized Exit ${m.stay_duration ? `<span class="text-[11px] font-semibold text-slate-500">(${m.stay_duration})</span>` : ''}</span>`}
-                                </td>
-                            </tr>
-                        `;
-                    }).join('')}
-                </tbody>
-            </table>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="text-[10px] uppercase font-black text-slate-500 bg-slate-100/80 border-b border-slate-200">
+                        <tr>
+                            <th class="py-2.5 px-3">#</th>
+                            <th class="py-2.5 px-3">Time (PKT)</th>
+                            <th class="py-2.5 px-3">Reader &amp; Gate Station</th>
+                            <th class="py-2.5 px-3">Access Protocol</th>
+                            <th class="py-2.5 px-3">Visit Stay</th>
+                            <th class="py-2.5 px-3">Club Presence &amp; Verification</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        ${currentReportMovements.map((m, idx) => {
+                            const isEntry = (m.direction || '').toLowerCase() === 'entry';
+                            const timeStr = String(m.timestamp || '').substring(11, 19) || m.timestamp;
+                            const isCurrent = currentReportIncident && (
+                                (currentReportIncident.entry && currentReportIncident.entry.id === m.id) ||
+                                (currentReportIncident.exit && currentReportIncident.exit.id === m.id) ||
+                                (currentReportIncident.id === m.id)
+                            );
+                            const stayBadge = m.stay_duration ? 
+                                `<span class="inline-flex items-center gap-1 font-mono font-bold text-xs text-indigo-700 bg-indigo-50 border border-indigo-200/80 px-2 py-0.5 rounded-md"><svg class="w-3 h-3 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>${m.stay_duration}</span>` : 
+                                `<span class="text-slate-300 font-mono text-xs">—</span>`;
+                            const gateName = m.gate_no || (isEntry ? 'Gate-01 In' : 'Gate-01 Out');
+                            return `
+                                <tr class="${isCurrent ? 'bg-indigo-50/70 font-semibold' : 'hover:bg-slate-50/70'} transition">
+                                    <td class="py-2.5 px-3 font-mono font-bold text-slate-400 whitespace-nowrap">
+                                        ${String(idx + 1).padStart(2, '0')}
+                                        ${isCurrent ? '<span class="text-[9px] bg-indigo-600 text-white font-black px-1.5 py-0.5 rounded ml-1 uppercase tracking-wide">Selected</span>' : ''}
+                                    </td>
+                                    <td class="py-2.5 px-3 font-mono font-bold text-slate-800 whitespace-nowrap">${timeStr}</td>
+                                    <td class="py-2.5 px-3 whitespace-nowrap">
+                                        <div class="flex items-center gap-2">
+                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-black ${isEntry ? 'bg-emerald-50 text-emerald-800 border border-emerald-200 shadow-2xs' : 'bg-indigo-50 text-indigo-800 border border-indigo-200 shadow-2xs'}">
+                                                <span class="w-1.5 h-1.5 rounded-full ${isEntry ? 'bg-emerald-500' : 'bg-indigo-500'}"></span>
+                                                ${isEntry ? 'ENTRY READER' : 'EXIT READER'}
+                                            </span>
+                                            <span class="text-xs font-bold text-slate-700 font-mono">${gateName}</span>
+                                        </div>
+                                    </td>
+                                    <td class="py-2.5 px-3 text-slate-600 whitespace-nowrap">${m.access_type || 'UHF RFID Access'}</td>
+                                    <td class="py-2.5 px-3 whitespace-nowrap">${stayBadge}</td>
+                                    <td class="py-2.5 px-3 whitespace-nowrap">
+                                        ${isEntry ? 
+                                            '<span class="inline-flex items-center gap-1.5 text-emerald-700 font-bold text-xs"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>Inside Club &bull; Authorized Entry</span>' : 
+                                            `<span class="inline-flex items-center gap-1.5 text-indigo-700 font-bold text-xs"><span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>Outside Club &bull; Authorized Exit</span>`
+                                        }
+                                    </td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            </div>
         `;
     } catch (err) {
         cont.innerHTML = `<div class="py-3 text-center text-xs text-rose-500 font-bold">Could not load movement journal: ${err.message}</div>`;
@@ -3825,6 +4128,24 @@ async function loadRecentEtagTags(searchQuery = currentEtagDirSearch, page = cur
     currentEtagDirSearch = searchQuery || '';
     currentEtagDirPage = page;
     currentEtagDirLimit = limit;
+
+    // Fix: Show skeleton loading state immediately so users see feedback
+    if (welcomeTable) {
+        const skeletonRow = `
+            <tr class="animate-pulse">
+                <td class="py-3 px-4"><div class="h-3 bg-slate-200 rounded w-40"></div></td>
+                <td class="py-3 px-4"><div class="h-3 bg-slate-200 rounded w-32"></div></td>
+                <td class="py-3 px-4"><div class="h-3 bg-slate-200 rounded w-20"></div></td>
+                <td class="py-3 px-4"><div class="h-3 bg-slate-200 rounded w-16"></div></td>
+                <td class="py-3 px-4"><div class="h-3 bg-slate-200 rounded w-28"></div></td>
+                <td class="py-3 px-4"><div class="h-6 bg-slate-200 rounded-xl w-16 ml-auto"></div></td>
+            </tr>`;
+        welcomeTable.innerHTML = Array(8).fill(skeletonRow).join('');
+    }
+    if (pillsContainer && !pillsContainer.children.length) {
+        pillsContainer.innerHTML = '<span class="text-slate-400 italic text-[11px] animate-pulse">Loading RFID tags...</span>';
+    }
+    if (countBadge) countBadge.innerText = 'Loading...';
 
     try {
         const url = `/api/etag/recent-tags?page=${page}&limit=${limit}${searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : ''}`;

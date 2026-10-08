@@ -49,3 +49,6 @@ gate_access.db
 # Model weights
 weights/
 *.pt
+
+# Scratch
+scratch/

@@ -17,66 +17,99 @@ async def get_recent_scanned_tags(
     """
     Returns all unique RFID EPC tags across the facility without duplicates,
     along with their member associations, scan counts, and pagination metadata for quick 1-click auditing.
+
+    PERFORMANCE FIX: Original queries wrapped both sides of JOIN and WHERE in UPPER(TRIM()),
+    which prevented SQLite from using idx_logs_tag and idx_members_etag indexes, causing
+    full table scans of 10,000+ member rows taking 7-9 seconds. Fixed by joining/filtering
+    on raw column values and pre-normalising search input in Python.
     """
     with config.DB_LOCK:
         conn = get_db_connection()
         try:
-            where_clauses = [
-                "d.scanned_tag IS NOT NULL",
-                "UPPER(TRIM(d.scanned_tag)) != 'NO_TAG'",
-                "UPPER(TRIM(d.scanned_tag)) != ''"
-            ]
-            params = []
-
-            search_clean = search.strip()
-            if search_clean:
-                s_param = f"%{search_clean.upper()}%"
-                where_clauses.append("""
-                    (UPPER(d.scanned_tag) LIKE ? 
-                     OR UPPER(COALESCE(m.Name, d.name)) LIKE ? 
-                     OR UPPER(COALESCE(m.Car_number, d.vehicle_number)) LIKE ? 
-                     OR UPPER(COALESCE(m.Mem_id, d.mem_id)) LIKE ?)
-                """)
-                params.extend([s_param, s_param, s_param, s_param])
-
-            where_str = f"WHERE {' AND '.join(where_clauses)}"
-
-            # 1. Total count of distinct unique tags matching filter
-            count_sql = f"""
-                SELECT COUNT(DISTINCT UPPER(TRIM(d.scanned_tag)))
-                FROM daily_logs d
-                LEFT JOIN members m ON UPPER(TRIM(d.scanned_tag)) = UPPER(TRIM(m.E_tag_id))
-                {where_str}
-            """
-            count_row = conn.execute(count_sql, list(params)).fetchone()
-            total_records = count_row[0] if count_row else 0
-
-            # 2. Pagination calculation
             page = max(1, page)
             limit = max(1, min(limit, 500))
             offset = (page - 1) * limit
-            total_pages = max(1, math.ceil(total_records / limit)) if total_records > 0 else 1
+            search_clean = search.strip()
 
-            sql = f"""
-                SELECT UPPER(TRIM(d.scanned_tag)) as scanned_tag, 
-                       MAX(d.timestamp) as last_seen, 
-                       COUNT(*) as total_scans,
-                       COALESCE(m.Name, MAX(d.name)) as name,
-                       COALESCE(m.Car_number, MAX(d.vehicle_number)) as vehicle_number,
-                       COALESCE(m.Mem_id, MAX(d.mem_id)) as mem_id,
-                       COALESCE(m.Make_Model, '') as make_model,
-                       COALESCE(m.Profile_pic, '') as profile_pic,
-                       COALESCE(m.Status, 'Unregistered') as status,
-                       MAX(d.gate_no) as last_gate
-                FROM daily_logs d
-                LEFT JOIN members m ON UPPER(TRIM(d.scanned_tag)) = UPPER(TRIM(m.E_tag_id))
-                {where_str}
-                GROUP BY UPPER(TRIM(d.scanned_tag))
-                ORDER BY last_seen DESC
-                LIMIT ? OFFSET ?
-            """
-            query_params = list(params) + [limit, offset]
-            rows = conn.execute(sql, query_params).fetchall()
+            if search_clean:
+                # Search path: need JOIN to filter by member fields
+                s_param = f"%{search_clean.upper()}%"
+                where_str = """
+                    WHERE d.scanned_tag IS NOT NULL
+                      AND d.scanned_tag != ''
+                      AND UPPER(TRIM(d.scanned_tag)) != 'NO_TAG'
+                      AND (UPPER(d.scanned_tag) LIKE ?
+                           OR UPPER(COALESCE(m.Name, d.name)) LIKE ?
+                           OR UPPER(COALESCE(m.Car_number, d.vehicle_number)) LIKE ?
+                           OR UPPER(COALESCE(m.Mem_id, d.mem_id)) LIKE ?)
+                """
+                search_params = [s_param, s_param, s_param, s_param]
+
+                count_row = conn.execute(
+                    f"SELECT COUNT(DISTINCT UPPER(TRIM(d.scanned_tag))) "
+                    f"FROM daily_logs d LEFT JOIN members m ON d.scanned_tag = m.E_tag_id "
+                    f"{where_str}",
+                    search_params
+                ).fetchone()
+                total_records = count_row[0] if count_row else 0
+
+                sql = f"""
+                    SELECT UPPER(TRIM(d.scanned_tag)) as scanned_tag,
+                           MAX(d.timestamp) as last_seen,
+                           COUNT(*) as total_scans,
+                           COALESCE(m.Name, MAX(d.name)) as name,
+                           COALESCE(m.Car_number, MAX(d.vehicle_number)) as vehicle_number,
+                           COALESCE(m.Mem_id, MAX(d.mem_id)) as mem_id,
+                           COALESCE(m.Make_Model, '') as make_model,
+                           COALESCE(m.Profile_pic, '') as profile_pic,
+                           COALESCE(m.Status, 'Unregistered') as status,
+                           MAX(d.gate_no) as last_gate
+                    FROM daily_logs d
+                    LEFT JOIN members m ON d.scanned_tag = m.E_tag_id
+                    {where_str}
+                    GROUP BY UPPER(TRIM(d.scanned_tag))
+                    ORDER BY last_seen DESC
+                    LIMIT ? OFFSET ?
+                """
+                rows = conn.execute(sql, search_params + [limit, offset]).fetchall()
+
+            else:
+                # FIX: Fast path — no search filter.
+                # Join on raw scanned_tag = E_tag_id (both are stored consistently).
+                # This lets SQLite use idx_logs_tag and idx_members_etag.
+                # Avoids UPPER(TRIM()) on the column side entirely.
+                count_row = conn.execute("""
+                    SELECT COUNT(DISTINCT scanned_tag)
+                    FROM daily_logs
+                    WHERE scanned_tag IS NOT NULL
+                      AND scanned_tag != ''
+                      AND UPPER(TRIM(scanned_tag)) != 'NO_TAG'
+                """).fetchone()
+                total_records = count_row[0] if count_row else 0
+
+                sql = """
+                    SELECT d.scanned_tag as scanned_tag,
+                           MAX(d.timestamp) as last_seen,
+                           COUNT(*) as total_scans,
+                           COALESCE(m.Name, MAX(d.name)) as name,
+                           COALESCE(m.Car_number, MAX(d.vehicle_number)) as vehicle_number,
+                           COALESCE(m.Mem_id, MAX(d.mem_id)) as mem_id,
+                           COALESCE(m.Make_Model, '') as make_model,
+                           COALESCE(m.Profile_pic, '') as profile_pic,
+                           COALESCE(m.Status, 'Unregistered') as status,
+                           MAX(d.gate_no) as last_gate
+                    FROM daily_logs d
+                    LEFT JOIN members m ON d.scanned_tag = m.E_tag_id
+                    WHERE d.scanned_tag IS NOT NULL
+                      AND d.scanned_tag != ''
+                      AND UPPER(TRIM(d.scanned_tag)) != 'NO_TAG'
+                    GROUP BY d.scanned_tag
+                    ORDER BY last_seen DESC
+                    LIMIT ? OFFSET ?
+                """
+                rows = conn.execute(sql, [limit, offset]).fetchall()
+
+            total_pages = max(1, math.ceil(total_records / limit)) if total_records > 0 else 1
 
             return {
                 "total": total_records,
@@ -100,6 +133,9 @@ async def get_etag_audit(
     Retrieves chronological detection history, associated member and vehicle particulars,
     multi-day detection counts, reader station distributions, and per-day stay breakdowns.
     Supports filtering by Today, Yesterday, This Week, This Month, or All Time.
+
+    PERFORMANCE FIX: Member lookup and log queries now use direct equality on raw stored values
+    (with a fallback UPPER comparison), allowing idx_members_etag and idx_logs_tag to be used.
     """
     clean_tag = (tag_id or "").strip()
     if not clean_tag:
@@ -108,11 +144,17 @@ async def get_etag_audit(
     with config.DB_LOCK:
         conn = get_db_connection()
         try:
-            # 1. Look up member assigned to this E_tag_id
+            # 1. Look up member — try direct equality first (uses idx_members_etag index),
+            #    then fall back to case-insensitive if not found
             mem_row = conn.execute(
-                "SELECT * FROM members WHERE UPPER(TRIM(E_tag_id)) = UPPER(TRIM(?)) LIMIT 1",
+                "SELECT * FROM members WHERE E_tag_id = ? LIMIT 1",
                 (clean_tag,)
             ).fetchone()
+            if not mem_row:
+                mem_row = conn.execute(
+                    "SELECT * FROM members WHERE UPPER(TRIM(E_tag_id)) = UPPER(TRIM(?)) LIMIT 1",
+                    (clean_tag,)
+                ).fetchone()
 
             # 2. Compute date boundaries based on date_filter
             today_pkt = config.get_pkt_today()
@@ -139,21 +181,28 @@ async def get_etag_audit(
                 target_start = start_date or today_pkt
                 target_end = end_date or today_pkt
 
-            # Total all-time scans across all time for this tag
+            # Total all-time scans — use direct equality first (indexed), fallback to UPPER
             all_time_total_row = conn.execute(
-                "SELECT COUNT(*) FROM daily_logs WHERE UPPER(TRIM(scanned_tag)) = UPPER(TRIM(?))",
+                "SELECT COUNT(*) FROM daily_logs WHERE scanned_tag = ?",
                 (clean_tag,)
             ).fetchone()
             all_time_detections = all_time_total_row[0] if all_time_total_row else 0
+            # If 0, try case-insensitive in case tag was stored differently
+            if all_time_detections == 0:
+                all_time_total_row = conn.execute(
+                    "SELECT COUNT(*) FROM daily_logs WHERE UPPER(TRIM(scanned_tag)) = UPPER(TRIM(?))",
+                    (clean_tag,)
+                ).fetchone()
+                all_time_detections = all_time_total_row[0] if all_time_total_row else 0
 
-            # 3. Query filtered daily logs that scanned this tag
+            # 3. Query filtered daily logs — direct equality on scanned_tag (uses idx_logs_tag)
+            log_params = [clean_tag]
             log_sql = """
                 SELECT d.id, d.mem_id, d.name, d.vehicle_number, d.access_type, d.direction,
                        d.gate_no, d.image_path, d.plate_image_path, d.scanned_tag, d.timestamp
                 FROM daily_logs d
-                WHERE UPPER(TRIM(d.scanned_tag)) = UPPER(TRIM(?))
+                WHERE d.scanned_tag = ?
             """
-            log_params = [clean_tag]
             if target_start and target_end:
                 log_sql += " AND date(d.timestamp) >= ? AND date(d.timestamp) <= ?"
                 log_params.extend([target_start, target_end])
@@ -164,6 +213,25 @@ async def get_etag_audit(
             log_sql += " ORDER BY d.timestamp DESC, d.id DESC"
             log_rows = conn.execute(log_sql, log_params).fetchall()
             logs = [dict(r) for r in log_rows]
+
+            # If no results with direct match, retry with UPPER/TRIM (handles mixed case storage)
+            if not logs and all_time_detections > 0:
+                log_params2 = [clean_tag]
+                log_sql2 = """
+                    SELECT d.id, d.mem_id, d.name, d.vehicle_number, d.access_type, d.direction,
+                           d.gate_no, d.image_path, d.plate_image_path, d.scanned_tag, d.timestamp
+                    FROM daily_logs d
+                    WHERE UPPER(TRIM(d.scanned_tag)) = UPPER(TRIM(?))
+                """
+                if target_start and target_end:
+                    log_sql2 += " AND date(d.timestamp) >= ? AND date(d.timestamp) <= ?"
+                    log_params2.extend([target_start, target_end])
+                elif target_start:
+                    log_sql2 += " AND date(d.timestamp) = ?"
+                    log_params2.append(target_start)
+                log_sql2 += " ORDER BY d.timestamp DESC, d.id DESC"
+                log_rows = conn.execute(log_sql2, log_params2).fetchall()
+                logs = [dict(r) for r in log_rows]
 
             # 4. If member not matched by E_tag_id, infer from logs (or all-time history)
             if not mem_row:
@@ -179,7 +247,7 @@ async def get_etag_audit(
                             break
             if not mem_row:
                 any_log = conn.execute(
-                    "SELECT mem_id, name, vehicle_number FROM daily_logs WHERE UPPER(TRIM(scanned_tag)) = UPPER(TRIM(?)) AND mem_id NOT IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', '') LIMIT 1",
+                    "SELECT mem_id, name, vehicle_number FROM daily_logs WHERE scanned_tag = ? AND mem_id NOT IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', '') LIMIT 1",
                     (clean_tag,)
                 ).fetchone()
                 if any_log and any_log["mem_id"]:
@@ -257,7 +325,7 @@ async def get_etag_audit(
             for d_str in sorted(by_date.keys(), reverse=True):
                 day_scans = by_date[d_str]
                 analysis = analyze_day_movements(day_scans)
-                
+
                 day_readers = {}
                 entries_cnt = 0
                 exits_cnt = 0
