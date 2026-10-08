@@ -524,8 +524,25 @@ def _build_paired_audits(logs):
         if exit_event:
             matched_exit_ids.add(exit_event['id'])
 
+        # If no exclusive exit was found, check if a subsequent exit exists for this vehicle
+        # (e.g. multiple tag reads at barrier during entrance sequence prior to vehicle exit)
+        subsequent_exit = exit_event
+        if not subsequent_exit:
+            e_tag = _clean_tag(entry_event.get('scanned_tag'))
+            e_plate = _clean_plate(entry_event.get('vehicle_number'))
+            e_mem = _clean_mem(entry_event.get('mem_id'))
+            e_ts = str(entry_event.get('timestamp') or '')
+            for c in exits:
+                c_ts = str(c.get('timestamp') or '')
+                if c_ts >= e_ts:
+                    if (e_tag and _clean_tag(c.get('scanned_tag')) == e_tag) or \
+                       (e_plate and _clean_plate(c.get('vehicle_number')) == e_plate) or \
+                       (e_mem and _clean_mem(c.get('mem_id')) == e_mem):
+                        subsequent_exit = c
+                        break
+
         actual_entry = entry_event
-        actual_exit = exit_event
+        actual_exit = subsequent_exit
         if actual_entry and actual_exit:
             if str(actual_entry['timestamp']) > str(actual_exit['timestamp']):
                 actual_entry, actual_exit = actual_exit, actual_entry
@@ -1577,7 +1594,6 @@ async def post_bulk_manual_exit(request: Request):
                 exempted_records = []
                 seen_exempt = set()
                 seen_vehicles = set()
-                cleared_incidents = 0
 
                 for item in inside_audits:
                     v = item.get("entry") or item.get("exit") or {}
@@ -1587,6 +1603,9 @@ async def post_bulk_manual_exit(request: Request):
                     v_name = v.get("name") or "Club Vehicle"
 
                     key = plate or tag or mem
+                    if not key or key in seen_vehicles:
+                        continue
+                    seen_vehicles.add(key)
 
                     is_exempt = False
                     if plate and plate in exception_set:
@@ -1597,7 +1616,7 @@ async def post_bulk_manual_exit(request: Request):
                         is_exempt = True
 
                     if is_exempt:
-                        if key and key not in seen_exempt:
+                        if key not in seen_exempt:
                             seen_exempt.add(key)
                             exempted_records.append({
                                 "vehicle_number": v.get("vehicle_number") or plate,
@@ -1628,26 +1647,22 @@ async def post_bulk_manual_exit(request: Request):
                     elif tag and tag != "NO_TAG":
                         conn.execute("UPDATE members SET Current_Location = 'Outside' WHERE E_tag_id = ?", (v.get("scanned_tag"),))
 
-                    cleared_incidents += 1
-                    if key and key not in seen_vehicles:
-                        seen_vehicles.add(key)
-                        exited_records.append({
-                            "vehicle_number": v.get("vehicle_number") or plate,
-                            "mem_id": v.get("mem_id") or mem,
-                            "name": v_name
-                        })
+                    exited_records.append({
+                        "vehicle_number": v.get("vehicle_number") or plate,
+                        "mem_id": v.get("mem_id") or mem,
+                        "name": v_name
+                    })
 
                 config.LATEST_LOG_CACHE = None
 
                 return {
                     "ok": True,
-                    "exited_count": cleared_incidents,
-                    "unique_vehicles_count": len(exited_records),
+                    "exited_count": len(exited_records),
                     "exempted_count": len(exempted_records),
                     "timestamp": exit_timestamp,
                     "exited_vehicles": exited_records,
                     "exempted_vehicles": exempted_records,
-                    "message": f"Bulk clearance complete: {cleared_incidents} incident(s) across {len(exited_records)} vehicle(s) marked Exited. {len(exempted_records)} vehicles retained inside per Exception Whitelist."
+                    "message": f"Bulk clearance complete: {len(exited_records)} vehicles marked Exited. {len(exempted_records)} vehicles retained inside per Exception Whitelist."
                 }
         finally:
             conn.close()
