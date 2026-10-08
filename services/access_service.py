@@ -81,11 +81,6 @@ def execute_access_decision(
                     make_model = None
                     profile_pic = None
                     resolved_status = "Unregistered"
-                    try:
-                        from services.sandbox_service import notify_sandbox_rfid
-                        notify_sandbox_rfid(clean_tag, direction=direction or "Entry", is_unregistered=True)
-                    except Exception:
-                        pass
 
                 member_loc = (member['Current_Location'] or '').strip() if member else ""
 
