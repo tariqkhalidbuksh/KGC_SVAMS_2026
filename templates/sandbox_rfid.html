@@ -319,7 +319,7 @@
                                 <!-- Dynamic Member Profile View -->
                                 <div id="memberDetailsBox" class="flex items-center gap-4">
                                     <div class="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center shrink-0 overflow-hidden">
-                                        <img id="memberPic" src="/static/img/no-avatar.svg" alt="Member Avatar" class="w-full h-full object-cover" onerror="this.src='/static/img/no-avatar.svg'">
+                                        <img id="memberPic" src="/static/img/no-avatar.svg" alt="Member Avatar" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='/static/img/no-avatar.svg'">
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <h4 id="memberName" class="text-sm font-black text-white truncate">Enter or select a plate above</h4>
@@ -831,7 +831,7 @@
                 <div class="p-3 hover:bg-slate-800 transition cursor-pointer flex items-center justify-between" onclick="chooseMemberSuggestion('${r.Car_number}')">
                     <div class="flex items-center gap-3">
                         <div class="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center overflow-hidden">
-                            <img src="${r.Profile_pic || '/static/img/no-avatar.svg'}" class="w-full h-full object-cover" onerror="this.src='/static/img/no-avatar.svg'">
+                            <img src="${r.Profile_pic || '/static/img/no-avatar.svg'}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='/static/img/no-avatar.svg'">
                         </div>
                         <div>
                             <div class="text-xs font-bold text-white">${r.Name}</div>
@@ -969,14 +969,17 @@
             icon.classList.add('hidden');
 
             try {
+                const plateVal = document.getElementById('candidatePlateInput').value.trim();
+                const reqPayload = {
+                    direction: direction,
+                    use_sample: useSample
+                };
+                if (plateVal) reqPayload.manual_plate = plateVal;
+
                 const res = await fetch('/api/sandbox/trigger-dahua', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        direction: direction,
-                        use_sample: useSample,
-                        manual_plate: document.getElementById('candidatePlateInput').value.trim() || null
-                    })
+                    body: JSON.stringify(reqPayload)
                 });
                 const data = await res.json();
                 if (res.ok && data.ok) {

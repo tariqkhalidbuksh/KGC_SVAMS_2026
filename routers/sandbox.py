@@ -18,31 +18,33 @@ from services.sandbox_service import (
     SANDBOX_DAHUA_STATUS
 )
 
+from typing import Optional
+
 router = APIRouter(prefix="/api/sandbox", tags=["RFID Sandbox Lab"])
 
 class AssignTagRequest(BaseModel):
     tag: str
     car_number: str
-    mem_id: str = None
+    mem_id: Optional[str] = None
 
 class RegisterMemberRequest(BaseModel):
     tag: str
     car_number: str
     name: str
-    mem_id: str = None
-    make_model: str = "Standard"
+    mem_id: Optional[str] = None
+    make_model: Optional[str] = "Standard"
 
 class DahuaConfigRequest(BaseModel):
     url: str
 
 class SimulateRfidRequest(BaseModel):
     tag: str
-    direction: str = "Entry"
+    direction: Optional[str] = "Entry"
 
 class TriggerDahuaRequest(BaseModel):
-    direction: str = "Entry"
-    manual_plate: str = None
-    use_sample: bool = False
+    direction: Optional[str] = "Entry"
+    manual_plate: Optional[str] = None
+    use_sample: Optional[bool] = False
 
 @router.get("/state")
 async def get_state():
