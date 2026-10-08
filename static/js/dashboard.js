@@ -971,18 +971,92 @@ function onAuditSearchInput() {
     }, 300);
 }
 
+let currentAuditDatePreset = 'today';
+
 function setAuditDatePreset(preset) {
-    const input = document.getElementById('auditDate');
-    if (!input) return;
+    currentAuditDatePreset = preset;
+    const startInput = document.getElementById('auditDate');
+    const endInput = document.getElementById('auditEndDate');
+    const todayBtn = document.getElementById('auditPresetToday');
+    const yestBtn = document.getElementById('auditPresetYesterday');
+    const weekBtn = document.getElementById('auditPresetWeek');
+    const allBtn = document.getElementById('auditPresetAll');
+
+    [todayBtn, yestBtn, weekBtn, allBtn].forEach(b => {
+        if (b) {
+            b.classList.remove('bg-slate-900', 'text-white');
+            b.classList.add('text-slate-700', 'hover:bg-slate-100');
+        }
+    });
+
     const now = new Date();
-    if (preset === 'yesterday') {
-        now.setDate(now.getDate() - 1);
+    const fmt = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+    if (preset === 'all') {
+        if (startInput) startInput.value = '';
+        if (endInput) endInput.value = '';
+        if (allBtn) {
+            allBtn.classList.remove('text-slate-700', 'hover:bg-slate-100');
+            allBtn.classList.add('bg-slate-900', 'text-white');
+        }
+    } else if (preset === 'yesterday') {
+        const y = new Date();
+        y.setDate(y.getDate() - 1);
+        const yStr = fmt(y);
+        if (startInput) startInput.value = yStr;
+        if (endInput) endInput.value = yStr;
+        if (yestBtn) {
+            yestBtn.classList.remove('text-slate-700', 'hover:bg-slate-100');
+            yestBtn.classList.add('bg-slate-900', 'text-white');
+        }
+    } else if (preset === 'week') {
+        const w = new Date();
+        w.setDate(w.getDate() - 7);
+        if (startInput) startInput.value = fmt(w);
+        if (endInput) endInput.value = fmt(now);
+        if (weekBtn) {
+            weekBtn.classList.remove('text-slate-700', 'hover:bg-slate-100');
+            weekBtn.classList.add('bg-slate-900', 'text-white');
+        }
+    } else {
+        const tStr = fmt(now);
+        if (startInput) startInput.value = tStr;
+        if (endInput) endInput.value = tStr;
+        if (todayBtn) {
+            todayBtn.classList.remove('text-slate-700', 'hover:bg-slate-100');
+            todayBtn.classList.add('bg-slate-900', 'text-white');
+        }
     }
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    input.value = `${year}-${month}-${day}`;
     loadAudit(1);
+}
+
+function onAuditDateChange() {
+    const todayBtn = document.getElementById('auditPresetToday');
+    const yestBtn = document.getElementById('auditPresetYesterday');
+    const weekBtn = document.getElementById('auditPresetWeek');
+    const allBtn = document.getElementById('auditPresetAll');
+    [todayBtn, yestBtn, weekBtn, allBtn].forEach(b => {
+        if (b) {
+            b.classList.remove('bg-slate-900', 'text-white');
+            b.classList.add('text-slate-700', 'hover:bg-slate-100');
+        }
+    });
+    currentAuditDatePreset = 'custom';
+    loadAudit(1);
+}
+
+function resetAuditFilters() {
+    const searchInput = document.getElementById('auditSearch');
+    if (searchInput) searchInput.value = '';
+    const camSelect = document.getElementById('auditCamera');
+    if (camSelect) camSelect.value = 'all';
+    currentAuditStatus = 'all';
+    document.querySelectorAll('.audit-status-pill').forEach(b => {
+        b.className = 'audit-status-pill px-3 py-1 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition';
+    });
+    const firstPill = document.querySelector('.audit-status-pill');
+    if (firstPill) firstPill.className = 'audit-status-pill px-3 py-1 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow-sm transition';
+    setAuditDatePreset('today');
 }
 
 function setAuditStatusFilter(status, el) {
@@ -1002,7 +1076,9 @@ function changeAuditLimit() {
 
 async function loadAudit(page = currentAuditPage) {
     currentAuditPage = page;
-    const d = document.getElementById('auditDate')?.value || '';
+    const startD = document.getElementById('auditDate')?.value || '';
+    const endD = document.getElementById('auditEndDate')?.value || '';
+    const cam = document.getElementById('auditCamera')?.value || 'all';
     const q = (document.getElementById('auditSearch') || {}).value || '';
     const bodyEl = document.getElementById('auditBody');
     if (!bodyEl) return;
@@ -1010,7 +1086,8 @@ async function loadAudit(page = currentAuditPage) {
     bodyEl.innerHTML = `<tr><td colspan="8" class="p-10 text-center text-slate-400 font-bold">Loading audit logs...</td></tr>`;
 
     try {
-        const url = `/api/audit?date=${encodeURIComponent(d)}&page=${page}&limit=${currentAuditLimit}&search=${encodeURIComponent(q)}&status=${currentAuditStatus}`;
+        const dateParam = (currentAuditDatePreset === 'all' && !startD) ? 'all' : startD;
+        const url = `/api/audit?date=${encodeURIComponent(dateParam)}&start_date=${encodeURIComponent(startD)}&end_date=${encodeURIComponent(endD)}&camera=${encodeURIComponent(cam)}&page=${page}&limit=${currentAuditLimit}&search=${encodeURIComponent(q)}&status=${currentAuditStatus}`;
         const res = await fetch(url);
         const data = await res.json();
 
@@ -1026,7 +1103,7 @@ async function loadAudit(page = currentAuditPage) {
         const totalPages = data.total_pages || Math.ceil(total / currentAuditLimit) || 1;
 
         if (!auditData.length) {
-            bodyEl.innerHTML = `<tr><td colspan="8" class="p-12 text-center text-slate-400 font-bold">No vehicle audit records matching criteria</td></tr>`;
+            bodyEl.innerHTML = `<tr><td colspan="8" class="p-12 text-center text-slate-400 font-bold">No vehicle audit records matching active criteria</td></tr>`;
             renderAuditPagination(0, 1, 1, currentAuditLimit);
             return;
         }
@@ -1275,7 +1352,7 @@ function openAudit(a) {
                 <div class="md:col-span-5 bg-slate-50/70 rounded-2xl p-5 border border-slate-200">
                     <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Driver / Member Identity</p>
                     <div class="flex items-center gap-4 mb-4">
-                        ${v.Profile_pic ? `<img src="/${v.Profile_pic}" class="w-16 h-16 rounded-2xl object-cover border border-slate-200 shadow-xs">` :
+                        ${(v.profile_pic || v.Profile_pic) ? `<img src="/${(v.profile_pic || v.Profile_pic).replace(/^\//, '')}" class="w-16 h-16 rounded-2xl object-cover border border-slate-200 shadow-xs">` :
                         `<div class="w-16 h-16 rounded-2xl ${isUnreg || isNoTag ? 'bg-amber-100 text-amber-700' : 'bg-slate-200 text-slate-700'} flex items-center justify-center text-2xl font-black">${(v.name || '?').charAt(0)}</div>`}
                         <div>
                             <p class="font-extrabold text-base text-slate-900">${v.name || 'Unregistered Driver'}</p>
@@ -1605,6 +1682,10 @@ async function generateCustomReportPdf() {
 
         const payload = {
             incident: currentReportIncident,
+            entry: currentReportIncident?.entry || null,
+            exit: currentReportIncident?.exit || null,
+            duration: currentReportIncident?.duration || null,
+            status: currentReportIncident?.status || null,
             entry_image_path: currentReportEntryImg,
             exit_image_path: currentReportExitImg,
             daily_movements: currentReportMovements,
@@ -2512,47 +2593,86 @@ function onCamAuditSearchInput() {
 }
 
 function setCamAuditPreset(preset) {
-    const input = document.getElementById('camAuditDate');
+    currentCamAuditDate = preset;
+    const startInput = document.getElementById('camAuditDate');
+    const endInput = document.getElementById('camAuditEndDate');
     const todayBtn = document.getElementById('camPresetToday');
     const yestBtn = document.getElementById('camPresetYesterday');
+    const weekBtn = document.getElementById('camPresetWeek');
     const allBtn = document.getElementById('camPresetAll');
 
-    [todayBtn, yestBtn, allBtn].forEach(b => {
+    [todayBtn, yestBtn, weekBtn, allBtn].forEach(b => {
         if (b) {
             b.classList.remove('bg-slate-900', 'text-white');
             b.classList.add('text-slate-700', 'hover:bg-slate-100');
         }
     });
 
+    const now = new Date();
+    const fmt = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
     if (preset === 'all') {
-        if (input) input.value = '';
-        currentCamAuditDate = 'all';
+        if (startInput) startInput.value = '';
+        if (endInput) endInput.value = '';
         if (allBtn) {
             allBtn.classList.remove('text-slate-700', 'hover:bg-slate-100');
             allBtn.classList.add('bg-slate-900', 'text-white');
         }
-    } else {
-        const now = new Date();
-        if (preset === 'yesterday') {
-            now.setDate(now.getDate() - 1);
-            if (yestBtn) {
-                yestBtn.classList.remove('text-slate-700', 'hover:bg-slate-100');
-                yestBtn.classList.add('bg-slate-900', 'text-white');
-            }
-        } else {
-            if (todayBtn) {
-                todayBtn.classList.remove('text-slate-700', 'hover:bg-slate-100');
-                todayBtn.classList.add('bg-slate-900', 'text-white');
-            }
+    } else if (preset === 'yesterday') {
+        const y = new Date();
+        y.setDate(y.getDate() - 1);
+        const yStr = fmt(y);
+        if (startInput) startInput.value = yStr;
+        if (endInput) endInput.value = yStr;
+        if (yestBtn) {
+            yestBtn.classList.remove('text-slate-700', 'hover:bg-slate-100');
+            yestBtn.classList.add('bg-slate-900', 'text-white');
         }
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const day = String(now.getDate()).padStart(2, '0');
-        const val = `${year}-${month}-${day}`;
-        if (input) input.value = val;
-        currentCamAuditDate = val;
+    } else if (preset === 'week') {
+        const w = new Date();
+        w.setDate(w.getDate() - 7);
+        if (startInput) startInput.value = fmt(w);
+        if (endInput) endInput.value = fmt(now);
+        if (weekBtn) {
+            weekBtn.classList.remove('text-slate-700', 'hover:bg-slate-100');
+            weekBtn.classList.add('bg-slate-900', 'text-white');
+        }
+    } else {
+        const tStr = fmt(now);
+        if (startInput) startInput.value = tStr;
+        if (endInput) endInput.value = tStr;
+        if (todayBtn) {
+            todayBtn.classList.remove('text-slate-700', 'hover:bg-slate-100');
+            todayBtn.classList.add('bg-slate-900', 'text-white');
+        }
     }
     loadCameraAudit(1);
+}
+
+function onCamAuditDateChange() {
+    const todayBtn = document.getElementById('camPresetToday');
+    const yestBtn = document.getElementById('camPresetYesterday');
+    const weekBtn = document.getElementById('camPresetWeek');
+    const allBtn = document.getElementById('camPresetAll');
+    [todayBtn, yestBtn, weekBtn, allBtn].forEach(b => {
+        if (b) {
+            b.classList.remove('bg-slate-900', 'text-white');
+            b.classList.add('text-slate-700', 'hover:bg-slate-100');
+        }
+    });
+    currentCamAuditDate = 'custom';
+    loadCameraAudit(1);
+}
+
+function resetCamAuditFilters() {
+    const searchInput = document.getElementById('camAuditSearch');
+    if (searchInput) searchInput.value = '';
+    const dirSelect = document.getElementById('camAuditDirection');
+    if (dirSelect) dirSelect.value = 'all';
+    const limitSelect = document.getElementById('camAuditLimitSelect');
+    if (limitSelect) limitSelect.value = '24';
+    currentCamAuditLimit = 24;
+    setCamAuditPreset('today');
 }
 
 function changeCamAuditLimit() {
@@ -2570,17 +2690,23 @@ function openCamProofModalById(id) {
 
 async function loadCameraAudit(page = currentCamAuditPage) {
     currentCamAuditPage = page;
-    const inputVal = document.getElementById('camAuditDate')?.value;
-    const dateParam = currentCamAuditDate === 'all' && !inputVal ? 'all' : (inputVal || '');
+    const startD = document.getElementById('camAuditDate')?.value || '';
+    const endD = document.getElementById('camAuditEndDate')?.value || '';
+    const dir = document.getElementById('camAuditDirection')?.value || 'all';
     const searchVal = document.getElementById('camAuditSearch')?.value || '';
     const gridEl = document.getElementById('camAuditGrid');
     if (!gridEl) return;
 
-    gridEl.innerHTML = `<div class="col-span-full py-16 text-center text-slate-400 font-bold">Loading camera proof logs...</div>`;
+    // Show loading skeleton only on page transition if grid is empty
+    if (!currentCamAuditItems.length) {
+        gridEl.innerHTML = `<div class="col-span-full py-16 text-center text-slate-400 font-bold">Loading camera proof logs...</div>`;
+    }
 
     try {
+        const dateParam = (currentCamAuditDate === 'all' && !startD) ? 'all' : (startD || '');
+        const url = `/api/camera-audit-logs?date=${encodeURIComponent(dateParam)}&start_date=${encodeURIComponent(startD)}&end_date=${encodeURIComponent(endD)}&direction=${encodeURIComponent(dir)}&page=${page}&limit=${currentCamAuditLimit}&search=${encodeURIComponent(searchVal)}`;
         const [logsRes, statsRes] = await Promise.all([
-            fetch(`/api/camera-audit-logs?date=${encodeURIComponent(dateParam)}&page=${page}&limit=${currentCamAuditLimit}&search=${encodeURIComponent(searchVal)}`),
+            fetch(url),
             fetch('/api/camera-audit-stats')
         ]);
         const data = await logsRes.json();
@@ -2589,7 +2715,7 @@ async function loadCameraAudit(page = currentCamAuditPage) {
         if (document.getElementById('camStatToday')) document.getElementById('camStatToday').innerText = (stats.today_total || 0).toLocaleString();
         if (document.getElementById('camStatWeek')) document.getElementById('camStatWeek').innerText = (stats.week_total || 0).toLocaleString();
         if (document.getElementById('camStatMonth')) document.getElementById('camStatMonth').innerText = (stats.month_total || 0).toLocaleString();
-        if (document.getElementById('camBadgeDate')) document.getElementById('camBadgeDate').innerText = dateParam === 'all' ? 'All Time' : (data.date || 'Today');
+        if (document.getElementById('camBadgeDate')) document.getElementById('camBadgeDate').innerText = data.date || 'Today';
 
         const logs = data.logs || [];
         currentCamAuditItems = logs;
@@ -2606,21 +2732,23 @@ async function loadCameraAudit(page = currentCamAuditPage) {
         }
 
         gridEl.innerHTML = logs.map(item => {
-            const hikImgSrc = item.image_path ? '/' + item.image_path : '';
+            const rawPath = (item.image_path || '').replace(/^\/+/, '');
+            const thumbSrc = rawPath ? `/api/thumbnail?path=${encodeURIComponent(rawPath)}&w=440&q=65` : '/static/img/no-car.svg';
+            const origSrc = rawPath ? '/' + rawPath : '';
             const dirBadge = item.direction === 'Entry' ?
                 '<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-200">ENTRY</span>' :
                 item.direction === 'Exit' ?
                 '<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-blue-100 text-blue-800 border border-blue-200">EXIT</span>' :
                 '<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-slate-100 text-slate-700 border border-slate-200">LINE CROSS</span>';
 
-            const cleanFileName = item.image_path ? item.image_path.split('/').pop() : '';
+            const cleanFileName = rawPath ? rawPath.split('/').pop() : '';
 
             return `
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md hover:border-slate-300 transition duration-200 flex flex-col group">
                 <div class="relative bg-slate-900 aspect-video overflow-hidden cursor-pointer" onclick="openCamProofModalById(${item.id})">
-                    <img src="${hikImgSrc}" alt="Vehicle Proof" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.src='/static/img/no-car.svg'">
+                    <img src="${thumbSrc}" alt="Vehicle Proof" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.onerror=null; this.src='${origSrc || '/static/img/no-car.svg'}';">
                     <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                        <span class="bg-white/90 text-slate-900 px-3 py-1.5 rounded-xl text-xs font-bold shadow-lg">View Proof</span>
+                        <span class="bg-white/90 text-slate-900 px-3 py-1.5 rounded-xl text-xs font-bold shadow-lg">Inspect Full HD</span>
                     </div>
                     <div class="absolute top-2.5 left-2.5">
                         ${dirBadge}
@@ -2642,7 +2770,7 @@ async function loadCameraAudit(page = currentCamAuditPage) {
                     <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
                         <span class="text-[11px] font-bold text-slate-500">Camera Audit Proof</span>
                         <button type="button" onclick="openCamProofModalById(${item.id})" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition">
-                            View Proof &rarr;
+                            Inspect HD &rarr;
                         </button>
                     </div>
                 </div>
@@ -2691,10 +2819,189 @@ function renderCamAuditPagination(total, page, totalPages, limit) {
     `;
 }
 
+// ==========================================
+// CAMERA PROOF MODAL & FORENSIC ZOOM TOOLS
+// ==========================================
+let camZoomState = {
+    scale: 1.0,
+    panX: 0,
+    panY: 0,
+    rotation: 0,
+    isDragging: false,
+    startX: 0,
+    startY: 0,
+    eventsBound: false
+};
+
+function updateCamProofTransform() {
+    const img = document.getElementById('camProofModalImgHik');
+    const badge = document.getElementById('camProofZoomLevel');
+    const hud = document.getElementById('camProofZoomHud');
+    if (!img) return;
+
+    img.style.transform = `translate(${camZoomState.panX}px, ${camZoomState.panY}px) scale(${camZoomState.scale}) rotate(${camZoomState.rotation}deg)`;
+    const pct = `${Math.round(camZoomState.scale * 100)}%`;
+    if (badge) badge.innerText = pct;
+    if (hud) hud.innerText = pct;
+}
+
+function camProofZoomIn() {
+    camZoomState.scale = Math.min(6.0, +(camZoomState.scale * 1.25).toFixed(2));
+    updateCamProofTransform();
+}
+
+function camProofZoomOut() {
+    camZoomState.scale = Math.max(0.25, +(camZoomState.scale / 1.25).toFixed(2));
+    if (camZoomState.scale <= 1.0) {
+        camZoomState.panX = 0;
+        camZoomState.panY = 0;
+    }
+    updateCamProofTransform();
+}
+
+function camProofZoomReset() {
+    camZoomState.scale = 1.0;
+    camZoomState.panX = 0;
+    camZoomState.panY = 0;
+    camZoomState.rotation = 0;
+    updateCamProofTransform();
+}
+
+function camProofZoom100() {
+    camZoomState.scale = 1.0;
+    camZoomState.panX = 0;
+    camZoomState.panY = 0;
+    updateCamProofTransform();
+}
+
+function camProofRotate() {
+    camZoomState.rotation = (camZoomState.rotation + 90) % 360;
+    updateCamProofTransform();
+}
+
+function initCamProofZoomEvents() {
+    if (camZoomState.eventsBound) return;
+    const container = document.getElementById('camProofCanvasContainer');
+    const img = document.getElementById('camProofModalImgHik');
+    if (!container || !img) return;
+
+    camZoomState.eventsBound = true;
+
+    // Mouse wheel zoom
+    container.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const zoomDelta = e.deltaY < 0 ? 1.15 : 0.85;
+        const newScale = Math.min(6.0, Math.max(0.25, +(camZoomState.scale * zoomDelta).toFixed(2)));
+        camZoomState.scale = newScale;
+        if (newScale <= 1.0) {
+            camZoomState.panX = 0;
+            camZoomState.panY = 0;
+        }
+        updateCamProofTransform();
+    }, { passive: false });
+
+    // Drag to pan
+    container.addEventListener('mousedown', (e) => {
+        if (e.button !== 0) return;
+        camZoomState.isDragging = true;
+        camZoomState.startX = e.clientX - camZoomState.panX;
+        camZoomState.startY = e.clientY - camZoomState.panY;
+        container.style.cursor = 'grabbing';
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        if (!camZoomState.isDragging) return;
+        camZoomState.panX = e.clientX - camZoomState.startX;
+        camZoomState.panY = e.clientY - camZoomState.startY;
+        updateCamProofTransform();
+    });
+
+    window.addEventListener('mouseup', () => {
+        if (camZoomState.isDragging) {
+            camZoomState.isDragging = false;
+            if (container) container.style.cursor = 'grab';
+        }
+    });
+
+    // Double-click toggle (1.0x <-> 2.2x)
+    container.addEventListener('dblclick', (e) => {
+        e.preventDefault();
+        if (camZoomState.scale > 1.2) {
+            camProofZoomReset();
+        } else {
+            camZoomState.scale = 2.2;
+            updateCamProofTransform();
+        }
+    });
+
+    // Touch events for mobile / tablets
+    let initialTouchDist = null;
+    container.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+            camZoomState.isDragging = true;
+            camZoomState.startX = e.touches[0].clientX - camZoomState.panX;
+            camZoomState.startY = e.touches[0].clientY - camZoomState.panY;
+        } else if (e.touches.length === 2) {
+            initialTouchDist = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+            );
+        }
+    }, { passive: true });
+
+    container.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 1 && camZoomState.isDragging) {
+            camZoomState.panX = e.touches[0].clientX - camZoomState.startX;
+            camZoomState.panY = e.touches[0].clientY - camZoomState.startY;
+            updateCamProofTransform();
+        } else if (e.touches.length === 2 && initialTouchDist) {
+            const dist = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+            );
+            const scaleFactor = dist / initialTouchDist;
+            camZoomState.scale = Math.min(6.0, Math.max(0.25, +(camZoomState.scale * scaleFactor).toFixed(2)));
+            initialTouchDist = dist;
+            updateCamProofTransform();
+        }
+    }, { passive: true });
+
+    container.addEventListener('touchend', () => {
+        camZoomState.isDragging = false;
+        initialTouchDist = null;
+    });
+
+    // Keyboard shortcuts
+    window.addEventListener('keydown', (e) => {
+        const modal = document.getElementById('camProofModal');
+        if (!modal || modal.classList.contains('hidden')) return;
+
+        if (e.key === 'Escape') {
+            closeCamProofModal();
+        } else if (e.key === '+' || e.key === '=') {
+            camProofZoomIn();
+        } else if (e.key === '-' || e.key === '_') {
+            camProofZoomOut();
+        } else if (e.key === '0') {
+            camProofZoomReset();
+        } else if (e.key.toLowerCase() === 'r') {
+            camProofRotate();
+        }
+    });
+}
+
+// Expose zoom functions to global window scope for inline onclicks
+window.camProofZoomIn = camProofZoomIn;
+window.camProofZoomOut = camProofZoomOut;
+window.camProofZoomReset = camProofZoomReset;
+window.camProofZoom100 = camProofZoom100;
+window.camProofRotate = camProofRotate;
+
 function openCamProofModal(itemOrHikImg, timestamp, direction, eventType) {
     const modal = document.getElementById('camProofModal');
     const hikImgEl = document.getElementById('camProofModalImgHik');
     const infoEl = document.getElementById('camProofModalInfo');
+    const resEl = document.getElementById('camProofResolution');
     if (!modal) return;
 
     let item = {};
@@ -2702,34 +3009,55 @@ function openCamProofModal(itemOrHikImg, timestamp, direction, eventType) {
         item = itemOrHikImg;
     } else {
         item = {
-            image_path: (itemOrHikImg || '').replace(/^\//, ''),
+            image_path: (itemOrHikImg || '').replace(/^\/+/, ''),
             timestamp: timestamp || '',
             direction: direction || 'Line Crossing',
             event_type: eventType || 'Hikvision Line Crossing'
         };
     }
 
-    const hikImgSrc = item.image_path ? '/' + item.image_path : '';
+    const rawPath = (item.image_path || '').replace(/^\/+/, '');
+    // ALWAYS load the FULL RESOLUTION ORIGINAL image in modal
+    const originalImgSrc = rawPath ? '/' + rawPath : '';
+
+    if (resEl) {
+        resEl.innerText = 'Loading Full HD Resolution...';
+    }
 
     if (hikImgEl) {
-        hikImgEl.src = hikImgSrc || '';
-        hikImgEl.onerror = () => { hikImgEl.src = '/static/img/no-car.svg'; };
+        hikImgEl.onload = function() {
+            if (resEl && hikImgEl.naturalWidth) {
+                resEl.innerText = `Native HD Resolution: ${hikImgEl.naturalWidth} × ${hikImgEl.naturalHeight} px (Full Quality Original)`;
+            }
+        };
+        hikImgEl.src = originalImgSrc || '';
+        hikImgEl.onerror = () => {
+            hikImgEl.src = '/static/img/no-car.svg';
+            if (resEl) resEl.innerText = 'Hikvision Overview Frame';
+        };
     }
+
+    // Reset zoom and pan on opening modal
+    camProofZoomReset();
+    initCamProofZoomEvents();
 
     if (infoEl) {
         infoEl.innerHTML = `
             <div class="flex items-center justify-between flex-wrap gap-3">
                 <div>
                     <div class="flex items-center gap-2">
-                        <h3 class="text-sm font-bold text-slate-800">Hikvision Camera Vehicle Proof</h3>
+                        <h3 class="text-sm font-bold text-slate-800">Hikvision Camera Proof (Original Quality)</h3>
                         <span class="text-[10px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded-md">${item.event_type || 'Line Crossing'}</span>
                     </div>
-                    <p class="text-xs text-slate-400 font-mono mt-0.5">Recorded: ${item.timestamp || ''} PKT &bull; Passage: ${item.direction || 'Line Crossing'}</p>
+                    <p class="text-xs text-slate-400 font-mono mt-0.5">Recorded: ${item.timestamp || ''} PKT &bull; Direction: ${item.direction || 'Line Crossing'} &bull; File: ${rawPath.split('/').pop()}</p>
                 </div>
                 <div class="flex items-center gap-2">
-                    ${hikImgSrc ? `<a href="${hikImgSrc}" download target="_blank" class="px-3 py-2 text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl hover:bg-emerald-100 transition shadow-2xs">
-                        Download HD Capture
+                    ${originalImgSrc ? `<a href="${originalImgSrc}" download target="_blank" class="px-3 py-2 text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl hover:bg-emerald-100 transition shadow-2xs">
+                        Download Original HD
                     </a>` : ''}
+                    <button type="button" onclick="closeCamProofModal()" class="px-3.5 py-2 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition">
+                        Close
+                    </button>
                 </div>
             </div>
         `;
@@ -2740,6 +3068,7 @@ function openCamProofModal(itemOrHikImg, timestamp, direction, eventType) {
 function closeCamProofModal() {
     const modal = document.getElementById('camProofModal');
     if (modal) modal.classList.add('hidden');
+    camProofZoomReset();
 }
 
 let lastSeenTransitId = null;
@@ -3054,9 +3383,12 @@ function showToast(type, title, message) {
 }
 
 function exportAuditData(format) {
-    const d = document.getElementById('auditDate')?.value || '';
+    const startD = document.getElementById('auditDate')?.value || '';
+    const endD = document.getElementById('auditEndDate')?.value || '';
+    const cam = document.getElementById('auditCamera')?.value || 'all';
     const q = (document.getElementById('auditSearch') || {}).value || '';
-    const url = `/api/audit/export?date=${encodeURIComponent(d)}&format=${format}&search=${encodeURIComponent(q)}&status=${currentAuditStatus}`;
+    const dateParam = (currentAuditDatePreset === 'all' && !startD) ? 'all' : startD;
+    const url = `/api/audit/export?date=${encodeURIComponent(dateParam)}&start_date=${encodeURIComponent(startD)}&end_date=${encodeURIComponent(endD)}&camera=${encodeURIComponent(cam)}&format=${format}&search=${encodeURIComponent(q)}&status=${currentAuditStatus}`;
     window.location.href = url;
 }
 
@@ -3178,5 +3510,20 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(loadCharts, 30000);
     setInterval(loadHardware, 3000);
     setInterval(loadActivity, 5000);
-    setInterval(loadAudit, 15000);
+
+    // Smart auto-refresh: Vehicle Audit refreshes every 12s when visible
+    setInterval(() => {
+        const logsTab = document.getElementById('tab-logs');
+        if (logsTab && !logsTab.classList.contains('hidden')) {
+            loadAudit(currentAuditPage);
+        }
+    }, 12000);
+
+    // Smart auto-refresh: Camera Vehicle Audit refreshes every 8s when visible
+    setInterval(() => {
+        const camTab = document.getElementById('tab-camera_audit');
+        if (camTab && !camTab.classList.contains('hidden')) {
+            loadCameraAudit(currentCamAuditPage);
+        }
+    }, 8000);
 });

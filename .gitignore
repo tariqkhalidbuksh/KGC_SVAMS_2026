@@ -27,6 +27,9 @@ static/ftp_uploads/*
 !static/ftp_uploads/.gitkeep
 static/camera_audits/*
 !static/camera_audits/.gitkeep
+static/cache/**
+!static/cache/
+!static/cache/.gitkeep
 
 # System files
 Thumbs.db

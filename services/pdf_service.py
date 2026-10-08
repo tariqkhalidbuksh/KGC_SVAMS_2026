@@ -60,15 +60,70 @@ def generate_audit_pdf(audit: dict) -> bytes:
     """
     entry = audit.get("entry") or {}
     exit_rec = audit.get("exit") or {}
-    thumb = entry or exit_rec or {}
+    if not entry and not exit_rec and "incident" in audit:
+        inc = audit["incident"]
+        if isinstance(inc, dict):
+            entry = inc.get("entry") or {}
+            exit_rec = inc.get("exit") or {}
+    thumb = entry or exit_rec or audit or {}
+
+    # Safety Net: If member name/id is missing or generic, resolve from members database table
+    raw_name = thumb.get("name") or ""
+    raw_mem_id = thumb.get("mem_id") or ""
+    tag_scanned = thumb.get("scanned_tag") or ""
+    v_plate = thumb.get("vehicle_number") or ""
+
+    if (not raw_name or "Unregister" in raw_name or "Unknown" in raw_name or not raw_mem_id or raw_mem_id in ("GUEST-LOG", "AI-CAM", "UNREGISTERED", "")) and (tag_scanned or raw_mem_id or v_plate):
+        try:
+            from database import get_db_connection
+            with config.DB_LOCK:
+                conn = get_db_connection()
+                try:
+                    m_row = None
+                    if tag_scanned and tag_scanned not in ("NO_TAG", ""):
+                        m_row = conn.execute("SELECT * FROM members WHERE E_tag_id = ? LIMIT 1", (tag_scanned,)).fetchone()
+                    if not m_row and raw_mem_id and raw_mem_id not in ("AI-CAM", "GUEST-LOG", "UNREGISTERED", ""):
+                        if v_plate and v_plate != "NO PLATE":
+                            m_row = conn.execute("SELECT * FROM members WHERE Mem_id = ? AND UPPER(REPLACE(Car_number, '-', '')) = UPPER(REPLACE(?, '-', '')) LIMIT 1", (raw_mem_id, v_plate)).fetchone()
+                        if not m_row:
+                            m_row = conn.execute("SELECT * FROM members WHERE Mem_id = ? LIMIT 1", (raw_mem_id,)).fetchone()
+                    if not m_row and v_plate and v_plate != "NO PLATE":
+                        m_row = conn.execute("SELECT * FROM members WHERE UPPER(REPLACE(Car_number, '-', '')) = UPPER(REPLACE(?, '-', '')) LIMIT 1", (v_plate,)).fetchone()
+                    if m_row:
+                        m = dict(m_row)
+                        if m.get("Name"):
+                            thumb["name"] = m["Name"]
+                            if entry: entry["name"] = m["Name"]
+                            if exit_rec: exit_rec["name"] = m["Name"]
+                        if m.get("Mem_id"):
+                            thumb["mem_id"] = m["Mem_id"]
+                            if entry: entry["mem_id"] = m["Mem_id"]
+                            if exit_rec: exit_rec["mem_id"] = m["Mem_id"]
+                        if m.get("Make_Model"):
+                            thumb["make_model"] = m["Make_Model"]
+                            if entry and not entry.get("make_model"): entry["make_model"] = m["Make_Model"]
+                            if exit_rec and not exit_rec.get("make_model"): exit_rec["make_model"] = m["Make_Model"]
+                        if m.get("Profile_pic"):
+                            thumb["profile_pic"] = m["Profile_pic"]
+                            if entry and not entry.get("profile_pic"): entry["profile_pic"] = m["Profile_pic"]
+                            if exit_rec and not exit_rec.get("profile_pic"): exit_rec["profile_pic"] = m["Profile_pic"]
+                        if m.get("Car_number") and (not thumb.get("vehicle_number") or thumb.get("vehicle_number") == "NO PLATE"):
+                            thumb["vehicle_number"] = m["Car_number"]
+                finally:
+                    conn.close()
+        except Exception:
+            pass
+
+    name_str = thumb.get("name") or "Unregistered Visitor"
+    mem_id_str = thumb.get("mem_id") or "N/A"
 
     is_unreg = bool(
         "Unknown" in (thumb.get("access_type") or "") or
         "No RFID" in (thumb.get("access_type") or "") or
-        "Unregistered" in (thumb.get("name") or "") or
-        thumb.get("mem_id") in ("GUEST-LOG", "AI-CAM", "UNREGISTERED", "")
+        "Unregistered" in (name_str or "") or
+        mem_id_str in ("GUEST-LOG", "AI-CAM", "UNREGISTERED", "N/A", "")
     )
-    is_member = not is_unreg and bool(thumb.get("mem_id"))
+    is_member = not is_unreg and bool(mem_id_str) and mem_id_str not in ("GUEST-LOG", "AI-CAM", "UNREGISTERED", "N/A")
 
     ref_id = f"AUD-{str(thumb.get('id', 1)).zfill(6)}"
     duration = audit.get("duration") or "-- --"
