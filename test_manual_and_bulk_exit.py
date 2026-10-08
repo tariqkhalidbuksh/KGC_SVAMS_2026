@@ -153,3 +153,51 @@ def test_bulk_manual_exit_execution():
 
     res_beta = client.get("/api/audit?search=XYZ-222")
     assert res_beta.json()["audits"][0]["status"] == "Exited"
+
+
+def test_unregistered_car_manual_exit():
+    """Verify that unknown/unregistered vehicles can be manually exited cleanly."""
+    conn = get_db_connection()
+    now = datetime.now()
+    entry_time = (now - timedelta(hours=1)).strftime("%Y-%m-%d %H:%M:%S")
+    cur = conn.execute("""
+        INSERT INTO daily_logs (mem_id, name, vehicle_number, access_type, direction, gate_no, scanned_tag, timestamp)
+        VALUES ('UNREGISTERED', 'Unregistered Driver', 'UNREGISTERED', 'Optical Capture - No RFID', 'Entry', 'Gate-01-In', 'NO_TAG', ?)
+    """, (entry_time,))
+    entry_id = cur.lastrowid
+    conn.commit()
+    conn.close()
+
+    # Verify initial status is Alert / Inside
+    res = client.get("/api/audit?search=Unregistered")
+    assert res.status_code == 200
+    audits = res.json()["audits"]
+    unreg_item = next((a for a in audits if a.get("entry") and a["entry"]["id"] == entry_id), None)
+    assert unreg_item is not None
+    assert unreg_item["status"] in ("Alert / Inside", "Inside Facility")
+
+    # Perform manual exit with log_id
+    exit_time = now.strftime("%Y-%m-%d %H:%M:%S")
+    manual_res = client.post("/api/audit/manual-exit", json={
+        "log_id": entry_id,
+        "vehicle_number": "UNREGISTERED",
+        "name": "Unregistered Driver",
+        "timestamp": exit_time,
+        "gate_no": "Gate-01-Out",
+        "notes": "Guard verified manual departure"
+    })
+    assert manual_res.status_code == 200
+    m_data = manual_res.json()
+    assert m_data["ok"] is True
+    assert "Manual Exit" in m_data["access_type"]
+
+    # Verify audit table now pairs the unregistered vehicle and marks it Exited
+    res_after = client.get("/api/audit?search=Unregistered")
+    assert res_after.status_code == 200
+    audits_after = res_after.json()["audits"]
+    paired_item = next((a for a in audits_after if a.get("entry") and a["entry"]["id"] == entry_id), None)
+    assert paired_item is not None
+    assert paired_item["status"] == "Exited"
+    assert paired_item["exit"] is not None
+    assert paired_item["duration"] is not None
+

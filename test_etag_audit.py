@@ -175,3 +175,50 @@ def test_etag_audit_empty_or_whitespace():
     assert res.status_code == 400
     res2 = client.get("/api/etag/audit?tag_id=   ")
     assert res2.status_code == 400
+
+
+def test_etag_audit_date_filters():
+    """Verify that E-TAG audit date filtering (today, yesterday, week, month, all) works accurately."""
+    tag = "E280116060000204"
+
+    # All time
+    res_all = client.get(f"/api/etag/audit?tag_id={tag}&date_filter=all")
+    assert res_all.status_code == 200
+    data_all = res_all.json()
+    assert data_all["summary"]["total_detections"] == 6
+
+    # Today
+    res_today = client.get(f"/api/etag/audit?tag_id={tag}&date_filter=today")
+    assert res_today.status_code == 200
+    data_today = res_today.json()
+    assert data_today["date_filter"] == "today"
+    # Should only return detections for 2026-10-08 (4 detections)
+    assert data_today["summary"]["total_detections"] == 4
+    assert len(data_today["daily_breakdown"]) == 1
+    assert data_today["daily_breakdown"][0]["date"] == "2026-10-08"
+
+    # Week (past 7 days covers both 2026-10-06 and 2026-10-08)
+    res_week = client.get(f"/api/etag/audit?tag_id={tag}&date_filter=week")
+    assert res_week.status_code == 200
+    data_week = res_week.json()
+    assert data_week["summary"]["total_detections"] == 6
+
+
+def test_recent_tags_deduplication_and_search():
+    """Verify that recent-tags returns strictly unique tags and supports search."""
+    res = client.get("/api/etag/recent-tags?limit=50")
+    assert res.status_code == 200
+    data = res.json()
+    tags = data["tags"]
+    assert len(tags) > 0
+
+    # Ensure uniqueness: every tag appears at most once
+    tag_ids = [t["scanned_tag"] for t in tags]
+    assert len(tag_ids) == len(set(tag_ids))
+
+    # Test search by member name or plate
+    search_res = client.get("/api/etag/recent-tags?search=Tariq")
+    assert search_res.status_code == 200
+    search_data = search_res.json()
+    assert any(t["scanned_tag"] == "E280116060000204" for t in search_data["tags"])
+

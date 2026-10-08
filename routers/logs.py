@@ -195,10 +195,15 @@ def analyze_day_movements(movements):
     }
 
 def _identity_key(log_row):
-    if log_row['mem_id'] and log_row['mem_id'] not in ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED'):
-        return ('member', log_row['mem_id'])
-    if log_row.get('scanned_tag') and log_row['scanned_tag'] not in ('NO_TAG', ''):
-        return ('tag', log_row['scanned_tag'])
+    mem = (log_row.get('mem_id') or '').strip().upper()
+    if mem and mem not in ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', 'NONE', 'N/A', ''):
+        return ('member', mem)
+    tag = (log_row.get('scanned_tag') or '').strip().upper()
+    if tag and tag not in ('NO_TAG', 'NONE', ''):
+        return ('tag', tag)
+    plate = (log_row.get('vehicle_number') or '').strip().upper()
+    if plate and plate not in ('UNKNOWN', 'UNREGISTERED', 'NO PLATE', 'NO_PLATE', 'NONE', '-', 'N/A', ''):
+        return ('plate', plate)
     return None
 
 @router.get("/latest-log")
@@ -367,25 +372,38 @@ def _build_paired_audits(logs):
 
     for entry_event in entries:
         exit_event = None
-        key = _identity_key(entry_event)
-        if key:
-            for candidate_exit in exits:
-                if candidate_exit['id'] in matched_exit_ids:
-                    continue
-                if _identity_key(candidate_exit) == key:
-                    if str(candidate_exit['timestamp']) >= str(entry_event['timestamp']):
-                        exit_event = candidate_exit
-                        matched_exit_ids.add(candidate_exit['id'])
-                        break
+        # 1. Match explicit manual exit reference token (pairs unregistered / unknown visitor entries)
+        entry_ref_token = f"[Ref #{entry_event['id']}]"
+        for candidate_exit in exits:
+            if candidate_exit['id'] in matched_exit_ids:
+                continue
+            acc = candidate_exit.get('access_type') or ''
+            if entry_ref_token in acc:
+                exit_event = candidate_exit
+                matched_exit_ids.add(candidate_exit['id'])
+                break
 
-            if not exit_event:
+        # 2. Match by identity key (member account, RFID EPC tag, or vehicle license plate)
+        if not exit_event:
+            key = _identity_key(entry_event)
+            if key:
                 for candidate_exit in exits:
                     if candidate_exit['id'] in matched_exit_ids:
                         continue
                     if _identity_key(candidate_exit) == key:
-                        exit_event = candidate_exit
-                        matched_exit_ids.add(candidate_exit['id'])
-                        break
+                        if str(candidate_exit['timestamp']) >= str(entry_event['timestamp']):
+                            exit_event = candidate_exit
+                            matched_exit_ids.add(candidate_exit['id'])
+                            break
+
+                if not exit_event:
+                    for candidate_exit in exits:
+                        if candidate_exit['id'] in matched_exit_ids:
+                            continue
+                        if _identity_key(candidate_exit) == key:
+                            exit_event = candidate_exit
+                            matched_exit_ids.add(candidate_exit['id'])
+                            break
 
         actual_entry = entry_event
         actual_exit = exit_event
@@ -1231,8 +1249,8 @@ async def post_manual_exit(request: Request):
     custom_ts = (body.get("timestamp") or "").strip()
     notes = (body.get("notes") or "").strip()
 
-    if not vehicle_number and not scanned_tag and not mem_id:
-        raise HTTPException(400, "Vehicle Number, RFID Tag, or Member ID is required")
+    if not vehicle_number and not scanned_tag and not mem_id and not log_id:
+        raise HTTPException(400, "Vehicle Number, RFID Tag, Member ID, or Entry Log ID is required")
 
     exit_timestamp = None
     if custom_ts:
@@ -1252,6 +1270,19 @@ async def post_manual_exit(request: Request):
         conn = get_db_connection()
         try:
             with conn:
+                # If log_id is supplied, look up the target entry record for complete attribution
+                if log_id:
+                    l_row = conn.execute("SELECT id, mem_id, name, vehicle_number, scanned_tag FROM daily_logs WHERE id = ? LIMIT 1", (log_id,)).fetchone()
+                    if l_row:
+                        if not vehicle_number or vehicle_number in ("UNREGISTERED", "UNKNOWN", "NO PLATE", ""):
+                            vehicle_number = l_row["vehicle_number"] or "UNREGISTERED"
+                        if not name or "Unregistered" in name or name == "Visitor / Manual Clearance":
+                            name = l_row["name"] or "Visitor / Unregistered"
+                        if not mem_id:
+                            mem_id = l_row["mem_id"] or "UNREGISTERED"
+                        if not scanned_tag or scanned_tag == "NO_TAG":
+                            scanned_tag = l_row["scanned_tag"] or "NO_TAG"
+
                 if not name or not vehicle_number:
                     if scanned_tag and scanned_tag != "NO_TAG":
                         m_row = conn.execute("SELECT Mem_id, Name, Car_number FROM members WHERE E_tag_id = ? LIMIT 1", (scanned_tag,)).fetchone()
@@ -1266,17 +1297,10 @@ async def post_manual_exit(request: Request):
                             vehicle_number = vehicle_number or m_row["Car_number"]
                             scanned_tag = scanned_tag or m_row["E_tag_id"]
 
-                if not name and log_id:
-                    l_row = conn.execute("SELECT mem_id, name, vehicle_number, scanned_tag FROM daily_logs WHERE id = ? LIMIT 1", (log_id,)).fetchone()
-                    if l_row:
-                        name = name or l_row["name"]
-                        vehicle_number = vehicle_number or l_row["vehicle_number"]
-                        mem_id = mem_id or l_row["mem_id"]
-                        scanned_tag = scanned_tag or l_row["scanned_tag"]
-
                 display_name = name or "Visitor / Manual Clearance"
                 display_vehicle = vehicle_number or scanned_tag or "UNREGISTERED"
-                access_type_label = f"Manual Exit ({notes})" if notes else "Manual Exit"
+                ref_suffix = f" [Ref #{log_id}]" if log_id else ""
+                access_type_label = f"Manual Exit{ref_suffix} ({notes})" if notes else f"Manual Exit{ref_suffix}"
 
                 cur = conn.execute("""
                     INSERT INTO daily_logs (mem_id, name, vehicle_number, access_type, direction, gate_no, image_path, scanned_tag, timestamp)
@@ -1402,6 +1426,10 @@ async def post_bulk_manual_exit(request: Request):
                         })
                         continue
 
+                    entry_log_id = (item.get("entry") or {}).get("id")
+                    ref_suffix = f" [Ref #{entry_log_id}]" if entry_log_id else ""
+                    bulk_access_label = f"Bulk Manual Exit{ref_suffix} ({notes})" if notes else f"Bulk Manual Exit{ref_suffix}"
+
                     conn.execute("""
                         INSERT INTO daily_logs (mem_id, name, vehicle_number, access_type, direction, gate_no, scanned_tag, timestamp)
                         VALUES (?, ?, ?, ?, 'Exit', ?, ?, ?)
@@ -1409,7 +1437,7 @@ async def post_bulk_manual_exit(request: Request):
                         v.get("mem_id") or "BULK-EXIT",
                         v_name,
                         v.get("vehicle_number") or plate or "UNREGISTERED",
-                        f"Bulk Manual Exit ({notes})",
+                        bulk_access_label,
                         gate_no,
                         v.get("scanned_tag") or "NO_TAG",
                         exit_timestamp

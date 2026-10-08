@@ -3675,22 +3675,31 @@ function showToast(message, type = 'info') {
     }, 3000);
 }
 
-async function loadRecentEtagTags() {
+let currentEtagDateFilter = 'all';
+let etagDirectorySearchTimer = null;
+
+async function loadRecentEtagTags(searchQuery = '') {
     const pillsContainer = document.getElementById('etagRecentPills');
     const welcomeTable = document.getElementById('etagWelcomeTableBody');
+    const countBadge = document.getElementById('etagUniqueTagsTotalBadge');
     if (!pillsContainer && !welcomeTable) return;
 
     try {
-        const res = await fetch('/api/etag/recent-tags?limit=15');
+        const url = `/api/etag/recent-tags?limit=100${searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : ''}`;
+        const res = await fetch(url);
         if (!res.ok) throw new Error('Failed to load recent tags');
         const data = await res.json();
         const tags = data.tags || [];
+
+        if (countBadge) {
+            countBadge.innerText = `${tags.length} Unique RFID Transponders`;
+        }
 
         if (pillsContainer) {
             if (tags.length === 0) {
                 pillsContainer.innerHTML = '<span class="text-slate-500 italic text-[11px]">No RFID tag scans recorded yet.</span>';
             } else {
-                pillsContainer.innerHTML = tags.slice(0, 7).map(t => {
+                pillsContainer.innerHTML = tags.slice(0, 10).map(t => {
                     const tagShort = t.scanned_tag.length > 16 ? t.scanned_tag.substring(0, 8) + '...' + t.scanned_tag.slice(-6) : t.scanned_tag;
                     return `
                         <button type="button" onclick="auditEtag('${t.scanned_tag}')" 
@@ -3707,7 +3716,7 @@ async function loadRecentEtagTags() {
 
         if (welcomeTable) {
             if (tags.length === 0) {
-                welcomeTable.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-slate-400 text-xs">No RFID tag scan records found in the database.</td></tr>';
+                welcomeTable.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400 text-xs">${searchQuery ? `No unique RFID tags matching "${searchQuery}".` : 'No RFID tag scan records found in the database.'}</td></tr>`;
             } else {
                 welcomeTable.innerHTML = tags.map((t, idx) => {
                     const isMem = Boolean(t.mem_id && t.mem_id !== 'GUEST-LOG' && t.mem_id !== 'UNREGISTERED');
@@ -3741,6 +3750,53 @@ async function loadRecentEtagTags() {
     }
 }
 
+function onEtagDirectorySearch(val) {
+    clearTimeout(etagDirectorySearchTimer);
+    etagDirectorySearchTimer = setTimeout(() => {
+        loadRecentEtagTags(val);
+    }, 250);
+}
+
+function backToEtagDirectory() {
+    currentAuditedTag = null;
+    currentAuditedTagData = null;
+    currentEtagDateFilter = 'all';
+
+    const welcomeState = document.getElementById('etagAuditWelcomeState');
+    const activeContainer = document.getElementById('etagActiveAuditContainer');
+    if (welcomeState) welcomeState.classList.remove('hidden');
+    if (activeContainer) activeContainer.classList.add('hidden');
+
+    const input = document.getElementById('etagSearchInput');
+    if (input) input.value = '';
+
+    try {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('tag');
+        url.searchParams.delete('etag');
+        window.history.replaceState({ tab: 'etag_audit' }, '', url.toString());
+    } catch (e) {}
+
+    loadRecentEtagTags();
+}
+
+function setEtagDateFilter(preset) {
+    currentEtagDateFilter = preset || 'all';
+    ['All', 'Today', 'Yesterday', 'Week', 'Month'].forEach(k => {
+        const btn = document.getElementById(`etagFilter${k}`);
+        if (btn) {
+            if (currentEtagDateFilter.toLowerCase() === k.toLowerCase() || (currentEtagDateFilter === 'all' && k === 'All')) {
+                btn.className = 'etag-date-pill px-3 py-1 rounded-lg font-bold bg-indigo-600 text-white shadow-2xs transition';
+            } else {
+                btn.className = 'etag-date-pill px-3 py-1 rounded-lg font-bold text-slate-600 hover:bg-slate-200 transition';
+            }
+        }
+    });
+    if (currentAuditedTag) {
+        loadEtagAudit(currentAuditedTag, false, currentEtagDateFilter);
+    }
+}
+
 function onEtagSearchSubmit(e) {
     if (e) e.preventDefault();
     const input = document.getElementById('etagSearchInput');
@@ -3758,13 +3814,29 @@ function auditEtag(tagId) {
     loadEtagAudit(tagId);
 }
 
-async function loadEtagAudit(tagId, isSilent = false) {
+async function loadEtagAudit(tagId, isSilent = false, dateFilter = currentEtagDateFilter) {
     const cleanTag = (tagId || '').trim();
     if (!cleanTag) return;
     currentAuditedTag = cleanTag;
+    currentEtagDateFilter = dateFilter || 'all';
 
     const input = document.getElementById('etagSearchInput');
     if (input) input.value = cleanTag;
+
+    const activeTitle = document.getElementById('etagActiveTagTitle');
+    if (activeTitle) activeTitle.innerText = cleanTag;
+
+    // Update filter buttons appearance
+    ['All', 'Today', 'Yesterday', 'Week', 'Month'].forEach(k => {
+        const btn = document.getElementById(`etagFilter${k}`);
+        if (btn) {
+            if (currentEtagDateFilter.toLowerCase() === k.toLowerCase() || (currentEtagDateFilter === 'all' && k === 'All')) {
+                btn.className = 'etag-date-pill px-3 py-1 rounded-lg font-bold bg-indigo-600 text-white shadow-2xs transition';
+            } else {
+                btn.className = 'etag-date-pill px-3 py-1 rounded-lg font-bold text-slate-600 hover:bg-slate-200 transition';
+            }
+        }
+    });
 
     const btn = document.getElementById('btnRunEtagAudit');
     let origBtnText = '';
@@ -3775,7 +3847,7 @@ async function loadEtagAudit(tagId, isSilent = false) {
     }
 
     try {
-        const res = await fetch(`/api/etag/audit?tag_id=${encodeURIComponent(cleanTag)}`);
+        const res = await fetch(`/api/etag/audit?tag_id=${encodeURIComponent(cleanTag)}&date_filter=${encodeURIComponent(currentEtagDateFilter)}`);
         if (!res.ok) {
             const errJson = await res.json().catch(() => ({}));
             throw new Error(errJson.detail || `Server error (${res.status})`);

@@ -1427,12 +1427,19 @@
 
                     <!-- Top Scanned Tags Table inside Welcome State -->
                     <div class="mt-4 pt-6 border-t border-slate-100">
-                        <div class="flex justify-between items-center mb-4">
-                            <h4 class="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                Top Active RFID Tags (1-Click Inspection)
-                            </h4>
-                            <span class="text-[11px] text-slate-400">Click any row to audit tag</span>
+                        <div class="flex justify-between items-center mb-4 flex-wrap gap-3">
+                            <div>
+                                <h4 class="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                    <span>All Unique RFID Tags &amp; Transponders Directory</span>
+                                </h4>
+                                <p class="text-[11px] text-slate-500">Deduplicated index of active UHF RFID tags detected across the facility with distinct total scans and member identities.</p>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <input type="text" id="etagDirectorySearchInput" oninput="onEtagDirectorySearch(this.value)" placeholder="Filter tags, plates, members..." 
+                                       class="text-xs font-mono font-bold px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:border-indigo-500 w-56">
+                                <span class="text-[11px] font-mono font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-200" id="etagUniqueTagsTotalBadge">-- Unique Tags</span>
+                            </div>
                         </div>
                         <div class="overflow-x-auto rounded-2xl border border-slate-200">
                             <table class="w-full text-left text-xs">
@@ -1447,7 +1454,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="etagWelcomeTableBody" class="divide-y divide-slate-100">
-                                    <tr><td colspan="6" class="py-6 text-center text-slate-400">Loading top active tags...</td></tr>
+                                    <tr><td colspan="6" class="py-6 text-center text-slate-400">Loading unique active tags...</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -1456,6 +1463,37 @@
 
                 <!-- Active Audit Dossier Container (Hidden initially until tag audited) -->
                 <div id="etagActiveAuditContainer" class="hidden space-y-6">
+                    <!-- Audit Navigation Toolbar & Date Filter Selector -->
+                    <div class="flex items-center justify-between flex-wrap gap-3 bg-white p-4 md:p-5 rounded-2xl border border-slate-200 shadow-sm">
+                        <div class="flex items-center gap-3">
+                            <button type="button" onclick="backToEtagDirectory()" 
+                                    class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 shadow-2xs transition">
+                                <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                                <span>&larr; Back to Tag Directory</span>
+                            </button>
+                            <span class="text-slate-300">|</span>
+                            <div class="text-xs">
+                                <span class="text-slate-400 font-bold uppercase tracking-wider text-[10px]">Audited Tag:</span>
+                                <span id="etagActiveTagTitle" class="font-mono text-indigo-700 font-black text-sm ml-1 select-all">--</span>
+                            </div>
+                        </div>
+
+                        <!-- Date Range Filters (Today, Yesterday, Week, Month, All Time) -->
+                        <div class="flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-xl border border-slate-200 text-xs">
+                            <span class="text-[10px] font-black uppercase text-slate-400 px-2 tracking-wider">Filter:</span>
+                            <button type="button" id="etagFilterAll" onclick="setEtagDateFilter('all')" 
+                                    class="etag-date-pill px-3 py-1 rounded-lg font-bold bg-indigo-600 text-white shadow-2xs transition">All Time</button>
+                            <button type="button" id="etagFilterToday" onclick="setEtagDateFilter('today')" 
+                                    class="etag-date-pill px-3 py-1 rounded-lg font-bold text-slate-600 hover:bg-slate-200 transition">Today</button>
+                            <button type="button" id="etagFilterYesterday" onclick="setEtagDateFilter('yesterday')" 
+                                    class="etag-date-pill px-3 py-1 rounded-lg font-bold text-slate-600 hover:bg-slate-200 transition">Yesterday</button>
+                            <button type="button" id="etagFilterWeek" onclick="setEtagDateFilter('week')" 
+                                    class="etag-date-pill px-3 py-1 rounded-lg font-bold text-slate-600 hover:bg-slate-200 transition">This Week</button>
+                            <button type="button" id="etagFilterMonth" onclick="setEtagDateFilter('month')" 
+                                    class="etag-date-pill px-3 py-1 rounded-lg font-bold text-slate-600 hover:bg-slate-200 transition">This Month</button>
+                        </div>
+                    </div>
+
                     <!-- Member & Vehicle Identity Dossier -->
                     <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-sm" id="etagDossierCard"></div>
 
