@@ -8,6 +8,14 @@ import requests
 import config
 from database import get_setting
 
+# Suppress verbose FFmpeg/OpenCV C-level decoder logs (e.g. HEVC POC jitter warnings)
+os.environ["OPENCV_LOG_LEVEL"] = "OFF"
+os.environ["OPENCV_FFMPEG_LOGLEVEL"] = "-8"
+try:
+    cv2.setLogLevel(0)
+except Exception:
+    pass
+
 YOLO_MODEL = None
 YOLO_LOCK = threading.Lock()
 
@@ -120,8 +128,8 @@ def preview_stream_worker(cam_key: str, url_setting_key: str):
             time.sleep(2)
             continue
         try:
-            # Real-time zero-lag RTSP options: TCP transport, drop buffer queues, minimal delay
-            os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp|fflags;nobuffer|flags;low_delay|max_delay;100000"
+            # Real-time zero-lag RTSP options: TCP transport, drop buffer queues, minimal delay, quiet logs
+            os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp|fflags;nobuffer|flags;low_delay|max_delay;100000|loglevel;fatal"
             cap = cv2.VideoCapture(cam_url, cv2.CAP_FFMPEG)
             cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 

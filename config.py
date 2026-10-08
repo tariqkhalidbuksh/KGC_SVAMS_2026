@@ -1,4 +1,8 @@
 import os
+# Suppress verbose FFmpeg/OpenCV C-level video decoder warnings
+os.environ.setdefault("OPENCV_LOG_LEVEL", "OFF")
+os.environ.setdefault("OPENCV_FFMPEG_LOGLEVEL", "-8")
+
 import threading
 from collections import deque
 from datetime import datetime, timezone, timedelta
