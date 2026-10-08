@@ -1575,7 +1575,9 @@ async def post_bulk_manual_exit(request: Request):
 
                 exited_records = []
                 exempted_records = []
-                seen_keys = set()
+                seen_exempt = set()
+                seen_vehicles = set()
+                cleared_incidents = 0
 
                 for item in inside_audits:
                     v = item.get("entry") or item.get("exit") or {}
@@ -1585,9 +1587,6 @@ async def post_bulk_manual_exit(request: Request):
                     v_name = v.get("name") or "Club Vehicle"
 
                     key = plate or tag or mem
-                    if not key or key in seen_keys:
-                        continue
-                    seen_keys.add(key)
 
                     is_exempt = False
                     if plate and plate in exception_set:
@@ -1598,11 +1597,13 @@ async def post_bulk_manual_exit(request: Request):
                         is_exempt = True
 
                     if is_exempt:
-                        exempted_records.append({
-                            "vehicle_number": v.get("vehicle_number") or plate,
-                            "mem_id": v.get("mem_id") or mem,
-                            "name": v_name
-                        })
+                        if key and key not in seen_exempt:
+                            seen_exempt.add(key)
+                            exempted_records.append({
+                                "vehicle_number": v.get("vehicle_number") or plate,
+                                "mem_id": v.get("mem_id") or mem,
+                                "name": v_name
+                            })
                         continue
 
                     entry_log_id = (item.get("entry") or {}).get("id")
@@ -1627,22 +1628,26 @@ async def post_bulk_manual_exit(request: Request):
                     elif tag and tag != "NO_TAG":
                         conn.execute("UPDATE members SET Current_Location = 'Outside' WHERE E_tag_id = ?", (v.get("scanned_tag"),))
 
-                    exited_records.append({
-                        "vehicle_number": v.get("vehicle_number") or plate,
-                        "mem_id": v.get("mem_id") or mem,
-                        "name": v_name
-                    })
+                    cleared_incidents += 1
+                    if key and key not in seen_vehicles:
+                        seen_vehicles.add(key)
+                        exited_records.append({
+                            "vehicle_number": v.get("vehicle_number") or plate,
+                            "mem_id": v.get("mem_id") or mem,
+                            "name": v_name
+                        })
 
                 config.LATEST_LOG_CACHE = None
 
                 return {
                     "ok": True,
-                    "exited_count": len(exited_records),
+                    "exited_count": cleared_incidents,
+                    "unique_vehicles_count": len(exited_records),
                     "exempted_count": len(exempted_records),
                     "timestamp": exit_timestamp,
                     "exited_vehicles": exited_records,
                     "exempted_vehicles": exempted_records,
-                    "message": f"Bulk clearance complete: {len(exited_records)} vehicles marked Exited. {len(exempted_records)} vehicles retained inside per Exception Whitelist."
+                    "message": f"Bulk clearance complete: {cleared_incidents} incident(s) across {len(exited_records)} vehicle(s) marked Exited. {len(exempted_records)} vehicles retained inside per Exception Whitelist."
                 }
         finally:
             conn.close()
