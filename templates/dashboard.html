@@ -697,7 +697,7 @@
                         <div class="flex items-center gap-2.5 flex-wrap">
                             <!-- Date Range & Presets -->
                             <div class="flex items-center gap-1 bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
-                                <button type="button" id="auditPresetToday" onclick="setAuditDatePreset('today')" class="audit-date-btn px-2.5 py-1 text-xs font-bold rounded-lg bg-slate-900 text-white transition">Today</button>
+                                <button type="button" id="auditPresetToday" onclick="setAuditDatePreset('today')" class="audit-date-btn px-2.5 py-1 text-xs font-bold rounded-lg bg-indigo-600 text-white transition">Today</button>
                                 <button type="button" id="auditPresetYesterday" onclick="setAuditDatePreset('yesterday')" class="audit-date-btn px-2.5 py-1 text-xs font-bold rounded-lg text-slate-700 hover:bg-slate-100 transition">Yesterday</button>
                                 <button type="button" id="auditPresetWeek" onclick="setAuditDatePreset('week')" class="audit-date-btn px-2.5 py-1 text-xs font-bold rounded-lg text-slate-700 hover:bg-slate-100 transition">7 Days</button>
                                 <button type="button" id="auditPresetAll" onclick="setAuditDatePreset('all')" class="audit-date-btn px-2.5 py-1 text-xs font-bold rounded-lg text-slate-700 hover:bg-slate-100 transition">All Time</button>
@@ -831,7 +831,7 @@
                         <div class="flex items-center gap-2.5 flex-wrap">
                             <!-- Date Range & Presets -->
                             <div class="flex items-center gap-1 bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
-                                <button type="button" id="camPresetToday" onclick="setCamAuditPreset('today')" class="cam-date-btn px-2.5 py-1 text-xs font-bold rounded-lg bg-slate-900 text-white transition">Today</button>
+                                <button type="button" id="camPresetToday" onclick="setCamAuditPreset('today')" class="cam-date-btn px-2.5 py-1 text-xs font-bold rounded-lg bg-indigo-600 text-white transition">Today</button>
                                 <button type="button" id="camPresetYesterday" onclick="setCamAuditPreset('yesterday')" class="cam-date-btn px-2.5 py-1 text-xs font-bold rounded-lg text-slate-700 hover:bg-slate-100 transition">Yesterday</button>
                                 <button type="button" id="camPresetWeek" onclick="setCamAuditPreset('week')" class="cam-date-btn px-2.5 py-1 text-xs font-bold rounded-lg text-slate-700 hover:bg-slate-100 transition">7 Days</button>
                                 <button type="button" id="camPresetAll" onclick="setCamAuditPreset('all')" class="cam-date-btn px-2.5 py-1 text-xs font-bold rounded-lg text-slate-700 hover:bg-slate-100 transition">All Time</button>
@@ -1157,7 +1157,7 @@
                         </div>
 
                         <div class="pt-2 flex items-center gap-4">
-                            <button type="button" id="btnSaveConfig" onclick="saveSettings()" class="bg-slate-900 hover:bg-slate-800 text-white px-8 py-3.5 rounded-xl font-bold shadow-md transition">Save Configuration</button>
+                            <button type="button" id="btnSaveConfig" onclick="saveSettings()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3.5 rounded-xl font-bold shadow-md transition">Save Configuration</button>
                             <span id="saveSettingsNotice" class="text-xs text-slate-500 font-semibold"></span>
                         </div>
                     </div>
@@ -1212,7 +1212,7 @@
                                        onkeydown="if(event.key==='Enter') addBulkExitException()"
                                        class="flex-1 text-xs font-mono font-bold border border-slate-200 rounded-xl p-2.5 bg-white focus:outline-none focus:border-indigo-500 uppercase">
                                 <button type="button" onclick="addBulkExitException()" 
-                                        class="px-4 py-2.5 rounded-xl text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white shadow-xs transition flex items-center gap-1.5">
+                                        class="px-4 py-2.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs transition flex items-center gap-1.5">
                                     <span>+ Add to Whitelist</span>
                                 </button>
                             </div>
@@ -1358,7 +1358,7 @@
                     <div class="relative z-10 flex justify-between items-start flex-wrap gap-4">
                         <div>
                             <div class="flex items-center gap-2.5 mb-2">
-                                <span class="px-3 py-0.5 rounded-full text-[10px] font-black tracking-wider uppercase bg-indigo-500/30 text-indigo-300 border border-indigo-400/30">RFID Intelligence Center</span>
+                                <span class="px-3 py-0.5 rounded-full text-[10px] font-black tracking-wider uppercase bg-indigo-500/30 text-indigo-700 border border-indigo-400/30">RFID Intelligence Center</span>
                                 <span class="px-3 py-0.5 rounded-full text-[10px] font-black tracking-wider uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">Active UHF Readers</span>
                             </div>
                             <h2 class="text-2xl md:text-3xl font-black tracking-tight text-white flex items-center gap-3">
@@ -1384,9 +1384,9 @@
                                     <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" /></svg>
                                 </div>
                                 <input type="text" id="etagSearchInput" placeholder="Paste EPC Tag ID (e.g. E2004701B8B064227E39010E)..." 
-                                       class="w-full pl-12 pr-28 py-3.5 rounded-2xl bg-slate-900/90 text-white placeholder-slate-400 text-sm font-mono font-bold border border-slate-700/80 focus:border-indigo-400 focus:outline-none shadow-inner"
+                                       class="w-full pl-12 pr-28 py-3.5 rounded-2xl bg-indigo-600/90 text-white placeholder-slate-400 text-sm font-mono font-bold border border-indigo-200 focus:border-indigo-400 focus:outline-none shadow-inner"
                                        autocomplete="off" spellcheck="false">
-                                <button type="button" onclick="pasteEtagFromClipboard()" class="absolute right-2.5 top-2.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-indigo-300 text-xs font-bold border border-slate-700 transition flex items-center gap-1.5" title="Paste from clipboard">
+                                <button type="button" onclick="pasteEtagFromClipboard()" class="absolute right-2.5 top-2.5 px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-indigo-700 text-xs font-bold border border-indigo-300 transition flex items-center gap-1.5" title="Paste from clipboard">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
                                     <span>Paste</span>
                                 </button>
@@ -1608,7 +1608,7 @@
                         <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-800 font-black flex items-center justify-center text-lg shadow-2xs" id="manualExitInitial">V</div>
                         <div>
                             <div class="flex items-center gap-2">
-                                <span id="manualExitPlate" class="text-sm font-black font-mono px-2 py-0.5 rounded bg-slate-900 text-white">PLATE</span>
+                                <span id="manualExitPlate" class="text-sm font-black font-mono px-2 py-0.5 rounded bg-indigo-600 text-white">PLATE</span>
                                 <span id="manualExitName" class="text-xs font-bold text-slate-800">Vehicle / Member Name</span>
                             </div>
                             <p class="text-[11px] font-mono text-slate-500 mt-1">
@@ -1694,13 +1694,13 @@
     <div id="camProofModal" class="hidden fixed inset-0 z-[110] flex items-center justify-center p-3 sm:p-5 bg-slate-950/85 backdrop-blur-md" onclick="closeCamProofModal()">
         <div class="bg-white rounded-3xl shadow-2xl max-w-5xl w-full overflow-hidden flex flex-col max-h-[95vh]" onclick="event.stopPropagation()">
             <!-- Inspection Header & Tools Bar -->
-            <div class="p-3.5 sm:p-4 border-b bg-slate-900 text-white flex items-center justify-between flex-wrap gap-2">
+            <div class="p-3.5 sm:p-4 border-b bg-indigo-600 text-white flex items-center justify-between flex-wrap gap-2">
                 <div class="flex items-center gap-2.5">
                     <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
                     <div>
                         <div class="flex items-center gap-2">
                             <span class="text-xs sm:text-sm font-black tracking-wide uppercase">Camera Proof Forensic Tool</span>
-                            <span class="text-[9px] font-black px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">ORIGINAL FULL RESOLUTION</span>
+                            <span class="text-[9px] font-black px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-200">ORIGINAL FULL RESOLUTION</span>
                         </div>
                         <p class="text-[10px] text-slate-400 font-mono mt-0.5" id="camProofResolution">Hikvision HD Native Frame</p>
                     </div>
@@ -1708,29 +1708,29 @@
 
                 <!-- Inspection Toolbar Controls -->
                 <div class="flex items-center gap-1.5 flex-wrap">
-                    <div class="flex items-center bg-slate-800/90 rounded-xl p-1 border border-slate-700 text-xs font-bold">
-                        <button type="button" onclick="camProofZoomOut()" class="w-7 h-7 rounded-lg hover:bg-slate-700 text-slate-200 transition flex items-center justify-center font-bold" title="Zoom Out (-)">
+                    <div class="flex items-center bg-indigo-600/90 rounded-xl p-1 border border-indigo-300 text-xs font-bold">
+                        <button type="button" onclick="camProofZoomOut()" class="w-7 h-7 rounded-lg hover:bg-indigo-700 text-slate-200 transition flex items-center justify-center font-bold" title="Zoom Out (-)">
                             &minus;
                         </button>
                         <span id="camProofZoomLevel" class="px-2 min-w-[50px] text-center font-mono text-[11px] text-emerald-400 font-bold select-none">100%</span>
-                        <button type="button" onclick="camProofZoomIn()" class="w-7 h-7 rounded-lg hover:bg-slate-700 text-slate-200 transition flex items-center justify-center font-bold" title="Zoom In (+)">
+                        <button type="button" onclick="camProofZoomIn()" class="w-7 h-7 rounded-lg hover:bg-indigo-700 text-slate-200 transition flex items-center justify-center font-bold" title="Zoom In (+)">
                             +
                         </button>
                     </div>
 
-                    <button type="button" onclick="camProofZoomReset()" class="px-2.5 py-1.5 text-xs font-bold rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition" title="Fit to Screen">
+                    <button type="button" onclick="camProofZoomReset()" class="px-2.5 py-1.5 text-xs font-bold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-slate-200 border border-indigo-300 transition" title="Fit to Screen">
                         Fit
                     </button>
-                    <button type="button" onclick="camProofZoom100()" class="px-2.5 py-1.5 text-xs font-bold rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition" title="100% 1:1 Pixel Size">
+                    <button type="button" onclick="camProofZoom100()" class="px-2.5 py-1.5 text-xs font-bold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-slate-200 border border-indigo-300 transition" title="100% 1:1 Pixel Size">
                         1:1
                     </button>
-                    <button type="button" onclick="camProofRotate()" class="px-2.5 py-1.5 text-xs font-bold rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition" title="Rotate 90 degrees">
+                    <button type="button" onclick="camProofRotate()" class="px-2.5 py-1.5 text-xs font-bold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-slate-200 border border-indigo-300 transition" title="Rotate 90 degrees">
                         ↻ 90°
                     </button>
-                    <button type="button" onclick="camProofZoomReset()" class="px-2.5 py-1.5 text-xs font-bold rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition" title="Reset Viewer">
+                    <button type="button" onclick="camProofZoomReset()" class="px-2.5 py-1.5 text-xs font-bold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-slate-200 border border-indigo-300 transition" title="Reset Viewer">
                         ↺ Reset
                     </button>
-                    <button type="button" onclick="closeCamProofModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-rose-900/80 hover:text-rose-200 text-slate-300 font-bold flex items-center justify-center text-sm ml-1 transition" title="Close (Esc)">
+                    <button type="button" onclick="closeCamProofModal()" class="w-8 h-8 rounded-full bg-indigo-600 hover:bg-rose-900/80 hover:text-rose-200 text-slate-300 font-bold flex items-center justify-center text-sm ml-1 transition" title="Close (Esc)">
                         &times;
                     </button>
                 </div>
@@ -1743,13 +1743,13 @@
                     
                     <!-- Floating Viewer HUD Navigation Hints -->
                     <div class="absolute bottom-2.5 left-3 pointer-events-none flex items-center gap-2">
-                        <span class="text-[10px] font-bold bg-slate-900/80 backdrop-blur-xs text-slate-400 border border-slate-800 px-2.5 py-1 rounded-lg">
+                        <span class="text-[10px] font-bold bg-indigo-600/90 backdrop-blur-xs text-slate-400 border border-slate-800 px-2.5 py-1 rounded-lg">
                             🖱️ Scroll to Zoom &bull; Drag to Pan &bull; Double-Click for 2x
                         </span>
                     </div>
 
                     <div class="absolute top-2.5 right-3 pointer-events-none">
-                        <span id="camProofZoomHud" class="text-[10px] font-mono font-bold bg-slate-900/80 backdrop-blur-xs text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-md">
+                        <span id="camProofZoomHud" class="text-[10px] font-mono font-bold bg-indigo-600/90 backdrop-blur-xs text-emerald-400 border border-emerald-200 px-2 py-0.5 rounded-md">
                             100%
                         </span>
                     </div>
