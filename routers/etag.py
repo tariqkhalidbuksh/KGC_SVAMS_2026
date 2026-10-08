@@ -23,8 +23,8 @@ async def get_recent_scanned_tags(
         try:
             where_clauses = [
                 "d.scanned_tag IS NOT NULL",
-                "d.scanned_tag != 'NO_TAG'",
-                "d.scanned_tag != ''"
+                "UPPER(TRIM(d.scanned_tag)) != 'NO_TAG'",
+                "UPPER(TRIM(d.scanned_tag)) != ''"
             ]
             params = []
 
@@ -43,9 +43,9 @@ async def get_recent_scanned_tags(
 
             # 1. Total count of distinct unique tags matching filter
             count_sql = f"""
-                SELECT COUNT(DISTINCT d.scanned_tag)
+                SELECT COUNT(DISTINCT UPPER(TRIM(d.scanned_tag)))
                 FROM daily_logs d
-                LEFT JOIN members m ON d.scanned_tag = m.E_tag_id
+                LEFT JOIN members m ON UPPER(TRIM(d.scanned_tag)) = UPPER(TRIM(m.E_tag_id))
                 {where_str}
             """
             count_row = conn.execute(count_sql, list(params)).fetchone()
@@ -58,7 +58,7 @@ async def get_recent_scanned_tags(
             total_pages = max(1, math.ceil(total_records / limit)) if total_records > 0 else 1
 
             sql = f"""
-                SELECT d.scanned_tag as scanned_tag, 
+                SELECT UPPER(TRIM(d.scanned_tag)) as scanned_tag, 
                        MAX(d.timestamp) as last_seen, 
                        COUNT(*) as total_scans,
                        COALESCE(m.Name, MAX(d.name)) as name,
@@ -69,9 +69,9 @@ async def get_recent_scanned_tags(
                        COALESCE(m.Status, 'Unregistered') as status,
                        MAX(d.gate_no) as last_gate
                 FROM daily_logs d
-                LEFT JOIN members m ON d.scanned_tag = m.E_tag_id
+                LEFT JOIN members m ON UPPER(TRIM(d.scanned_tag)) = UPPER(TRIM(m.E_tag_id))
                 {where_str}
-                GROUP BY d.scanned_tag
+                GROUP BY UPPER(TRIM(d.scanned_tag))
                 ORDER BY last_seen DESC
                 LIMIT ? OFFSET ?
             """
@@ -110,7 +110,7 @@ async def get_etag_audit(
         try:
             # 1. Look up member assigned to this E_tag_id
             mem_row = conn.execute(
-                "SELECT * FROM members WHERE E_tag_id = ? LIMIT 1",
+                "SELECT * FROM members WHERE UPPER(TRIM(E_tag_id)) = UPPER(TRIM(?)) LIMIT 1",
                 (clean_tag,)
             ).fetchone()
 
@@ -141,7 +141,7 @@ async def get_etag_audit(
 
             # Total all-time scans across all time for this tag
             all_time_total_row = conn.execute(
-                "SELECT COUNT(*) FROM daily_logs WHERE scanned_tag = ?",
+                "SELECT COUNT(*) FROM daily_logs WHERE UPPER(TRIM(scanned_tag)) = UPPER(TRIM(?))",
                 (clean_tag,)
             ).fetchone()
             all_time_detections = all_time_total_row[0] if all_time_total_row else 0
@@ -151,7 +151,7 @@ async def get_etag_audit(
                 SELECT d.id, d.mem_id, d.name, d.vehicle_number, d.access_type, d.direction,
                        d.gate_no, d.image_path, d.plate_image_path, d.scanned_tag, d.timestamp
                 FROM daily_logs d
-                WHERE d.scanned_tag = ?
+                WHERE UPPER(TRIM(d.scanned_tag)) = UPPER(TRIM(?))
             """
             log_params = [clean_tag]
             if target_start and target_end:
@@ -179,7 +179,7 @@ async def get_etag_audit(
                             break
             if not mem_row:
                 any_log = conn.execute(
-                    "SELECT mem_id, name, vehicle_number FROM daily_logs WHERE scanned_tag = ? AND mem_id NOT IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', '') LIMIT 1",
+                    "SELECT mem_id, name, vehicle_number FROM daily_logs WHERE UPPER(TRIM(scanned_tag)) = UPPER(TRIM(?)) AND mem_id NOT IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', '') LIMIT 1",
                     (clean_tag,)
                 ).fetchone()
                 if any_log and any_log["mem_id"]:

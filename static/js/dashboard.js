@@ -88,7 +88,7 @@ function updateUserUI(user) {
         const saveBtn = document.getElementById('btnSaveConfig');
         if (saveBtn) {
             saveBtn.disabled = true;
-            saveBtn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+            saveBtn.classList.remove('bg-slate-900', 'hover:bg-slate-800');
             saveBtn.classList.add('bg-slate-300', 'cursor-not-allowed');
             saveBtn.title = 'Viewers cannot modify system settings';
         }
@@ -117,7 +117,7 @@ function updateUserUI(user) {
         const saveBtn = document.getElementById('btnSaveConfig');
         if (saveBtn) {
             saveBtn.disabled = true;
-            saveBtn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+            saveBtn.classList.remove('bg-slate-900', 'hover:bg-slate-800');
             saveBtn.classList.add('bg-slate-300', 'cursor-not-allowed');
             saveBtn.title = 'Only administrators can save configuration';
         }
@@ -1039,7 +1039,7 @@ function setAuditDatePreset(preset) {
 
     [todayBtn, yestBtn, weekBtn, allBtn].forEach(b => {
         if (b) {
-            b.classList.remove('bg-indigo-600', 'text-white');
+            b.classList.remove('bg-slate-900', 'text-white');
             b.classList.add('text-slate-700', 'hover:bg-slate-100');
         }
     });
@@ -1052,7 +1052,7 @@ function setAuditDatePreset(preset) {
         if (endInput) endInput.value = '';
         if (allBtn) {
             allBtn.classList.remove('text-slate-700', 'hover:bg-slate-100');
-            allBtn.classList.add('bg-indigo-600', 'text-white');
+            allBtn.classList.add('bg-slate-900', 'text-white');
         }
     } else if (preset === 'yesterday') {
         const y = new Date();
@@ -1062,7 +1062,7 @@ function setAuditDatePreset(preset) {
         if (endInput) endInput.value = yStr;
         if (yestBtn) {
             yestBtn.classList.remove('text-slate-700', 'hover:bg-slate-100');
-            yestBtn.classList.add('bg-indigo-600', 'text-white');
+            yestBtn.classList.add('bg-slate-900', 'text-white');
         }
     } else if (preset === 'week') {
         const w = new Date();
@@ -1071,7 +1071,7 @@ function setAuditDatePreset(preset) {
         if (endInput) endInput.value = fmt(now);
         if (weekBtn) {
             weekBtn.classList.remove('text-slate-700', 'hover:bg-slate-100');
-            weekBtn.classList.add('bg-indigo-600', 'text-white');
+            weekBtn.classList.add('bg-slate-900', 'text-white');
         }
     } else {
         const tStr = fmt(now);
@@ -1079,7 +1079,7 @@ function setAuditDatePreset(preset) {
         if (endInput) endInput.value = tStr;
         if (todayBtn) {
             todayBtn.classList.remove('text-slate-700', 'hover:bg-slate-100');
-            todayBtn.classList.add('bg-indigo-600', 'text-white');
+            todayBtn.classList.add('bg-slate-900', 'text-white');
         }
     }
     loadAudit(1);
@@ -1092,7 +1092,7 @@ function onAuditDateChange() {
     const allBtn = document.getElementById('auditPresetAll');
     [todayBtn, yestBtn, weekBtn, allBtn].forEach(b => {
         if (b) {
-            b.classList.remove('bg-indigo-600', 'text-white');
+            b.classList.remove('bg-slate-900', 'text-white');
             b.classList.add('text-slate-700', 'hover:bg-slate-100');
         }
     });
@@ -1934,7 +1934,7 @@ function renderReportGalleryCards(optDateStr) {
                 <div>
                     <div class="relative rounded-lg overflow-hidden bg-slate-100 aspect-video mb-1.5 cursor-pointer" onclick="window.open('/${cleanPath}')">
                         <img loading="lazy" src="/${cleanPath}" class="w-full h-full object-cover" onerror="this.src='/static/img/no-car.svg'">
-                        <span class="absolute bottom-1 left-1 text-[9px] font-mono font-bold bg-indigo-600/90 text-white px-1.5 py-0.5 rounded">${timePart}</span>
+                        <span class="absolute bottom-1 left-1 text-[9px] font-mono font-bold bg-slate-900/80 text-white px-1.5 py-0.5 rounded">${timePart}</span>
                     </div>
                     <div class="flex items-center justify-between text-[10px] mb-2">
                         <span class="font-bold text-slate-700 truncate max-w-[65%]" title="${img.event_type || 'Camera Event'}">${img.event_type || 'Camera Event'}</span>
@@ -2901,7 +2901,7 @@ function setCamAuditPreset(preset) {
 
     [todayBtn, yestBtn, weekBtn, allBtn].forEach(b => {
         if (b) {
-            b.classList.remove('bg-indigo-600', 'text-white');
+            b.classList.remove('bg-slate-900', 'text-white');
             b.classList.add('text-slate-700', 'hover:bg-slate-100');
         }
     });
@@ -2914,7 +2914,7 @@ function setCamAuditPreset(preset) {
         if (endInput) endInput.value = '';
         if (allBtn) {
             allBtn.classList.remove('text-slate-700', 'hover:bg-slate-100');
-            allBtn.classList.add('bg-indigo-600', 'text-white');
+            allBtn.classList.add('bg-slate-900', 'text-white');
         }
     } else if (preset === 'yesterday') {
         const y = new Date();
@@ -2924,7 +2924,7 @@ function setCamAuditPreset(preset) {
         if (endInput) endInput.value = yStr;
         if (yestBtn) {
             yestBtn.classList.remove('text-slate-700', 'hover:bg-slate-100');
-            yestBtn.classList.add('bg-indigo-600', 'text-white');
+            yestBtn.classList.add('bg-slate-900', 'text-white');
         }
     } else if (preset === 'week') {
         const w = new Date();
@@ -2933,7 +2933,7 @@ function setCamAuditPreset(preset) {
         if (endInput) endInput.value = fmt(now);
         if (weekBtn) {
             weekBtn.classList.remove('text-slate-700', 'hover:bg-slate-100');
-            weekBtn.classList.add('bg-indigo-600', 'text-white');
+            weekBtn.classList.add('bg-slate-900', 'text-white');
         }
     } else {
         const tStr = fmt(now);
@@ -2941,7 +2941,7 @@ function setCamAuditPreset(preset) {
         if (endInput) endInput.value = tStr;
         if (todayBtn) {
             todayBtn.classList.remove('text-slate-700', 'hover:bg-slate-100');
-            todayBtn.classList.add('bg-indigo-600', 'text-white');
+            todayBtn.classList.add('bg-slate-900', 'text-white');
         }
     }
     loadCameraAudit(1);
@@ -2954,7 +2954,7 @@ function onCamAuditDateChange() {
     const allBtn = document.getElementById('camPresetAll');
     [todayBtn, yestBtn, weekBtn, allBtn].forEach(b => {
         if (b) {
-            b.classList.remove('bg-indigo-600', 'text-white');
+            b.classList.remove('bg-slate-900', 'text-white');
             b.classList.add('text-slate-700', 'hover:bg-slate-100');
         }
     });
@@ -3043,7 +3043,7 @@ async function loadCameraAudit(page = currentCamAuditPage) {
 
             return `
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md hover:border-slate-300 transition duration-200 flex flex-col group">
-                <div class="relative bg-indigo-600 aspect-video overflow-hidden cursor-pointer" onclick="openCamProofModalById(${item.id})">
+                <div class="relative bg-slate-900 aspect-video overflow-hidden cursor-pointer" onclick="openCamProofModalById(${item.id})">
                     <img src="${thumbSrc}" alt="Vehicle Proof" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.onerror=null; this.src='${origSrc || '/static/img/no-car.svg'}';">
                     <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
                         <span class="bg-white/90 text-slate-900 px-3 py-1.5 rounded-xl text-xs font-bold shadow-lg">Inspect Full HD</span>
@@ -3052,7 +3052,7 @@ async function loadCameraAudit(page = currentCamAuditPage) {
                         ${dirBadge}
                     </div>
                     <div class="absolute bottom-2.5 right-2.5 flex items-center gap-1">
-                        <span class="bg-indigo-600/90 backdrop-blur-sm text-emerald-400 border border-emerald-200 px-2 py-0.5 rounded-md text-[10px] font-mono font-bold">
+                        <span class="bg-slate-900/80 backdrop-blur-sm text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-md text-[10px] font-mono font-bold">
                             HIKVISION
                         </span>
                     </div>
@@ -3795,7 +3795,7 @@ function showToast(message, type = 'info') {
     const container = document.getElementById('toastContainer');
     if (!container) return;
     const toast = document.createElement('div');
-    const bg = type === 'success' ? 'bg-emerald-600' : (type === 'error' ? 'bg-rose-600' : 'bg-indigo-600');
+    const bg = type === 'success' ? 'bg-emerald-600' : (type === 'error' ? 'bg-rose-600' : 'bg-slate-900');
     toast.className = `${bg} text-white px-4 py-2.5 rounded-2xl shadow-xl text-xs font-bold flex items-center gap-2 transform transition-all duration-300 translate-y-2 opacity-0 pointer-events-auto`;
     toast.innerHTML = `<span>${message}</span>`;
     container.appendChild(toast);
@@ -3847,7 +3847,7 @@ async function loadRecentEtagTags(searchQuery = currentEtagDirSearch, page = cur
                     const tagShort = t.scanned_tag.length > 16 ? t.scanned_tag.substring(0, 8) + '...' + t.scanned_tag.slice(-6) : t.scanned_tag;
                     return `
                         <button type="button" onclick="auditEtag('${t.scanned_tag}')" 
-                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-[11px] font-mono text-indigo-700 hover:text-white transition group shadow-2xs"
+                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-800/80 hover:bg-indigo-900/60 border border-slate-700/80 text-[11px] font-mono text-indigo-300 hover:text-white transition group shadow-2xs"
                                 title="${t.scanned_tag} • ${t.name || 'Visitor'} • ${t.total_scans} scans">
                             <span class="w-1.5 h-1.5 rounded-full ${t.mem_id && t.mem_id !== 'GUEST-LOG' ? 'bg-emerald-400' : 'bg-amber-400'}"></span>
                             <span class="font-bold">${tagShort}</span>
@@ -4145,7 +4145,7 @@ function renderEtagDossier(data) {
                             <span>Copy</span>
                         </button>
                     </div>
-                    <div class="p-2.5 rounded-xl bg-indigo-600 text-emerald-400 font-mono font-bold text-xs select-all truncate border border-slate-800 shadow-inner">
+                    <div class="p-2.5 rounded-xl bg-slate-900 text-emerald-400 font-mono font-bold text-xs select-all truncate border border-slate-800 shadow-inner">
                         ${tag}
                     </div>
                 </div>
