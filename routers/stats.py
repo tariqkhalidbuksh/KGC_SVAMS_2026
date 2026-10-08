@@ -125,19 +125,27 @@ async def get_stats():
                     m = (avg_sec % 3600) // 60
                     avg_duration_str = f"{h}h {m:02d}m" if h else f"{m}m"
 
-            # All-Time Tag Adoption & Gap Breakdown across entire scanned tag dataset
-            total_transits_all_time = conn.execute("SELECT COUNT(*) as c FROM daily_logs").fetchone()['c']
-            unreg_count_all_time = conn.execute("""
-                SELECT COUNT(*) as c FROM daily_logs
-                WHERE access_type LIKE '%Unknown%'
-                   OR access_type LIKE '%No RFID%'
-                   OR mem_id IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', '')
-                   OR scanned_tag IN ('NO_TAG', '', NULL)
-            """).fetchone()['c']
+            # All-Time Unique Tag Fleet Adoption & Gap Analysis (Unique Scanned Tags: 457+ tags)
+            tag_adoption_query = conn.execute("""
+                SELECT 
+                    COUNT(DISTINCT UPPER(TRIM(d.scanned_tag))) as total_scanned_tags,
+                    COUNT(DISTINCT CASE WHEN (m.Mem_id IS NOT NULL AND m.Mem_id NOT IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', '')) 
+                                         OR (d.mem_id IS NOT NULL AND d.mem_id NOT IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', '') AND d.access_type NOT LIKE '%Unknown%')
+                                        THEN UPPER(TRIM(d.scanned_tag)) END) as registered_tags,
+                    COUNT(DISTINCT CASE WHEN (m.Mem_id IS NULL OR m.Mem_id IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', ''))
+                                         AND (d.mem_id IS NULL OR d.mem_id IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', '') OR d.access_type LIKE '%Unknown%')
+                                        THEN UPPER(TRIM(d.scanned_tag)) END) as unregistered_tags
+                FROM daily_logs d
+                LEFT JOIN members m ON UPPER(TRIM(d.scanned_tag)) = UPPER(TRIM(m.E_tag_id))
+                WHERE d.scanned_tag IS NOT NULL AND d.scanned_tag != '' AND UPPER(TRIM(d.scanned_tag)) != 'NO_TAG'
+            """).fetchone()
 
-            reg_count_all_time = max(0, total_transits_all_time - unreg_count_all_time)
-            adoption_rate = round((reg_count_all_time / total_transits_all_time * 100.0), 1) if total_transits_all_time > 0 else 100.0
-            gap_rate = round((unreg_count_all_time / total_transits_all_time * 100.0), 1) if total_transits_all_time > 0 else 0.0
+            total_unique_tags = tag_adoption_query['total_scanned_tags'] or 0
+            reg_unique_tags = tag_adoption_query['registered_tags'] or 0
+            unreg_unique_tags = tag_adoption_query['unregistered_tags'] or 0
+
+            adoption_rate = round((reg_unique_tags / total_unique_tags * 100.0), 1) if total_unique_tags > 0 else 100.0
+            gap_rate = round((unreg_unique_tags / total_unique_tags * 100.0), 1) if total_unique_tags > 0 else 0.0
 
             # Today's transits for daily log reporting
             unreg_today = conn.execute("""
@@ -173,9 +181,12 @@ async def get_stats():
                 "paired_visits_count": len(paired_rows) if paired_rows else 0,
                 "registered_transits_today": reg_today,
                 "unregistered_transits_today": unreg_today,
-                "registered_transits_all_time": reg_count_all_time,
-                "unregistered_transits_all_time": unreg_count_all_time,
-                "total_transits_all_time": total_transits_all_time,
+                "registered_transits_all_time": reg_unique_tags,
+                "unregistered_transits_all_time": unreg_unique_tags,
+                "total_transits_all_time": total_unique_tags,
+                "total_scanned_tags": total_unique_tags,
+                "registered_tags_count": reg_unique_tags,
+                "unregistered_tags_count": unreg_unique_tags,
                 "tag_adoption_rate": adoption_rate,
                 "registration_gap_rate": gap_rate,
                 "unassigned_tags_buffer": unreg_tags_buffer
@@ -215,19 +226,27 @@ async def get_chart_data():
                 entries_d.append(row['e'])
                 exits_d.append(row['x'])
 
-            # All-Time Tag Adoption Breakdown across entire scanned tag dataset
-            total_transits_all_time = conn.execute("SELECT COUNT(*) as c FROM daily_logs").fetchone()['c']
-            unreg_count_all_time = conn.execute("""
-                SELECT COUNT(*) as c FROM daily_logs
-                WHERE access_type LIKE '%Unknown%'
-                   OR access_type LIKE '%No RFID%'
-                   OR mem_id IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', '')
-                   OR scanned_tag IN ('NO_TAG', '', NULL)
-            """).fetchone()['c']
+            # All-Time Unique Tag Fleet Adoption Breakdown (Unique Scanned Tags: 457+ tags)
+            tag_adoption_query = conn.execute("""
+                SELECT 
+                    COUNT(DISTINCT UPPER(TRIM(d.scanned_tag))) as total_scanned_tags,
+                    COUNT(DISTINCT CASE WHEN (m.Mem_id IS NOT NULL AND m.Mem_id NOT IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', '')) 
+                                         OR (d.mem_id IS NOT NULL AND d.mem_id NOT IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', '') AND d.access_type NOT LIKE '%Unknown%')
+                                        THEN UPPER(TRIM(d.scanned_tag)) END) as registered_tags,
+                    COUNT(DISTINCT CASE WHEN (m.Mem_id IS NULL OR m.Mem_id IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', ''))
+                                         AND (d.mem_id IS NULL OR d.mem_id IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', '') OR d.access_type LIKE '%Unknown%')
+                                        THEN UPPER(TRIM(d.scanned_tag)) END) as unregistered_tags
+                FROM daily_logs d
+                LEFT JOIN members m ON UPPER(TRIM(d.scanned_tag)) = UPPER(TRIM(m.E_tag_id))
+                WHERE d.scanned_tag IS NOT NULL AND d.scanned_tag != '' AND UPPER(TRIM(d.scanned_tag)) != 'NO_TAG'
+            """).fetchone()
 
-            reg_count_all_time = max(0, total_transits_all_time - unreg_count_all_time)
-            adoption_rate = round((reg_count_all_time / total_transits_all_time * 100.0), 1) if total_transits_all_time > 0 else 100.0
-            gap_rate = round((unreg_count_all_time / total_transits_all_time * 100.0), 1) if total_transits_all_time > 0 else 0.0
+            total_unique_tags = tag_adoption_query['total_scanned_tags'] or 0
+            reg_unique_tags = tag_adoption_query['registered_tags'] or 0
+            unreg_unique_tags = tag_adoption_query['unregistered_tags'] or 0
+
+            adoption_rate = round((reg_unique_tags / total_unique_tags * 100.0), 1) if total_unique_tags > 0 else 100.0
+            gap_rate = round((unreg_unique_tags / total_unique_tags * 100.0), 1) if total_unique_tags > 0 else 0.0
 
             try:
                 unreg_tags_buffer = conn.execute("SELECT COUNT(*) as c FROM unregistered_tags").fetchone()['c']
@@ -242,9 +261,12 @@ async def get_chart_data():
                 "daily_entries": entries_d,
                 "daily_exits": exits_d,
                 "fleet_adoption": {
-                    "registered_transits": reg_count_all_time,
-                    "unregistered_transits": unreg_count_all_time,
-                    "total_transits": total_transits_all_time,
+                    "registered_transits": reg_unique_tags,
+                    "unregistered_transits": unreg_unique_tags,
+                    "total_transits": total_unique_tags,
+                    "total_scanned_tags": total_unique_tags,
+                    "registered_tags": reg_unique_tags,
+                    "unregistered_tags": unreg_unique_tags,
                     "adoption_rate": adoption_rate,
                     "gap_rate": gap_rate,
                     "unassigned_buffer": unreg_tags_buffer

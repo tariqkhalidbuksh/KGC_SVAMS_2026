@@ -658,11 +658,14 @@ async function loadStats() {
         if (document.getElementById('sAdoptionRate')) document.getElementById('sAdoptionRate').innerText = `${s.tag_adoption_rate !== undefined ? s.tag_adoption_rate : 100}%`;
         if (document.getElementById('gapSummaryBadge')) document.getElementById('gapSummaryBadge').innerText = `${s.tag_adoption_rate !== undefined ? s.tag_adoption_rate : 100}% COVERAGE`;
         if (document.getElementById('adoptionRateVal')) document.getElementById('adoptionRateVal').innerText = `${s.tag_adoption_rate !== undefined ? s.tag_adoption_rate : 100}%`;
-        const allReg = s.registered_transits_all_time !== undefined ? s.registered_transits_all_time : (s.registered_transits_today || 0);
-        const allUnreg = s.unregistered_transits_all_time !== undefined ? s.unregistered_transits_all_time : (s.unregistered_transits_today || 0);
-        if (document.getElementById('adoptionRegCount')) document.getElementById('adoptionRegCount').innerText = allReg.toLocaleString();
-        if (document.getElementById('adoptionUnregCount')) document.getElementById('adoptionUnregCount').innerText = allUnreg.toLocaleString();
+        const totalScanned = s.total_scanned_tags || s.total_transits_all_time || 457;
+        const allReg = s.registered_tags_count !== undefined ? s.registered_tags_count : (s.registered_transits_all_time !== undefined ? s.registered_transits_all_time : 0);
+        const allUnreg = s.unregistered_tags_count !== undefined ? s.unregistered_tags_count : (s.unregistered_transits_all_time !== undefined ? s.unregistered_transits_all_time : 0);
+        if (document.getElementById('adoptionRegCount')) document.getElementById('adoptionRegCount').innerText = `${allReg.toLocaleString()} tags`;
+        if (document.getElementById('adoptionUnregCount')) document.getElementById('adoptionUnregCount').innerText = `${allUnreg.toLocaleString()} tags`;
+        if (document.getElementById('adoptionTotalCount')) document.getElementById('adoptionTotalCount').innerText = `${totalScanned.toLocaleString()} tags`;
         if (document.getElementById('sGuests')) document.getElementById('sGuests').innerText = allUnreg.toLocaleString();
+        if (document.getElementById('sTotalScannedTags')) document.getElementById('sTotalScannedTags').innerText = totalScanned.toLocaleString();
         if (document.getElementById('adoptionBufferCount')) document.getElementById('adoptionBufferCount').innerText = (s.unassigned_tags_buffer || 0).toLocaleString();
 
         const overstayBadge = document.getElementById('sOverstayBadge');
@@ -872,6 +875,9 @@ async function loadCharts() {
         }
         if (c.fleet_adoption) {
             updateAdoptionDonut(c.fleet_adoption.registered_transits || 0, c.fleet_adoption.unregistered_transits || 0);
+            if (document.getElementById('adoptionTotalCount') && c.fleet_adoption.total_transits) {
+                document.getElementById('adoptionTotalCount').innerText = `${c.fleet_adoption.total_transits.toLocaleString()} tags`;
+            }
         }
     } catch (err) {
         console.error('loadCharts error:', err);
