@@ -222,3 +222,30 @@ def test_recent_tags_deduplication_and_search():
     search_data = search_res.json()
     assert any(t["scanned_tag"] == "E280116060000204" for t in search_data["tags"])
 
+
+def test_etag_recent_tags_pagination():
+    """Verify pagination support (page, limit, pages, offset) on /api/etag/recent-tags."""
+    # Page 1 with limit 1
+    p1 = client.get("/api/etag/recent-tags?page=1&limit=1")
+    assert p1.status_code == 200
+    d1 = p1.json()
+    assert d1["page"] == 1
+    assert d1["limit"] == 1
+    assert d1["total"] >= 2
+    assert d1["pages"] >= 2
+    assert len(d1["tags"]) == 1
+    tag_p1 = d1["tags"][0]["scanned_tag"]
+
+    # Page 2 with limit 1
+    p2 = client.get("/api/etag/recent-tags?page=2&limit=1")
+    assert p2.status_code == 200
+    d2 = p2.json()
+    assert d2["page"] == 2
+    assert d2["limit"] == 1
+    assert len(d2["tags"]) == 1
+    tag_p2 = d2["tags"][0]["scanned_tag"]
+
+    # Tags on different pages should not be the same
+    assert tag_p1 != tag_p2
+
+

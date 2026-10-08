@@ -1,4 +1,5 @@
 import os
+import math
 from datetime import datetime, timedelta
 from fastapi import APIRouter, HTTPException, Query
 import config
@@ -9,12 +10,13 @@ router = APIRouter(prefix="/api/etag", tags=["E-TAG Audit"])
 
 @router.get("/recent-tags")
 async def get_recent_scanned_tags(
-    limit: int = Query(100, ge=1, le=500),
+    page: int = Query(1, ge=1, description="Page number for pagination"),
+    limit: int = Query(25, ge=1, le=500, description="Items per page"),
     search: str = Query("", description="Filter unique tags by tag, plate, name, or member ID")
 ):
     """
     Returns all unique RFID EPC tags across the facility without duplicates,
-    along with their member associations and scan counts for quick 1-click auditing.
+    along with their member associations, scan counts, and pagination metadata for quick 1-click auditing.
     """
     with config.DB_LOCK:
         conn = get_db_connection()
@@ -38,6 +40,23 @@ async def get_recent_scanned_tags(
                 params.extend([s_param, s_param, s_param, s_param])
 
             where_str = f"WHERE {' AND '.join(where_clauses)}"
+
+            # 1. Total count of distinct unique tags matching filter
+            count_sql = f"""
+                SELECT COUNT(DISTINCT UPPER(TRIM(d.scanned_tag)))
+                FROM daily_logs d
+                LEFT JOIN members m ON UPPER(TRIM(d.scanned_tag)) = UPPER(TRIM(m.E_tag_id))
+                {where_str}
+            """
+            count_row = conn.execute(count_sql, list(params)).fetchone()
+            total_records = count_row[0] if count_row else 0
+
+            # 2. Pagination calculation
+            page = max(1, page)
+            limit = max(1, min(limit, 500))
+            offset = (page - 1) * limit
+            total_pages = max(1, math.ceil(total_records / limit)) if total_records > 0 else 1
+
             sql = f"""
                 SELECT UPPER(TRIM(d.scanned_tag)) as scanned_tag, 
                        MAX(d.timestamp) as last_seen, 
@@ -54,13 +73,16 @@ async def get_recent_scanned_tags(
                 {where_str}
                 GROUP BY UPPER(TRIM(d.scanned_tag))
                 ORDER BY last_seen DESC
-                LIMIT ?
+                LIMIT ? OFFSET ?
             """
-            params.append(limit)
-            rows = conn.execute(sql, params).fetchall()
+            query_params = list(params) + [limit, offset]
+            rows = conn.execute(sql, query_params).fetchall()
 
             return {
-                "total": len(rows),
+                "total": total_records,
+                "page": page,
+                "limit": limit,
+                "pages": total_pages,
                 "tags": [dict(r) for r in rows]
             }
         finally:

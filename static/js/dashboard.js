@@ -3677,22 +3677,33 @@ function showToast(message, type = 'info') {
 
 let currentEtagDateFilter = 'all';
 let etagDirectorySearchTimer = null;
+let currentEtagDirPage = 1;
+let currentEtagDirLimit = 25;
+let currentEtagDirSearch = '';
+let currentEtagScanPage = 1;
+let currentEtagScanLimit = 25;
 
-async function loadRecentEtagTags(searchQuery = '') {
+async function loadRecentEtagTags(searchQuery = currentEtagDirSearch, page = currentEtagDirPage, limit = currentEtagDirLimit) {
     const pillsContainer = document.getElementById('etagRecentPills');
     const welcomeTable = document.getElementById('etagWelcomeTableBody');
     const countBadge = document.getElementById('etagUniqueTagsTotalBadge');
     if (!pillsContainer && !welcomeTable) return;
 
+    currentEtagDirSearch = searchQuery || '';
+    currentEtagDirPage = page;
+    currentEtagDirLimit = limit;
+
     try {
-        const url = `/api/etag/recent-tags?limit=100${searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : ''}`;
+        const url = `/api/etag/recent-tags?page=${page}&limit=${limit}${searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : ''}`;
         const res = await fetch(url);
         if (!res.ok) throw new Error('Failed to load recent tags');
         const data = await res.json();
         const tags = data.tags || [];
+        const total = data.total !== undefined ? data.total : tags.length;
+        const totalPages = data.pages || Math.max(1, Math.ceil(total / limit)) || 1;
 
         if (countBadge) {
-            countBadge.innerText = `${tags.length} Unique RFID Transponders`;
+            countBadge.innerText = `${total.toLocaleString()} Unique RFID Transponders`;
         }
 
         if (pillsContainer) {
@@ -3717,6 +3728,7 @@ async function loadRecentEtagTags(searchQuery = '') {
         if (welcomeTable) {
             if (tags.length === 0) {
                 welcomeTable.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400 text-xs">${searchQuery ? `No unique RFID tags matching "${searchQuery}".` : 'No RFID tag scan records found in the database.'}</td></tr>`;
+                renderEtagDirPagination(0, 1, 1, limit);
             } else {
                 welcomeTable.innerHTML = tags.map((t, idx) => {
                     const isMem = Boolean(t.mem_id && t.mem_id !== 'GUEST-LOG' && t.mem_id !== 'UNREGISTERED');
@@ -3743,6 +3755,7 @@ async function loadRecentEtagTags(searchQuery = '') {
                         </tr>
                     `;
                 }).join('');
+                renderEtagDirPagination(total, page, totalPages, limit);
             }
         }
     } catch (err) {
@@ -3750,10 +3763,74 @@ async function loadRecentEtagTags(searchQuery = '') {
     }
 }
 
+function renderEtagDirPagination(total, page, totalPages, limit) {
+    const pagEl = document.getElementById('etagDirectoryPagination');
+    if (!pagEl) return;
+    if (total === 0) {
+        pagEl.innerHTML = `<span class="text-xs text-slate-400 font-medium">No unique tags to display</span>`;
+        return;
+    }
+
+    const start = (page - 1) * limit + 1;
+    const end = Math.min(page * limit, total);
+    let btns = [];
+    btns.push(`<button type="button" onclick="changeEtagDirPage(1)" ${page === 1 ? 'disabled class="px-2.5 py-1 text-xs border border-slate-200 rounded-lg bg-slate-100 text-slate-300 cursor-not-allowed"' : 'class="px-2.5 py-1 text-xs border border-slate-200 rounded-lg bg-white hover:bg-slate-50 font-bold text-slate-700 shadow-2xs transition"'}>First</button>`);
+    btns.push(`<button type="button" onclick="changeEtagDirPage(${page - 1})" ${page === 1 ? 'disabled class="px-2.5 py-1 text-xs border border-slate-200 rounded-lg bg-slate-100 text-slate-300 cursor-not-allowed"' : 'class="px-2.5 py-1 text-xs border border-slate-200 rounded-lg bg-white hover:bg-slate-50 font-bold text-slate-700 shadow-2xs transition"'}>Prev</button>`);
+
+    let startPage = Math.max(1, page - 2);
+    let endPage = Math.min(totalPages, page + 2);
+
+    for (let p = startPage; p <= endPage; p++) {
+        if (p === page) {
+            btns.push(`<button type="button" class="px-3 py-1 text-xs border border-indigo-600 rounded-lg bg-indigo-600 text-white font-black shadow-2xs">${p}</button>`);
+        } else {
+            btns.push(`<button type="button" onclick="changeEtagDirPage(${p})" class="px-3 py-1 text-xs border border-slate-200 rounded-lg bg-white hover:bg-slate-50 font-bold text-slate-700 shadow-2xs transition">${p}</button>`);
+        }
+    }
+
+    btns.push(`<button type="button" onclick="changeEtagDirPage(${page + 1})" ${page === totalPages ? 'disabled class="px-2.5 py-1 text-xs border border-slate-200 rounded-lg bg-slate-100 text-slate-300 cursor-not-allowed"' : 'class="px-2.5 py-1 text-xs border border-slate-200 rounded-lg bg-white hover:bg-slate-50 font-bold text-slate-700 shadow-2xs transition"'}>Next</button>`);
+    btns.push(`<button type="button" onclick="changeEtagDirPage(${totalPages})" ${page === totalPages ? 'disabled class="px-2.5 py-1 text-xs border border-slate-200 rounded-lg bg-slate-100 text-slate-300 cursor-not-allowed"' : 'class="px-2.5 py-1 text-xs border border-slate-200 rounded-lg bg-white hover:bg-slate-50 font-bold text-slate-700 shadow-2xs transition"'}>Last</button>`);
+
+    pagEl.innerHTML = `
+        <div class="flex flex-col sm:flex-row justify-between items-center w-full gap-3">
+            <div class="flex items-center gap-3 flex-wrap">
+                <span class="text-xs text-slate-500 font-medium">
+                    Showing <span class="font-bold text-slate-800">${start}</span> to <span class="font-bold text-slate-800">${end}</span> of <span class="font-bold text-slate-800">${total.toLocaleString()}</span> unique tags (Page ${page} of ${totalPages})
+                </span>
+                <div class="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
+                    <span>Show:</span>
+                    <select onchange="changeEtagDirLimit(this.value)" class="text-xs font-bold border border-slate-200 rounded-lg px-2 py-1 bg-white text-slate-700 focus:outline-none focus:border-indigo-500 shadow-2xs">
+                        <option value="10" ${limit === 10 ? 'selected' : ''}>10 / page</option>
+                        <option value="25" ${limit === 25 ? 'selected' : ''}>25 / page</option>
+                        <option value="50" ${limit === 50 ? 'selected' : ''}>50 / page</option>
+                        <option value="100" ${limit === 100 ? 'selected' : ''}>100 / page</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex gap-1 items-center flex-wrap">
+                ${btns.join('')}
+            </div>
+        </div>
+    `;
+}
+
+function changeEtagDirPage(p) {
+    currentEtagDirPage = p;
+    loadRecentEtagTags(currentEtagDirSearch, currentEtagDirPage, currentEtagDirLimit);
+}
+
+function changeEtagDirLimit(l) {
+    currentEtagDirLimit = parseInt(l, 10) || 25;
+    currentEtagDirPage = 1;
+    loadRecentEtagTags(currentEtagDirSearch, 1, currentEtagDirLimit);
+}
+
 function onEtagDirectorySearch(val) {
     clearTimeout(etagDirectorySearchTimer);
     etagDirectorySearchTimer = setTimeout(() => {
-        loadRecentEtagTags(val);
+        currentEtagDirSearch = val || '';
+        currentEtagDirPage = 1;
+        loadRecentEtagTags(currentEtagDirSearch, 1, currentEtagDirLimit);
     }, 250);
 }
 
@@ -3761,6 +3838,7 @@ function backToEtagDirectory() {
     currentAuditedTag = null;
     currentAuditedTagData = null;
     currentEtagDateFilter = 'all';
+    currentEtagScanPage = 1;
 
     const welcomeState = document.getElementById('etagAuditWelcomeState');
     const activeContainer = document.getElementById('etagActiveAuditContainer');
@@ -3777,11 +3855,12 @@ function backToEtagDirectory() {
         window.history.replaceState({ tab: 'etag_audit' }, '', url.toString());
     } catch (e) {}
 
-    loadRecentEtagTags();
+    loadRecentEtagTags(currentEtagDirSearch, currentEtagDirPage, currentEtagDirLimit);
 }
 
 function setEtagDateFilter(preset) {
     currentEtagDateFilter = preset || 'all';
+    currentEtagScanPage = 1;
     ['All', 'Today', 'Yesterday', 'Week', 'Month'].forEach(k => {
         const btn = document.getElementById(`etagFilter${k}`);
         if (btn) {
@@ -3819,6 +3898,7 @@ async function loadEtagAudit(tagId, isSilent = false, dateFilter = currentEtagDa
     if (!cleanTag) return;
     currentAuditedTag = cleanTag;
     currentEtagDateFilter = dateFilter || 'all';
+    currentEtagScanPage = 1;
 
     const input = document.getElementById('etagSearchInput');
     if (input) input.value = cleanTag;
@@ -4042,20 +4122,31 @@ function renderEtagDailyBreakdown(data) {
     }).join('');
 }
 
-function renderEtagChronology(data) {
+function renderEtagChronology(data, page = currentEtagScanPage, limit = currentEtagScanLimit) {
     const tbody = document.getElementById('etagChronologyBody');
     const badge = document.getElementById('etagTotalScansBadge');
     if (!tbody) return;
 
-    const scans = data.scans || [];
-    if (badge) badge.innerText = `${scans.length} Total Scans`;
+    const allScans = data.scans || [];
+    const totalScans = allScans.length;
+    if (badge) badge.innerText = `${totalScans.toLocaleString()} Total Scans`;
 
-    if (scans.length === 0) {
+    if (totalScans === 0) {
         tbody.innerHTML = `<tr><td colspan="8" class="py-8 text-center text-slate-400 text-xs">No scan events recorded for this tag.</td></tr>`;
+        renderEtagScanPagination(0, 1, 1, limit);
         return;
     }
 
-    tbody.innerHTML = scans.map((s, idx) => {
+    const totalPages = Math.max(1, Math.ceil(totalScans / limit));
+    page = Math.max(1, Math.min(page, totalPages));
+    currentEtagScanPage = page;
+    currentEtagScanLimit = limit;
+
+    const startIndex = (page - 1) * limit;
+    const pagedScans = allScans.slice(startIndex, startIndex + limit);
+
+    tbody.innerHTML = pagedScans.map((s, idx) => {
+        const itemNumber = startIndex + idx + 1;
         const isEntry = (s.direction || '').toLowerCase() === 'entry';
         const timePart = s.timestamp || '--';
         const hasImg = Boolean(s.image_path || s.plate_image_path);
@@ -4063,7 +4154,7 @@ function renderEtagChronology(data) {
 
         return `
             <tr class="hover:bg-slate-50/70 transition">
-                <td class="py-3 px-4 font-mono font-bold text-slate-400 text-xs">${String(idx + 1).padStart(2, '0')}</td>
+                <td class="py-3 px-4 font-mono font-bold text-slate-400 text-xs">${String(itemNumber).padStart(2, '0')}</td>
                 <td class="py-3 px-4 font-mono font-bold text-slate-800 text-xs">${timePart}</td>
                 <td class="py-3 px-4 font-bold text-slate-700 text-xs">${s.gate_no || 'Gate-01'}</td>
                 <td class="py-3 px-4">
@@ -4086,6 +4177,72 @@ function renderEtagChronology(data) {
             </tr>
         `;
     }).join('');
+
+    renderEtagScanPagination(totalScans, page, totalPages, limit);
+}
+
+function renderEtagScanPagination(total, page, totalPages, limit) {
+    const pagEl = document.getElementById('etagScansPagination');
+    if (!pagEl) return;
+    if (total === 0) {
+        pagEl.innerHTML = `<span class="text-xs text-slate-400 font-medium">No scan events recorded</span>`;
+        return;
+    }
+
+    const start = (page - 1) * limit + 1;
+    const end = Math.min(page * limit, total);
+    let btns = [];
+    btns.push(`<button type="button" onclick="changeEtagScanPage(1)" ${page === 1 ? 'disabled class="px-2.5 py-1 text-xs border border-slate-200 rounded-lg bg-slate-100 text-slate-300 cursor-not-allowed"' : 'class="px-2.5 py-1 text-xs border border-slate-200 rounded-lg bg-white hover:bg-slate-50 font-bold text-slate-700 shadow-2xs transition"'}>First</button>`);
+    btns.push(`<button type="button" onclick="changeEtagScanPage(${page - 1})" ${page === 1 ? 'disabled class="px-2.5 py-1 text-xs border border-slate-200 rounded-lg bg-slate-100 text-slate-300 cursor-not-allowed"' : 'class="px-2.5 py-1 text-xs border border-slate-200 rounded-lg bg-white hover:bg-slate-50 font-bold text-slate-700 shadow-2xs transition"'}>Prev</button>`);
+
+    let startPage = Math.max(1, page - 2);
+    let endPage = Math.min(totalPages, page + 2);
+
+    for (let p = startPage; p <= endPage; p++) {
+        if (p === page) {
+            btns.push(`<button type="button" class="px-3 py-1 text-xs border border-emerald-600 rounded-lg bg-emerald-600 text-white font-black shadow-2xs">${p}</button>`);
+        } else {
+            btns.push(`<button type="button" onclick="changeEtagScanPage(${p})" class="px-3 py-1 text-xs border border-slate-200 rounded-lg bg-white hover:bg-slate-50 font-bold text-slate-700 shadow-2xs transition">${p}</button>`);
+        }
+    }
+
+    btns.push(`<button type="button" onclick="changeEtagScanPage(${page + 1})" ${page === totalPages ? 'disabled class="px-2.5 py-1 text-xs border border-slate-200 rounded-lg bg-slate-100 text-slate-300 cursor-not-allowed"' : 'class="px-2.5 py-1 text-xs border border-slate-200 rounded-lg bg-white hover:bg-slate-50 font-bold text-slate-700 shadow-2xs transition"'}>Next</button>`);
+    btns.push(`<button type="button" onclick="changeEtagScanPage(${totalPages})" ${page === totalPages ? 'disabled class="px-2.5 py-1 text-xs border border-slate-200 rounded-lg bg-slate-100 text-slate-300 cursor-not-allowed"' : 'class="px-2.5 py-1 text-xs border border-slate-200 rounded-lg bg-white hover:bg-slate-50 font-bold text-slate-700 shadow-2xs transition"'}>Last</button>`);
+
+    pagEl.innerHTML = `
+        <div class="flex flex-col sm:flex-row justify-between items-center w-full gap-3">
+            <div class="flex items-center gap-3 flex-wrap">
+                <span class="text-xs text-slate-500 font-medium">
+                    Showing <span class="font-bold text-slate-800">${start}</span> to <span class="font-bold text-slate-800">${end}</span> of <span class="font-bold text-slate-800">${total.toLocaleString()}</span> scans (Page ${page} of ${totalPages})
+                </span>
+                <div class="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
+                    <span>Show:</span>
+                    <select onchange="changeEtagScanLimit(this.value)" class="text-xs font-bold border border-slate-200 rounded-lg px-2 py-1 bg-white text-slate-700 focus:outline-none focus:border-emerald-500 shadow-2xs">
+                        <option value="15" ${limit === 15 ? 'selected' : ''}>15 / page</option>
+                        <option value="25" ${limit === 25 ? 'selected' : ''}>25 / page</option>
+                        <option value="50" ${limit === 50 ? 'selected' : ''}>50 / page</option>
+                        <option value="100" ${limit === 100 ? 'selected' : ''}>100 / page</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex gap-1 items-center flex-wrap">
+                ${btns.join('')}
+            </div>
+        </div>
+    `;
+}
+
+function changeEtagScanPage(p) {
+    if (!currentAuditedTagData) return;
+    currentEtagScanPage = p;
+    renderEtagChronology(currentAuditedTagData, p, currentEtagScanLimit);
+}
+
+function changeEtagScanLimit(l) {
+    if (!currentAuditedTagData) return;
+    currentEtagScanLimit = parseInt(l, 10) || 25;
+    currentEtagScanPage = 1;
+    renderEtagChronology(currentAuditedTagData, 1, currentEtagScanLimit);
 }
 
 function copyEtagId(tag) {
