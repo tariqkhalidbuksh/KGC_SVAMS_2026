@@ -42,6 +42,7 @@ LAST_GATE_PASSAGE = {"time": 0.0, "log_id": None, "md5": None}
 # In-memory zero-lag caches
 LATEST_LOG_CACHE = None
 MEMBERS_METRICS_CACHE = {"data": None, "timestamp": 0.0}
+FLEET_ADOPTION_CACHE = {"data": None, "timestamp": 0.0, "db_file": None}
 RECENT_CAM_TRIGGERS = deque(maxlen=30)
 
 READER_STATUS = {"Entry": "DISCONNECTED", "Exit": "DISCONNECTED"}
@@ -69,3 +70,7 @@ def invalidate_member_cache():
         MEMBERS_METRICS_CACHE["data"] = None
         MEMBERS_METRICS_CACHE["timestamp"] = 0.0
         MEMBERS_METRICS_CACHE["db_file"] = None
+        FLEET_ADOPTION_CACHE["data"] = None
+        FLEET_ADOPTION_CACHE["timestamp"] = 0.0
+        FLEET_ADOPTION_CACHE["db_file"] = None
+

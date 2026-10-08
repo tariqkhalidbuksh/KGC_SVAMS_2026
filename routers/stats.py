@@ -5,6 +5,63 @@ from database import get_db_connection
 
 router = APIRouter(prefix="/api", tags=["Statistics & Metrics"])
 
+def _get_fleet_adoption_stats(conn, curr_db_file: str):
+    import time
+    now_epoch = time.time()
+    with config.CACHE_LOCK:
+        cached = config.FLEET_ADOPTION_CACHE.get("data")
+        cache_time = config.FLEET_ADOPTION_CACHE.get("timestamp", 0.0)
+        cached_db = config.FLEET_ADOPTION_CACHE.get("db_file")
+
+    if cached and (cached_db == curr_db_file) and (now_epoch - cache_time < 30.0):
+        return cached
+
+    # Fast indexed query: joins on raw column values (d.scanned_tag = m.E_tag_id),
+    # allowing SQLite to use idx_members_etag and idx_logs_tag.
+    tag_adoption_query = conn.execute("""
+        SELECT 
+            COUNT(DISTINCT d.scanned_tag) as total_scanned_tags,
+            COUNT(DISTINCT CASE WHEN (m.Mem_id IS NOT NULL AND m.Mem_id NOT IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', '')) 
+                                 OR (d.mem_id IS NOT NULL AND d.mem_id NOT IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', '') AND d.access_type NOT LIKE '%Unknown%')
+                                THEN d.scanned_tag END) as registered_tags,
+            COUNT(DISTINCT CASE WHEN (m.Mem_id IS NULL OR m.Mem_id IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', ''))
+                                 AND (d.mem_id IS NULL OR d.mem_id IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', '') OR d.access_type LIKE '%Unknown%')
+                                THEN d.scanned_tag END) as unregistered_tags
+        FROM daily_logs d
+        LEFT JOIN members m ON d.scanned_tag = m.E_tag_id
+        WHERE d.scanned_tag IS NOT NULL AND d.scanned_tag != '' AND d.scanned_tag != 'NO_TAG'
+    """).fetchone()
+
+    total_unique_tags = tag_adoption_query['total_scanned_tags'] or 0
+    reg_unique_tags = tag_adoption_query['registered_tags'] or 0
+    unreg_unique_tags = tag_adoption_query['unregistered_tags'] or 0
+
+    adoption_rate = round((reg_unique_tags / total_unique_tags * 100.0), 1) if total_unique_tags > 0 else 100.0
+    gap_rate = round((unreg_unique_tags / total_unique_tags * 100.0), 1) if total_unique_tags > 0 else 0.0
+
+    try:
+        unreg_tags_buffer = conn.execute("SELECT COUNT(*) as c FROM unregistered_tags").fetchone()['c']
+    except Exception:
+        unreg_tags_buffer = 0
+
+    data = {
+        "total_unique_tags": total_unique_tags,
+        "reg_unique_tags": reg_unique_tags,
+        "unreg_unique_tags": unreg_unique_tags,
+        "adoption_rate": adoption_rate,
+        "gap_rate": gap_rate,
+        "unreg_tags_buffer": unreg_tags_buffer
+    }
+
+    with config.CACHE_LOCK:
+        config.FLEET_ADOPTION_CACHE = {
+            "data": data,
+            "timestamp": now_epoch,
+            "db_file": curr_db_file
+        }
+
+    return data
+
 @router.get("/stats")
 async def get_stats():
     import time
@@ -126,26 +183,12 @@ async def get_stats():
                     avg_duration_str = f"{h}h {m:02d}m" if h else f"{m}m"
 
             # All-Time Unique Tag Fleet Adoption & Gap Analysis (Unique Scanned Tags: 457+ tags)
-            tag_adoption_query = conn.execute("""
-                SELECT 
-                    COUNT(DISTINCT UPPER(TRIM(d.scanned_tag))) as total_scanned_tags,
-                    COUNT(DISTINCT CASE WHEN (m.Mem_id IS NOT NULL AND m.Mem_id NOT IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', '')) 
-                                         OR (d.mem_id IS NOT NULL AND d.mem_id NOT IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', '') AND d.access_type NOT LIKE '%Unknown%')
-                                        THEN UPPER(TRIM(d.scanned_tag)) END) as registered_tags,
-                    COUNT(DISTINCT CASE WHEN (m.Mem_id IS NULL OR m.Mem_id IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', ''))
-                                         AND (d.mem_id IS NULL OR d.mem_id IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', '') OR d.access_type LIKE '%Unknown%')
-                                        THEN UPPER(TRIM(d.scanned_tag)) END) as unregistered_tags
-                FROM daily_logs d
-                LEFT JOIN members m ON UPPER(TRIM(d.scanned_tag)) = UPPER(TRIM(m.E_tag_id))
-                WHERE d.scanned_tag IS NOT NULL AND d.scanned_tag != '' AND UPPER(TRIM(d.scanned_tag)) != 'NO_TAG'
-            """).fetchone()
-
-            total_unique_tags = tag_adoption_query['total_scanned_tags'] or 0
-            reg_unique_tags = tag_adoption_query['registered_tags'] or 0
-            unreg_unique_tags = tag_adoption_query['unregistered_tags'] or 0
-
-            adoption_rate = round((reg_unique_tags / total_unique_tags * 100.0), 1) if total_unique_tags > 0 else 100.0
-            gap_rate = round((unreg_unique_tags / total_unique_tags * 100.0), 1) if total_unique_tags > 0 else 0.0
+            adoption_metrics = _get_fleet_adoption_stats(conn, curr_db_file)
+            total_unique_tags = adoption_metrics["total_unique_tags"]
+            reg_unique_tags = adoption_metrics["reg_unique_tags"]
+            unreg_unique_tags = adoption_metrics["unreg_unique_tags"]
+            adoption_rate = adoption_metrics["adoption_rate"]
+            gap_rate = adoption_metrics["gap_rate"]
 
             # Today's transits for daily log reporting
             unreg_today = conn.execute("""
@@ -160,11 +203,7 @@ async def get_stats():
             """, (pkt_today,)).fetchone()['c']
             total_transits_today = entries_today + exits_today
             reg_today = max(0, total_transits_today - unreg_today)
-
-            try:
-                unreg_tags_buffer = conn.execute("SELECT COUNT(*) as c FROM unregistered_tags").fetchone()['c']
-            except Exception:
-                unreg_tags_buffer = 0
+            unreg_tags_buffer = adoption_metrics["unreg_tags_buffer"]
 
             return {
                 "active_members": members_count,
@@ -226,32 +265,18 @@ async def get_chart_data():
                 entries_d.append(row['e'])
                 exits_d.append(row['x'])
 
+            import sys
+            app_mod = sys.modules.get('app')
+            curr_db_file = getattr(app_mod, 'DB_FILE', getattr(config, 'DB_FILE', 'gate_access.db'))
+
             # All-Time Unique Tag Fleet Adoption Breakdown (Unique Scanned Tags: 457+ tags)
-            tag_adoption_query = conn.execute("""
-                SELECT 
-                    COUNT(DISTINCT UPPER(TRIM(d.scanned_tag))) as total_scanned_tags,
-                    COUNT(DISTINCT CASE WHEN (m.Mem_id IS NOT NULL AND m.Mem_id NOT IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', '')) 
-                                         OR (d.mem_id IS NOT NULL AND d.mem_id NOT IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', '') AND d.access_type NOT LIKE '%Unknown%')
-                                        THEN UPPER(TRIM(d.scanned_tag)) END) as registered_tags,
-                    COUNT(DISTINCT CASE WHEN (m.Mem_id IS NULL OR m.Mem_id IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', ''))
-                                         AND (d.mem_id IS NULL OR d.mem_id IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', '') OR d.access_type LIKE '%Unknown%')
-                                        THEN UPPER(TRIM(d.scanned_tag)) END) as unregistered_tags
-                FROM daily_logs d
-                LEFT JOIN members m ON UPPER(TRIM(d.scanned_tag)) = UPPER(TRIM(m.E_tag_id))
-                WHERE d.scanned_tag IS NOT NULL AND d.scanned_tag != '' AND UPPER(TRIM(d.scanned_tag)) != 'NO_TAG'
-            """).fetchone()
-
-            total_unique_tags = tag_adoption_query['total_scanned_tags'] or 0
-            reg_unique_tags = tag_adoption_query['registered_tags'] or 0
-            unreg_unique_tags = tag_adoption_query['unregistered_tags'] or 0
-
-            adoption_rate = round((reg_unique_tags / total_unique_tags * 100.0), 1) if total_unique_tags > 0 else 100.0
-            gap_rate = round((unreg_unique_tags / total_unique_tags * 100.0), 1) if total_unique_tags > 0 else 0.0
-
-            try:
-                unreg_tags_buffer = conn.execute("SELECT COUNT(*) as c FROM unregistered_tags").fetchone()['c']
-            except Exception:
-                unreg_tags_buffer = 0
+            adoption_metrics = _get_fleet_adoption_stats(conn, curr_db_file)
+            total_unique_tags = adoption_metrics["total_unique_tags"]
+            reg_unique_tags = adoption_metrics["reg_unique_tags"]
+            unreg_unique_tags = adoption_metrics["unreg_unique_tags"]
+            adoption_rate = adoption_metrics["adoption_rate"]
+            gap_rate = adoption_metrics["gap_rate"]
+            unreg_tags_buffer = adoption_metrics["unreg_tags_buffer"]
 
             return {
                 "hours": hours,

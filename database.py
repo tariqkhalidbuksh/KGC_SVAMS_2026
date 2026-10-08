@@ -89,6 +89,9 @@ def init_db():
                     timestamp DATETIME DEFAULT (datetime('now', 'localtime')))""")
                 conn.execute("CREATE INDEX IF NOT EXISTS idx_logs_timestamp ON daily_logs(timestamp)")
                 conn.execute("CREATE INDEX IF NOT EXISTS idx_logs_tag ON daily_logs(scanned_tag)")
+                conn.execute("CREATE INDEX IF NOT EXISTS idx_logs_memid ON daily_logs(mem_id)")
+                conn.execute("CREATE INDEX IF NOT EXISTS idx_logs_direction ON daily_logs(direction)")
+                conn.execute("CREATE INDEX IF NOT EXISTS idx_logs_veh ON daily_logs(vehicle_number)")
 
                 conn.execute("""CREATE TABLE IF NOT EXISTS raw_reader_logs (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
