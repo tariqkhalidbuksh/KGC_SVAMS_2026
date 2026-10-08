@@ -375,37 +375,44 @@ def generate_audit_pdf(audit: dict) -> bytes:
         move_table_data = [[
             Paragraph("<b>#</b>", s_th),
             Paragraph("<b>TIME (PKT)</b>", s_th),
-            Paragraph("<b>DIRECTION</b>", s_th),
+            Paragraph("<b>READER STATUS &amp; DIRECTION</b>", s_th),
             Paragraph("<b>GATE STATION</b>", s_th),
             Paragraph("<b>ACCESS PROTOCOL</b>", s_th),
-            Paragraph("<b>VERIFICATION STATUS</b>", s_th)
+            Paragraph("<b>CLUB PRESENCE / STATUS</b>", s_th)
         ]]
 
         for idx, m in enumerate(daily_movements[:10], start=1):
             ts = str(m.get("timestamp", ""))
             time_part = ts[11:19] if len(ts) >= 19 else ts
             direction = (m.get("direction") or "ENTRY").upper()
-            dir_color = "#059669" if "ENTRY" in direction else "#2563EB"
-            gate = m.get("gate_no") or "Gate-01"
+            gate = m.get("gate_no") or ("Gate-01 Entry Reader" if "ENTRY" in direction else "Gate-01 Exit Reader")
             acc_type = m.get("access_type") or "UHF RFID Access"
             stay_note = m.get("stay_duration")
+            is_manual = "Manual" in acc_type or "Out" in gate or "Manual" in gate
+
             if "ENTRY" in direction:
-                status_text = "Authorized Entry"
+                reader_str = '<font color="#059669"><b>ENTRY READER (IN)</b></font>'
+                status_text = "Authorized Entry &bull; Inside Club"
+            elif is_manual:
+                reader_str = '<font color="#D97706"><b>MANUAL EXIT (OUT)</b></font>'
+                status_text = f"Authorized Exit &bull; Outside Club (Stay: {stay_note})" if stay_note else "Authorized Exit &bull; Outside Club"
             else:
-                status_text = f"Authorized Exit (Stay: {stay_note})" if stay_note else "Authorized Exit"
+                reader_str = '<font color="#2563EB"><b>EXIT READER (OUT)</b></font>'
+                status_text = f"Authorized Exit &bull; Outside Club (Stay: {stay_note})" if stay_note else "Authorized Exit &bull; Outside Club"
+
             if "Denied" in acc_type or "Unknown" in acc_type:
                 status_text = "Alert / Review"
 
             move_table_data.append([
                 Paragraph(f"<b>{idx:02d}</b>", s_td_mono),
                 Paragraph(time_part, s_td_mono),
-                Paragraph(f'<font color="{dir_color}"><b>{direction}</b></font>', s_td),
+                Paragraph(reader_str, s_td),
                 Paragraph(gate, s_td),
                 Paragraph(acc_type, s_td),
                 Paragraph(f'<font color="#059669"><b>{status_text}</b></font>' if "Authorized" in status_text else f'<font color="#DC2626"><b>{status_text}</b></font>', s_td)
             ])
 
-        move_tbl = Table(move_table_data, colWidths=[24, 75, 70, 70, 150, 150])
+        move_tbl = Table(move_table_data, colWidths=[20, 65, 110, 85, 115, 140])
         move_tbl.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#F1F5F9")),
             ('LINEBELOW', (0, 0), (-1, 0), 1, c_border),

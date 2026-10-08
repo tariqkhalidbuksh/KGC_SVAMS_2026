@@ -654,6 +654,9 @@ async def export_audit(
     for a in filtered:
         ent = a['entry'] or {}
         ext = a['exit'] or {}
+        e_reader = ent.get('gate_no') or ('Gate-01 Entry Reader' if ent else 'N/A')
+        x_reader = ext.get('gate_no') or ('Gate-01 Exit Reader' if ext else 'N/A')
+        club_presence = "Inside Club" if a.get('status') in ("Inside Facility", "Alert / Inside") else ("Inside Club (Overstay >8h)" if a.get('is_overstay') else "Outside Club")
         records.append({
             "Date": (ent.get('timestamp') or ext.get('timestamp') or '')[:10],
             "Member ID": ent.get('mem_id') or ext.get('mem_id') or 'GUEST',
@@ -661,8 +664,11 @@ async def export_audit(
             "Vehicle Number": ent.get('vehicle_number') or ext.get('vehicle_number') or 'N/A',
             "Make / Model": ent.get('make_model') or ext.get('make_model') or 'N/A',
             "Entry Time": ent.get('timestamp') or 'N/A',
+            "Entry Reader": e_reader,
             "Exit Time": ext.get('timestamp') or 'N/A',
+            "Exit Reader": x_reader,
             "Duration": a.get('duration') or 'N/A',
+            "Club Status": club_presence,
             "Status": a.get('status') or 'N/A',
             "Access Type": ent.get('access_type') or ext.get('access_type') or 'RFID Verified',
             "Scanned RFID Tag": ent.get('scanned_tag') or ext.get('scanned_tag') or 'N/A',
@@ -673,7 +679,7 @@ async def export_audit(
     if df.empty:
         df = pd.DataFrame(columns=[
             "Date", "Member ID", "Member Name", "Vehicle Number", "Make / Model",
-            "Entry Time", "Exit Time", "Duration", "Status", "Access Type", "Scanned RFID Tag", "Gate"
+            "Entry Time", "Entry Reader", "Exit Time", "Exit Reader", "Duration", "Club Status", "Status", "Access Type", "Scanned RFID Tag", "Gate"
         ])
 
     safe_label = display_label.replace(' ', '_').replace(':', '-')

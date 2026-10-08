@@ -915,6 +915,50 @@ async function loadHardware() {
     }
 }
 
+function formatReaderBadge(row, fallbackDirection) {
+    if (!row && !fallbackDirection) return '';
+    const dir = (row?.direction || fallbackDirection || '').trim().toLowerCase();
+    const gate = (row?.gate_no || '').trim();
+    const isManual = (row?.access_type || '').includes('Manual') || gate.includes('Out') || gate.includes('Manual') || gate.includes('Bulk');
+
+    if (dir === 'entry') {
+        return `
+            <div class="flex flex-col gap-0.5 items-start">
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-black bg-emerald-50 text-emerald-800 border border-emerald-200/90 shadow-2xs">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>ENTRY READER</span>
+                    <span class="text-[9px] font-extrabold text-emerald-700 bg-emerald-100/90 px-1 py-0.2 rounded font-mono">IN</span>
+                </span>
+                <span class="text-[9px] text-slate-400 font-mono pl-0.5">${gate || 'Gate-01 Entry Reader'}</span>
+            </div>
+        `;
+    } else if (dir === 'exit') {
+        if (isManual) {
+            return `
+                <div class="flex flex-col gap-0.5 items-start">
+                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-black bg-amber-50 text-amber-900 border border-amber-200/90 shadow-2xs">
+                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                        <span>MANUAL EXIT</span>
+                        <span class="text-[9px] font-extrabold text-amber-700 bg-amber-100/90 px-1 py-0.2 rounded font-mono">OUT</span>
+                    </span>
+                    <span class="text-[9px] text-slate-400 font-mono pl-0.5">${gate || 'Manual Clearance'}</span>
+                </div>
+            `;
+        }
+        return `
+            <div class="flex flex-col gap-0.5 items-start">
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-black bg-indigo-50 text-indigo-900 border border-indigo-200/90 shadow-2xs">
+                    <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+                    <span>EXIT READER</span>
+                    <span class="text-[9px] font-extrabold text-indigo-700 bg-indigo-100 px-1 py-0.2 rounded font-mono">OUT</span>
+                </span>
+                <span class="text-[9px] text-slate-400 font-mono pl-0.5">${gate || 'Gate-01 Exit Reader'}</span>
+            </div>
+        `;
+    }
+    return `<span class="text-[10px] text-slate-400 font-mono">${gate || '--'}</span>`;
+}
+
 async function loadActivity() {
     const ovTab = document.getElementById('tab-overview');
     if (ovTab && ovTab.classList.contains('hidden')) return;
@@ -959,7 +1003,7 @@ async function loadActivity() {
                     }">${r.access_type}</span>
                 </td>
                 <td class="p-4">
-                    <span class="text-[10px] font-extrabold px-2.5 py-1 rounded-full ${r.direction === 'Entry' ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-700'}">${r.direction}</span>
+                    ${formatReaderBadge(r)}
                 </td>
                 <td class="p-4">
                     ${r.image_path ? 
@@ -1178,16 +1222,16 @@ async function loadAudit(page = currentAuditPage, isSilent = false) {
             let statusPill = '';
             if (a.is_overstay) {
                 statusPill = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black bg-amber-100 text-amber-900 border border-amber-300 shadow-2xs">
-                    <span class="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse"></span>OVERSTAY (>8h)</span>`;
-            } else if (a.status === 'Inside Facility' || a.status === 'Alert / Inside') {
-                statusPill = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-200">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>INSIDE FACILITY</span>`;
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse"></span>INSIDE &bull; OVERSTAY (>8h)</span>`;
+            } else if (a.status === 'Inside Facility' || a.status === 'Alert / Inside' || (!x && e)) {
+                statusPill = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>INSIDE CLUB</span>`;
             } else if (a.status === 'Exited') {
                 statusPill = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black bg-slate-100 text-slate-700 border border-slate-200">
-                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>EXITED</span>`;
+                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>OUTSIDE CLUB</span>`;
             } else {
-                statusPill = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black bg-amber-100 text-amber-800 border border-amber-200">
-                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>EXIT ONLY</span>`;
+                statusPill = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black bg-slate-100 text-slate-700 border border-slate-200">
+                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>OUTSIDE (Exit Only)</span>`;
             }
 
             let methodPill = '';
@@ -1230,16 +1274,58 @@ async function loadAudit(page = currentAuditPage, isSilent = false) {
                 </td>
                 <td class="p-3.5">${methodPill}</td>
                 <td class="p-3.5">
-                    ${e ? `<div>
-                        <p class="font-bold text-slate-800 tabular-nums">${String(e.timestamp).split(' ')[1] || e.timestamp}</p>
-                        <p class="text-[10px] text-slate-400 font-mono">${e.gate_no || 'Entry Gate'}</p>
-                    </div>` : '<span class="text-slate-300">-</span>'}
+                    ${e ? `<div class="space-y-1">
+                        <p class="font-bold text-slate-800 tabular-nums font-mono text-xs">${String(e.timestamp).split(' ')[1] || e.timestamp}</p>
+                        <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-black bg-emerald-50 text-emerald-800 border border-emerald-200/90 shadow-2xs">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span>ENTRY READER</span>
+                            <span class="text-[9px] font-extrabold text-emerald-700 bg-emerald-100/90 px-1 py-0.2 rounded font-mono">IN</span>
+                        </div>
+                        <p class="text-[9px] text-slate-400 font-mono truncate max-w-[140px]">${e.gate_no || 'Gate-01 Entry Reader'}</p>
+                    </div>` : '<span class="text-slate-300 font-mono text-xs">-</span>'}
                 </td>
                 <td class="p-3.5">
-                    ${x ? `<div>
-                        <p class="font-bold text-slate-800 tabular-nums">${String(x.timestamp).split(' ')[1] || x.timestamp}</p>
-                        <p class="text-[10px] text-slate-400 font-mono">${x.gate_no || 'Exit Gate'}</p>
-                    </div>` : '<span class="text-emerald-600 font-bold text-xs">Parked Inside</span>'}
+                    ${x ? (() => {
+                        const xTime = String(x.timestamp).split(' ')[1] || x.timestamp;
+                        const xGate = x.gate_no || 'Gate-01 Exit Reader';
+                        const isManual = (x.access_type || '').includes('Manual') || xGate.includes('Out') || xGate.includes('Manual') || xGate.includes('Bulk');
+                        if (isManual) {
+                            return `<div class="space-y-1">
+                                <p class="font-bold text-slate-800 tabular-nums font-mono text-xs">${xTime}</p>
+                                <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-black bg-amber-50 text-amber-900 border border-amber-200/90 shadow-2xs">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                    <span>MANUAL EXIT</span>
+                                    <span class="text-[9px] font-extrabold text-amber-700 bg-amber-100/90 px-1 py-0.2 rounded font-mono">OUT</span>
+                                </div>
+                                <p class="text-[9px] text-slate-400 font-mono truncate max-w-[140px]">${xGate}</p>
+                            </div>`;
+                        } else {
+                            return `<div class="space-y-1">
+                                <p class="font-bold text-slate-800 tabular-nums font-mono text-xs">${xTime}</p>
+                                <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-black bg-indigo-50 text-indigo-900 border border-indigo-200/90 shadow-2xs">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+                                    <span>EXIT READER</span>
+                                    <span class="text-[9px] font-extrabold text-indigo-700 bg-indigo-100 px-1 py-0.2 rounded font-mono">OUT</span>
+                                </div>
+                                <p class="text-[9px] text-slate-400 font-mono truncate max-w-[140px]">${xGate}</p>
+                            </div>`;
+                        }
+                    })() : `
+                        <div class="space-y-1.5">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-900 border border-emerald-300 shadow-2xs">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                                <span>INSIDE CLUB</span>
+                            </span>
+                            <div>
+                                <button type="button" onclick='event.stopPropagation(); triggerRowManualExit(${JSON.stringify(a).replace(/'/g, "&#39;")})'
+                                    class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black bg-amber-50 hover:bg-amber-600 text-amber-900 hover:text-white border border-amber-300 shadow-2xs transition cursor-pointer"
+                                    title="Click to record manual departure and mark vehicle as outside club">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                                    <span>Make Outside &rarr;</span>
+                                </button>
+                            </div>
+                        </div>
+                    `}
                 </td>
                 <td class="p-3.5">
                     ${rowDur ? `<span class="font-bold text-xs bg-indigo-50 text-indigo-700 border border-indigo-200/70 px-2.5 py-1 rounded-lg tabular-nums">${rowDur}</span>` :
@@ -1249,9 +1335,9 @@ async function loadAudit(page = currentAuditPage, isSilent = false) {
                 <td class="p-3.5 text-right pr-6" onclick="event.stopPropagation()">
                     <div class="inline-flex items-center justify-end gap-2">
                         ${(a.status === 'Inside Facility' || a.status === 'Alert / Inside' || a.is_overstay || (!x && e)) ? `
-                        <button type="button" onclick='event.stopPropagation(); triggerRowManualExit(${JSON.stringify(a).replace(/'/g, "&#39;")})' class="inline-flex items-center gap-1.5 text-xs font-bold text-amber-800 hover:text-white border border-amber-300 hover:bg-amber-600 rounded-xl px-2.5 py-1.5 bg-amber-50 shadow-2xs transition" title="Manually record vehicle departure">
+                        <button type="button" onclick='event.stopPropagation(); triggerRowManualExit(${JSON.stringify(a).replace(/'/g, "&#39;")})' class="inline-flex items-center gap-1.5 text-xs font-bold text-amber-900 hover:text-white border border-amber-300 hover:bg-amber-600 rounded-xl px-2.5 py-1.5 bg-amber-50 shadow-2xs transition" title="Manually record vehicle departure to mark outside">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                            <span>Manual Exit</span>
+                            <span>Make Outside</span>
                         </button>
                         ` : ''}
                         <button type="button" onclick='openAudit(${JSON.stringify(a).replace(/'/g, "&#39;")})' class="inline-flex items-center gap-1.5 text-xs font-extrabold text-indigo-700 hover:text-indigo-900 border border-indigo-200 rounded-xl px-3.5 py-1.5 bg-indigo-50/80 hover:bg-indigo-100 shadow-2xs transition">
@@ -1384,7 +1470,7 @@ function openAudit(a) {
                             <span class="text-[10px] font-black px-2.5 py-0.5 rounded-full ${isMember ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : isUnreg ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-rose-50 text-rose-700 border border-rose-200'}">
                                 ${isMember ? 'RFID VERIFIED MEMBER' : isUnreg ? 'UNKNOWN RFID TAG' : 'OPTICAL CAPTURE - NO RFID'}
                             </span>
-                            <span class="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200">${(v.direction || 'ENTRY').toUpperCase()} TRANSIT</span>
+                            ${formatReaderBadge(v)}
                             <span class="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">DATE: ${visitDate}</span>
                         </div>
                     </div>
@@ -1392,12 +1478,12 @@ function openAudit(a) {
                 <div class="text-right text-xs text-slate-500 space-y-1">
                     <button type="button" onclick="closeAudit()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-700 font-bold flex items-center justify-center text-lg transition ml-auto mb-2">&times;</button>
                     <p class="text-[11px]"><span class="font-bold text-slate-400">Timestamp:</span> <span class="font-mono font-bold text-slate-700">${v.timestamp || '--'}</span></p>
-                    <p class="text-[11px]"><span class="font-bold text-slate-400">Status:</span> <span class="inline-block text-[10px] font-black px-2 py-0.5 rounded-full ${a.status === 'Inside Facility' ? 'bg-emerald-100 text-emerald-800' : a.status === 'Exited' || a.status === 'Exit Only' ? 'bg-slate-100 text-slate-700' : 'bg-amber-100 text-amber-800'}">${(a.status || 'Inside Facility').toUpperCase()}</span></p>
+                    <p class="text-[11px]"><span class="font-bold text-slate-400">Club Presence:</span> <span class="inline-block text-[10px] font-black px-2.5 py-0.5 rounded-full ${a.status === 'Inside Facility' || a.status === 'Alert / Inside' || (!x && e) ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-slate-100 text-slate-700 border border-slate-200'}">${(a.status === 'Inside Facility' || a.status === 'Alert / Inside' || (!x && e)) ? 'INSIDE CLUB' : 'OUTSIDE CLUB'}</span></p>
                     ${(a.status === 'Inside Facility' || a.status === 'Alert / Inside' || a.is_overstay || (!x && e)) ? `
                     <div class="pt-1.5">
                         <button type="button" onclick="openManualExitFromAuditModal()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-sm transition">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                            <span>Mark Vehicle Exited</span>
+                            <span>Make Outside (Clear Departure)</span>
                         </button>
                     </div>` : ''}
                 </div>
@@ -1427,7 +1513,7 @@ function openAudit(a) {
                     <p class="font-mono font-black text-2xl text-indigo-700 tracking-wider">${v.vehicle_number || 'NO PLATE'}</p>
                     <p class="text-sm text-slate-700 font-bold mt-1">${v.make_model || 'Make/Model not specified'}</p>
                     <div class="space-y-2 text-xs border-t border-slate-200/80 pt-3 mt-3">
-                        <div class="flex justify-between"><span class="text-slate-400 font-bold">Gate Station</span><span class="font-bold font-mono text-slate-800">${v.gate_no || 'Gate-01'}</span></div>
+                        <div class="flex justify-between items-center"><span class="text-slate-400 font-bold">Reader Station</span>${formatReaderBadge(v)}</div>
                         <div class="flex justify-between"><span class="text-slate-400 font-bold">Verification Protocol</span><span class="font-bold text-slate-800">${v.access_type || 'UHF RFID'}</span></div>
                     </div>
                 </div>
@@ -1704,11 +1790,11 @@ async function loadReportMovements(vehicleNumber, memId, dateStr, tripDuration, 
                     <tr>
                         <th class="py-2.5 px-3">#</th>
                         <th class="py-2.5 px-3">Time (PKT)</th>
-                        <th class="py-2.5 px-3">Movement</th>
+                        <th class="py-2.5 px-3">Reader Status</th>
                         <th class="py-2.5 px-3">Gate Station</th>
                         <th class="py-2.5 px-3">Access Protocol</th>
                         <th class="py-2.5 px-3">Visit Stay</th>
-                        <th class="py-2.5 px-3">Verification Status</th>
+                        <th class="py-2.5 px-3">Club Presence &bull; Verification</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -1721,7 +1807,7 @@ async function loadReportMovements(vehicleNumber, memId, dateStr, tripDuration, 
                             (currentReportIncident.id === m.id)
                         );
                         const stayBadge = m.stay_duration ? 
-                            `<span class="inline-flex items-center gap-1 font-mono font-bold text-xs text-indigo-700 bg-indigo-50 border border-indigo-200/80 px-2 py-0.5 rounded-md"><svg class="w-3 h-3 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>${m.stay_duration}</span>` :
+                            `<span class="inline-flex items-center gap-1 font-mono font-bold text-xs text-indigo-700 bg-indigo-50 border border-indigo-200/80 px-2 py-0.5 rounded-md"><svg class="w-3 h-3 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>${m.stay_duration}</span>` : 
                             `<span class="text-slate-300 font-mono text-xs">—</span>`;
                         return `
                             <tr class="${isCurrent ? 'bg-indigo-50/60 font-semibold' : 'hover:bg-slate-50/70'} transition">
@@ -1731,15 +1817,13 @@ async function loadReportMovements(vehicleNumber, memId, dateStr, tripDuration, 
                                 </td>
                                 <td class="py-2.5 px-3 font-mono font-bold text-slate-800">${timeStr}</td>
                                 <td class="py-2.5 px-3">
-                                    <span class="text-[10px] font-black px-2 py-0.5 rounded-full ${isEntry ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-blue-50 text-blue-700 border border-blue-200'}">
-                                        ${(m.direction || 'PASSAGE').toUpperCase()}
-                                    </span>
+                                    ${formatReaderBadge(m)}
                                 </td>
-                                <td class="py-2.5 px-3 font-bold text-slate-700">${m.gate_no || 'Gate-01'}</td>
+                                <td class="py-2.5 px-3 font-bold text-slate-700">${m.gate_no || (isEntry ? 'Gate-01 Entry Reader' : 'Gate-01 Exit Reader')}</td>
                                 <td class="py-2.5 px-3 text-slate-600">${m.access_type || 'UHF RFID Access'}</td>
                                 <td class="py-2.5 px-3">${stayBadge}</td>
-                                <td class="py-2.5 px-3 font-bold ${isEntry ? 'text-emerald-700' : 'text-blue-700'}">
-                                    ${isEntry ? 'Authorized Entry' : `Authorized Exit ${m.stay_duration ? `<span class="text-[11px] font-semibold text-slate-500">(${m.stay_duration} stay)</span>` : ''}`}
+                                <td class="py-2.5 px-3 font-bold">
+                                    ${isEntry ? '<span class="inline-flex items-center gap-1 text-emerald-700 font-bold text-xs"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>Inside Club &bull; Authorized Entry</span>' : `<span class="inline-flex items-center gap-1 text-indigo-700 font-bold text-xs"><span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>Outside Club &bull; Authorized Exit ${m.stay_duration ? `<span class="text-[11px] font-semibold text-slate-500">(${m.stay_duration})</span>` : ''}</span>`}
                                 </td>
                             </tr>
                         `;
@@ -4205,12 +4289,8 @@ function renderEtagChronology(data, page = currentEtagScanPage, limit = currentE
             <tr class="hover:bg-slate-50/70 transition">
                 <td class="py-3 px-4 font-mono font-bold text-slate-400 text-xs">${String(itemNumber).padStart(2, '0')}</td>
                 <td class="py-3 px-4 font-mono font-bold text-slate-800 text-xs">${timePart}</td>
-                <td class="py-3 px-4 font-bold text-slate-700 text-xs">${s.gate_no || 'Gate-01'}</td>
-                <td class="py-3 px-4">
-                    <span class="text-[10px] font-black px-2 py-0.5 rounded-full ${isEntry ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-blue-50 text-blue-700 border border-blue-200'}">
-                        ${(s.direction || 'PASSAGE').toUpperCase()}
-                    </span>
-                </td>
+                <td class="py-3 px-4">${formatReaderBadge(s)}</td>
+                <td class="py-3 px-4 font-bold text-slate-700 text-xs">${s.gate_no || (isEntry ? 'Gate-01 Entry Reader' : 'Gate-01 Exit Reader')}</td>
                 <td class="py-3 px-4 text-xs text-slate-600 font-medium">${s.access_type || 'UHF RFID Access'}</td>
                 <td class="py-3 px-4 font-mono font-bold text-xs text-slate-800">${s.vehicle_number || 'NO PLATE'}</td>
                 <td class="py-3 px-4">

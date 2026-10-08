@@ -630,7 +630,7 @@
                                     <th class="p-4">Vehicle</th>
                                     <th class="p-4">Identified As</th>
                                     <th class="p-4">Method</th>
-                                    <th class="p-4">Direction</th>
+                                    <th class="p-4">Reader Status</th>
                                     <th class="p-4">Evidence</th>
                                 </tr>
                             </thead>
@@ -744,8 +744,8 @@
                         <div class="flex items-center gap-2 flex-wrap">
                             <span class="text-xs font-extrabold text-slate-400 uppercase tracking-wider mr-1">Status:</span>
                             <button type="button" onclick="setAuditStatusFilter('all', this)" class="audit-status-pill px-3 py-1 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow-sm transition">All Records</button>
-                            <button type="button" onclick="setAuditStatusFilter('inside', this)" class="audit-status-pill px-3 py-1 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Inside Facility</button>
-                            <button type="button" onclick="setAuditStatusFilter('exited', this)" class="audit-status-pill px-3 py-1 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Exited</button>
+                            <button type="button" onclick="setAuditStatusFilter('inside', this)" class="audit-status-pill px-3 py-1 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Inside Club</button>
+                            <button type="button" onclick="setAuditStatusFilter('exited', this)" class="audit-status-pill px-3 py-1 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Outside / Exited</button>
                             <button type="button" onclick="setAuditStatusFilter('overstay', this)" class="audit-status-pill px-3 py-1 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Overstaying (>8h)</button>
                             <button type="button" onclick="setAuditStatusFilter('alert', this)" class="audit-status-pill px-3 py-1 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Alerts</button>
                         </div>
@@ -764,13 +764,13 @@
                         <table class="w-full text-left text-sm">
                             <thead class="text-[11px] uppercase font-bold text-slate-400 bg-slate-100/70 border-b">
                                 <tr>
-                                    <th class="p-3.5 pl-5">Vehicle & Evidence</th>
+                                    <th class="p-3.5 pl-5">Vehicle &amp; Evidence</th>
                                     <th class="p-3.5">Driver / Member</th>
                                     <th class="p-3.5">Access Method</th>
-                                    <th class="p-3.5">Entry Time</th>
-                                    <th class="p-3.5">Exit Time</th>
+                                    <th class="p-3.5">Entry Time &amp; Reader</th>
+                                    <th class="p-3.5">Exit Time &amp; Reader</th>
                                     <th class="p-3.5">Stay Duration</th>
-                                    <th class="p-3.5">Audit Status</th>
+                                    <th class="p-3.5">Club Status</th>
                                     <th class="p-3.5 text-right pr-6">Action</th>
                                 </tr>
                             </thead>
@@ -1555,8 +1555,8 @@
                                     <tr>
                                         <th class="py-3 px-4">#</th>
                                         <th class="py-3 px-4">Timestamp (PKT)</th>
-                                        <th class="py-3 px-4">Reader / Gate</th>
-                                        <th class="py-3 px-4">Movement</th>
+                                        <th class="py-3 px-4">Reader Status</th>
+                                        <th class="py-3 px-4">Gate Station</th>
                                         <th class="py-3 px-4">Access Protocol</th>
                                         <th class="py-3 px-4">Vehicle Plate</th>
                                         <th class="py-3 px-4">Optical Proof</th>

@@ -162,10 +162,12 @@ def execute_access_decision(
                     (clean_tag, f"PROCESSED: {resolved_direction}", resolved_direction, pkt_now)
                 )
 
+                resolved_gate = "Gate-01 Entry Reader" if resolved_direction == "Entry" else "Gate-01 Exit Reader"
+
                 cursor = conn.execute("""INSERT INTO daily_logs
                     (mem_id, name, vehicle_number, access_type, direction, gate_no, image_path, plate_image_path, scanned_tag, timestamp)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-                    (mem_id, name, car, access_type, resolved_direction, "Gate-01", path_full, path_plate, clean_tag, pkt_now))
+                    (mem_id, name, car, access_type, resolved_direction, resolved_gate, path_full, path_plate, clean_tag, pkt_now))
                 conn.commit()
                 new_id = cursor.lastrowid
 
@@ -178,7 +180,7 @@ def execute_access_decision(
                         "vehicle_number": car,
                         "access_type": access_type,
                         "direction": resolved_direction,
-                        "gate_no": "Gate-01",
+                        "gate_no": resolved_gate,
                         "image_path": path_full,
                         "plate_image_path": path_plate,
                         "scanned_tag": clean_tag,
@@ -197,11 +199,12 @@ def execute_access_decision(
                 car = "UNKNOWN"
                 access_type = "No RFID Detected"
                 resolved_direction = direction or "Entry"
+                resolved_gate = "Gate-01 Entry Reader" if resolved_direction == "Entry" else "Gate-01 Exit Reader"
 
                 cursor = conn.execute("""INSERT INTO daily_logs
                     (mem_id, name, vehicle_number, access_type, direction, gate_no, image_path, plate_image_path, scanned_tag, timestamp)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-                    (mem_id, name, car, access_type, resolved_direction, "Gate-01", path_full, path_plate, "NO_TAG", pkt_now))
+                    (mem_id, name, car, access_type, resolved_direction, resolved_gate, path_full, path_plate, "NO_TAG", pkt_now))
                 conn.commit()
                 new_id = cursor.lastrowid
                 return new_id
