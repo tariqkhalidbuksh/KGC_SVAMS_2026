@@ -102,11 +102,7 @@
                 </button>
                 <button type="button" onclick="switchTab('settings', this)" data-tab="settings" class="nav-btn px-8 py-4 text-left flex items-center gap-3 transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                    Hardware Settings
-                </button>
-                <button type="button" onclick="switchTab('settings', this); switchSettingsSubtab('users');" data-tab="users" class="nav-btn px-8 py-4 text-left flex items-center gap-3 transition">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-                    User Access Rights
+                    Settings
                 </button>
 
                 <div class="mt-4 pt-4 border-t border-slate-100 flex flex-col text-xs font-bold space-y-1">
@@ -169,11 +165,7 @@
                     </button>
                     <button type="button" onclick="switchTab('settings', this); closeMobileMenu();" data-tab="settings" class="nav-btn px-6 py-3.5 text-left flex items-center gap-3 transition">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                        Hardware Settings
-                    </button>
-                    <button type="button" onclick="switchTab('settings', this); switchSettingsSubtab('users'); closeMobileMenu();" data-tab="users" class="nav-btn px-6 py-3.5 text-left flex items-center gap-3 transition">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-                        User Access Rights
+                        Settings
                     </button>
                     <div class="mt-4 pt-4 border-t border-slate-100 flex flex-col text-xs font-bold space-y-1">
                         <a href="/kiosk" target="_blank" class="px-6 py-2.5 text-slate-600 flex items-center justify-between">Gate Terminal</a>
@@ -1082,11 +1074,11 @@
                 <div class="flex items-center gap-2 border-b border-slate-200 pb-3">
                     <button type="button" id="subtabSetHwBtn" onclick="switchSettingsSubtab('hardware')" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-white border border-slate-200 shadow-xs text-indigo-700 flex items-center gap-2 transition">
                         <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        <span>Hardware & Network Subsystem</span>
+                        <span>Hardware Settings</span>
                     </button>
                     <button type="button" id="subtabSetUsersBtn" onclick="switchSettingsSubtab('users')" class="px-5 py-2.5 rounded-xl text-xs font-bold text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition flex items-center gap-2">
                         <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                        <span>User Accounts & Rights Management</span>
+                        <span>User Management</span>
                         <span id="usersBadgeCount" class="bg-indigo-50 text-indigo-700 font-mono text-[10px] px-2 py-0.5 rounded-full font-bold">3</span>
                     </button>
                 </div>

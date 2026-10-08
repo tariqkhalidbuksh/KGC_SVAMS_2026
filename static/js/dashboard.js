@@ -563,7 +563,7 @@ function switchTab(name, btn) {
                             name === 'logs' ? 'Vehicle Audit Reports' :
                             name === 'camera_audit' ? 'Camera Vehicle Audit' :
                             name === 'members' ? 'Member Directory' :
-                            name === 'settings' ? 'Hardware Settings' : 'Command Overview';
+                            name === 'settings' ? 'Settings' : 'Command Overview';
     }
 
     // Update URL query parameter without page reload
