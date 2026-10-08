@@ -206,6 +206,20 @@ def _identity_key(log_row):
         return ('plate', plate)
     return None
 
+def _audit_sort_key(a):
+    """
+    Returns (latest_timestamp, latest_log_id) across entry and exit events.
+    Ensures that paired audits and individual transits are sorted in true chronological
+    order, keeping the most recently active vehicle events at the top of the table.
+    """
+    ent = a.get('entry') or {}
+    ext = a.get('exit') or {}
+    ent_ts = str(ent.get('timestamp') or '')
+    ext_ts = str(ext.get('timestamp') or '')
+    latest_ts = max(ent_ts, ext_ts)
+    latest_id = max(ent.get('id') or 0, ext.get('id') or 0)
+    return (latest_ts, latest_id)
+
 @router.get("/latest-log")
 async def get_latest_log(direction: str = None):
     # Zero-lag fast path: serve directly from memory cache (< 0.05ms) without acquiring DB_LOCK
@@ -322,26 +336,33 @@ async def get_audit(
             return search_term in combined_text
         filtered = [a for a in filtered if _match_search(a)]
 
-    # 3. Status filter
+    # 3. Status filter (ensure both paired exits and exit-only transits are included in "exited")
     status_filter = (status or "").strip().lower()
     if status_filter and status_filter != "all":
         if status_filter == "inside":
             filtered = [a for a in filtered if a['status'] in ("Inside Facility", "Alert / Inside", "Overstay (>8h)")]
         elif status_filter == "exited":
-            filtered = [a for a in filtered if a['status'] == "Exited"]
+            filtered = [a for a in filtered if a['status'] in ("Exited", "Exit Only")]
         elif status_filter == "alert":
             filtered = [a for a in filtered if a['is_alert']]
         elif status_filter == "overstay":
             filtered = [a for a in filtered if a.get('is_overstay')]
 
-    filtered.sort(key=lambda a: (a['entry'] or a['exit'])['id'], reverse=True)
+    # Sort strictly by the most recent movement event (newest entry or exit timestamp first)
+    filtered.sort(key=_audit_sort_key, reverse=True)
 
-    # Accurate counts reflecting filtered results
+    # Filtered counts reflecting active tab criteria (preserves test contracts)
     total_filtered = len(filtered)
     currently_inside = sum(1 for a in filtered if a['status'] in ("Inside Facility", "Alert / Inside", "Overstay (>8h)"))
-    exited_count = sum(1 for a in filtered if a['status'] == "Exited")
+    exited_count = sum(1 for a in filtered if a['status'] in ("Exited", "Exit Only"))
     alert_count = sum(1 for a in filtered if a['is_alert'])
     overstay_count = sum(1 for a in filtered if a.get('is_overstay'))
+
+    # Facility-wide summary metrics for selected date criteria
+    fac_inside = sum(1 for a in paired_audits if a['status'] in ("Inside Facility", "Alert / Inside", "Overstay (>8h)"))
+    fac_exited = sum(1 for a in paired_audits if a['status'] in ("Exited", "Exit Only"))
+    fac_alerts = sum(1 for a in paired_audits if a['is_alert'])
+    fac_overstay = sum(1 for a in paired_audits if a.get('is_overstay'))
 
     page = max(1, page)
     limit = min(max(5, limit), 200)
@@ -358,6 +379,11 @@ async def get_audit(
         "exited_count": exited_count,
         "alert_count": alert_count,
         "overstay_count": overstay_count,
+        "facility_total_transits": len(paired_audits),
+        "facility_currently_inside": fac_inside,
+        "facility_completed_visits": fac_exited,
+        "facility_security_alerts": fac_alerts,
+        "facility_overstay_warnings": fac_overstay,
         "page": page,
         "limit": limit,
         "total_pages": total_pages,
@@ -523,13 +549,13 @@ async def export_audit(
         if status_filter == "inside":
             filtered = [a for a in filtered if a['status'] in ("Inside Facility", "Alert / Inside", "Overstay (>8h)")]
         elif status_filter == "exited":
-            filtered = [a for a in filtered if a['status'] == "Exited"]
+            filtered = [a for a in filtered if a['status'] in ("Exited", "Exit Only")]
         elif status_filter == "alert":
             filtered = [a for a in filtered if a['is_alert']]
         elif status_filter == "overstay":
             filtered = [a for a in filtered if a.get('is_overstay')]
 
-    filtered.sort(key=lambda a: (a['entry'] or a['exit'])['id'], reverse=True)
+    filtered.sort(key=_audit_sort_key, reverse=True)
 
     records = []
     for a in filtered:

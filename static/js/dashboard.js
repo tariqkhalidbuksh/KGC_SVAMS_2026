@@ -916,6 +916,8 @@ async function loadHardware() {
 }
 
 async function loadActivity() {
+    const ovTab = document.getElementById('tab-overview');
+    if (ovTab && ovTab.classList.contains('hidden')) return;
     try {
         const res = await fetch('/api/logs?limit=10');
         if (!res.ok) return;
@@ -1083,7 +1085,7 @@ function changeAuditLimit() {
     loadAudit(1);
 }
 
-async function loadAudit(page = currentAuditPage) {
+async function loadAudit(page = currentAuditPage, isSilent = false) {
     currentAuditPage = page;
     const startD = document.getElementById('auditDate')?.value || '';
     const endD = document.getElementById('auditEndDate')?.value || '';
@@ -1092,7 +1094,11 @@ async function loadAudit(page = currentAuditPage) {
     const bodyEl = document.getElementById('auditBody');
     if (!bodyEl) return;
 
-    bodyEl.innerHTML = `<tr><td colspan="8" class="p-10 text-center text-slate-400 font-bold">Loading audit logs...</td></tr>`;
+    // Smooth UX: Only show skeleton message if table is completely empty and this is not a silent background refresh.
+    // If table already has rows, keep them displayed so there is zero glitch, zero blanking, and zero flicker!
+    if (!isSilent && (!auditData || !auditData.length || !bodyEl.children.length)) {
+        bodyEl.innerHTML = `<tr><td colspan="8" class="p-10 text-center text-slate-400 font-bold">Loading audit logs...</td></tr>`;
+    }
 
     try {
         const dateParam = (currentAuditDatePreset === 'all' && !startD) ? 'all' : startD;
@@ -1100,11 +1106,26 @@ async function loadAudit(page = currentAuditPage) {
         const res = await fetch(url);
         const data = await res.json();
 
-        if (document.getElementById('auditStatTotal')) document.getElementById('auditStatTotal').innerText = (data.total || 0).toLocaleString();
-        if (document.getElementById('auditStatInside')) document.getElementById('auditStatInside').innerText = (data.currently_inside || 0).toLocaleString();
-        if (document.getElementById('auditStatExited')) document.getElementById('auditStatExited').innerText = (data.exited_count || 0).toLocaleString();
-        if (document.getElementById('auditStatAlerts')) document.getElementById('auditStatAlerts').innerText = (data.alert_count || 0).toLocaleString();
-        if (document.getElementById('auditStatOverstay')) document.getElementById('auditStatOverstay').innerText = (data.overstay_count || 0).toLocaleString();
+        if (document.getElementById('auditStatTotal')) {
+            const v = data.facility_total_transits !== undefined ? data.facility_total_transits : (data.total_unfiltered || data.total || 0);
+            document.getElementById('auditStatTotal').innerText = v.toLocaleString();
+        }
+        if (document.getElementById('auditStatInside')) {
+            const v = data.facility_currently_inside !== undefined ? data.facility_currently_inside : (data.currently_inside || 0);
+            document.getElementById('auditStatInside').innerText = v.toLocaleString();
+        }
+        if (document.getElementById('auditStatExited')) {
+            const v = data.facility_completed_visits !== undefined ? data.facility_completed_visits : (data.exited_count || 0);
+            document.getElementById('auditStatExited').innerText = v.toLocaleString();
+        }
+        if (document.getElementById('auditStatAlerts')) {
+            const v = data.facility_security_alerts !== undefined ? data.facility_security_alerts : (data.alert_count || 0);
+            document.getElementById('auditStatAlerts').innerText = v.toLocaleString();
+        }
+        if (document.getElementById('auditStatOverstay')) {
+            const v = data.facility_overstay_warnings !== undefined ? data.facility_overstay_warnings : (data.overstay_count || 0);
+            document.getElementById('auditStatOverstay').innerText = v.toLocaleString();
+        }
         if (document.getElementById('auditBadgeDate')) document.getElementById('auditBadgeDate').innerText = data.date || 'Today';
 
         auditData = data.audits || [];
@@ -1117,7 +1138,7 @@ async function loadAudit(page = currentAuditPage) {
             return;
         }
 
-        bodyEl.innerHTML = auditData.map(a => {
+        const newHtml = auditData.map(a => {
             let e = a.entry, x = a.exit;
             if (e && x && e.timestamp && x.timestamp && String(e.timestamp) > String(x.timestamp)) {
                 const tmp = e; e = x; x = tmp;
@@ -1242,9 +1263,16 @@ async function loadAudit(page = currentAuditPage) {
             </tr>`;
         }).join('');
 
+        // Smooth update: only touch DOM if table HTML has changed
+        if (bodyEl.innerHTML !== newHtml) {
+            bodyEl.innerHTML = newHtml;
+        }
+
         renderAuditPagination(total, page, totalPages, currentAuditLimit);
     } catch (err) {
-        bodyEl.innerHTML = `<tr><td colspan="8" class="p-10 text-center text-rose-500 font-bold">Error loading audit logs: ${err.message}</td></tr>`;
+        if (!isSilent) {
+            bodyEl.innerHTML = `<tr><td colspan="8" class="p-10 text-center text-rose-500 font-bold">Error loading audit logs: ${err.message}</td></tr>`;
+        }
     }
 }
 
@@ -4768,13 +4796,13 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(loadHardware, 3000);
     setInterval(loadActivity, 5000);
 
-    // Smart auto-refresh: Vehicle Audit refreshes every 12s when visible
+    // Smart auto-refresh: Vehicle Audit refreshes every 10s silently when visible
     setInterval(() => {
         const logsTab = document.getElementById('tab-logs');
         if (logsTab && !logsTab.classList.contains('hidden')) {
-            loadAudit(currentAuditPage);
+            loadAudit(currentAuditPage, true);
         }
-    }, 12000);
+    }, 10000);
 
     // Smart auto-refresh: Camera Vehicle Audit refreshes every 8s when visible
     setInterval(() => {
