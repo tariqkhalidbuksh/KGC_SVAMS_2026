@@ -862,7 +862,11 @@ async def get_day_movements(vehicle_number: str = "", mem_id: str = "", date: st
             conn.close()
 
 @router.get("/audit/available-images")
-async def get_available_audit_images(date: str = "", search: str = "", limit: int = 60):
+async def get_available_audit_images(date: str = "", search: str = "", direction: str = "", limit: int = 0):
+    """
+    Returns available camera captures and gate images for visual evidence curation.
+    When limit is 0 (default), all capture events for the target date are returned.
+    """
     with config.DB_LOCK:
         conn = get_db_connection()
         try:
@@ -874,6 +878,10 @@ async def get_available_audit_images(date: str = "", search: str = "", limit: in
                 where_clauses.append("(c.date_str = ? OR c.timestamp LIKE ?)")
                 params.extend([target_date, f"{target_date}%"])
 
+            if direction and direction.strip() and direction.strip().lower() != "all":
+                where_clauses.append("c.direction LIKE ?")
+                params.append(f"%{direction.strip()}%")
+
             if search and search.strip():
                 clean_s = f"%{search.strip()}%"
                 where_clauses.append("(c.direction LIKE ? OR c.event_type LIKE ? OR c.image_path LIKE ? OR c.timestamp LIKE ?)")
@@ -881,35 +889,63 @@ async def get_available_audit_images(date: str = "", search: str = "", limit: in
 
             where_str = f"WHERE {' AND '.join(where_clauses)}" if where_clauses else ""
 
-            cam_rows = conn.execute(f"""
+            cam_sql = f"""
                 SELECT id, timestamp, direction, event_type, image_path, 'camera' as source
                 FROM camera_audit_logs c
                 {where_str}
-                ORDER BY id DESC LIMIT ?
-            """, params + [limit]).fetchall()
+                ORDER BY id DESC
+            """
+            if limit and limit > 0:
+                cam_sql += " LIMIT ?"
+                cam_rows = conn.execute(cam_sql, params + [limit]).fetchall()
+            else:
+                cam_rows = conn.execute(cam_sql, params).fetchall()
 
             results = [dict(r) for r in cam_rows]
 
             # Also fetch distinct daily_logs images from that day
-            daily_rows = conn.execute("""
+            daily_where = ["image_path IS NOT NULL", "image_path != ''"]
+            daily_params = []
+            if target_date != "all":
+                daily_where.append("timestamp LIKE ?")
+                daily_params.append(f"{target_date}%")
+
+            if direction and direction.strip() and direction.strip().lower() != "all":
+                daily_where.append("direction LIKE ?")
+                daily_params.append(f"%{direction.strip()}%")
+
+            daily_where_str = f"WHERE {' AND '.join(daily_where)}"
+            daily_sql = f"""
                 SELECT id, timestamp, direction, access_type as event_type, image_path, 'gate' as source, vehicle_number
                 FROM daily_logs
-                WHERE image_path IS NOT NULL AND image_path != '' AND timestamp LIKE ?
-                ORDER BY id DESC LIMIT ?
-            """, [f"{target_date}%", limit]).fetchall()
+                {daily_where_str}
+                ORDER BY id DESC
+            """
+            if limit and limit > 0:
+                daily_sql += " LIMIT ?"
+                daily_rows = conn.execute(daily_sql, daily_params + [limit]).fetchall()
+            else:
+                daily_rows = conn.execute(daily_sql, daily_params).fetchall()
 
-            seen_paths = {r.get("image_path") for r in results if r.get("image_path")}
+            seen_paths = set()
+            for r in results:
+                p = (r.get("image_path") or "").strip().lstrip("/")
+                if p:
+                    seen_paths.add(p)
+
             for dr in daily_rows:
                 dr_dict = dict(dr)
-                if dr_dict.get("image_path") and dr_dict["image_path"] not in seen_paths:
-                    seen_paths.add(dr_dict["image_path"])
+                raw_p = (dr_dict.get("image_path") or "").strip().lstrip("/")
+                if raw_p and raw_p not in seen_paths:
+                    seen_paths.add(raw_p)
                     results.append(dr_dict)
 
             results.sort(key=lambda x: str(x.get("timestamp", "")), reverse=True)
+            final_images = results[:limit] if (limit and limit > 0) else results
             return {
                 "date": target_date,
                 "total": len(results),
-                "images": results[:limit]
+                "images": final_images
             }
         finally:
             conn.close()

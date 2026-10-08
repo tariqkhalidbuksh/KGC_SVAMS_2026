@@ -1283,6 +1283,8 @@ let currentReportExitImg = null;
 let currentReportMovements = [];
 let currentReportAvailableImages = [];
 let currentReportAnalysis = null;
+let reportGalleryDirectionFilter = 'all';
+let reportGallerySearchQuery = '';
 
 function openAudit(a) {
     let e = a.entry, x = a.exit;
@@ -1436,10 +1438,28 @@ function openAudit(a) {
                 <!-- Available Camera Captures Gallery -->
                 <div class="bg-white rounded-2xl p-4 border border-slate-200">
                     <div class="flex justify-between items-center mb-3 flex-wrap gap-2">
-                        <span class="text-xs font-bold text-slate-700">Available System Camera Captures (${visitDate})</span>
-                        <span id="reportGalleryCount" class="text-[11px] font-mono text-slate-400">Loading captures...</span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-slate-700">Available System Camera Captures (${visitDate})</span>
+                            <span id="reportGalleryCount" class="text-[11px] font-mono text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-full font-bold">Loading captures...</span>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <div class="flex items-center rounded-lg border border-slate-200 p-0.5 bg-slate-50 text-[11px] font-bold">
+                                <button type="button" id="btnReportFilterAll" onclick="filterReportGallery('direction', 'all')" class="px-2.5 py-0.5 rounded-md bg-white text-indigo-700 shadow-2xs font-extrabold">All</button>
+                                <button type="button" id="btnReportFilterEntry" onclick="filterReportGallery('direction', 'entry')" class="px-2.5 py-0.5 rounded-md text-slate-500 hover:text-slate-800">Entry</button>
+                                <button type="button" id="btnReportFilterExit" onclick="filterReportGallery('direction', 'exit')" class="px-2.5 py-0.5 rounded-md text-slate-500 hover:text-slate-800">Exit</button>
+                            </div>
+                            <div class="relative">
+                                <input type="text" id="reportGallerySearchInput" oninput="filterReportGallery('search', this.value)"
+                                       placeholder="Filter by time (e.g. 17:30)..."
+                                       class="text-[11px] px-3 py-1 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:border-indigo-500 w-44 sm:w-56 font-mono">
+                            </div>
+                            <button type="button" onclick="loadReportAvailableImages('${visitDate}')" title="Reload All Captures"
+                                    class="p-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-600 transition flex items-center justify-center">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                            </button>
+                        </div>
                     </div>
-                    <div id="reportCameraGalleryContainer" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-h-72 overflow-y-auto p-2 bg-slate-50/60 rounded-xl border border-slate-100">
+                    <div id="reportCameraGalleryContainer" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-h-96 overflow-y-auto p-2 bg-slate-50/60 rounded-xl border border-slate-100">
                         <div class="col-span-full py-8 text-center text-xs text-slate-400">Loading camera captures for this date...</div>
                     </div>
                 </div>
@@ -1670,54 +1690,119 @@ async function loadReportAvailableImages(dateStr) {
     const countBadge = document.getElementById('reportGalleryCount');
     if (!gallery) return;
 
+    reportGalleryDirectionFilter = 'all';
+    reportGallerySearchQuery = '';
+    const searchInput = document.getElementById('reportGallerySearchInput');
+    if (searchInput) searchInput.value = '';
+    updateReportFilterButtonsUI();
+
     try {
-        const res = await fetch(`/api/audit/available-images?date=${encodeURIComponent(dateStr)}&limit=48`);
+        gallery.innerHTML = `<div class="col-span-full py-8 text-center text-xs text-slate-400">Loading all camera captures for ${dateStr}...</div>`;
+        const res = await fetch(`/api/audit/available-images?date=${encodeURIComponent(dateStr)}&limit=0`);
         if (!res.ok) throw new Error('Failed to load captures');
         const data = await res.json();
         currentReportAvailableImages = data.images || [];
 
-        if (countBadge) {
-            countBadge.innerText = `${currentReportAvailableImages.length} Captures Available`;
-        }
-
-        if (currentReportAvailableImages.length === 0) {
-            gallery.innerHTML = `<div class="col-span-full py-6 text-center text-xs text-slate-400">No camera captures found for ${dateStr}.</div>`;
-            return;
-        }
-
-        gallery.innerHTML = currentReportAvailableImages.map(img => {
-            const cleanPath = (img.image_path || '').replace(/^\//, '');
-            const timePart = String(img.timestamp || '').substring(11, 19) || img.timestamp;
-            const dir = (img.direction || 'Crossing').toUpperCase();
-            const isEntry = dir.includes('ENTRY') || dir.includes('IN');
-            return `
-                <div class="bg-white rounded-xl border border-slate-200 p-2 shadow-2xs hover:shadow-sm transition flex flex-col justify-between">
-                    <div>
-                        <div class="relative rounded-lg overflow-hidden bg-slate-100 aspect-video mb-1.5 cursor-pointer" onclick="window.open('/${cleanPath}')">
-                            <img src="/${cleanPath}" class="w-full h-full object-cover" onerror="this.src='/static/img/no-car.svg'">
-                            <span class="absolute bottom-1 left-1 text-[9px] font-mono font-bold bg-slate-900/80 text-white px-1.5 py-0.5 rounded">${timePart}</span>
-                        </div>
-                        <div class="flex items-center justify-between text-[10px] mb-2">
-                            <span class="font-bold text-slate-700 truncate max-w-[65%]">${img.event_type || 'Camera Event'}</span>
-                            <span class="font-bold ${isEntry ? 'text-emerald-700' : 'text-indigo-700'}">${dir}</span>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-1 pt-1 border-t border-slate-100">
-                        <button type="button" onclick="setReportProofImage('entry', '${cleanPath}')"
-                                class="px-1.5 py-1 text-[10px] font-bold rounded-lg bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200 transition text-center" title="Set as Entry Optical Evidence">
-                            + Entry
-                        </button>
-                        <button type="button" onclick="setReportProofImage('exit', '${cleanPath}')"
-                                class="px-1.5 py-1 text-[10px] font-bold rounded-lg bg-indigo-50 text-indigo-800 hover:bg-indigo-100 border border-indigo-200 transition text-center" title="Set as Exit Optical Evidence">
-                            + Exit
-                        </button>
-                    </div>
-                </div>
-            `;
-        }).join('');
+        renderReportGalleryCards(dateStr);
     } catch (err) {
         gallery.innerHTML = `<div class="col-span-full py-4 text-center text-xs text-rose-500 font-bold">Failed to load camera gallery: ${err.message}</div>`;
+        if (countBadge) countBadge.innerText = '0 Captures Available';
     }
+}
+
+function updateReportFilterButtonsUI() {
+    ['all', 'entry', 'exit'].forEach(dir => {
+        const btn = document.getElementById(`btnReportFilter${dir.charAt(0).toUpperCase() + dir.slice(1)}`);
+        if (btn) {
+            if (reportGalleryDirectionFilter === dir) {
+                btn.className = 'px-2.5 py-0.5 rounded-md bg-white text-indigo-700 shadow-2xs font-extrabold';
+            } else {
+                btn.className = 'px-2.5 py-0.5 rounded-md text-slate-500 hover:text-slate-800';
+            }
+        }
+    });
+}
+
+function filterReportGallery(type, value) {
+    if (type === 'direction') {
+        reportGalleryDirectionFilter = value;
+        updateReportFilterButtonsUI();
+    } else if (type === 'search') {
+        reportGallerySearchQuery = (value || '').toLowerCase().trim();
+    }
+    renderReportGalleryCards();
+}
+
+function renderReportGalleryCards(optDateStr) {
+    const gallery = document.getElementById('reportCameraGalleryContainer');
+    const countBadge = document.getElementById('reportGalleryCount');
+    if (!gallery) return;
+
+    const filtered = (currentReportAvailableImages || []).filter(img => {
+        // Direction check
+        if (reportGalleryDirectionFilter !== 'all') {
+            const dir = (img.direction || '').toLowerCase();
+            if (reportGalleryDirectionFilter === 'entry' && !dir.includes('entry') && !dir.includes('in')) {
+                return false;
+            }
+            if (reportGalleryDirectionFilter === 'exit' && !dir.includes('exit') && !dir.includes('out')) {
+                return false;
+            }
+        }
+        // Search query check
+        if (reportGallerySearchQuery) {
+            const matchTime = (img.timestamp || '').toLowerCase().includes(reportGallerySearchQuery);
+            const matchEvent = (img.event_type || '').toLowerCase().includes(reportGallerySearchQuery);
+            const matchPlate = (img.vehicle_number || '').toLowerCase().includes(reportGallerySearchQuery);
+            const matchPath = (img.image_path || '').toLowerCase().includes(reportGallerySearchQuery);
+            if (!matchTime && !matchEvent && !matchPlate && !matchPath) return false;
+        }
+        return true;
+    });
+
+    if (countBadge) {
+        if (filtered.length === currentReportAvailableImages.length) {
+            countBadge.innerText = `${currentReportAvailableImages.length} Captures Available (All events for this date)`;
+        } else {
+            countBadge.innerText = `Showing ${filtered.length} of ${currentReportAvailableImages.length} Captures`;
+        }
+    }
+
+    if (filtered.length === 0) {
+        gallery.innerHTML = `<div class="col-span-full py-8 text-center text-xs text-slate-400">No camera captures match filter (${reportGalleryDirectionFilter !== 'all' ? reportGalleryDirectionFilter : 'all'} ${reportGallerySearchQuery ? `"${reportGallerySearchQuery}"` : ''}).</div>`;
+        return;
+    }
+
+    gallery.innerHTML = filtered.map(img => {
+        const cleanPath = (img.image_path || '').replace(/^\//, '');
+        const timePart = String(img.timestamp || '').substring(11, 19) || img.timestamp;
+        const dir = (img.direction || 'Crossing').toUpperCase();
+        const isEntry = dir.includes('ENTRY') || dir.includes('IN');
+        return `
+            <div class="bg-white rounded-xl border border-slate-200 p-2 shadow-2xs hover:shadow-sm transition flex flex-col justify-between">
+                <div>
+                    <div class="relative rounded-lg overflow-hidden bg-slate-100 aspect-video mb-1.5 cursor-pointer" onclick="window.open('/${cleanPath}')">
+                        <img loading="lazy" src="/${cleanPath}" class="w-full h-full object-cover" onerror="this.src='/static/img/no-car.svg'">
+                        <span class="absolute bottom-1 left-1 text-[9px] font-mono font-bold bg-slate-900/80 text-white px-1.5 py-0.5 rounded">${timePart}</span>
+                    </div>
+                    <div class="flex items-center justify-between text-[10px] mb-2">
+                        <span class="font-bold text-slate-700 truncate max-w-[65%]" title="${img.event_type || 'Camera Event'}">${img.event_type || 'Camera Event'}</span>
+                        <span class="font-bold ${isEntry ? 'text-emerald-700' : 'text-indigo-700'}">${dir}</span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-1 pt-1 border-t border-slate-100">
+                    <button type="button" onclick="setReportProofImage('entry', '${cleanPath}')"
+                            class="px-1.5 py-1 text-[10px] font-bold rounded-lg bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200 transition text-center" title="Set as Entry Optical Evidence">
+                        + Entry
+                    </button>
+                    <button type="button" onclick="setReportProofImage('exit', '${cleanPath}')"
+                            class="px-1.5 py-1 text-[10px] font-bold rounded-lg bg-indigo-50 text-indigo-800 hover:bg-indigo-100 border border-indigo-200 transition text-center" title="Set as Exit Optical Evidence">
+                        + Exit
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
 }
 
 async function generateCustomReportPdf() {
