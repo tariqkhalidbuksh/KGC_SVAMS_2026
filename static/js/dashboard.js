@@ -655,12 +655,13 @@ async function loadStats() {
         // Real Average Stay Duration & Adoption Metrics
         if (document.getElementById('sAvgDuration')) document.getElementById('sAvgDuration').innerText = s.avg_duration || '--';
         if (document.getElementById('sPairedVisits')) document.getElementById('sPairedVisits').innerText = (s.paired_visits_count || 0).toLocaleString();
-        if (document.getElementById('sAdoptionRate')) document.getElementById('sAdoptionRate').innerText = `${s.tag_adoption_rate !== undefined ? s.tag_adoption_rate : 100}%`;
-        if (document.getElementById('gapSummaryBadge')) document.getElementById('gapSummaryBadge').innerText = `${s.tag_adoption_rate !== undefined ? s.tag_adoption_rate : 100}% COVERAGE`;
-        if (document.getElementById('adoptionRateVal')) document.getElementById('adoptionRateVal').innerText = `${s.tag_adoption_rate !== undefined ? s.tag_adoption_rate : 100}%`;
-        const totalScanned = s.total_scanned_tags || s.total_transits_all_time || 457;
+        const totalScanned = (s.total_scanned_tags !== undefined && s.total_scanned_tags !== null) ? s.total_scanned_tags : (s.total_transits_all_time || 0);
         const allReg = s.registered_tags_count !== undefined ? s.registered_tags_count : (s.registered_transits_all_time !== undefined ? s.registered_transits_all_time : 0);
         const allUnreg = s.unregistered_tags_count !== undefined ? s.unregistered_tags_count : (s.unregistered_transits_all_time !== undefined ? s.unregistered_transits_all_time : 0);
+        const adoptionDisplayRate = totalScanned > 0 ? (s.tag_adoption_rate !== undefined ? s.tag_adoption_rate : 100) : 0;
+        if (document.getElementById('sAdoptionRate')) document.getElementById('sAdoptionRate').innerText = `${adoptionDisplayRate}%`;
+        if (document.getElementById('gapSummaryBadge')) document.getElementById('gapSummaryBadge').innerText = totalScanned > 0 ? `${adoptionDisplayRate}% COVERAGE` : '0% COVERAGE';
+        if (document.getElementById('adoptionRateVal')) document.getElementById('adoptionRateVal').innerText = `${adoptionDisplayRate}%`;
         if (document.getElementById('adoptionRegCount')) document.getElementById('adoptionRegCount').innerText = `${allReg.toLocaleString()} tags`;
         if (document.getElementById('adoptionUnregCount')) document.getElementById('adoptionUnregCount').innerText = `${allUnreg.toLocaleString()} tags`;
         if (document.getElementById('adoptionTotalCount')) document.getElementById('adoptionTotalCount').innerText = `${totalScanned.toLocaleString()} tags`;
@@ -820,9 +821,7 @@ function updateParkingDonut(inside, cap) {
 
 function updateAdoptionDonut(reg, unreg) {
     if (adoptionChart) {
-        const safeReg = (reg === 0 && unreg === 0) ? 100 : reg;
-        const safeUnreg = (reg === 0 && unreg === 0) ? 0 : unreg;
-        adoptionChart.data.datasets[0].data = [safeReg, safeUnreg];
+        adoptionChart.data.datasets[0].data = (reg === 0 && unreg === 0) ? [0, 0] : [reg, unreg];
         adoptionChart.update();
     }
 }
@@ -2493,7 +2492,7 @@ async function loadUnregisteredTags(countOnly = false) {
         if (!body) return;
 
         if (!tags.length) {
-            body.innerHTML = '<tr><td colspan="6" class="p-12 text-center text-slate-400 font-bold">No unassigned RFID tags detected at the gates yet</td></tr>';
+            body.innerHTML = '<tr><td colspan="7" class="p-12 text-center text-slate-400 font-bold">No unassigned RFID tags detected at the gates yet</td></tr>';
             return;
         }
 
@@ -2501,6 +2500,11 @@ async function loadUnregisteredTags(countOnly = false) {
             const dirBadge = t.direction === 'Exit' ?
                 '<span class="px-2.5 py-1 text-xs font-bold rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200/80">Exit Gate</span>' :
                 '<span class="px-2.5 py-1 text-xs font-bold rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200/80">Entry Gate</span>';
+
+            const isInside = (t.Current_Location || 'Outside') === 'Inside';
+            const locBadge = isInside ?
+                '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>Inside Club</span>' :
+                '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-100 text-slate-600 border border-slate-200"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>Outside</span>';
 
             return `
             <tr class="hover:bg-amber-50/40 transition">
@@ -2516,6 +2520,7 @@ async function loadUnregisteredTags(countOnly = false) {
                 <td class="p-3.5 text-xs text-slate-500 font-medium">${t.first_seen || '--'}</td>
                 <td class="p-3.5 text-xs text-slate-700 font-bold">${t.last_seen || '--'}</td>
                 <td class="p-3.5">${dirBadge}</td>
+                <td class="p-3.5">${locBadge}</td>
                 <td class="p-3.5">
                     <span class="font-bold text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded-md">${t.read_count || 1} Scans</span>
                 </td>
@@ -3659,6 +3664,10 @@ function openCamProofModal(itemOrHikImg, timestamp, direction, eventType) {
                     <p class="text-xs text-slate-400 font-mono mt-0.5">Recorded: ${item.timestamp || ''} PKT &bull; Direction: ${item.direction || 'Line Crossing'} &bull; File: ${rawPath.split('/').pop()}</p>
                 </div>
                 <div class="flex items-center gap-2">
+                    <button type="button" onclick="enrollFromCameraAudit('${(item.detected_plate || '').replace(/'/g, "\\'")}', '${item.timestamp || ''}')" class="px-3 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition shadow-2xs flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        1-Click Enroll
+                    </button>
                     ${originalImgSrc ? `<a href="${originalImgSrc}" download target="_blank" class="px-3 py-2 text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl hover:bg-emerald-100 transition shadow-2xs">
                         Download Original HD
                     </a>` : ''}
@@ -3670,6 +3679,23 @@ function openCamProofModal(itemOrHikImg, timestamp, direction, eventType) {
         `;
     }
     modal.classList.remove('hidden');
+}
+
+function enrollFromCameraAudit(plate, timestamp) {
+    closeCamProofModal();
+    switchTab('members');
+    switchMemberSubtab('members');
+    cancelEdit();
+    if (plate) {
+        const carInput = document.getElementById('nCar');
+        if (carInput) carInput.value = plate;
+    }
+    const memInput = document.getElementById('nMemId');
+    const formEl = document.getElementById('memberForm');
+    if (formEl) {
+        formEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    if (memInput) memInput.focus();
 }
 
 function closeCamProofModal() {

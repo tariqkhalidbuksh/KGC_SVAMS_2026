@@ -137,25 +137,44 @@ def execute_access_decision(
                         (new_loc, clean_tag, mem_id, car.upper())
                     )
                 else:
-                    # Unregistered Tag Handling
-                    if direction in ("Entry", "Exit"):
+                    # Unregistered Tag Handling - Standard Industry State Machine
+                    # 1. Check persistent location status in unregistered_tags table
+                    unreg_record = conn.execute(
+                        "SELECT Current_Location, direction FROM unregistered_tags WHERE UPPER(tag)=?",
+                        (clean_tag,)
+                    ).fetchone()
+                    unreg_loc = (unreg_record['Current_Location'] if unreg_record and unreg_record['Current_Location'] else "").strip()
+
+                    # 2. Strict State Machine (Known Physical State)
+                    if bypass_cooldown and direction in ("Entry", "Exit"):
                         resolved_direction = direction
-                    elif last_tag_log:
-                        resolved_direction = "Exit" if last_tag_log['direction'] == "Entry" else "Entry"
-                    else:
+                    elif unreg_loc == "Inside":
+                        # Car is physically inside club -> next transit MUST be Exit
+                        resolved_direction = "Exit"
+                    elif unreg_loc == "Outside":
+                        # Car is physically outside club -> next transit MUST be Entry
                         resolved_direction = "Entry"
+                    # 3. Cold Start / Initial State Not Yet Established -> First-Reader-Wins / Reader flag
+                    else:
+                        if direction in ("Entry", "Exit"):
+                            resolved_direction = direction
+                        elif last_tag_log:
+                            resolved_direction = "Exit" if last_tag_log['direction'] == "Entry" else "Entry"
+                        else:
+                            resolved_direction = "Entry"
 
                     new_loc = "Outside" if resolved_direction == "Exit" else "Inside"
 
-                    # Track into unregistered_tags table for 1-click assignment in Member Directory
+                    # Track into unregistered_tags table with Current_Location
                     conn.execute("""
-                        INSERT INTO unregistered_tags (tag, first_seen, last_seen, direction, read_count)
-                        VALUES (?, ?, ?, ?, 1)
+                        INSERT INTO unregistered_tags (tag, first_seen, last_seen, direction, Current_Location, read_count)
+                        VALUES (?, ?, ?, ?, ?, 1)
                         ON CONFLICT(tag) DO UPDATE SET
                             last_seen = excluded.last_seen,
                             direction = excluded.direction,
+                            Current_Location = excluded.Current_Location,
                             read_count = unregistered_tags.read_count + 1
-                    """, (clean_tag, pkt_now, pkt_now, resolved_direction))
+                    """, (clean_tag, pkt_now, pkt_now, resolved_direction, new_loc))
 
                 conn.execute(
                     "INSERT INTO raw_reader_logs (tag_scanned, system_response, direction, timestamp) VALUES (?, ?, ?, ?)",

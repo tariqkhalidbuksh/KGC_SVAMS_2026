@@ -55,14 +55,26 @@ async def add_member(request: Request):
                     profile_pic = auto_pic
 
             with conn:
+                unreg_row = conn.execute("SELECT Current_Location FROM unregistered_tags WHERE UPPER(tag)=?", (epc,)).fetchone()
+                cur_loc = unreg_row["Current_Location"] if unreg_row and unreg_row["Current_Location"] else "Outside"
+
                 conn.execute("""INSERT INTO members
                     (Mem_id, Name, Car_number, Make_Model, E_tag_id, Status, Profile_pic, Current_Location)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, 'Outside')
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                     ON CONFLICT(E_tag_id) DO UPDATE SET
                         Mem_id=excluded.Mem_id, Name=excluded.Name, Car_number=excluded.Car_number,
-                        Make_Model=excluded.Make_Model, Profile_pic=excluded.Profile_pic""",
-                    (mem_id, name, car_number, body.get('make_model', ''), epc, 'Active', profile_pic))
+                        Make_Model=excluded.Make_Model, Profile_pic=excluded.Profile_pic,
+                        Current_Location=CASE WHEN excluded.Current_Location != 'Outside' THEN excluded.Current_Location ELSE members.Current_Location END""",
+                    (mem_id, name, car_number, body.get('make_model', ''), epc, 'Active', profile_pic, cur_loc))
                 conn.execute("DELETE FROM unregistered_tags WHERE UPPER(tag)=?", (epc,))
+                conn.execute("""
+                    UPDATE daily_logs SET
+                        mem_id = ?,
+                        name = ?,
+                        vehicle_number = ?,
+                        access_type = CASE WHEN access_type LIKE '%Unknown%' THEN 'RFID Verified' ELSE access_type END
+                    WHERE scanned_tag = ? AND (mem_id IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', '') OR mem_id IS NULL)
+                """, (mem_id, name, car_number, epc))
             config.invalidate_member_cache()
             return {"ok": True}
         finally:
@@ -531,7 +543,7 @@ async def get_unregistered_tags(limit: int = 50):
         try:
             limit = min(max(5, limit), 200)
             rows = conn.execute(
-                "SELECT id, tag, first_seen, last_seen, direction, read_count FROM unregistered_tags ORDER BY id DESC LIMIT ?",
+                "SELECT id, tag, first_seen, last_seen, direction, Current_Location, read_count FROM unregistered_tags ORDER BY id DESC LIMIT ?",
                 (limit,)
             ).fetchall()
             return [dict(r) for r in rows]
@@ -551,4 +563,91 @@ async def delete_unregistered_tag(tag: str, request: Request = None):
             return {"ok": True, "tag": clean_tag}
         finally:
             conn.close()
+
+@router.post("/members/enroll-unregistered-tag")
+async def enroll_unregistered_tag(request: Request):
+    check_edit_permission(request)
+    try:
+        body = await request.json()
+    except Exception:
+        raise HTTPException(400, "Invalid JSON payload")
+
+    tag = (body.get("tag") or body.get("e_tag_id") or "").strip().upper()
+    mem_id = (body.get("mem_id") or "").strip()
+    name = (body.get("name") or "").strip()
+    car_number = (body.get("car_number") or "").strip()
+    make_model = (body.get("make_model") or "").strip()
+    profile_pic = (body.get("profile_pic") or "").strip()
+    status = (body.get("status") or "Active").strip()
+
+    if not tag:
+        raise HTTPException(400, "Tag (EPC) is required")
+    if not mem_id:
+        raise HTTPException(400, "Member ID is required")
+    if not car_number:
+        raise HTTPException(400, "Car Number / License Plate is required")
+
+    with config.DB_LOCK:
+        conn = get_db_connection()
+        try:
+            with conn:
+                # 1. Check if member already exists to inherit details if name not provided
+                existing_mem = conn.execute("SELECT Mem_id, Name, Profile_pic FROM members WHERE Mem_id=? LIMIT 1", (mem_id,)).fetchone()
+                if existing_mem:
+                    if not name:
+                        name = existing_mem["Name"]
+                    if not profile_pic and existing_mem["Profile_pic"]:
+                        profile_pic = existing_mem["Profile_pic"]
+                elif not name:
+                    name = f"Member {mem_id}"
+
+                if not profile_pic:
+                    auto_pic = find_member_photo_file(mem_id)
+                    if auto_pic:
+                        profile_pic = auto_pic
+
+                # 2. Inherit Current_Location from unregistered_tags if available
+                unreg_row = conn.execute("SELECT Current_Location FROM unregistered_tags WHERE UPPER(tag)=?", (tag,)).fetchone()
+                cur_loc = unreg_row["Current_Location"] if unreg_row and unreg_row["Current_Location"] else "Outside"
+
+                # 3. Insert or update member record
+                conn.execute("""
+                    INSERT INTO members (Mem_id, Name, Car_number, Make_Model, E_tag_id, Status, Profile_pic, Current_Location)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(E_tag_id) DO UPDATE SET
+                        Mem_id=excluded.Mem_id,
+                        Name=excluded.Name,
+                        Car_number=excluded.Car_number,
+                        Make_Model=excluded.Make_Model,
+                        Status=excluded.Status,
+                        Profile_pic=excluded.Profile_pic,
+                        Current_Location=excluded.Current_Location
+                """, (mem_id, name, car_number, make_model, tag, status, profile_pic, cur_loc))
+
+                # 4. Remove from unregistered_tags
+                conn.execute("DELETE FROM unregistered_tags WHERE UPPER(tag)=?", (tag,))
+
+                # 5. Enrich all previous transits for this tag in daily_logs
+                conn.execute("""
+                    UPDATE daily_logs SET
+                        mem_id = ?,
+                        name = ?,
+                        vehicle_number = ?,
+                        access_type = CASE WHEN access_type LIKE '%Unknown%' THEN 'RFID Verified' ELSE access_type END
+                    WHERE scanned_tag = ? AND (mem_id IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', '') OR mem_id IS NULL)
+                """, (mem_id, name, car_number, tag))
+
+            config.invalidate_member_cache()
+            return {
+                "ok": True,
+                "tag": tag,
+                "mem_id": mem_id,
+                "name": name,
+                "car_number": car_number,
+                "current_location": cur_loc,
+                "message": f"Tag {tag} successfully enrolled and linked to Member {mem_id} ({name})."
+            }
+        finally:
+            conn.close()
+
 

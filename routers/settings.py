@@ -66,7 +66,9 @@ async def reset_activity_data(request: Request = None):
                 conn.execute("DELETE FROM raw_reader_logs")
                 conn.execute("DELETE FROM camera_audit_logs")
                 conn.execute("DELETE FROM guest_passes")
-                conn.execute("DELETE FROM sqlite_sequence WHERE name IN ('daily_logs', 'raw_reader_logs', 'camera_audit_logs', 'guest_passes')")
+                conn.execute("DELETE FROM unregistered_tags")
+                conn.execute("UPDATE members SET Current_Location = 'Outside'")
+                conn.execute("DELETE FROM sqlite_sequence WHERE name IN ('daily_logs', 'raw_reader_logs', 'camera_audit_logs', 'guest_passes', 'unregistered_tags')")
             conn.execute("VACUUM")
             
             # Count retained members and settings
@@ -92,6 +94,8 @@ async def reset_activity_data(request: Request = None):
     with config.CACHE_LOCK:
         config.LATEST_LOG_CACHE = None
         config.MEMBERS_METRICS_CACHE = {"data": None, "timestamp": 0.0}
+        config.FLEET_ADOPTION_CACHE = {"data": None, "timestamp": 0.0, "db_file": None}
+    config.invalidate_member_cache()
     with config.BUFFER_LOCK:
         config.RECENT_CAM_TRIGGERS.clear()
         config.RECENT_TAGS.clear()

@@ -71,9 +71,16 @@ def init_db():
                     first_seen DATETIME DEFAULT (datetime('now', 'localtime')),
                     last_seen DATETIME DEFAULT (datetime('now', 'localtime')),
                     direction TEXT DEFAULT 'Unknown',
+                    Current_Location TEXT DEFAULT 'Outside',
                     read_count INTEGER DEFAULT 1)""")
                 conn.execute("CREATE INDEX IF NOT EXISTS idx_unreg_tag ON unregistered_tags(tag)")
                 conn.execute("CREATE INDEX IF NOT EXISTS idx_unreg_last_seen ON unregistered_tags(last_seen)")
+
+                unreg_cols = [col['name'] for col in conn.execute("PRAGMA table_info(unregistered_tags)").fetchall()]
+                if 'Current_Location' not in unreg_cols:
+                    conn.execute("ALTER TABLE unregistered_tags ADD COLUMN Current_Location TEXT DEFAULT 'Outside'")
+                conn.execute("CREATE INDEX IF NOT EXISTS idx_unreg_loc ON unregistered_tags(Current_Location)")
+                conn.execute("UPDATE unregistered_tags SET Current_Location = 'Outside' WHERE Current_Location IS NULL OR Current_Location = ''")
 
                 conn.execute("""CREATE TABLE IF NOT EXISTS daily_logs (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -114,8 +114,14 @@ async def simulate_clear_logs():
                 conn.execute("DELETE FROM daily_logs")
                 conn.execute("DELETE FROM raw_reader_logs")
                 conn.execute("DELETE FROM camera_audit_logs")
-                conn.execute("DELETE FROM sqlite_sequence WHERE name='daily_logs'")
-                conn.execute("DELETE FROM sqlite_sequence WHERE name='camera_audit_logs'")
-            return {"ok": True, "message": "All gate access and camera audit logs cleared"}
+                conn.execute("DELETE FROM unregistered_tags")
+                conn.execute("UPDATE members SET Current_Location = 'Outside'")
+                conn.execute("DELETE FROM sqlite_sequence WHERE name IN ('daily_logs', 'raw_reader_logs', 'camera_audit_logs', 'unregistered_tags')")
+            with config.CACHE_LOCK:
+                config.LATEST_LOG_CACHE = None
+                config.MEMBERS_METRICS_CACHE = {"data": None, "timestamp": 0.0}
+                config.FLEET_ADOPTION_CACHE = {"data": None, "timestamp": 0.0, "db_file": None}
+            config.invalidate_member_cache()
+            return {"ok": True, "message": "All gate access, camera audit, and unregistered vehicle logs cleared"}
         finally:
             conn.close()

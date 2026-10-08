@@ -17,6 +17,9 @@ from database import get_db_connection, init_db
 
 client = TestClient(app)
 
+TODAY_STR = datetime.now().strftime("%Y-%m-%d")
+PAST_STR = (datetime.now() - timedelta(days=2)).strftime("%Y-%m-%d")
+
 @pytest.fixture(autouse=True)
 def setup_etag_test_db(tmp_path, monkeypatch):
     test_db = os.path.join(tmp_path, "test_etag_audit.db")
@@ -32,38 +35,38 @@ def setup_etag_test_db(tmp_path, monkeypatch):
     """)
 
     # Insert multi-day scans for this member
-    # Day 1: 2026-10-06 (Entry + Exit = 45m stay)
-    conn.execute("""
+    # Day 1: PAST_STR (Entry + Exit = 45m stay)
+    conn.execute(f"""
         INSERT INTO daily_logs (mem_id, name, vehicle_number, access_type, direction, gate_no, scanned_tag, timestamp)
-        VALUES ('M-7788', 'Tariq Al-Rashid', 'KGC-9900', 'RFID', 'Entry', 'Gate-01-In', 'E280116060000204', '2026-10-06 09:00:00')
+        VALUES ('M-7788', 'Tariq Al-Rashid', 'KGC-9900', 'RFID', 'Entry', 'Gate-01-In', 'E280116060000204', '{PAST_STR} 09:00:00')
     """)
-    conn.execute("""
+    conn.execute(f"""
         INSERT INTO daily_logs (mem_id, name, vehicle_number, access_type, direction, gate_no, scanned_tag, timestamp)
-        VALUES ('M-7788', 'Tariq Al-Rashid', 'KGC-9900', 'RFID', 'Exit', 'Gate-01-Out', 'E280116060000204', '2026-10-06 09:45:00')
+        VALUES ('M-7788', 'Tariq Al-Rashid', 'KGC-9900', 'RFID', 'Exit', 'Gate-01-Out', 'E280116060000204', '{PAST_STR} 09:45:00')
     """)
 
-    # Day 2: 2026-10-08 (Two visits: 08:00-08:15 = 15m, 14:00-14:30 = 30m => total 45m)
-    conn.execute("""
+    # Day 2: TODAY_STR (Two visits: 08:00-08:15 = 15m, 14:00-14:30 = 30m => total 45m)
+    conn.execute(f"""
         INSERT INTO daily_logs (mem_id, name, vehicle_number, access_type, direction, gate_no, scanned_tag, timestamp)
-        VALUES ('M-7788', 'Tariq Al-Rashid', 'KGC-9900', 'RFID', 'Entry', 'Gate-02-In', 'E280116060000204', '2026-10-08 08:00:00')
+        VALUES ('M-7788', 'Tariq Al-Rashid', 'KGC-9900', 'RFID', 'Entry', 'Gate-02-In', 'E280116060000204', '{TODAY_STR} 08:00:00')
     """)
-    conn.execute("""
+    conn.execute(f"""
         INSERT INTO daily_logs (mem_id, name, vehicle_number, access_type, direction, gate_no, scanned_tag, timestamp)
-        VALUES ('M-7788', 'Tariq Al-Rashid', 'KGC-9900', 'RFID', 'Exit', 'Gate-02-Out', 'E280116060000204', '2026-10-08 08:15:00')
+        VALUES ('M-7788', 'Tariq Al-Rashid', 'KGC-9900', 'RFID', 'Exit', 'Gate-02-Out', 'E280116060000204', '{TODAY_STR} 08:15:00')
     """)
-    conn.execute("""
+    conn.execute(f"""
         INSERT INTO daily_logs (mem_id, name, vehicle_number, access_type, direction, gate_no, scanned_tag, timestamp)
-        VALUES ('M-7788', 'Tariq Al-Rashid', 'KGC-9900', 'RFID', 'Entry', 'Gate-01-In', 'E280116060000204', '2026-10-08 14:00:00')
+        VALUES ('M-7788', 'Tariq Al-Rashid', 'KGC-9900', 'RFID', 'Entry', 'Gate-01-In', 'E280116060000204', '{TODAY_STR} 14:00:00')
     """)
-    conn.execute("""
+    conn.execute(f"""
         INSERT INTO daily_logs (mem_id, name, vehicle_number, access_type, direction, gate_no, scanned_tag, timestamp)
-        VALUES ('M-7788', 'Tariq Al-Rashid', 'KGC-9900', 'RFID', 'Exit', 'Gate-01-Out', 'E280116060000204', '2026-10-08 14:30:00')
+        VALUES ('M-7788', 'Tariq Al-Rashid', 'KGC-9900', 'RFID', 'Exit', 'Gate-01-Out', 'E280116060000204', '{TODAY_STR} 14:30:00')
     """)
 
     # Unregistered tag scanned at gate
-    conn.execute("""
+    conn.execute(f"""
         INSERT INTO daily_logs (mem_id, name, vehicle_number, access_type, direction, gate_no, scanned_tag, timestamp)
-        VALUES ('GUEST-LOG', 'Guest / Unregistered', 'UNREGISTERED', 'RFID', 'Entry', 'Gate-01-In', 'E280999900000111', '2026-10-08 16:00:00')
+        VALUES ('GUEST-LOG', 'Guest / Unregistered', 'UNREGISTERED', 'RFID', 'Entry', 'Gate-01-In', 'E280999900000111', '{TODAY_STR} 16:00:00')
     """)
 
     conn.commit()
@@ -109,8 +112,8 @@ def test_etag_audit_registered_member_multi_day():
     summary = data["summary"]
     assert summary["total_detections"] == 6
     assert summary["days_active"] == 2
-    assert summary["first_detected"] == "2026-10-06 09:00:00"
-    assert summary["latest_detected"] == "2026-10-08 14:30:00"
+    assert summary["first_detected"] == f"{PAST_STR} 09:00:00"
+    assert summary["latest_detected"] == f"{TODAY_STR} 14:30:00"
     assert "Gate-01-In" in summary["readers_breakdown"]
     assert "Gate-02-In" in summary["readers_breakdown"]
 
@@ -118,29 +121,29 @@ def test_etag_audit_registered_member_multi_day():
     daily = data["daily_breakdown"]
     assert len(daily) == 2
 
-    # Newest day first: 2026-10-08
-    day_oct8 = daily[0]
-    assert day_oct8["date"] == "2026-10-08"
-    assert day_oct8["total_detections"] == 4
-    assert day_oct8["entries"] == 2
-    assert day_oct8["exits"] == 2
-    assert day_oct8["first_scan_time"] == "08:00:00"
-    assert day_oct8["last_scan_time"] == "14:30:00"
-    assert day_oct8["visits_count"] == 2
-    assert day_oct8["stay_duration"] == "45m"
-    assert day_oct8["readers"]["Gate-02-In"] == 1
-    assert day_oct8["readers"]["Gate-01-In"] == 1
+    # Newest day first: TODAY_STR
+    day_today = daily[0]
+    assert day_today["date"] == TODAY_STR
+    assert day_today["total_detections"] == 4
+    assert day_today["entries"] == 2
+    assert day_today["exits"] == 2
+    assert day_today["first_scan_time"] == "08:00:00"
+    assert day_today["last_scan_time"] == "14:30:00"
+    assert day_today["visits_count"] == 2
+    assert day_today["stay_duration"] == "45m"
+    assert day_today["readers"]["Gate-02-In"] == 1
+    assert day_today["readers"]["Gate-01-In"] == 1
 
-    # Day 2: 2026-10-06
-    day_oct6 = daily[1]
-    assert day_oct6["date"] == "2026-10-06"
-    assert day_oct6["total_detections"] == 2
-    assert day_oct6["entries"] == 1
-    assert day_oct6["exits"] == 1
-    assert day_oct6["first_scan_time"] == "09:00:00"
-    assert day_oct6["last_scan_time"] == "09:45:00"
-    assert day_oct6["visits_count"] == 1
-    assert day_oct6["stay_duration"] == "45m"
+    # Day 2: PAST_STR
+    day_past = daily[1]
+    assert day_past["date"] == PAST_STR
+    assert day_past["total_detections"] == 2
+    assert day_past["entries"] == 1
+    assert day_past["exits"] == 1
+    assert day_past["first_scan_time"] == "09:00:00"
+    assert day_past["last_scan_time"] == "09:45:00"
+    assert day_past["visits_count"] == 1
+    assert day_past["stay_duration"] == "45m"
 
     # Full scans chronological verification
     scans = data["scans"]
@@ -156,7 +159,7 @@ def test_etag_audit_unregistered_tag():
     assert data["is_registered"] is False
     assert data["member"]["is_registered"] is False
     assert data["summary"]["total_detections"] == 1
-    assert data["daily_breakdown"][0]["date"] == "2026-10-08"
+    assert data["daily_breakdown"][0]["date"] == TODAY_STR
 
 def test_etag_audit_unknown_tag():
     """Verify audit handles non-existent tag gracefully."""
@@ -192,12 +195,12 @@ def test_etag_audit_date_filters():
     assert res_today.status_code == 200
     data_today = res_today.json()
     assert data_today["date_filter"] == "today"
-    # Should only return detections for 2026-10-08 (4 detections)
+    # Should only return detections for TODAY_STR (4 detections)
     assert data_today["summary"]["total_detections"] == 4
     assert len(data_today["daily_breakdown"]) == 1
-    assert data_today["daily_breakdown"][0]["date"] == "2026-10-08"
+    assert data_today["daily_breakdown"][0]["date"] == TODAY_STR
 
-    # Week (past 7 days covers both 2026-10-06 and 2026-10-08)
+    # Week (past 7 days covers both PAST_STR and TODAY_STR)
     res_week = client.get(f"/api/etag/audit?tag_id={tag}&date_filter=week")
     assert res_week.status_code == 200
     data_week = res_week.json()
