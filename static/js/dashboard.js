@@ -514,6 +514,9 @@ async function loadHardwareSettingsStatus() {
                 </span>
             </div>
         `;
+        if (typeof loadBulkExitSettings === 'function') {
+            loadBulkExitSettings();
+        }
     } catch (e) {
         console.error('loadHardwareSettingsStatus error:', e);
     }
@@ -1223,10 +1226,18 @@ async function loadAudit(page = currentAuditPage) {
                 </td>
                 <td class="p-3.5">${statusPill}</td>
                 <td class="p-3.5 text-right pr-6" onclick="event.stopPropagation()">
-                    <button type="button" onclick='openAudit(${JSON.stringify(a).replace(/'/g, "&#39;")})' class="inline-flex items-center gap-1.5 text-xs font-extrabold text-indigo-700 hover:text-indigo-900 border border-indigo-200 rounded-xl px-3.5 py-1.5 bg-indigo-50/80 hover:bg-indigo-100 shadow-2xs transition">
-                        <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                        <span>Create Report</span>
-                    </button>
+                    <div class="inline-flex items-center justify-end gap-2">
+                        ${(a.status === 'Inside Facility' || a.status === 'Alert / Inside' || a.is_overstay || (!x && e)) ? `
+                        <button type="button" onclick='event.stopPropagation(); triggerRowManualExit(${JSON.stringify(a).replace(/'/g, "&#39;")})' class="inline-flex items-center gap-1.5 text-xs font-bold text-amber-800 hover:text-white border border-amber-300 hover:bg-amber-600 rounded-xl px-2.5 py-1.5 bg-amber-50 shadow-2xs transition" title="Manually record vehicle departure">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                            <span>Manual Exit</span>
+                        </button>
+                        ` : ''}
+                        <button type="button" onclick='openAudit(${JSON.stringify(a).replace(/'/g, "&#39;")})' class="inline-flex items-center gap-1.5 text-xs font-extrabold text-indigo-700 hover:text-indigo-900 border border-indigo-200 rounded-xl px-3.5 py-1.5 bg-indigo-50/80 hover:bg-indigo-100 shadow-2xs transition">
+                            <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            <span>Create Report</span>
+                        </button>
+                    </div>
                 </td>
             </tr>`;
         }).join('');
@@ -1354,6 +1365,13 @@ function openAudit(a) {
                     <button type="button" onclick="closeAudit()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-700 font-bold flex items-center justify-center text-lg transition ml-auto mb-2">&times;</button>
                     <p class="text-[11px]"><span class="font-bold text-slate-400">Timestamp:</span> <span class="font-mono font-bold text-slate-700">${v.timestamp || '--'}</span></p>
                     <p class="text-[11px]"><span class="font-bold text-slate-400">Status:</span> <span class="inline-block text-[10px] font-black px-2 py-0.5 rounded-full ${a.status === 'Inside Facility' ? 'bg-emerald-100 text-emerald-800' : a.status === 'Exited' || a.status === 'Exit Only' ? 'bg-slate-100 text-slate-700' : 'bg-amber-100 text-amber-800'}">${(a.status || 'Inside Facility').toUpperCase()}</span></p>
+                    ${(a.status === 'Inside Facility' || a.status === 'Alert / Inside' || a.is_overstay || (!x && e)) ? `
+                    <div class="pt-1.5">
+                        <button type="button" onclick="openManualExitFromAuditModal()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-sm transition">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                            <span>Mark Vehicle Exited</span>
+                        </button>
+                    </div>` : ''}
                 </div>
             </div>
 
@@ -4094,6 +4112,402 @@ function exportEtagAuditData(format = 'csv') {
     a.download = `ETAG_Audit_${tag}_${new Date().toISOString().substring(0, 10)}.csv`;
     a.click();
     URL.revokeObjectURL(url);
+}
+
+// ============================================================================
+// MANUAL VEHICLE EXIT & BULK FACILITY CLEARANCE CONTROLLERS
+// ============================================================================
+
+let currentManualExitTarget = null;
+let currentManualExitSelectedProof = null;
+let bulkExitExceptionsCache = [];
+
+function triggerRowManualExit(a) {
+    if (!a) return;
+    let e = a.entry, x = a.exit;
+    if (e && x && e.timestamp && x.timestamp && String(e.timestamp) > String(x.timestamp)) {
+        const tmp = e; e = x; x = tmp;
+    }
+    const v = e || x || {};
+    openManualExitModal({
+        plate: v.vehicle_number || '',
+        name: v.name || '',
+        memId: v.mem_id || '',
+        tag: (v.scanned_tag && v.scanned_tag !== 'NO_TAG') ? v.scanned_tag : '',
+        entryTime: (e && e.timestamp) || v.timestamp || '',
+        logId: (e && e.id) || v.id || null
+    });
+}
+
+function openManualExitFromAuditModal() {
+    if (!currentReportIncident) return;
+    let e = currentReportIncident.entry, x = currentReportIncident.exit;
+    if (e && x && e.timestamp && x.timestamp && String(e.timestamp) > String(x.timestamp)) {
+        const tmp = e; e = x; x = tmp;
+    }
+    const v = e || x || {};
+    openManualExitModal({
+        plate: v.vehicle_number || '',
+        name: v.name || '',
+        memId: v.mem_id || '',
+        tag: (v.scanned_tag && v.scanned_tag !== 'NO_TAG') ? v.scanned_tag : '',
+        entryTime: (e && e.timestamp) || v.timestamp || '',
+        logId: (e && e.id) || v.id || null
+    });
+}
+
+function openManualExitModal(target) {
+    currentManualExitTarget = target;
+    currentManualExitSelectedProof = null;
+
+    const modal = document.getElementById('manualExitModal');
+    if (!modal) return;
+
+    // Populate Dossier
+    const initialEl = document.getElementById('manualExitInitial');
+    const plateEl = document.getElementById('manualExitPlate');
+    const nameEl = document.getElementById('manualExitName');
+    const memEl = document.getElementById('manualExitMemId');
+    const tagEl = document.getElementById('manualExitTag');
+    const entryTimeEl = document.getElementById('manualExitEntryTime');
+
+    if (initialEl) initialEl.innerText = (target.name || target.plate || 'V').charAt(0).toUpperCase();
+    if (plateEl) plateEl.innerText = target.plate || 'NO PLATE';
+    if (nameEl) nameEl.innerText = target.name || 'Visitor / Driver';
+    if (memEl) memEl.innerText = target.memId || 'N/A';
+    if (tagEl) tagEl.innerText = target.tag || 'NO TAG';
+    if (entryTimeEl) entryTimeEl.innerText = target.entryTime || '--';
+
+    // Clear proof preview
+    clearManualExitSelectedProof();
+
+    // Set Default Timestamp to 'Now' (local PKT)
+    setManualExitTimestamp('now');
+
+    // Reset notes and gate
+    const notesInput = document.getElementById('manualExitNotesInput');
+    if (notesInput) notesInput.value = '';
+    const gateSelect = document.getElementById('manualExitGateSelect');
+    if (gateSelect) gateSelect.value = 'Gate-01-Out';
+
+    const btn = document.getElementById('btnConfirmManualExit');
+    if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span>Confirm Vehicle Exit</span>`;
+    }
+
+    modal.classList.remove('hidden');
+
+    // Load available optical captures
+    const visitDate = (target.entryTime || '').substring(0, 10) || new Date().toISOString().substring(0, 10);
+    loadManualExitAvailableProof(visitDate);
+}
+
+function closeManualExitModal() {
+    const modal = document.getElementById('manualExitModal');
+    if (modal) modal.classList.add('hidden');
+    currentManualExitTarget = null;
+    currentManualExitSelectedProof = null;
+}
+
+function setManualExitTimestamp(mode) {
+    const input = document.getElementById('manualExitCustomDatetime');
+    if (!input) return;
+
+    const now = new Date();
+    if (mode === 'now') {
+        const localIso = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().substring(0, 16);
+        input.value = localIso;
+    } else if (mode === 'entryPlus15' || mode === 'entryPlus30') {
+        const offsetMin = mode === 'entryPlus15' ? 15 : 30;
+        let baseDate = now;
+        if (currentManualExitTarget && currentManualExitTarget.entryTime) {
+            const parsed = new Date(currentManualExitTarget.entryTime.replace(' ', 'T'));
+            if (!isNaN(parsed.getTime())) {
+                baseDate = parsed;
+            }
+        }
+        const targetMs = baseDate.getTime() + offsetMin * 60000;
+        const offsetDate = new Date(targetMs);
+        const localIso = new Date(offsetDate.getTime() - offsetDate.getTimezoneOffset() * 60000).toISOString().substring(0, 16);
+        input.value = localIso;
+    }
+}
+
+async function loadManualExitAvailableProof(dateStr) {
+    const gallery = document.getElementById('manualExitGallery');
+    const countBadge = document.getElementById('manualExitCapturesCount');
+    if (!gallery) return;
+
+    gallery.innerHTML = `<div class="col-span-full py-4 text-center text-slate-400">Loading captures for ${dateStr}...</div>`;
+
+    try {
+        const res = await fetch(`/api/audit/available-images?date=${encodeURIComponent(dateStr)}&limit=0`);
+        if (!res.ok) throw new Error('Failed to fetch images');
+        const data = await res.json();
+        const images = data.images || [];
+
+        if (countBadge) countBadge.innerText = `${images.length} Captures Available`;
+
+        if (!images.length) {
+            gallery.innerHTML = `<div class="col-span-full py-4 text-center text-slate-400 italic">No camera captures found for ${dateStr}. Exit can be logged without visual proof.</div>`;
+            return;
+        }
+
+        gallery.innerHTML = images.map(img => {
+            const timeStr = String(img.timestamp || '').substring(11, 19) || img.timestamp;
+            const cleanPath = (img.image_path || '').replace(/^\//, '');
+            const isExit = (img.direction || '').toLowerCase() === 'exit';
+            return `
+                <div class="relative group rounded-xl overflow-hidden border border-slate-200 bg-white hover:border-amber-400 hover:shadow-md cursor-pointer transition p-1"
+                     onclick="selectManualExitProof('${cleanPath}', '${img.timestamp || ''}')">
+                    <img src="/${cleanPath}" class="w-full h-16 object-cover rounded-lg" onerror="this.src='/static/img/no-avatar.svg'">
+                    <div class="mt-1 flex items-center justify-between text-[10px] px-0.5">
+                        <span class="font-mono font-bold text-slate-700">${timeStr}</span>
+                        <span class="px-1 py-0.2 rounded font-black text-[9px] ${isExit ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}">${img.direction || 'CAM'}</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    } catch (e) {
+        gallery.innerHTML = `<div class="col-span-full py-4 text-center text-rose-500 font-bold">Failed to load camera captures: ${e.message}</div>`;
+        if (countBadge) countBadge.innerText = `Error loading proof`;
+    }
+}
+
+function selectManualExitProof(imagePath, timeStr) {
+    currentManualExitSelectedProof = { image_path: imagePath, timestamp: timeStr };
+    const box = document.getElementById('manualExitSelectedProofBox');
+    const imgEl = document.getElementById('manualExitSelectedProofImg');
+    const timeEl = document.getElementById('manualExitSelectedProofTime');
+
+    if (box) box.classList.remove('hidden');
+    if (imgEl) imgEl.src = '/' + imagePath.replace(/^\//, '');
+    if (timeEl) timeEl.innerText = `${timeStr || 'Attached Image'} • Attached as Exit Evidence`;
+
+    // Sync timestamp if capture timestamp is valid
+    if (timeStr && timeStr.length >= 16) {
+        const formatted = timeStr.substring(0, 16).replace(' ', 'T');
+        const dtInput = document.getElementById('manualExitCustomDatetime');
+        if (dtInput) dtInput.value = formatted;
+    }
+}
+
+function clearManualExitSelectedProof() {
+    currentManualExitSelectedProof = null;
+    const box = document.getElementById('manualExitSelectedProofBox');
+    if (box) box.classList.add('hidden');
+}
+
+async function submitManualExit() {
+    if (!currentManualExitTarget) {
+        alert('No vehicle selected for manual exit clearance.');
+        return;
+    }
+
+    const btn = document.getElementById('btnConfirmManualExit');
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<span class="inline-block animate-spin mr-1.5">&circlearrowright;</span> Processing Exit...`;
+    }
+
+    const dtInput = document.getElementById('manualExitCustomDatetime');
+    const gateSelect = document.getElementById('manualExitGateSelect');
+    const notesInput = document.getElementById('manualExitNotesInput');
+
+    const payload = {
+        vehicle_number: currentManualExitTarget.plate,
+        mem_id: currentManualExitTarget.memId,
+        name: currentManualExitTarget.name,
+        scanned_tag: currentManualExitTarget.tag,
+        log_id: currentManualExitTarget.logId,
+        timestamp: dtInput ? dtInput.value : '',
+        gate_no: gateSelect ? gateSelect.value : 'Gate-01-Out',
+        image_path: currentManualExitSelectedProof ? currentManualExitSelectedProof.image_path : '',
+        notes: notesInput ? notesInput.value.trim() : ''
+    };
+
+    try {
+        const res = await fetch('/api/audit/manual-exit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) {
+            throw new Error(data.detail || data.message || 'Server rejected manual exit.');
+        }
+
+        alert(`Success: ${data.message || 'Vehicle successfully exited.'}`);
+        closeManualExitModal();
+        if (typeof closeAudit === 'function') closeAudit();
+        if (typeof loadAudit === 'function') loadAudit(currentAuditPage);
+        if (typeof loadStats === 'function') loadStats();
+        if (typeof loadBulkExitSettings === 'function') loadBulkExitSettings();
+    } catch (err) {
+        alert(`Error executing manual exit: ${err.message}`);
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span>Confirm Vehicle Exit</span>`;
+        }
+    }
+}
+
+// ----------------------------------------------------------------------------
+// BULK FACILITY EXIT & EXCEPTION WHITELIST CONTROLLER
+// ----------------------------------------------------------------------------
+
+async function loadBulkExitSettings() {
+    const insideEl = document.getElementById('bulkInsideCount');
+    const exemptEl = document.getElementById('bulkExceptionCount');
+    const clearEl = document.getElementById('bulkClearableCount');
+    const badgeEl = document.getElementById('whitelistItemCountBadge');
+    const container = document.getElementById('bulkExceptionsContainer');
+    const dtInput = document.getElementById('bulkExitDatetimeInput');
+
+    if (dtInput && !dtInput.value) {
+        setBulkExitNow();
+    }
+
+    try {
+        const res = await fetch('/api/settings/bulk-exit-exceptions');
+        if (!res.ok) return;
+        const data = await res.json();
+
+        bulkExitExceptionsCache = data.exceptions || [];
+
+        if (insideEl) insideEl.innerText = (data.total_inside || 0).toLocaleString();
+        if (exemptEl) exemptEl.innerText = (data.exempt_inside_count || 0).toLocaleString();
+        if (clearEl) clearEl.innerText = (data.clearable_count || 0).toLocaleString();
+        if (badgeEl) badgeEl.innerText = `${bulkExitExceptionsCache.length} Cars Protected`;
+
+        if (container) {
+            if (!bulkExitExceptionsCache.length) {
+                container.innerHTML = `<span class="text-xs text-slate-400 italic">No vehicles currently on the stay-inside exception list.</span>`;
+            } else {
+                container.innerHTML = bulkExitExceptionsCache.map(item => `
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white border border-slate-300 font-mono font-bold text-xs text-slate-800 shadow-2xs">
+                        <span>${item}</span>
+                        <button type="button" onclick="removeBulkExitException('${item}')" class="text-slate-400 hover:text-rose-600 font-extrabold text-sm leading-none ml-1 transition" title="Remove from Whitelist">&times;</button>
+                    </span>
+                `).join('');
+            }
+        }
+    } catch (e) {
+        console.error('loadBulkExitSettings error:', e);
+    }
+}
+
+function setBulkExitNow() {
+    const input = document.getElementById('bulkExitDatetimeInput');
+    if (!input) return;
+    const now = new Date();
+    const localIso = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().substring(0, 16);
+    input.value = localIso;
+}
+
+async function addBulkExitException() {
+    const input = document.getElementById('inputNewExceptionPlate');
+    if (!input) return;
+    const val = input.value.trim().toUpperCase();
+    if (!val) return;
+
+    if (bulkExitExceptionsCache.includes(val)) {
+        alert(`"${val}" is already on the exception whitelist.`);
+        input.value = '';
+        return;
+    }
+
+    const updated = [...bulkExitExceptionsCache, val];
+    try {
+        const res = await fetch('/api/settings/bulk-exit-exceptions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ exceptions: updated })
+        });
+        if (!res.ok) throw new Error('Failed to save exception');
+        input.value = '';
+        await loadBulkExitSettings();
+    } catch (e) {
+        alert(`Failed to add exception: ${e.message}`);
+    }
+}
+
+async function removeBulkExitException(val) {
+    const updated = bulkExitExceptionsCache.filter(x => x !== val);
+    try {
+        const res = await fetch('/api/settings/bulk-exit-exceptions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ exceptions: updated })
+        });
+        if (!res.ok) throw new Error('Failed to update whitelist');
+        await loadBulkExitSettings();
+    } catch (e) {
+        alert(`Failed to remove exception: ${e.message}`);
+    }
+}
+
+async function executeBulkExit() {
+    const btn = document.getElementById('btnExecuteBulkExit');
+    const notice = document.getElementById('bulkExitStatusNotice');
+    const dtInput = document.getElementById('bulkExitDatetimeInput');
+
+    const exemptCount = bulkExitExceptionsCache.length;
+    const confirmMsg = `Are you sure you want to mark all vehicles inside the club as EXITED?\n\n` +
+        `• All non-whitelisted cars will receive an Exit record and status changed to Outside.\n` +
+        `• ${exemptCount} whitelisted vehicle(s) will be strictly preserved and stay INSIDE.\n\n` +
+        `Proceed with bulk exit?`;
+
+    if (!confirm(confirmMsg)) return;
+
+    if (btn) {
+        btn.disabled = true;
+        btn.classList.add('opacity-75');
+    }
+    if (notice) {
+        notice.className = 'text-xs font-bold text-amber-600 animate-pulse';
+        notice.innerText = 'Clearing facility vehicles...';
+    }
+
+    try {
+        const res = await fetch('/api/audit/bulk-manual-exit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                timestamp: dtInput ? dtInput.value : '',
+                gate_no: 'Gate-01-Out (Bulk Clearance)',
+                notes: 'Bulk Facility Override',
+                exempt_identifiers: bulkExitExceptionsCache
+            })
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) {
+            throw new Error(data.detail || data.message || 'Bulk exit failed');
+        }
+
+        if (notice) {
+            notice.className = 'text-xs font-bold text-emerald-600';
+            notice.innerText = `Cleared ${data.exited_count} cars (${data.exempted_count} whitelisted stayed inside).`;
+        }
+
+        alert(`Bulk clearance complete!\n\n${data.message}`);
+
+        await loadBulkExitSettings();
+        if (typeof loadAudit === 'function') loadAudit(currentAuditPage);
+        if (typeof loadStats === 'function') loadStats();
+    } catch (e) {
+        if (notice) {
+            notice.className = 'text-xs font-bold text-rose-600';
+            notice.innerText = `Error: ${e.message}`;
+        }
+        alert(`Bulk exit error: ${e.message}`);
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.classList.remove('opacity-75');
+        }
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {

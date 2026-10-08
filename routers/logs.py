@@ -1211,5 +1211,234 @@ async def get_image_thumbnail(path: str, w: int = 440, q: int = 65):
         # Fallback to original image if compression fails
         return FileResponse(target_file)
 
+@router.post("/audit/manual-exit")
+async def post_manual_exit(request: Request):
+    """
+    Manually clear a vehicle as Exited when not detected by the RFID exit reader.
+    Supports optional custom datetime and optional attached camera optical evidence.
+    """
+    body = await request.json()
+    if not body:
+        raise HTTPException(400, "Request payload is required")
+
+    vehicle_number = (body.get("vehicle_number") or "").strip()
+    mem_id = (body.get("mem_id") or "").strip()
+    name = (body.get("name") or "").strip()
+    scanned_tag = (body.get("scanned_tag") or "").strip()
+    log_id = body.get("log_id")
+    gate_no = (body.get("gate_no") or "Gate-01-Out (Manual)").strip()
+    image_path = (body.get("image_path") or "").strip()
+    custom_ts = (body.get("timestamp") or "").strip()
+    notes = (body.get("notes") or "").strip()
+
+    if not vehicle_number and not scanned_tag and not mem_id:
+        raise HTTPException(400, "Vehicle Number, RFID Tag, or Member ID is required")
+
+    exit_timestamp = None
+    if custom_ts:
+        clean_ts = custom_ts.replace("T", " ")
+        if len(clean_ts) == 16:
+            clean_ts += ":00"
+        try:
+            datetime.strptime(clean_ts[:19], "%Y-%m-%d %H:%M:%S")
+            exit_timestamp = clean_ts[:19]
+        except Exception:
+            exit_timestamp = None
+
+    if not exit_timestamp:
+        exit_timestamp = datetime.now(config.PKT_TZ).strftime("%Y-%m-%d %H:%M:%S")
+
+    with config.DB_LOCK:
+        conn = get_db_connection()
+        try:
+            with conn:
+                if not name or not vehicle_number:
+                    if scanned_tag and scanned_tag != "NO_TAG":
+                        m_row = conn.execute("SELECT Mem_id, Name, Car_number FROM members WHERE E_tag_id = ? LIMIT 1", (scanned_tag,)).fetchone()
+                        if m_row:
+                            name = name or m_row["Name"]
+                            vehicle_number = vehicle_number or m_row["Car_number"]
+                            mem_id = mem_id or m_row["Mem_id"]
+                    if not name and mem_id and mem_id not in ("GUEST-LOG", "AI-CAM", "UNREGISTERED"):
+                        m_row = conn.execute("SELECT Mem_id, Name, Car_number, E_tag_id FROM members WHERE Mem_id = ? LIMIT 1", (mem_id,)).fetchone()
+                        if m_row:
+                            name = name or m_row["Name"]
+                            vehicle_number = vehicle_number or m_row["Car_number"]
+                            scanned_tag = scanned_tag or m_row["E_tag_id"]
+
+                if not name and log_id:
+                    l_row = conn.execute("SELECT mem_id, name, vehicle_number, scanned_tag FROM daily_logs WHERE id = ? LIMIT 1", (log_id,)).fetchone()
+                    if l_row:
+                        name = name or l_row["name"]
+                        vehicle_number = vehicle_number or l_row["vehicle_number"]
+                        mem_id = mem_id or l_row["mem_id"]
+                        scanned_tag = scanned_tag or l_row["scanned_tag"]
+
+                display_name = name or "Visitor / Manual Clearance"
+                display_vehicle = vehicle_number or scanned_tag or "UNREGISTERED"
+                access_type_label = f"Manual Exit ({notes})" if notes else "Manual Exit"
+
+                cur = conn.execute("""
+                    INSERT INTO daily_logs (mem_id, name, vehicle_number, access_type, direction, gate_no, image_path, scanned_tag, timestamp)
+                    VALUES (?, ?, ?, ?, 'Exit', ?, ?, ?, ?)
+                """, (
+                    mem_id or "MANUAL-EXIT",
+                    display_name,
+                    display_vehicle,
+                    access_type_label,
+                    gate_no,
+                    image_path or None,
+                    scanned_tag or "NO_TAG",
+                    exit_timestamp
+                ))
+                new_exit_id = cur.lastrowid
+
+                if mem_id and mem_id not in ("GUEST-LOG", "AI-CAM", "UNREGISTERED"):
+                    conn.execute("UPDATE members SET Current_Location = 'Outside' WHERE Mem_id = ?", (mem_id,))
+                elif scanned_tag and scanned_tag != "NO_TAG":
+                    conn.execute("UPDATE members SET Current_Location = 'Outside' WHERE E_tag_id = ?", (scanned_tag,))
+
+                config.LATEST_LOG_CACHE = None
+
+                return {
+                    "ok": True,
+                    "exit_id": new_exit_id,
+                    "vehicle_number": display_vehicle,
+                    "name": display_name,
+                    "timestamp": exit_timestamp,
+                    "direction": "Exit",
+                    "access_type": access_type_label,
+                    "message": f"Vehicle {display_vehicle} successfully cleared and marked as Exited at {exit_timestamp}."
+                }
+        finally:
+            conn.close()
+
+@router.post("/audit/bulk-manual-exit")
+async def post_bulk_manual_exit(request: Request):
+    """
+    One-click bulk clearance of all vehicles currently marked Inside Facility,
+    strictly protecting vehicles that belong to the user-defined exception whitelist.
+    """
+    body = {}
+    try:
+        body = await request.json()
+    except Exception:
+        pass
+
+    custom_ts = (body.get("timestamp") or "").strip()
+    gate_no = (body.get("gate_no") or "Gate-01-Out (Bulk Exit)").strip()
+    notes = (body.get("notes") or "Bulk Facility Clearance").strip()
+    override_exceptions = body.get("exempt_identifiers")
+
+    exit_timestamp = None
+    if custom_ts:
+        clean_ts = custom_ts.replace("T", " ")
+        if len(clean_ts) == 16:
+            clean_ts += ":00"
+        try:
+            datetime.strptime(clean_ts[:19], "%Y-%m-%d %H:%M:%S")
+            exit_timestamp = clean_ts[:19]
+        except Exception:
+            exit_timestamp = None
+
+    if not exit_timestamp:
+        exit_timestamp = datetime.now(config.PKT_TZ).strftime("%Y-%m-%d %H:%M:%S")
+
+    with config.DB_LOCK:
+        conn = get_db_connection()
+        try:
+            with conn:
+                if override_exceptions is not None and isinstance(override_exceptions, list):
+                    raw_exceptions = override_exceptions
+                else:
+                    s_row = conn.execute("SELECT config_value FROM settings WHERE config_key = 'bulk_exit_exceptions' LIMIT 1").fetchone()
+                    raw_exceptions = []
+                    if s_row and s_row["config_value"]:
+                        import json
+                        try:
+                            raw_exceptions = json.loads(s_row["config_value"])
+                        except Exception:
+                            raw_exceptions = [x.strip() for x in s_row["config_value"].split(",") if x.strip()]
+
+                exception_set = {str(x).strip().upper() for x in raw_exceptions if str(x).strip()}
+
+                rows = conn.execute(AUDIT_LOGS_BASE_QUERY + " ORDER BY d.id ASC").fetchall()
+                paired = _build_paired_audits([dict(r) for r in rows])
+
+                inside_audits = [
+                    p for p in paired 
+                    if p.get("status") in ("Inside Facility", "Alert / Inside", "Overstay (>8h)")
+                ]
+
+                exited_records = []
+                exempted_records = []
+                seen_keys = set()
+
+                for item in inside_audits:
+                    v = item.get("entry") or item.get("exit") or {}
+                    plate = (v.get("vehicle_number") or "").strip().upper()
+                    mem = (v.get("mem_id") or "").strip().upper()
+                    tag = (v.get("scanned_tag") or "").strip().upper()
+                    v_name = v.get("name") or "Club Vehicle"
+
+                    key = plate or tag or mem
+                    if not key or key in seen_keys:
+                        continue
+                    seen_keys.add(key)
+
+                    is_exempt = False
+                    if plate and plate in exception_set:
+                        is_exempt = True
+                    elif mem and mem in exception_set:
+                        is_exempt = True
+                    elif tag and tag in exception_set:
+                        is_exempt = True
+
+                    if is_exempt:
+                        exempted_records.append({
+                            "vehicle_number": v.get("vehicle_number") or plate,
+                            "mem_id": v.get("mem_id") or mem,
+                            "name": v_name
+                        })
+                        continue
+
+                    conn.execute("""
+                        INSERT INTO daily_logs (mem_id, name, vehicle_number, access_type, direction, gate_no, scanned_tag, timestamp)
+                        VALUES (?, ?, ?, ?, 'Exit', ?, ?, ?)
+                    """, (
+                        v.get("mem_id") or "BULK-EXIT",
+                        v_name,
+                        v.get("vehicle_number") or plate or "UNREGISTERED",
+                        f"Bulk Manual Exit ({notes})",
+                        gate_no,
+                        v.get("scanned_tag") or "NO_TAG",
+                        exit_timestamp
+                    ))
+
+                    if mem and mem not in ("GUEST-LOG", "AI-CAM", "UNREGISTERED"):
+                        conn.execute("UPDATE members SET Current_Location = 'Outside' WHERE Mem_id = ?", (v.get("mem_id"),))
+                    elif tag and tag != "NO_TAG":
+                        conn.execute("UPDATE members SET Current_Location = 'Outside' WHERE E_tag_id = ?", (v.get("scanned_tag"),))
+
+                    exited_records.append({
+                        "vehicle_number": v.get("vehicle_number") or plate,
+                        "mem_id": v.get("mem_id") or mem,
+                        "name": v_name
+                    })
+
+                config.LATEST_LOG_CACHE = None
+
+                return {
+                    "ok": True,
+                    "exited_count": len(exited_records),
+                    "exempted_count": len(exempted_records),
+                    "timestamp": exit_timestamp,
+                    "exited_vehicles": exited_records,
+                    "exempted_vehicles": exempted_records,
+                    "message": f"Bulk clearance complete: {len(exited_records)} vehicles marked Exited. {len(exempted_records)} vehicles retained inside per Exception Whitelist."
+                }
+        finally:
+            conn.close()
+
 
 

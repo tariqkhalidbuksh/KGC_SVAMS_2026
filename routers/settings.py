@@ -106,3 +106,78 @@ async def reset_activity_data(request: Request = None):
         "message": f"Activity logs reset. {members_count:,} members and {settings_count} settings preserved."
     }
 
+@router.get("/settings/bulk-exit-exceptions")
+async def get_bulk_exit_exceptions():
+    """
+    Returns configured exception whitelist for bulk exit and live facility occupancy breakdown.
+    """
+    import json
+    with config.DB_LOCK:
+        conn = get_db_connection()
+        try:
+            row = conn.execute("SELECT config_value FROM settings WHERE config_key = 'bulk_exit_exceptions' LIMIT 1").fetchone()
+            exceptions = []
+            if row and row["config_value"]:
+                try:
+                    exceptions = json.loads(row["config_value"])
+                except Exception:
+                    exceptions = [x.strip() for x in row["config_value"].split(",") if x.strip()]
+
+            from routers.logs import AUDIT_LOGS_BASE_QUERY, _build_paired_audits
+            logs = [dict(r) for r in conn.execute(AUDIT_LOGS_BASE_QUERY + " ORDER BY d.id ASC").fetchall()]
+            paired = _build_paired_audits(logs)
+            inside = [p for p in paired if p.get("status") in ("Inside Facility", "Alert / Inside", "Overstay (>8h)")]
+
+            exempt_set = {str(x).strip().upper() for x in exceptions if str(x).strip()}
+            exempt_count = 0
+            for item in inside:
+                v = item.get("entry") or item.get("exit") or {}
+                p = (v.get("vehicle_number") or "").strip().upper()
+                m = (v.get("mem_id") or "").strip().upper()
+                t = (v.get("scanned_tag") or "").strip().upper()
+                if (p and p in exempt_set) or (m and m in exempt_set) or (t and t in exempt_set):
+                    exempt_count += 1
+
+            total_inside = len(inside)
+            clearable_count = max(0, total_inside - exempt_count)
+
+            return {
+                "exceptions": exceptions,
+                "total_inside": total_inside,
+                "exempt_inside_count": exempt_count,
+                "clearable_count": clearable_count
+            }
+        finally:
+            conn.close()
+
+@router.post("/settings/bulk-exit-exceptions")
+async def save_bulk_exit_exceptions(request: Request):
+    """
+    Updates the list of vehicle plates / IDs exempt from bulk exit.
+    """
+    import json
+    body = await request.json()
+    raw_list = body.get("exceptions", [])
+    if not isinstance(raw_list, list):
+        raise HTTPException(400, "Exceptions must be a list of vehicle plates or member IDs")
+
+    cleaned = []
+    seen = set()
+    for item in raw_list:
+        c = str(item).strip().upper()
+        if c and c not in seen:
+            seen.add(c)
+            cleaned.append(c)
+
+    with config.DB_LOCK:
+        conn = get_db_connection()
+        try:
+            with conn:
+                conn.execute(
+                    "INSERT OR REPLACE INTO settings (config_key, config_value) VALUES ('bulk_exit_exceptions', ?)",
+                    (json.dumps(cleaned),)
+                )
+            return {"ok": True, "exceptions": cleaned}
+        finally:
+            conn.close()
+

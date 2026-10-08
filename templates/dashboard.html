@@ -1162,6 +1162,85 @@
                         </div>
                     </div>
 
+                    <!-- Facility Clearance & Bulk Vehicle Exit Control Card -->
+                    <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 max-w-4xl space-y-5 text-sm">
+                        <div class="flex items-start justify-between flex-wrap gap-4">
+                            <div>
+                                <h2 class="font-bold text-lg text-slate-900 flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                                    <span>Facility Clearance &amp; Bulk Vehicle Exit Control</span>
+                                </h2>
+                                <p class="text-xs text-slate-500 mt-1">
+                                    Quickly clear vehicles whose exit tags were not scanned, marking them as Exited with one click.
+                                    Maintain an <strong>Exception Whitelist</strong> of vehicles that should always remain inside (e.g. staff vehicles, overnight parked cars, VIPs).
+                                </p>
+                            </div>
+                            <span class="text-xs font-bold px-3 py-1 bg-amber-50 text-amber-800 border border-amber-200 rounded-full">Operational Override</span>
+                        </div>
+
+                        <!-- Live Occupancy vs Whitelist Telemetry -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+                                <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Currently Inside Facility</span>
+                                <div id="bulkInsideCount" class="text-2xl font-black text-slate-900 mt-0.5">--</div>
+                                <span class="text-[10px] text-slate-500">Unmatched entry visits</span>
+                            </div>
+                            <div class="p-3.5 bg-emerald-50/70 rounded-xl border border-emerald-200">
+                                <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700">Exception Whitelist</span>
+                                <div id="bulkExceptionCount" class="text-2xl font-black text-emerald-800 mt-0.5">--</div>
+                                <span class="text-[10px] text-emerald-600">Protected (Will stay inside)</span>
+                            </div>
+                            <div class="p-3.5 bg-indigo-50/70 rounded-xl border border-indigo-200">
+                                <span class="text-[10px] font-extrabold uppercase tracking-wider text-indigo-700">Will Be Cleared Out</span>
+                                <div id="bulkClearableCount" class="text-2xl font-black text-indigo-800 mt-0.5">--</div>
+                                <span class="text-[10px] text-indigo-600">Marked Exited on flush</span>
+                            </div>
+                        </div>
+
+                        <!-- Whitelist Exception Manager -->
+                        <div class="border border-slate-200 rounded-xl p-4 bg-slate-50/50 space-y-3">
+                            <div class="flex items-center justify-between flex-wrap gap-2">
+                                <div>
+                                    <span class="text-xs font-bold text-slate-800">Stay-Inside Exception Whitelist</span>
+                                    <p class="text-[11px] text-slate-500">Vehicles on this list are permanently protected and will NEVER be exited during bulk flush.</p>
+                                </div>
+                                <span class="text-[11px] font-mono text-slate-400" id="whitelistItemCountBadge">0 Cars Protected</span>
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <input type="text" id="inputNewExceptionPlate" placeholder="Enter vehicle plate or member ID (e.g. BN-4154, GPB-167, 7250)..." 
+                                       onkeydown="if(event.key==='Enter') addBulkExitException()"
+                                       class="flex-1 text-xs font-mono font-bold border border-slate-200 rounded-xl p-2.5 bg-white focus:outline-none focus:border-indigo-500 uppercase">
+                                <button type="button" onclick="addBulkExitException()" 
+                                        class="px-4 py-2.5 rounded-xl text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white shadow-xs transition flex items-center gap-1.5">
+                                    <span>+ Add to Whitelist</span>
+                                </button>
+                            </div>
+
+                            <!-- Active Whitelist Chips -->
+                            <div id="bulkExceptionsContainer" class="flex flex-wrap gap-2 pt-1 min-h-[36px] items-center">
+                                <span class="text-xs text-slate-400 italic">No vehicles currently on the stay-inside exception list.</span>
+                            </div>
+                        </div>
+
+                        <!-- Bulk Clearance Action Controls -->
+                        <div class="pt-2 flex items-center justify-between flex-wrap gap-4 border-t border-slate-100">
+                            <div class="flex items-center gap-2">
+                                <label class="text-xs font-bold text-slate-600">Clearance Timestamp:</label>
+                                <input type="datetime-local" id="bulkExitDatetimeInput" class="text-xs font-mono font-bold border border-slate-200 rounded-xl p-2 bg-slate-50 focus:bg-white focus:outline-none">
+                                <button type="button" onclick="setBulkExitNow()" class="text-[11px] font-bold text-indigo-600 hover:underline">Now (PKT)</button>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <button type="button" id="btnExecuteBulkExit" onclick="executeBulkExit()" 
+                                        class="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2.5 rounded-xl font-bold text-xs shadow-sm transition flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                                    <span>Mark All Cars Exited (Except Whitelist)</span>
+                                </button>
+                                <span id="bulkExitStatusNotice" class="text-xs font-semibold"></span>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- System Maintenance & Data Reset Card -->
                     <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 max-w-4xl space-y-4 text-sm">
                         <div class="flex items-start justify-between flex-wrap gap-4">
@@ -1459,6 +1538,113 @@
     <!-- Member Vehicles Fleet Modal -->
     <div id="memberFleetModal" class="hidden fixed inset-0 z-[105] flex items-center justify-center p-4 md:p-6 bg-slate-900/60 backdrop-blur-sm" onclick="closeMemberFleetModal()">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[92vh] overflow-y-auto" id="memberFleetModalContent" onclick="event.stopPropagation()"></div>
+    </div>
+
+    <!-- Modal: Manual Vehicle Exit Clearance -->
+    <div id="manualExitModal" class="hidden fixed inset-0 z-[115] flex items-center justify-center p-3 md:p-6 bg-slate-900/60 backdrop-blur-sm" onclick="closeManualExitModal()">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[92vh]" onclick="event.stopPropagation()">
+            <!-- Top bar -->
+            <div class="h-2.5 bg-gradient-to-r from-amber-500 via-amber-600 to-orange-500"></div>
+            <div class="p-6 md:p-7 overflow-y-auto space-y-5">
+                <!-- Header -->
+                <div class="flex justify-between items-start border-b border-slate-100 pb-4">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
+                            <h2 class="text-lg md:text-xl font-black text-slate-900 uppercase tracking-tight">Manual Vehicle Exit Clearance</h2>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-0.5">Override departure when RFID exit reader was not scanned. Closes vehicle stay cycle.</p>
+                    </div>
+                    <button type="button" onclick="closeManualExitModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-700 font-bold flex items-center justify-center text-lg transition">&times;</button>
+                </div>
+
+                <!-- Vehicle Particulars Dossier -->
+                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 flex items-center justify-between flex-wrap gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-800 font-black flex items-center justify-center text-lg shadow-2xs" id="manualExitInitial">V</div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span id="manualExitPlate" class="text-sm font-black font-mono px-2 py-0.5 rounded bg-slate-900 text-white">PLATE</span>
+                                <span id="manualExitName" class="text-xs font-bold text-slate-800">Vehicle / Member Name</span>
+                            </div>
+                            <p class="text-[11px] font-mono text-slate-500 mt-1">
+                                <span class="font-bold">ID:</span> <span id="manualExitMemId">--</span> &bull; 
+                                <span class="font-bold">RFID EPC:</span> <span id="manualExitTag">--</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="text-right text-xs">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase">Entry Recorded:</span>
+                        <p id="manualExitEntryTime" class="font-mono font-bold text-slate-700">--</p>
+                    </div>
+                </div>
+
+                <!-- Date & Time Selector with Presets -->
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <label class="text-xs font-bold text-slate-700">Exit Timestamp (PKT) — Optional custom date &amp; time</label>
+                        <div class="flex items-center gap-2 text-[11px]">
+                            <button type="button" onclick="setManualExitTimestamp('now')" class="font-bold text-indigo-600 hover:underline">Now (Live)</button>
+                            <span class="text-slate-300">|</span>
+                            <button type="button" onclick="setManualExitTimestamp('entryPlus15')" class="font-bold text-slate-500 hover:text-slate-800">+15m</button>
+                            <span class="text-slate-300">|</span>
+                            <button type="button" onclick="setManualExitTimestamp('entryPlus30')" class="font-bold text-slate-500 hover:text-slate-800">+30m</button>
+                        </div>
+                    </div>
+                    <input type="datetime-local" id="manualExitCustomDatetime" class="w-full text-xs font-mono font-bold border border-slate-200 rounded-xl p-3 bg-white focus:outline-none focus:border-indigo-500">
+                </div>
+
+                <!-- Optical Evidence Selector ("by view optional evidence") -->
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <label class="text-xs font-bold text-slate-700">Optional Optical Proof (View &amp; Hand-Pick Camera Evidence)</label>
+                        <span id="manualExitCapturesCount" class="text-[10px] font-mono text-slate-400">Loading camera captures...</span>
+                    </div>
+                    <!-- Selected Proof Preview -->
+                    <div id="manualExitSelectedProofBox" class="p-3 bg-emerald-50/60 border border-emerald-200 rounded-xl flex items-center justify-between hidden">
+                        <div class="flex items-center gap-3">
+                            <img id="manualExitSelectedProofImg" src="" class="w-16 h-11 object-cover rounded-lg border border-emerald-300">
+                            <div>
+                                <span class="text-[10px] font-black text-emerald-800 uppercase">Attached Optical Evidence</span>
+                                <p id="manualExitSelectedProofTime" class="text-xs font-mono font-bold text-slate-800 mt-0.5">--</p>
+                            </div>
+                        </div>
+                        <button type="button" onclick="clearManualExitSelectedProof()" class="text-xs font-bold text-rose-600 hover:underline">&times; Remove</button>
+                    </div>
+                    <!-- Gallery Slider/Grid -->
+                    <div id="manualExitGallery" class="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-48 overflow-y-auto p-2 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+                        <div class="col-span-full py-4 text-center text-slate-400">Loading camera captures...</div>
+                    </div>
+                </div>
+
+                <!-- Exit Gate & Notes -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Exit Gate Station</label>
+                        <select id="manualExitGateSelect" class="w-full text-xs font-bold border border-slate-200 rounded-xl p-2.5 bg-white focus:outline-none">
+                            <option value="Gate-01-Out">Gate-01-Out (Main Exit)</option>
+                            <option value="Gate-02-Out">Gate-02-Out (Secondary Exit)</option>
+                            <option value="Manual Gate Clearance">Manual Gate Clearance</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Officer Notes / Remarks (Optional)</label>
+                        <input type="text" id="manualExitNotesInput" placeholder="e.g. Unread tag, manual staff clearance" 
+                               class="w-full text-xs border border-slate-200 rounded-xl p-2.5 bg-white focus:outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-between items-center">
+                <button type="button" onclick="closeManualExitModal()" class="px-5 py-2.5 rounded-xl text-xs font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-100 transition">Cancel</button>
+                <button type="button" id="btnConfirmManualExit" onclick="submitManualExit()" 
+                        class="px-6 py-2.5 rounded-xl text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 shadow-sm transition flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    <span>Confirm Vehicle Exit</span>
+                </button>
+            </div>
+        </div>
     </div>
 
     <div id="camProofModal" class="hidden fixed inset-0 z-[110] flex items-center justify-center p-3 sm:p-5 bg-slate-950/85 backdrop-blur-md" onclick="closeCamProofModal()">
