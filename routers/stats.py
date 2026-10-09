@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from fastapi import APIRouter
 import config
 from database import get_db_connection
+from routers.logs import _fetch_audit_logs_with_lookback, _build_paired_audits
 
 router = APIRouter(prefix="/api", tags=["Statistics & Metrics"])
 
@@ -148,34 +149,33 @@ async def get_stats():
             """).fetchone()
             overstay_count = overstay_row['c'] if overstay_row else 0
 
-            # Calculate Average Stay Duration from paired visits today
-            paired_rows = conn.execute("""
-                SELECT d.timestamp as in_time, e.timestamp as out_time
-                FROM daily_logs d
-                JOIN daily_logs e ON (
-                    (d.mem_id = e.mem_id AND d.mem_id NOT IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', ''))
-                    OR (d.scanned_tag = e.scanned_tag AND d.scanned_tag NOT IN ('NO_TAG', ''))
-                    OR (d.vehicle_number = e.vehicle_number AND d.vehicle_number != 'NO PLATE' AND d.vehicle_number != '')
-                )
-                WHERE d.direction = 'Entry' AND e.direction = 'Exit'
-                  AND date(d.timestamp) = ? AND date(e.timestamp) = ?
-                  AND e.timestamp >= d.timestamp
-            """, (pkt_today, pkt_today)).fetchall()
+            # Authoritative State-Based Facility Occupancy & Completed Journey Analysis (Approach B)
+            today_logs = _fetch_audit_logs_with_lookback(conn, "single", pkt_today, pkt_today)
+            today_paired = _build_paired_audits(today_logs)
+
+            currently_in_club = sum(1 for a in today_paired if a['status'] in ("Inside Facility", "Alert / Inside", "Overstay (>8h)"))
+
+            # Calculate Average Stay Duration from paired visits today (including cross-day/overnight completed journeys)
+            completed_paired = [a for a in today_paired if a.get('entry') and a.get('exit')]
+            paired_visits_count = len(completed_paired)
 
             avg_duration_str = "--"
-            if paired_rows:
+            if paired_visits_count > 0:
                 total_diff_sec = 0
                 valid_count = 0
-                for pr in paired_rows:
-                    try:
-                        t1 = datetime.strptime(str(pr['in_time'])[:19], "%Y-%m-%d %H:%M:%S")
-                        t2 = datetime.strptime(str(pr['out_time'])[:19], "%Y-%m-%d %H:%M:%S")
-                        sec = abs(int((t2 - t1).total_seconds()))
-                        if 60 <= sec <= 86400:
-                            total_diff_sec += sec
-                            valid_count += 1
-                    except Exception:
-                        pass
+                for a in completed_paired:
+                    e = a.get('entry')
+                    x = a.get('exit')
+                    if e and x and e.get('timestamp') and x.get('timestamp'):
+                        try:
+                            t1 = datetime.strptime(str(e['timestamp'])[:19], "%Y-%m-%d %H:%M:%S")
+                            t2 = datetime.strptime(str(x['timestamp'])[:19], "%Y-%m-%d %H:%M:%S")
+                            sec = abs(int((t2 - t1).total_seconds()))
+                            if 60 <= sec <= 86400 * 7:
+                                total_diff_sec += sec
+                                valid_count += 1
+                        except Exception:
+                            pass
                 if valid_count > 0:
                     avg_sec = total_diff_sec // valid_count
                     h = avg_sec // 3600
@@ -211,13 +211,13 @@ async def get_stats():
                 "total_vehicles": total_vehicles,
                 "total_entries_today": entries_today,
                 "total_exits_today": exits_today,
-                "currently_in_club": max(0, entries_today - exits_today),
+                "currently_in_club": currently_in_club,
                 "guests_today": guests_today,
                 "overstay_count": overstay_count,
                 "peak_hour": peak_hour_str,
                 "peak_count": peak_count_val,
                 "avg_duration": avg_duration_str,
-                "paired_visits_count": len(paired_rows) if paired_rows else 0,
+                "paired_visits_count": paired_visits_count,
                 "registered_transits_today": reg_today,
                 "unregistered_transits_today": unreg_today,
                 "registered_transits_all_time": reg_unique_tags,

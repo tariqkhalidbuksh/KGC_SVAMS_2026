@@ -502,3 +502,75 @@ class TestCameraAuditFilters:
         assert d_search["total"] == 1
         assert "today_entry.jpg" in d_search["logs"][0]["image_path"]
 
+
+class TestApproachBCrossDayAndOccupancy:
+    """
+    Validates Approach B: Multi-Day Lookback for cross-day vehicle visits
+    and authoritative state-based facility occupancy synchronization.
+    """
+    def test_overnight_cross_day_pairing_and_duration(self, setup_audit_test_db):
+        pkt_today = config.get_pkt_today()
+        yesterday = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+
+        with get_db_connection() as conn:
+            with conn:
+                conn.execute("""
+                    INSERT INTO members (Mem_id, Name, Car_number, Make_Model, E_tag_id, Status)
+                    VALUES ('MEM-NIGHT', 'Overnight Visitor', 'KGC-NIGHT', 'Sedan', 'TAG-NIGHT', 'Active')
+                """)
+                # Car entered yesterday at 22:00:00
+                conn.execute("""
+                    INSERT INTO daily_logs (mem_id, name, vehicle_number, access_type, direction, gate_no, scanned_tag, timestamp)
+                    VALUES ('MEM-NIGHT', 'Overnight Visitor', 'KGC-NIGHT', 'RFID Verified', 'Entry', 'Gate-01', 'TAG-NIGHT', ?)
+                """, (f"{yesterday} 22:00:00",))
+                # Car exited today at 07:30:00
+                conn.execute("""
+                    INSERT INTO daily_logs (mem_id, name, vehicle_number, access_type, direction, gate_no, scanned_tag, timestamp)
+                    VALUES ('MEM-NIGHT', 'Overnight Visitor', 'KGC-NIGHT', 'RFID Verified', 'Exit', 'Gate-01', 'TAG-NIGHT', ?)
+                """, (f"{pkt_today} 07:30:00",))
+                # Car entered today and is still inside
+                conn.execute("""
+                    INSERT INTO daily_logs (mem_id, name, vehicle_number, access_type, direction, gate_no, scanned_tag, timestamp)
+                    VALUES ('MEM-INSIDE', 'Inside Visitor', 'KGC-INSIDE', 'RFID Verified', 'Entry', 'Gate-01', 'TAG-INSIDE', ?)
+                """, (f"{pkt_today} 09:00:00",))
+
+        # 1. Audit log for today should pair the overnight car
+        res_audit = client.get("/api/audit?date=today")
+        assert res_audit.status_code == 200
+        audit_data = res_audit.json()
+
+        # Find overnight visit
+        night_visit = next((a for a in audit_data["audits"] if a["exit"] and a["exit"]["scanned_tag"] == "TAG-NIGHT"), None)
+        assert night_visit is not None
+        assert night_visit["status"] == "Exited"
+        assert night_visit["entry"] is not None
+        assert "Overnight" in night_visit["duration"]
+        assert "9h 30m" in night_visit["duration"]
+
+        # 2. Stats and Audit occupancy must be 100% synchronized
+        res_stats = client.get("/api/stats")
+        assert res_stats.status_code == 200
+        stats_data = res_stats.json()
+
+        assert stats_data["currently_in_club"] == audit_data["facility_currently_inside"]
+        assert stats_data["currently_in_club"] == 1  # Only MEM-INSIDE is inside
+
+    def test_orphan_exit_retains_truthful_exit_only(self, setup_audit_test_db):
+        pkt_today = config.get_pkt_today()
+        with get_db_connection() as conn:
+            with conn:
+                conn.execute("""
+                    INSERT INTO daily_logs (mem_id, name, vehicle_number, access_type, direction, gate_no, scanned_tag, timestamp)
+                    VALUES ('GUEST-ORPHAN', 'Orphan Exit', 'KGC-ORPHAN', 'RFID Verified', 'Exit', 'Gate-01', 'TAG-ORPHAN', ?)
+                """, (f"{pkt_today} 14:00:00",))
+
+        res = client.get("/api/audit?date=today")
+        assert res.status_code == 200
+        audits = res.json()["audits"]
+
+        orphan = next((a for a in audits if a["exit"] and a["exit"]["scanned_tag"] == "TAG-ORPHAN"), None)
+        assert orphan is not None
+        assert orphan["status"] == "Exit Only"
+        assert orphan["entry"] is None
+
+

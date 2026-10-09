@@ -1293,7 +1293,10 @@ async function loadAudit(page = currentAuditPage, isSilent = false) {
                 <td class="py-3 px-4">${methodPill}</td>
                 <td class="py-3 px-4">
                     ${e ? `<div>
-                        <p class="font-mono font-bold text-slate-800 text-xs tabular-nums">${String(e.timestamp).split(' ')[1] || e.timestamp}</p>
+                        <p class="font-mono font-bold text-slate-800 text-xs tabular-nums">
+                            ${(x && e.timestamp && x.timestamp && String(e.timestamp).substring(0, 10) !== String(x.timestamp).substring(0, 10)) ? `<span class="text-[9px] block text-indigo-600 font-semibold tracking-tight">${String(e.timestamp).substring(0, 10)}</span>` : ''}
+                            ${String(e.timestamp).split(' ')[1] || e.timestamp}
+                        </p>
                         <p class="text-[10px] text-emerald-700 font-bold mt-0.5 flex items-center gap-1">
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>Entry
                             <span class="text-[9px] text-slate-400 font-mono font-normal">${e.gate_no || 'Gate-01'}</span>
@@ -1563,8 +1566,11 @@ function openAudit(a) {
 
     const auditId = `AUD-${String(v.id || a.id || 1).padStart(6, '0')}`;
     const isInside = Boolean(a.status === 'Inside Facility' || a.status === 'Alert / Inside' || (!x && e));
-    const entryTime = e && e.timestamp ? String(e.timestamp).substring(11, 19) : '--';
-    const exitTime = x && x.timestamp ? String(x.timestamp).substring(11, 19) : (isInside ? 'Active On Premises' : '--');
+    const eDate = e && e.timestamp ? String(e.timestamp).substring(0, 10) : '';
+    const xDate = x && x.timestamp ? String(x.timestamp).substring(0, 10) : '';
+    const isOvernight = Boolean(eDate && xDate && eDate !== xDate);
+    const entryTime = e && e.timestamp ? (isOvernight ? `${eDate} ${String(e.timestamp).substring(11, 19)}` : String(e.timestamp).substring(11, 19)) : '--';
+    const exitTime = x && x.timestamp ? (isOvernight ? `${xDate} ${String(x.timestamp).substring(11, 19)}` : String(x.timestamp).substring(11, 19)) : (isInside ? 'Active On Premises' : '--');
     const pfp = v.profile_pic || v.Profile_pic || (e ? (e.profile_pic || e.Profile_pic) : null);
 
     // ==========================================

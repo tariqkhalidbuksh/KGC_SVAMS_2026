@@ -73,7 +73,10 @@ def _fmt_duration(entry_ts, exit_ts):
         diff_seconds = abs(int((dt_exit - dt_entry).total_seconds()))
         hours = diff_seconds // 3600
         minutes = (diff_seconds % 3600) // 60
-        return f"{hours}h {minutes:02d}m" if hours else f"{minutes}m"
+        dur_str = f"{hours}h {minutes:02d}m" if hours else f"{minutes}m"
+        if dt_entry.date() != dt_exit.date():
+            dur_str += " (Overnight)"
+        return dur_str
     except Exception:
         return None
 
@@ -405,6 +408,97 @@ async def get_logs(limit: int = 100):
         finally:
             conn.close()
 
+def _fetch_audit_logs_with_lookback(conn, mode: str, s_date: str, e_date: str, lookback_days: int = 3):
+    """
+    Fetches daily logs matching the date criteria. For any Exit transits within the window
+    that do not have a matching Entry within that window (e.g. vehicle entered on a previous day),
+    looks back up to `lookback_days` in daily_logs to retrieve the authentic unclosed entry.
+    This enables full cross-day/overnight visit pairing without fabricating fake entry records.
+    """
+    if mode == "all":
+        rows = conn.execute(AUDIT_LOGS_BASE_QUERY + " ORDER BY d.id ASC").fetchall()
+        return [dict(r) for r in rows]
+
+    if mode == "range":
+        rows = conn.execute(
+            AUDIT_LOGS_BASE_QUERY + " WHERE date(d.timestamp) >= ? AND date(d.timestamp) <= ? ORDER BY d.id ASC",
+            (s_date, e_date)
+        ).fetchall()
+    else:
+        rows = conn.execute(
+            AUDIT_LOGS_BASE_QUERY + " WHERE date(d.timestamp) = ? ORDER BY d.id ASC",
+            (s_date,)
+        ).fetchall()
+    logs = [dict(r) for r in rows]
+
+    exit_events = [l for l in logs if l.get('direction') == 'Exit']
+    entry_events = [l for l in logs if l.get('direction') == 'Entry']
+    matched_exit_ids = set()
+    for en in entry_events:
+        ex = _find_matching_exit(en, exit_events, matched_exit_ids)
+        if ex:
+            matched_exit_ids.add(ex['id'])
+
+    unmatched_exits = [ex for ex in exit_events if ex['id'] not in matched_exit_ids]
+    if not unmatched_exits:
+        return logs
+
+    lookback_entries = []
+    seen_entry_ids = {l['id'] for l in logs}
+
+    for ex in unmatched_exits:
+        ex_ts = str(ex.get('timestamp') or '')
+        ex_tag = _clean_tag(ex.get('scanned_tag'))
+        ex_plate = _clean_plate(ex.get('vehicle_number'))
+        ex_mem = _clean_mem(ex.get('mem_id'))
+
+        conds = []
+        params = []
+        if ex_tag:
+            conds.append("d.scanned_tag = ?")
+            params.append(ex_tag)
+        if ex_plate:
+            conds.append("REPLACE(REPLACE(UPPER(d.vehicle_number), '-', ''), ' ', '') = ?")
+            params.append(ex_plate)
+        if ex_mem:
+            conds.append("d.mem_id = ?")
+            params.append(ex_mem)
+
+        if not conds:
+            continue
+
+        ident_sql = f"({' OR '.join(conds)})"
+        cand_query = AUDIT_LOGS_BASE_QUERY + f"""
+            WHERE d.direction = 'Entry' AND {ident_sql}
+              AND d.timestamp < ? AND d.timestamp >= datetime(?, '-{lookback_days} days')
+            ORDER BY d.timestamp DESC LIMIT 1
+        """
+        cand_params = list(params) + [ex_ts, ex_ts]
+        cand = conn.execute(cand_query, cand_params).fetchone()
+        if cand:
+            cand_dict = dict(cand)
+            cand_id = cand_dict['id']
+            if cand_id in seen_entry_ids:
+                continue
+            cand_ts = str(cand_dict['timestamp'] or '')
+            interv_query = f"""
+                SELECT 1 FROM daily_logs d
+                WHERE d.direction = 'Exit' AND {ident_sql}
+                  AND d.timestamp > ? AND d.timestamp < ?
+                LIMIT 1
+            """
+            interv_params = list(params) + [cand_ts, ex_ts]
+            interv_exit = conn.execute(interv_query, interv_params).fetchone()
+            if not interv_exit:
+                lookback_entries.append(cand_dict)
+                seen_entry_ids.add(cand_id)
+
+    if lookback_entries:
+        logs = lookback_entries + logs
+        logs.sort(key=lambda x: (str(x.get('timestamp') or ''), x.get('id') or 0))
+
+    return logs
+
 @router.get("/audit")
 async def get_audit(
     date: str = "",
@@ -420,19 +514,7 @@ async def get_audit(
     with config.DB_LOCK:
         conn = get_db_connection()
         try:
-            if mode == "all":
-                rows = conn.execute(AUDIT_LOGS_BASE_QUERY + " ORDER BY d.id ASC").fetchall()
-            elif mode == "range":
-                rows = conn.execute(
-                    AUDIT_LOGS_BASE_QUERY + " WHERE date(d.timestamp) >= ? AND date(d.timestamp) <= ? ORDER BY d.id ASC",
-                    (s_date, e_date)
-                ).fetchall()
-            else:
-                rows = conn.execute(
-                    AUDIT_LOGS_BASE_QUERY + " WHERE date(d.timestamp) = ? ORDER BY d.id ASC",
-                    (s_date,)
-                ).fetchall()
-            logs = [dict(r) for r in rows]
+            logs = _fetch_audit_logs_with_lookback(conn, mode, s_date, e_date)
         finally:
             conn.close()
 
@@ -617,19 +699,7 @@ async def export_audit(
     with config.DB_LOCK:
         conn = get_db_connection()
         try:
-            if mode == "all":
-                rows = conn.execute(AUDIT_LOGS_BASE_QUERY + " ORDER BY d.id ASC").fetchall()
-            elif mode == "range":
-                rows = conn.execute(
-                    AUDIT_LOGS_BASE_QUERY + " WHERE date(d.timestamp) >= ? AND date(d.timestamp) <= ? ORDER BY d.id ASC",
-                    (s_date, e_date)
-                ).fetchall()
-            else:
-                rows = conn.execute(
-                    AUDIT_LOGS_BASE_QUERY + " WHERE date(d.timestamp) = ? ORDER BY d.id ASC",
-                    (s_date,)
-                ).fetchall()
-            logs = [dict(r) for r in rows]
+            logs = _fetch_audit_logs_with_lookback(conn, mode, s_date, e_date)
         finally:
             conn.close()
 
@@ -674,8 +744,9 @@ async def export_audit(
         e_reader = ent.get('gate_no') or ('Gate-01 Entry Reader' if ent else 'N/A')
         x_reader = ext.get('gate_no') or ('Gate-01 Exit Reader' if ext else 'N/A')
         club_presence = "Inside Club" if a.get('status') in ("Inside Facility", "Alert / Inside") else ("Inside Club (Overstay >8h)" if a.get('is_overstay') else "Outside Club")
+        rec_date = (ext.get('timestamp') or ent.get('timestamp') or '')[:10]
         records.append({
-            "Date": (ent.get('timestamp') or ext.get('timestamp') or '')[:10],
+            "Date": rec_date,
             "Member ID": ent.get('mem_id') or ext.get('mem_id') or 'GUEST',
             "Member Name": ent.get('name') or ext.get('name') or 'Visitor',
             "Vehicle Number": ent.get('vehicle_number') or ext.get('vehicle_number') or 'N/A',
