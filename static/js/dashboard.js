@@ -3822,9 +3822,9 @@ function renderKioskElements(log) {
                 if (miniBadgeText) miniBadgeText.innerText = 'SECURITY ALERT • ACCESS DENIED';
                 if (miniBadgeDot) miniBadgeDot.className = 'w-2 h-2 rounded-full bg-rose-500 animate-ping';
             } else if (isEntry) {
-                miniStatusBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-800 border-2 border-emerald-300 shadow-2xs';
+                miniStatusBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider bg-blue-50 text-blue-900 border-2 border-blue-400 shadow-2xs';
                 if (miniBadgeText) miniBadgeText.innerText = 'CLEARANCE GRANTED • ENTRY';
-                if (miniBadgeDot) miniBadgeDot.className = 'w-2 h-2 rounded-full bg-emerald-500 animate-ping';
+                if (miniBadgeDot) miniBadgeDot.className = 'w-2 h-2 rounded-full bg-blue-600 animate-ping';
             } else {
                 miniStatusBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider bg-blue-50 text-blue-800 border-2 border-blue-300 shadow-2xs';
                 if (miniBadgeText) miniBadgeText.innerText = 'CLEARANCE GRANTED • EXIT RECORDED';

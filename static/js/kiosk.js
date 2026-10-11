@@ -246,7 +246,7 @@ function displayEntry(log) {
 
         const photoStatusDot = document.getElementById('photoStatusDot');
         if (photoStatusDot) {
-            photoStatusDot.className = 'absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-emerald-500 border-2 border-white shadow-md flex items-center justify-center';
+            photoStatusDot.className = 'absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-blue-600 border-2 border-white shadow-md flex items-center justify-center';
         }
 
         if (log.profile_pic) {
@@ -275,13 +275,13 @@ function displayEntry(log) {
             if (accentBar) accentBar.className = 'absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-600';
         } else {
             if (statusBadge) {
-                statusBadge.className = 'inline-flex items-center gap-2.5 px-5 py-2 rounded-2xl text-xs font-black uppercase tracking-widest bg-emerald-50 text-emerald-800 border-2 border-emerald-300 shadow-sm';
+                statusBadge.className = 'inline-flex items-center gap-2.5 px-5 py-2 rounded-2xl text-xs font-black uppercase tracking-widest bg-blue-50 text-blue-900 border-2 border-blue-400 shadow-sm';
             }
             if (badgeIcon) {
-                badgeIcon.className = 'w-3 h-3 rounded-full bg-emerald-500 animate-ping';
+                badgeIcon.className = 'w-3 h-3 rounded-full bg-blue-600 animate-ping';
             }
             if (badgeText) badgeText.innerText = 'CLEARANCE GRANTED • ENTRY';
-            if (accentBar) accentBar.className = 'absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-600';
+            if (accentBar) accentBar.className = 'absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700';
         }
     }
 

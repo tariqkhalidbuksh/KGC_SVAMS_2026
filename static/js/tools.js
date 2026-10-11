@@ -1,60 +1,60 @@
 /**
- * Hardware Diagnostic NOC Console - Real-Time Telemetry Engine
+ * Hardware Diagnostic NOC Console - Real-Time Telemetry Engine (Light Mode Theme)
  * Features:
- * - 60 Hz Live ECG Heartbeat Oscilloscope
+ * - 60 Hz Live ECG Heartbeat Oscilloscope (Logo Blue pulse on crisp light grid)
  * - Live MS Graph (Multi-Subsystem Latency Timeline with Bézier curves & crosshair HUD)
  * - Individual Node Sparklines, Jitter, Packet Drop & On-Demand Packet Probes
  * - Gate-01 & Main Gate (Club Road) Antenna Transponder Stream
  */
 
-// Device Meta Definitions & Visual Palette
+// Device Meta Definitions & Visual Palette (Light Theme High-Contrast)
 const DEVICE_CONFIG = {
     'Gate01_Entry': {
         name: 'Gate-01 Entry Reader',
         short: 'G01 Entry',
-        color: '#06B6D4', // Cyan
-        bg: 'rgba(6, 182, 212, 0.1)',
-        border: 'rgba(6, 182, 212, 0.4)',
+        color: '#2563EB', // Logo Royal Blue
+        bg: 'rgba(37, 99, 235, 0.08)',
+        border: 'rgba(37, 99, 235, 0.4)',
         type: 'RFID'
     },
     'Gate01_Exit': {
         name: 'Gate-01 Exit Reader',
         short: 'G01 Exit',
-        color: '#38BDF8', // Sky
-        bg: 'rgba(56, 189, 248, 0.1)',
-        border: 'rgba(56, 189, 248, 0.4)',
+        color: '#0284C7', // Sky Blue
+        bg: 'rgba(2, 132, 199, 0.08)',
+        border: 'rgba(2, 132, 199, 0.4)',
         type: 'RFID'
     },
     'ClubRoad_Entry': {
         name: 'Club Road Entry Reader',
         short: 'Club Rd Entry',
-        color: '#A855F7', // Purple
-        bg: 'rgba(168, 85, 247, 0.1)',
-        border: 'rgba(168, 85, 247, 0.4)',
+        color: '#7C3AED', // Purple
+        bg: 'rgba(124, 58, 237, 0.08)',
+        border: 'rgba(124, 58, 237, 0.4)',
         type: 'RFID'
     },
     'ClubRoad_Exit': {
         name: 'Club Road Exit Reader',
         short: 'Club Rd Exit',
-        color: '#F59E0B', // Amber
-        bg: 'rgba(245, 158, 11, 0.1)',
-        border: 'rgba(245, 158, 11, 0.4)',
+        color: '#D97706', // Amber
+        bg: 'rgba(217, 119, 6, 0.08)',
+        border: 'rgba(217, 119, 6, 0.4)',
         type: 'RFID'
     },
     'Hikvision': {
         name: 'Hikvision AI Camera',
         short: 'Hikvision Cam',
-        color: '#F43F5E', // Rose
-        bg: 'rgba(244, 63, 94, 0.1)',
-        border: 'rgba(244, 63, 94, 0.4)',
+        color: '#DC2626', // Red
+        bg: 'rgba(220, 38, 38, 0.08)',
+        border: 'rgba(220, 38, 38, 0.4)',
         type: 'CAMERA'
     },
     'Database': {
         name: 'SQLite Core Storage',
         short: 'SQLite Engine',
-        color: '#10B981', // Emerald
-        bg: 'rgba(16, 185, 129, 0.1)',
-        border: 'rgba(16, 185, 129, 0.4)',
+        color: '#059669', // Emerald
+        bg: 'rgba(5, 150, 105, 0.08)',
+        border: 'rgba(5, 150, 105, 0.4)',
         type: 'DATABASE'
     }
 };
@@ -86,14 +86,11 @@ let seriesVisible = {
     'Database': true
 };
 
-// Sparkline Cache per Device
-let deviceSparklines = {};
-
 // Hover Crosshair State
 let mousePos = { x: -1, y: -1, active: false };
 
 /* ==========================================================================
-   1. Live ECG Heartbeat Oscilloscope (60 Hz Canvas)
+   1. Live ECG Heartbeat Oscilloscope (60 Hz Canvas Light Mode)
    ========================================================================== */
 let ecgCanvas, ecgCtx;
 let ecgPoints = [];
@@ -109,7 +106,6 @@ function initECG() {
     resizeECG();
     window.addEventListener('resize', resizeECG);
 
-    // Fill initial flat baseline
     const width = ecgCanvas.width;
     const midY = ecgCanvas.height / 2;
     for (let i = 0; i < width; i++) {
@@ -134,11 +130,11 @@ function triggerECGBeat() {
 
     const badge = document.getElementById('ecgBeatBadge');
     if (badge) {
-        badge.classList.remove('bg-emerald-500/20', 'text-emerald-300');
-        badge.classList.add('bg-emerald-400', 'text-slate-950', 'scale-110');
+        badge.classList.remove('bg-blue-50', 'text-blue-700');
+        badge.classList.add('bg-blue-600', 'text-white', 'scale-105');
         setTimeout(() => {
-            badge.classList.remove('bg-emerald-400', 'text-slate-950', 'scale-110');
-            badge.classList.add('bg-emerald-500/20', 'text-emerald-300');
+            badge.classList.remove('bg-blue-600', 'text-white', 'scale-105');
+            badge.classList.add('bg-blue-50', 'text-blue-700');
         }, 150);
     }
 }
@@ -151,50 +147,40 @@ function animateECG() {
     const h = rect.height;
     const midY = h / 2;
 
-    // Advance scan head
     const speed = 2.4;
     ecgScanX = (ecgScanX + speed) % w;
 
-    // Generate heartbeat pulse waveform
     const now = performance.now();
-    const timeSinceBeat = (now - lastBeatTimestamp) / 1000; // seconds
+    const timeSinceBeat = (now - lastBeatTimestamp) / 1000;
     let newY = midY;
 
     if (timeSinceBeat >= 0 && timeSinceBeat <= 0.6) {
-        const t = timeSinceBeat / 0.6; // normalized 0..1
+        const t = timeSinceBeat / 0.6;
         if (t < 0.15) {
-            // P wave
             newY = midY - Math.sin((t / 0.15) * Math.PI) * 7;
         } else if (t < 0.25) {
-            // Flat PR
             newY = midY;
         } else if (t < 0.32) {
-            // Q dip
             newY = midY + 8;
         } else if (t < 0.42) {
-            // R tall spike
             newY = midY - 38;
         } else if (t < 0.50) {
-            // S dip
             newY = midY + 16;
         } else if (t < 0.75) {
-            // T wave
             const tw = (t - 0.50) / 0.25;
             newY = midY - Math.sin(tw * Math.PI) * 12;
         }
     } else {
-        // Minor natural baseline noise
         newY = midY + (Math.random() - 0.5) * 1.5;
     }
 
     const idx = Math.floor(ecgScanX);
     ecgPoints[idx] = newY;
 
-    // Render Oscilloscope
     ecgCtx.clearRect(0, 0, w, h);
 
-    // Draw Gridlines
-    ecgCtx.strokeStyle = 'rgba(51, 65, 85, 0.25)';
+    // Light Theme Gridlines
+    ecgCtx.strokeStyle = 'rgba(226, 232, 240, 0.85)';
     ecgCtx.lineWidth = 1;
     ecgCtx.beginPath();
     for (let x = 0; x < w; x += 30) {
@@ -207,17 +193,16 @@ function animateECG() {
     }
     ecgCtx.stroke();
 
-    // Draw Glowing ECG Line
+    // Glowing Logo Blue ECG Line
     ecgCtx.save();
-    ecgCtx.strokeStyle = '#10B981';
-    ecgCtx.lineWidth = 2;
-    ecgCtx.shadowColor = '#10B981';
-    ecgCtx.shadowBlur = 10;
+    ecgCtx.strokeStyle = '#2563EB'; // Logo Blue
+    ecgCtx.lineWidth = 2.2;
+    ecgCtx.shadowColor = 'rgba(37, 99, 235, 0.35)';
+    ecgCtx.shadowBlur = 6;
     ecgCtx.beginPath();
 
     let started = false;
     for (let x = 0; x < w; x++) {
-        // Skip current sweep head to give radar erase effect
         if (Math.abs(x - ecgScanX) < 14) continue;
         const py = ecgPoints[x] || midY;
         if (!started) {
@@ -229,10 +214,10 @@ function animateECG() {
     }
     ecgCtx.stroke();
 
-    // Glowing Lead Dot
-    ecgCtx.fillStyle = '#6EE7B7';
-    ecgCtx.shadowBlur = 15;
-    ecgCtx.shadowColor = '#6EE7B7';
+    // Lead Pulse Dot
+    ecgCtx.fillStyle = '#1D4ED8';
+    ecgCtx.shadowBlur = 8;
+    ecgCtx.shadowColor = '#2563EB';
     ecgCtx.beginPath();
     ecgCtx.arc(ecgScanX, newY, 3.5, 0, Math.PI * 2);
     ecgCtx.fill();
@@ -279,7 +264,7 @@ function playHeartbeatSound() {
 }
 
 /* ==========================================================================
-   3. Live MS Latency Graph (Canvas Time-Series)
+   3. Live MS Latency Graph (Canvas Time-Series in Light Mode)
    ========================================================================== */
 let latCanvas, latCtx;
 
@@ -291,7 +276,6 @@ function initLatencyChart() {
     resizeLatencyChart();
     window.addEventListener('resize', resizeLatencyChart);
 
-    // Mouse Interaction for Floating Crosshair
     latCanvas.addEventListener('mousemove', (e) => {
         const rect = latCanvas.getBoundingClientRect();
         mousePos.x = e.clientX - rect.left;
@@ -329,10 +313,10 @@ function buildLegendPills() {
         const isVis = seriesVisible[key];
         return `
         <button type="button" onclick="toggleSeries('${key}')" id="legendBtn_${key}"
-                class="flex items-center gap-2 px-3 py-1.5 rounded-xl border transition text-xs font-bold ${isVis ? 'bg-slate-900 border-slate-700 text-white' : 'bg-slate-950/60 border-slate-800/80 text-slate-500 opacity-60'}">
+                class="flex items-center gap-2 px-3 py-1.5 rounded-xl border transition text-xs font-bold ${isVis ? 'bg-white border-slate-300 text-slate-800 shadow-2xs' : 'bg-slate-100 border-slate-200 text-slate-400 opacity-60'}">
             <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${cfg.color};"></span>
             <span>${cfg.short}</span>
-            <span id="legendVal_${key}" class="font-mono text-[11px] text-slate-400">-- ms</span>
+            <span id="legendVal_${key}" class="font-mono text-[11px] text-slate-500">-- ms</span>
         </button>`;
     }).join('');
 }
@@ -352,26 +336,24 @@ function renderLatencyChart() {
 
     latCtx.clearRect(0, 0, w, h);
 
-    const padLeft = 46;
+    const padLeft = 48;
     const padRight = 20;
     const padTop = 20;
     const padBottom = 26;
     const chartW = w - padLeft - padRight;
     const chartH = h - padTop - padBottom;
 
-    // 1. Calculate Dynamic Max Y in Milliseconds
-    let maxVal = 30; // default minimum ceiling
+    let maxVal = 30;
     Object.keys(seriesData).forEach(key => {
         if (!seriesVisible[key]) return;
         seriesData[key].forEach(v => {
             if (v !== null && v !== undefined && v > maxVal) maxVal = v;
         });
     });
-    // Round ceiling to neat step (e.g. 50, 100, 150)
     maxVal = Math.ceil((maxVal * 1.2) / 10) * 10;
 
-    // 2. Draw Horizontal Gridlines & Y-Axis Labels
-    latCtx.strokeStyle = 'rgba(51, 65, 85, 0.3)';
+    // Light Theme Gridlines & Y-Axis Labels
+    latCtx.strokeStyle = 'rgba(226, 232, 240, 0.9)';
     latCtx.lineWidth = 1;
     latCtx.fillStyle = '#64748B';
     latCtx.font = '10px "JetBrains Mono", monospace';
@@ -390,7 +372,6 @@ function renderLatencyChart() {
         latCtx.fillText(`${val}ms`, padLeft - 8, y + 3);
     }
 
-    // 3. Draw Vertical Gridlines & X Labels
     const numPoints = timeLabels.length;
     if (numPoints > 1) {
         const xStep = chartW / (numPoints - 1);
@@ -398,7 +379,7 @@ function renderLatencyChart() {
         for (let i = 0; i < numPoints; i += Math.max(1, Math.floor(numPoints / 5))) {
             const x = padLeft + i * xStep;
             latCtx.beginPath();
-            latCtx.strokeStyle = 'rgba(51, 65, 85, 0.15)';
+            latCtx.strokeStyle = 'rgba(226, 232, 240, 0.7)';
             latCtx.moveTo(x, padTop);
             latCtx.lineTo(x, padTop + chartH);
             latCtx.stroke();
@@ -408,13 +389,12 @@ function renderLatencyChart() {
     }
 
     if (numPoints < 2) {
-        latCtx.fillStyle = '#64748B';
+        latCtx.fillStyle = '#94A3B8';
         latCtx.textAlign = 'center';
         latCtx.fillText('Gathering real-time telemetry packets...', w / 2, h / 2);
         return;
     }
 
-    // 4. Render Curves for Each Active Subsystem
     const xStep = chartW / (numPoints - 1);
 
     Object.keys(seriesData).forEach(key => {
@@ -423,7 +403,6 @@ function renderLatencyChart() {
         const cfg = DEVICE_CONFIG[key];
         if (!pts || pts.length < 2) return;
 
-        // Create Canvas Point Array
         const coords = [];
         for (let i = 0; i < pts.length; i++) {
             const v = pts[i];
@@ -435,17 +414,13 @@ function renderLatencyChart() {
 
         if (coords.length < 2) return;
 
-        // Draw Line with Glowing Stroke
         latCtx.save();
         latCtx.strokeStyle = cfg.color;
         latCtx.lineWidth = 2.2;
-        latCtx.shadowColor = cfg.color;
-        latCtx.shadowBlur = 8;
         latCtx.beginPath();
 
         latCtx.moveTo(coords[0].x, coords[0].y);
         for (let i = 1; i < coords.length; i++) {
-            // Smooth Bézier curve interpolation
             const prev = coords[i - 1];
             const curr = coords[i];
             const cpx = (prev.x + curr.x) / 2;
@@ -453,20 +428,13 @@ function renderLatencyChart() {
         }
         latCtx.stroke();
 
-        // Optional Semi-Transparent Gradient Fill Underneath
         latCtx.lineTo(coords[coords.length - 1].x, padTop + chartH);
         latCtx.lineTo(coords[0].x, padTop + chartH);
         latCtx.closePath();
-        const grad = latCtx.createLinearGradient(0, padTop, 0, padTop + chartH);
-        grad.addColorStop(0, cfg.color.replace(')', ', 0.12)').replace('rgb', 'rgba').replace('#', 'rgba('));
-        // Fallback transparent fill
         latCtx.fillStyle = cfg.bg;
-        latCtx.globalAlpha = 0.35;
         latCtx.fill();
 
-        // Small indicator circle at the latest point
         const latest = coords[coords.length - 1];
-        latCtx.globalAlpha = 1.0;
         latCtx.fillStyle = cfg.color;
         latCtx.beginPath();
         latCtx.arc(latest.x, latest.y, 3, 0, Math.PI * 2);
@@ -474,14 +442,13 @@ function renderLatencyChart() {
         latCtx.restore();
     });
 
-    // 5. Render Interactive Mouse Crosshair Tracker
     if (mousePos.active && mousePos.x >= padLeft && mousePos.x <= w - padRight) {
         const hoverIdx = Math.round((mousePos.x - padLeft) / xStep);
         if (hoverIdx >= 0 && hoverIdx < numPoints) {
             const snapX = padLeft + hoverIdx * xStep;
 
             latCtx.save();
-            latCtx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+            latCtx.strokeStyle = 'rgba(15, 23, 42, 0.4)';
             latCtx.setLineDash([4, 4]);
             latCtx.lineWidth = 1;
             latCtx.beginPath();
@@ -490,7 +457,6 @@ function renderLatencyChart() {
             latCtx.stroke();
             latCtx.restore();
 
-            // Populate and position floating HTML tooltip
             updateChartTooltip(hoverIdx, snapX, mousePos.y);
         }
     }
@@ -517,14 +483,13 @@ function updateChartTooltip(idx, screenX, screenY) {
                 <span class="w-2 h-2 rounded-full" style="background-color: ${cfg.color};"></span>
                 <span>${cfg.short}:</span>
             </span>
-            <span class="font-mono font-bold text-white">${displayVal}</span>
+            <span class="font-mono font-bold text-slate-900">${displayVal}</span>
         </div>`;
     });
 
     rowsEl.innerHTML = rowsHtml;
     tooltip.classList.remove('hidden');
 
-    // Bounds checking inside canvas viewport
     const ttWidth = 190;
     let leftPos = screenX + 15;
     if (leftPos + ttWidth > latCanvas.parentElement.clientWidth) {
@@ -545,14 +510,12 @@ async function fetchTelemetry() {
         if (!res.ok) return;
         const data = await res.json();
 
-        // 1. Sync Heartbeat Oscilloscope
         triggerECGBeat();
 
         const ts = data.timestamp || new Date().toTimeString().split(' ')[0];
         document.getElementById('ecgTimeDisplay').innerText = ts;
         document.getElementById('lastSyncTime').innerText = `Updated: ${ts}`;
 
-        // 2. Update Top Vitals
         const cluster = data.cluster || {};
         const avgRtt = cluster.avg_latency_ms || 0;
         document.getElementById('topClusterLatency').innerText = `${avgRtt.toFixed(1)} ms`;
@@ -563,19 +526,18 @@ async function fetchTelemetry() {
         const subTextEl = document.getElementById('clusterSubText');
         if (cluster.status === 'OPTIMAL') {
             statusEl.innerText = 'All Subsystems Operational';
-            statusEl.className = 'text-2xl font-black text-white';
+            statusEl.className = 'text-2xl font-black text-slate-900';
             subTextEl.innerText = 'Multi-gate RFID antennas, AI cameras, and storage engines synchronizing with zero packet drop.';
         } else if (cluster.status === 'DEGRADED') {
             statusEl.innerText = 'Partial Telemetry Alert';
-            statusEl.className = 'text-2xl font-black text-amber-400';
+            statusEl.className = 'text-2xl font-black text-amber-600';
             subTextEl.innerText = `${cluster.total_nodes - cluster.active_nodes} hardware node(s) unreachable or unconfigured. Verify LAN IP addresses.`;
         } else {
             statusEl.innerText = 'Hardware Nodes Offline';
-            statusEl.className = 'text-2xl font-black text-rose-500';
+            statusEl.className = 'text-2xl font-black text-rose-600';
             subTextEl.innerText = 'Zero hardware responses received. Check LAN switches and antenna controllers.';
         }
 
-        // Calculate average cluster jitter across devices
         const devices = data.devices || {};
         let jitterSum = 0;
         let jitterCount = 0;
@@ -588,7 +550,6 @@ async function fetchTelemetry() {
         const clusterJitter = jitterCount ? (jitterSum / jitterCount).toFixed(1) : '0.0';
         document.getElementById('statJitter').innerText = `\u00B1 ${clusterJitter} ms`;
 
-        // 3. Append to Graph Series
         timeLabels.push(ts);
         if (timeLabels.length > MAX_GRAPH_POINTS) timeLabels.shift();
 
@@ -598,21 +559,15 @@ async function fetchTelemetry() {
             seriesData[key].push(lat);
             if (seriesData[key].length > MAX_GRAPH_POINTS) seriesData[key].shift();
 
-            // Update legend ms badges
             const legEl = document.getElementById(`legendVal_${key}`);
             if (legEl) {
                 legEl.innerText = lat !== null ? `${lat.toFixed(1)} ms` : 'OFFLINE';
-                legEl.className = `font-mono text-[11px] font-bold ${lat !== null ? 'text-white' : 'text-rose-500'}`;
+                legEl.className = `font-mono text-[11px] font-bold ${lat !== null ? 'text-slate-800' : 'text-rose-500'}`;
             }
         });
 
-        // Re-render Graph
         renderLatencyChart();
-
-        // 4. Render Hardware Node Cards
         renderDeviceCards(devices);
-
-        // 5. Render Live Tag Stream
         renderRecentTags(data.recent_tags);
 
     } catch (err) {
@@ -621,7 +576,7 @@ async function fetchTelemetry() {
 }
 
 /* ==========================================================================
-   5. Device Telemetry Cards & Sparklines
+   5. Device Telemetry Cards & Sparklines (Light Theme)
    ========================================================================== */
 function renderDeviceCards(devices) {
     const grid = document.getElementById('devicesGrid');
@@ -629,26 +584,24 @@ function renderDeviceCards(devices) {
 
     grid.innerHTML = Object.keys(devices).map(key => {
         const d = devices[key];
-        const cfg = DEVICE_CONFIG[key] || { name: key, color: '#38BDF8', bg: 'rgba(56,189,248,0.1)' };
+        const cfg = DEVICE_CONFIG[key] || { name: key, color: '#2563EB', bg: 'rgba(37,99,235,0.08)' };
         const isOnline = d.status === 'CONNECTED' || d.status === 'ONLINE';
         const isUnconf = d.status === 'UNCONFIGURED';
 
-        // Badge styling
         const statusBadgeClass = isOnline
-            ? 'bg-emerald-950/80 text-emerald-300 border-emerald-800'
+            ? 'bg-blue-50 text-blue-700 border-blue-200'
             : isUnconf
-                ? 'bg-slate-900 text-slate-400 border-slate-800'
-                : 'bg-rose-950/80 text-rose-300 border-rose-800';
+                ? 'bg-slate-100 text-slate-500 border-slate-200'
+                : 'bg-rose-50 text-rose-700 border-rose-200';
 
-        // Latency color
         const lat = d.latency_ms;
         const latColor = !isOnline
-            ? 'text-slate-500'
+            ? 'text-slate-400'
             : lat < 25
-                ? 'text-emerald-400'
+                ? 'text-blue-700'
                 : lat < 70
-                    ? 'text-amber-400'
-                    : 'text-rose-400';
+                    ? 'text-amber-600'
+                    : 'text-rose-600';
 
         const latText = lat !== null && lat !== undefined ? lat.toFixed(1) : '--';
         const stats = d.stats || {};
@@ -659,7 +612,7 @@ function renderDeviceCards(devices) {
         const lossPct = stats.loss_pct !== undefined ? `${stats.loss_pct}%` : '0.0%';
 
         return `
-        <div id="card_${key}" class="glass-panel rounded-2xl p-5 border-slate-800 hover:border-slate-700 transition relative overflow-hidden flex flex-col justify-between group">
+        <div id="card_${key}" class="glass-panel rounded-2xl p-5 border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition relative overflow-hidden flex flex-col justify-between group">
             <div>
                 <!-- Top Device Header -->
                 <div class="flex items-start justify-between gap-3 mb-3">
@@ -668,7 +621,7 @@ function renderDeviceCards(devices) {
                             <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${cfg.color};"></span>
                             <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">${d.role || cfg.type}</span>
                         </div>
-                        <h3 class="text-sm font-extrabold text-white truncate" title="${d.label}">${d.label}</h3>
+                        <h3 class="text-sm font-extrabold text-slate-900 truncate" title="${d.label}">${d.label}</h3>
                     </div>
                     <span class="text-[10px] font-mono font-extrabold px-2.5 py-1 rounded-full border ${statusBadgeClass}">
                         ${d.status}
@@ -679,48 +632,47 @@ function renderDeviceCards(devices) {
                 <div class="flex items-baseline justify-between my-2">
                     <div class="flex items-baseline gap-1">
                         <span class="text-3xl font-black font-mono ${latColor}">${latText}</span>
-                        <span class="text-xs font-mono font-bold text-slate-500">ms</span>
+                        <span class="text-xs font-mono font-bold text-slate-400">ms</span>
                     </div>
-                    <div class="w-28 h-8 rounded-lg overflow-hidden bg-slate-950/80 border border-slate-800/80">
+                    <div class="w-28 h-8 rounded-lg overflow-hidden bg-slate-50 border border-slate-200 shadow-inner">
                         <canvas id="spark_${key}" class="w-full h-full block"></canvas>
                     </div>
                 </div>
 
                 <!-- Technical Specs & Network Metrics Grid -->
-                <div class="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-slate-800/80 text-[11px] font-mono">
+                <div class="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-slate-100 text-[11px] font-mono">
                     <div>
-                        <span class="text-slate-500 block text-[9px] uppercase tracking-wider">Min / Max</span>
-                        <span class="text-slate-300 font-bold">${minMs} / ${maxMs}</span>
+                        <span class="text-slate-400 block text-[9px] uppercase tracking-wider">Min / Max</span>
+                        <span class="text-slate-700 font-bold">${minMs} / ${maxMs}</span>
                     </div>
                     <div>
-                        <span class="text-slate-500 block text-[9px] uppercase tracking-wider">Jitter</span>
-                        <span class="text-slate-300 font-bold">${jitterMs}</span>
+                        <span class="text-slate-400 block text-[9px] uppercase tracking-wider">Jitter</span>
+                        <span class="text-slate-700 font-bold">${jitterMs}</span>
                     </div>
                     <div>
-                        <span class="text-slate-500 block text-[9px] uppercase tracking-wider">Drop Rate</span>
-                        <span class="text-emerald-400 font-bold">${lossPct}</span>
+                        <span class="text-slate-400 block text-[9px] uppercase tracking-wider">Drop Rate</span>
+                        <span class="text-blue-700 font-bold">${lossPct}</span>
                     </div>
                 </div>
 
                 <!-- IP Address & Protocol -->
-                <div class="mt-3 bg-slate-950/60 rounded-xl p-2.5 border border-slate-800/80 text-[10px] font-mono text-slate-400 flex items-center justify-between">
+                <div class="mt-3 bg-slate-50 rounded-xl p-2.5 border border-slate-200 text-[10px] font-mono text-slate-600 flex items-center justify-between">
                     <span class="truncate" title="${d.ip}:${d.port}">📍 ${d.ip}:${d.port}</span>
-                    <span class="text-slate-500">${d.protocol}</span>
+                    <span class="text-slate-400 font-semibold">${d.protocol}</span>
                 </div>
             </div>
 
             <!-- Single Node Ping Action Button -->
-            <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between">
-                <span id="pingResult_${key}" class="text-[10px] font-mono text-slate-500">Ready for probe</span>
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                <span id="pingResult_${key}" class="text-[10px] font-mono text-slate-400">Ready for probe</span>
                 <button type="button" onclick="pingDevice('${key}', this)"
-                        class="text-[11px] font-bold px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-700 text-cyan-300 hover:text-white transition flex items-center gap-1.5 shadow">
+                        class="text-[11px] font-bold px-3 py-1.5 rounded-lg border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700 transition flex items-center gap-1.5 shadow-2xs">
                     <span>Ping Node</span>
                 </button>
             </div>
         </div>`;
     }).join('');
 
-    // Render individual sparklines for each device
     Object.keys(devices).forEach(key => {
         drawSparkline(key, devices[key].history || []);
     });
@@ -746,10 +698,10 @@ function drawSparkline(key, history) {
 
     const maxVal = Math.max(...valid, 20);
     const step = w / (history.length - 1);
-    const cfg = DEVICE_CONFIG[key] || { color: '#38BDF8' };
+    const cfg = DEVICE_CONFIG[key] || { color: '#2563EB' };
 
     ctx.strokeStyle = cfg.color;
-    ctx.lineWidth = 1.6;
+    ctx.lineWidth = 1.8;
     ctx.beginPath();
 
     let started = false;
@@ -782,7 +734,7 @@ async function pingDevice(deviceId, btn) {
     const cardEl = document.getElementById(`card_${deviceId}`);
 
     if (resEl) resEl.innerText = 'Transmitting packet...';
-    if (cardEl) cardEl.classList.add('ring-2', 'ring-cyan-500');
+    if (cardEl) cardEl.classList.add('ring-2', 'ring-blue-400');
 
     try {
         const res = await fetch(`/api/tools/ping/${deviceId}`, { method: 'POST' });
@@ -790,18 +742,18 @@ async function pingDevice(deviceId, btn) {
         const r = data.result || {};
 
         if (cardEl) {
-            cardEl.classList.remove('ring-cyan-500');
-            cardEl.classList.add('ring-2', 'ring-emerald-500');
-            setTimeout(() => cardEl.classList.remove('ring-2', 'ring-emerald-500'), 1000);
+            cardEl.classList.remove('ring-blue-400');
+            cardEl.classList.add('ring-2', 'ring-blue-600');
+            setTimeout(() => cardEl.classList.remove('ring-2', 'ring-blue-600'), 1000);
         }
 
         if (resEl) {
             if (r.latency_ms !== null && r.latency_ms !== undefined) {
                 resEl.innerText = `RTT: ${r.latency_ms.toFixed(1)} ms (${r.status})`;
-                resEl.className = 'text-[10px] font-mono font-bold text-emerald-400';
+                resEl.className = 'text-[10px] font-mono font-bold text-blue-700';
             } else {
                 resEl.innerText = `Probe timeout (${r.status})`;
-                resEl.className = 'text-[10px] font-mono font-bold text-rose-400';
+                resEl.className = 'text-[10px] font-mono font-bold text-rose-600';
             }
         }
     } catch (e) {
@@ -845,14 +797,14 @@ function setPollInterval(ms) {
     ['rateBtn1', 'rateBtn2', 'rateBtn5'].forEach(id => {
         const el = document.getElementById(id);
         if (el) {
-            el.className = 'px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition';
+            el.className = 'px-2.5 py-1 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition';
         }
     });
 
     const activeId = ms === 1000 ? 'rateBtn1' : ms === 2000 ? 'rateBtn2' : 'rateBtn5';
     const activeEl = document.getElementById(activeId);
     if (activeEl) {
-        activeEl.className = 'px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-600 text-white shadow';
+        activeEl.className = 'px-2.5 py-1 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-xs';
     }
 
     if (pollTimer) clearInterval(pollTimer);
@@ -865,10 +817,10 @@ function togglePauseStream() {
     if (btn) {
         if (isStreamPaused) {
             btn.innerText = 'Resume Stream';
-            btn.className = 'text-xs font-bold px-3 py-1.5 rounded-xl border border-amber-600 bg-amber-950/60 text-amber-300';
+            btn.className = 'text-xs font-bold px-3 py-1.5 rounded-xl border border-amber-300 bg-amber-50 text-amber-800 shadow-2xs';
         } else {
             btn.innerText = 'Pause Stream';
-            btn.className = 'text-xs font-bold px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-200 transition';
+            btn.className = 'text-xs font-bold px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 transition shadow-2xs';
             fetchTelemetry();
         }
     }
@@ -888,21 +840,21 @@ function renderRecentTags(tags) {
     container.innerHTML = tags.slice().reverse().map(t => {
         const isEntry = t.direction === 'Entry';
         const dirBadge = isEntry
-            ? 'bg-emerald-950/80 text-emerald-300 border-emerald-800'
-            : 'bg-amber-950/80 text-amber-300 border-amber-800';
+            ? 'bg-blue-50 text-blue-700 border-blue-200'
+            : 'bg-amber-50 text-amber-700 border-amber-200';
 
         const gateName = t.gate || 'Gate-01';
 
         return `
-        <div class="flex items-center justify-between bg-slate-900/80 border border-slate-800/80 rounded-xl px-4 py-2.5 hover:border-slate-700 transition">
+        <div class="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 hover:bg-white hover:border-slate-300 transition shadow-2xs">
             <div class="flex items-center gap-3">
-                <span class="w-2 h-2 rounded-full ${isEntry ? 'bg-emerald-400' : 'bg-amber-400'} animate-ping"></span>
-                <span class="font-mono text-xs font-bold text-slate-200">${t.tag}</span>
+                <span class="w-2 h-2 rounded-full ${isEntry ? 'bg-blue-600' : 'bg-amber-500'} animate-ping"></span>
+                <span class="font-mono text-xs font-bold text-slate-800">${t.tag}</span>
             </div>
             <div class="flex items-center gap-2.5">
-                <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">${gateName}</span>
+                <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-white text-slate-700 border border-slate-200">${gateName}</span>
                 <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${dirBadge}">${t.direction}</span>
-                <span class="text-[10px] text-slate-500 font-mono">${t.time || ''}</span>
+                <span class="text-[10px] text-slate-400 font-mono">${t.time || ''}</span>
             </div>
         </div>`;
     }).join('');
