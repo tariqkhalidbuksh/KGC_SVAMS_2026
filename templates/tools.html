@@ -3,89 +3,340 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hardware Diagnostic Console | Karachi Gymkhana</title>
+    <title>Hardware Diagnostic NOC Console | Karachi Gymkhana</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
-        body { background: #F8FAFC; color: #334155; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
-        .pulse-indicator { animation: pulse-kf 1.5s infinite; }
-        @keyframes pulse-kf { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+        
+        body {
+            background: #0B1120;
+            color: #F1F5F9;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(14, 165, 233, 0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.06) 0px, transparent 50%),
+                radial-gradient(at 50% 100%, rgba(99, 102, 241, 0.05) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0F172A; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+        }
+
+        .glass-panel:hover {
+            border-color: rgba(71, 85, 105, 0.9);
+        }
+
+        .glow-emerald {
+            box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.25);
+        }
+
+        .glow-cyan {
+            box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.25);
+        }
+
+        .pulse-ring {
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            animation: pulse-ring-kf 2s infinite cubic-bezier(0.66, 0, 0, 1);
+        }
+
+        @keyframes pulse-ring-kf {
+            to { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+        }
+
+        .heartbeat-dot {
+            animation: ecg-beat 1.2s infinite ease-in-out;
+        }
+
+        @keyframes ecg-beat {
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            15% { transform: scale(1.4); opacity: 1; filter: drop-shadow(0 0 6px #10B981); }
+            30% { transform: scale(1.1); opacity: 0.95; }
+            45% { transform: scale(1.3); opacity: 1; filter: drop-shadow(0 0 4px #10B981); }
+        }
+
+        .grid-bg {
+            background-size: 24px 24px;
+            background-image: 
+                linear-gradient(to right, rgba(51, 65, 85, 0.12) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(51, 65, 85, 0.12) 1px, transparent 1px);
+        }
     </style>
 </head>
-<body class="min-h-screen">
-    <header class="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-10 sticky top-0 z-40 shadow-sm">
-        <div class="flex items-center space-x-6">
-            <img src="/api/logo" alt="Logo" class="h-12 object-contain" onerror="this.style.display='none'">
+<body class="min-h-screen flex flex-col antialiased">
+    <!-- Top High-Tech NOC Header -->
+    <header class="h-20 glass-panel border-b border-slate-800 sticky top-0 z-50 px-6 lg:px-10 flex items-center justify-between">
+        <div class="flex items-center gap-5">
+            <div class="relative">
+                <img src="/api/logo" alt="Logo" class="h-11 object-contain filter drop-shadow-md" onerror="this.style.display='none'">
+            </div>
             <div>
-                <h1 class="text-xl font-bold text-slate-800">Hardware Diagnostic Console</h1>
-                <p class="text-xs text-slate-500">Subsystem telemetry and optical calibration</p>
+                <div class="flex items-center gap-2.5">
+                    <h1 class="text-lg lg:text-xl font-extrabold tracking-tight text-white flex items-center gap-2">
+                        <span>Hardware Diagnostic NOC</span>
+                        <span class="text-xs font-mono font-bold bg-cyan-950/80 text-cyan-400 border border-cyan-800/80 px-2 py-0.5 rounded-md uppercase tracking-wider">Telemetry v2.6</span>
+                    </h1>
+                </div>
+                <p class="text-xs text-slate-400 flex items-center gap-2">
+                    <span>Live RTT latency, sub-second heartbeats &amp; multi-gate reader telemetry</span>
+                </p>
             </div>
         </div>
-        <div class="flex items-center space-x-4">
-            <div class="flex items-center bg-emerald-100 border border-emerald-200 px-3 py-1.5 rounded-full">
-                <div class="w-2 h-2 rounded-full bg-emerald-500 pulse-indicator mr-2"></div>
-                <span class="text-xs font-bold text-emerald-700">LIVE TELEMETRY</span>
+
+        <div class="flex items-center gap-3.5">
+            <!-- Heartbeat Status Badge -->
+            <div class="hidden sm:flex items-center gap-3 bg-slate-900/90 border border-slate-800 px-3.5 py-1.5 rounded-xl">
+                <span class="relative flex h-3 w-3">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 heartbeat-dot"></span>
+                </span>
+                <div class="leading-none">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Heartbeat Sync</p>
+                    <p id="topHeartbeatStatus" class="text-xs font-mono font-bold text-emerald-400">60 BPM &bull; LOCKED</p>
+                </div>
             </div>
-            <a href="/" class="bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold px-5 py-2.5 rounded-xl shadow-lg transition">Return to Dashboard</a>
+
+            <!-- Global Cluster Avg Latency Badge -->
+            <div class="hidden md:flex items-center gap-3 bg-slate-900/90 border border-slate-800 px-3.5 py-1.5 rounded-xl">
+                <span class="text-cyan-400 text-sm">⚡</span>
+                <div class="leading-none">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Cluster RTT</p>
+                    <p id="topClusterLatency" class="text-xs font-mono font-bold text-cyan-300">-- ms</p>
+                </div>
+            </div>
+
+            <!-- Audio Beep Toggle -->
+            <button type="button" id="audioToggleBtn" onclick="toggleAudioHeartbeat()" title="Toggle Heartbeat Audio Pulse"
+                    class="p-2.5 rounded-xl border border-slate-800 bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-white transition">
+                <svg id="audioIconOff" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+                </svg>
+                <svg id="audioIconOn" class="w-4 h-4 text-emerald-400 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                </svg>
+            </button>
+
+            <!-- Return to Dashboard -->
+            <a href="/" class="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs lg:text-sm font-bold px-4 py-2.5 rounded-xl shadow-lg transition">
+                <span>Dashboard</span>
+                <span>&rarr;</span>
+            </a>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto p-10 space-y-8">
-        <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
-            <div class="flex justify-between items-center mb-6">
-                <div>
-                    <h2 class="text-lg font-bold text-slate-900">1. Subsystem Health Status</h2>
-                    <p class="text-sm text-slate-500">Core hardware controllers must show operational before lane arming.</p>
-                </div>
-                <span class="text-xs font-bold text-slate-400">Poll rate: 3s</span>
-            </div>
-            <div id="statusGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4"></div>
-            <div id="statusSummary" class="mt-4 text-sm font-bold"></div>
-        </div>
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-10 space-y-6">
 
-        <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
-            <div class="flex justify-between items-center mb-2">
-                <div>
-                    <h2 class="text-lg font-bold text-slate-900">2. Real-Time RFID Reader Stream</h2>
-                    <p class="text-sm text-slate-500">Live feed of EPC tags read by fixed UHF antennas.</p>
-                </div>
-                <span id="rfidCount" class="bg-slate-100 border text-xs font-bold text-slate-600 px-3 py-1.5 rounded-full">0 tags</span>
-            </div>
-            <div id="rfidFeed" class="space-y-2 max-h-64 overflow-y-auto mt-4 pr-2">
-                <p class="text-slate-400 text-sm text-center py-8 border-2 border-dashed border-slate-200 rounded-xl">Listening for RFID antenna transmissions...</p>
-            </div>
-        </div>
-
-        <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-emerald-500">
-            <h2 class="text-lg font-bold text-slate-900 mb-1">3. Camera Diagnostic Snapshot Calibration</h2>
-            <p class="text-sm text-slate-500 mb-6">Trigger on-demand HD frame grabs to test optical resolution and contrast.</p>
-            
-            <div class="flex gap-4 mb-6 flex-wrap">
-                <button type="button" onclick="captureFrame('hikvision', this)" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg text-sm transition">
-                    Capture Frame
-                </button>
-            </div>
-
-            <div class="max-w-2xl">
-                <div class="border border-slate-200 rounded-2xl overflow-hidden bg-slate-50">
-                    <div class="px-4 py-3 bg-white border-b flex justify-between items-center">
-                        <span class="text-xs font-bold text-emerald-600 uppercase">Camera Viewport</span>
-                        <span id="hikMeta" class="text-xs text-slate-400 font-mono">-- x --</span>
+        <!-- Top Vitals & Live Oscilloscope Banner -->
+        <div class="glass-panel rounded-2xl p-6 border-slate-800 shadow-2xl relative overflow-hidden">
+            <div class="flex flex-col lg:flex-row justify-between lg:items-center gap-6">
+                <!-- Left: Cluster Health Indicators -->
+                <div class="space-y-4 max-w-md">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-ring"></span>
+                            <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Subsystem Health Status</span>
+                        </div>
+                        <h2 id="clusterStatusText" class="text-2xl font-black text-white">All Subsystems Operational</h2>
+                        <p id="clusterSubText" class="text-xs text-slate-400 mt-1">Multi-gate RFID antennas, AI cameras, and storage engines synchronizing with zero packet drop.</p>
                     </div>
-                    <img id="snapHik" alt="Frame Capture" class="w-full bg-slate-900 object-cover" style="min-height:260px">
+
+                    <div class="grid grid-cols-3 gap-3 pt-1">
+                        <div class="bg-slate-900/90 border border-slate-800/80 rounded-xl p-3">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Active Nodes</p>
+                            <p id="statNodes" class="text-lg font-black font-mono text-emerald-400 mt-0.5">-- / 6</p>
+                        </div>
+                        <div class="bg-slate-900/90 border border-slate-800/80 rounded-xl p-3">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Avg Cluster RTT</p>
+                            <p id="statAvgLatency" class="text-lg font-black font-mono text-cyan-400 mt-0.5">-- ms</p>
+                        </div>
+                        <div class="bg-slate-900/90 border border-slate-800/80 rounded-xl p-3">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Jitter Window</p>
+                            <p id="statJitter" class="text-lg font-black font-mono text-violet-400 mt-0.5">&plusmn; -- ms</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Visual Live Heartbeat ECG Oscilloscope -->
+                <div class="flex-1 lg:max-w-xl flex flex-col">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                                Live ECG Heartbeat Oscilloscope
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-3 text-xs font-mono text-slate-400">
+                            <span id="ecgTimeDisplay">--:--:--</span>
+                            <span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 text-[10px] font-bold">60 Hz</span>
+                        </div>
+                    </div>
+
+                    <div class="relative h-28 w-full rounded-xl overflow-hidden border border-slate-800 bg-[#060D1A] grid-bg">
+                        <canvas id="ecgCanvas" class="w-full h-full block"></canvas>
+                        <div class="absolute bottom-2 left-3 text-[10px] font-mono text-slate-500">REALTIME PULSE ENGINE &bull; RTT SYNC</div>
+                        <div id="ecgBeatBadge" class="absolute top-2 right-3 px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                            PULSE OK
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div id="ftpInfo" class="mt-4 bg-indigo-50 border border-indigo-200 text-indigo-800 text-sm rounded-xl px-4 py-3"></div>
+            <!-- Global Controls Toolbar -->
+            <div class="mt-6 pt-4 border-t border-slate-800 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Poll Frequency:</span>
+                    <div class="flex bg-slate-900 border border-slate-800 rounded-xl p-1 gap-1">
+                        <button type="button" onclick="setPollInterval(1000)" id="rateBtn1" class="px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition">1s (Turbo)</button>
+                        <button type="button" onclick="setPollInterval(2000)" id="rateBtn2" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-600 text-white shadow">2s (Optimal)</button>
+                        <button type="button" onclick="setPollInterval(5000)" id="rateBtn5" class="px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition">5s (Eco)</button>
+                    </div>
+                    <button type="button" id="pauseResumeBtn" onclick="togglePauseStream()" class="text-xs font-bold px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-200 transition">
+                        Pause Stream
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <button type="button" onclick="probeAllDevicesNow(this)" class="text-xs font-bold px-4 py-2 rounded-xl bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 border border-cyan-500/40 transition flex items-center gap-2">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        <span>Probe All Nodes Now</span>
+                    </button>
+                    <button type="button" onclick="resetTelemetryData()" class="text-xs font-bold px-3 py-2 rounded-xl border border-slate-800 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white transition">
+                        Reset Buffers
+                    </button>
+                </div>
+            </div>
         </div>
 
-        <div class="text-center pb-6">
-            <p class="text-xs text-slate-400">Karachi Gymkhana Club &bull; Smart Vehicle Access &amp; Parking Management System</p>
+        <!-- Section 2: Live MS Graph (Multi-Subsystem Latency Timeline) -->
+        <div class="glass-panel rounded-2xl p-6 border-slate-800 shadow-2xl space-y-4">
+            <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+                <div>
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2.5">
+                        <span class="text-cyan-400">📈</span>
+                        <span>Live Hardware Latency Graph (MS Timeline)</span>
+                        <span class="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-400 border border-cyan-800">REALTIME</span>
+                    </h2>
+                    <p class="text-xs text-slate-400">Rolling latency curves in milliseconds across fixed UHF antennas, camera optical port, and local database storage.</p>
+                </div>
+                <div class="flex items-center gap-2 text-xs font-mono text-slate-400">
+                    <span class="inline-block w-2 h-2 rounded-full bg-cyan-400"></span>
+                    <span>Window: 45 Data Points</span>
+                </div>
+            </div>
+
+            <!-- Interactive Series Toggle Legend -->
+            <div id="graphLegend" class="flex flex-wrap items-center gap-2.5 pt-1">
+                <!-- Dynamically populated series toggles with live ms badges -->
+            </div>
+
+            <!-- Canvas Latency Chart Viewport -->
+            <div class="relative w-full h-72 rounded-xl overflow-hidden border border-slate-800/80 bg-[#060D1A] grid-bg">
+                <canvas id="latencyCanvas" class="w-full h-full block"></canvas>
+                <!-- Floating Crosshair Tooltip -->
+                <div id="chartTooltip" class="absolute pointer-events-none hidden bg-slate-900/95 border border-slate-700/80 rounded-xl p-3 shadow-2xl text-xs space-y-1.5 backdrop-blur-md z-30 min-w-[180px]">
+                    <div id="tooltipTime" class="font-mono text-[10px] text-slate-400 font-bold border-b border-slate-800 pb-1">--:--:--</div>
+                    <div id="tooltipRows" class="space-y-1"></div>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center text-[11px] font-mono text-slate-500 pt-1">
+                <span>0 ms &bull; Zero Lag Baseline</span>
+                <span>Threshold: Green &lt; 25ms &bull; Amber 25-70ms &bull; Red &gt; 70ms</span>
+                <span>Current Scan Window: ~90s</span>
+            </div>
         </div>
+
+        <!-- Section 3: Subsystem Hardware Telemetry Cards -->
+        <div>
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h2 class="text-base font-bold text-white flex items-center gap-2">
+                        <span class="text-emerald-400">⚡</span>
+                        <span>Hardware Node Telemetry &amp; Diagnostics</span>
+                    </h2>
+                    <p class="text-xs text-slate-400">Comprehensive hardware parameters, round-trip times, and individual ping probes.</p>
+                </div>
+                <span id="lastSyncTime" class="text-xs font-mono text-slate-500">Updated: --</span>
+            </div>
+
+            <div id="devicesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Dynamically generated modern telemetry cards -->
+            </div>
+        </div>
+
+        <!-- Section 4: Live RFID Antenna Feed & Camera Snapshot Viewport -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Left: Real-Time RFID Antenna EPC Feed -->
+            <div class="glass-panel rounded-2xl p-6 border-slate-800 shadow-2xl space-y-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="text-base font-bold text-white flex items-center gap-2">
+                            <span class="text-violet-400">📡</span>
+                            <span>Live RFID Tag Stream</span>
+                        </h2>
+                        <p class="text-xs text-slate-400">EPC tags captured across Gate-01 and Main Gate (Club Road).</p>
+                    </div>
+                    <span id="rfidCountBadge" class="text-xs font-mono font-bold bg-violet-950/80 text-violet-300 border border-violet-800/80 px-2.5 py-1 rounded-full">0 tags read</span>
+                </div>
+
+                <div id="rfidFeedContainer" class="space-y-2 max-h-80 overflow-y-auto pr-1">
+                    <p class="text-slate-500 text-xs text-center py-10 border border-dashed border-slate-800 rounded-xl font-mono">
+                        Awaiting antenna tag read transmissions...
+                    </p>
+                </div>
+            </div>
+
+            <!-- Right: Camera Optical Viewport & HD Snapshot Calibration -->
+            <div class="glass-panel rounded-2xl p-6 border-slate-800 shadow-2xl space-y-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="text-base font-bold text-white flex items-center gap-2">
+                            <span class="text-amber-400">📷</span>
+                            <span>Camera Diagnostic Snapshot Calibration</span>
+                        </h2>
+                        <p class="text-xs text-slate-400">On-demand optical frame capture and line-crossing telemetry.</p>
+                    </div>
+                    <button type="button" onclick="captureFrame('hikvision', this)" class="bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-lg transition flex items-center gap-2">
+                        <span>Capture HD Frame</span>
+                    </button>
+                </div>
+
+                <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-950 relative">
+                    <div class="px-3.5 py-2 bg-slate-900/90 border-b border-slate-800 flex justify-between items-center text-xs">
+                        <span class="font-mono font-bold text-amber-400 uppercase text-[10px]">Viewport: Hikvision HD AI Lens</span>
+                        <span id="hikMeta" class="font-mono text-[11px] text-slate-400">-- x -- px</span>
+                    </div>
+                    <div class="relative min-h-[220px] bg-slate-950 flex items-center justify-center">
+                        <img id="snapHik" alt="Diagnostic Viewport" class="w-full object-cover max-h-56 hidden">
+                        <div id="snapPlaceholder" class="text-center text-slate-600 p-6 space-y-2">
+                            <svg class="w-10 h-10 mx-auto text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            <p class="text-xs font-mono">Click "Capture HD Frame" to calibrate live lens</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="ftpInfo" class="bg-indigo-950/40 border border-indigo-900/60 text-indigo-300 text-xs rounded-xl px-4 py-3 font-mono flex items-center justify-between">
+                    <span>Camera events received: 0</span>
+                    <span class="text-[10px] text-indigo-400">RTSP / Alarm Trigger</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="pt-6 pb-8 border-t border-slate-800/80 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-slate-500">
+            <p>Karachi Gymkhana Club &bull; Smart Vehicle Access &amp; Parking Management System</p>
+            <p class="font-mono">Sub-100ms NOC Heartbeat Telemetry Engine &bull; 2026</p>
+        </footer>
     </main>
 
     <script src="/static/js/tools.js"></script>

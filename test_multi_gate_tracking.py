@@ -228,3 +228,44 @@ def test_simulation_endpoint_with_gate_parameter():
     with get_db_connection() as conn:
         log_row = conn.execute("SELECT gate_no FROM daily_logs WHERE id=?", (log_id,)).fetchone()
         assert log_row["gate_no"] == "Main Gate (Club Road)"
+
+
+def test_hardware_telemetry_endpoint():
+    """Verify /api/tools/telemetry returns full cluster metrics and device latency."""
+    res = client.get("/api/tools/telemetry?synthetic=true")
+    assert res.status_code == 200
+    data = res.json()
+    assert "heartbeat" in data
+    assert data["heartbeat"]["bpm"] == 60
+    assert "cluster" in data
+    assert "avg_latency_ms" in data["cluster"]
+    assert "devices" in data
+    devices = data["devices"]
+    expected_devices = ["Gate01_Entry", "Gate01_Exit", "ClubRoad_Entry", "ClubRoad_Exit", "Hikvision", "Database"]
+    for dev_id in expected_devices:
+        assert dev_id in devices
+        dev = devices[dev_id]
+        assert "latency_ms" in dev
+        assert "status" in dev
+        assert "stats" in dev
+        assert "history" in dev
+
+
+def test_single_device_ping_endpoint():
+    """Verify POST /api/tools/ping/{device_id} probes target and returns valid RTT."""
+    res = client.post("/api/tools/ping/Database")
+    assert res.status_code == 200
+    data = res.json()
+    assert data["ok"] is True
+    assert data["result"]["id"] == "Database"
+    assert data["result"]["latency_ms"] is not None
+    assert data["result"]["status"] == "ONLINE"
+
+    # Ping RFID reader
+    res_rfid = client.post("/api/tools/ping/Gate01_Entry")
+    assert res_rfid.status_code == 200
+    rfid_data = res_rfid.json()
+    assert rfid_data["ok"] is True
+    assert rfid_data["result"]["id"] == "Gate01_Entry"
+    assert rfid_data["result"]["latency_ms"] is not None
+
