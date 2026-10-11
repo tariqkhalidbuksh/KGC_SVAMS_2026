@@ -41,7 +41,8 @@ def execute_access_decision(
     path_full: str = None,
     path_plate: str = None,
     is_ai_trigger: bool = False,
-    bypass_cooldown: bool = False
+    bypass_cooldown: bool = False,
+    gate_name: str = None
 ) -> int:
     pkt_now = config.get_pkt_now()
     with config.DB_LOCK:
@@ -188,7 +189,10 @@ def execute_access_decision(
                     (clean_tag, f"PROCESSED: {resolved_direction}", resolved_direction, pkt_now)
                 )
 
-                resolved_gate = "Gate-01 Entry Reader" if resolved_direction == "Entry" else "Gate-01 Exit Reader"
+                if gate_name:
+                    resolved_gate = gate_name
+                else:
+                    resolved_gate = "Gate-01 Entry Reader" if resolved_direction == "Entry" else "Gate-01 Exit Reader"
 
                 cursor = conn.execute("""INSERT INTO daily_logs
                     (mem_id, name, vehicle_number, access_type, direction, gate_no, image_path, plate_image_path, scanned_tag, timestamp)

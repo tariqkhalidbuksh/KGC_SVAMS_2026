@@ -45,7 +45,14 @@ MEMBERS_METRICS_CACHE = {"data": None, "timestamp": 0.0}
 FLEET_ADOPTION_CACHE = {"data": None, "timestamp": 0.0, "db_file": None}
 RECENT_CAM_TRIGGERS = deque(maxlen=30)
 
-READER_STATUS = {"Entry": "DISCONNECTED", "Exit": "DISCONNECTED"}
+READER_STATUS = {
+    "Entry": "DISCONNECTED",
+    "Exit": "DISCONNECTED",
+    "Gate01_Entry": "DISCONNECTED",
+    "Gate01_Exit": "DISCONNECTED",
+    "ClubRoad_Entry": "DISCONNECTED",
+    "ClubRoad_Exit": "DISCONNECTED"
+}
 CAM_STATUS = {"Hikvision": "UNKNOWN"}
 LATEST_JPEG_BUFFERS = {"Hikvision": None}
 LATEST_RAW_FRAMES = {"Hikvision": None}

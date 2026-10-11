@@ -723,11 +723,11 @@
                                 <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                                 <select id="auditCamera" onchange="loadAudit(1)" class="text-xs font-bold border-0 bg-transparent text-slate-700 focus:outline-none pr-1">
                                     <option value="all">All Gates &amp; Cameras</option>
-                                    <option value="Gate-01">Gate-01 (Main Gate)</option>
-                                    <option value="Gate-02">Gate-02</option>
+                                    <option value="Gate-01">Gate-01</option>
+                                    <option value="Club Road">Main Gate (Club Road)</option>
                                     <option value="Hikvision">Hikvision Optical</option>
-                                    <option value="Entry">Entry Lane</option>
-                                    <option value="Exit">Exit Lane</option>
+                                    <option value="Entry">Entry Lanes</option>
+                                    <option value="Exit">Exit Lanes</option>
                                 </select>
                             </div>
 
@@ -1151,14 +1151,39 @@
                                 <input id="setMsg" class="w-full border rounded-xl p-3 bg-slate-50 text-slate-800">
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Entry Reader IP Address</label>
-                                    <input id="setEntry" class="w-full border rounded-xl p-3 bg-slate-50 font-mono text-xs text-slate-800">
+                            <!-- Gate-01 RFID Readers -->
+                            <div class="space-y-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                                    <span class="text-xs font-black text-slate-800 uppercase tracking-wider">Gate-01 (Clifton / Main) RFID Readers</span>
                                 </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Exit Reader IP Address</label>
-                                    <input id="setExit" class="w-full border rounded-xl p-3 bg-slate-50 font-mono text-xs text-slate-800">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Gate-01 Entry Reader IP</label>
+                                        <input id="setEntry" placeholder="e.g. 192.168.0.217" class="w-full border rounded-xl p-3 bg-slate-50 font-mono text-xs text-slate-800">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Gate-01 Exit Reader IP</label>
+                                        <input id="setExit" placeholder="e.g. 192.168.0.216" class="w-full border rounded-xl p-3 bg-slate-50 font-mono text-xs text-slate-800">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Main Gate (Club Road) RFID Readers -->
+                            <div class="space-y-2 pt-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                    <span class="text-xs font-black text-slate-800 uppercase tracking-wider">Main Gate (Club Road) RFID Readers</span>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Club Road Entry Reader IP</label>
+                                        <input id="setClubRoadEntry" placeholder="e.g. 192.168.0.218" class="w-full border rounded-xl p-3 bg-slate-50 font-mono text-xs text-slate-800">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Club Road Exit Reader IP</label>
+                                        <input id="setClubRoadExit" placeholder="e.g. 192.168.0.219" class="w-full border rounded-xl p-3 bg-slate-50 font-mono text-xs text-slate-800">
+                                    </div>
                                 </div>
                             </div>
 
@@ -1678,8 +1703,8 @@
                     <div>
                         <label class="block text-xs font-bold text-slate-600 mb-1">Exit Gate Station</label>
                         <select id="manualExitGateSelect" class="w-full text-xs font-bold border border-slate-200 rounded-xl p-2.5 bg-white focus:outline-none">
-                            <option value="Gate-01-Out">Gate-01-Out (Main Exit)</option>
-                            <option value="Gate-02-Out">Gate-02-Out (Secondary Exit)</option>
+                            <option value="Gate-01-Out">Gate-01-Out (Gate 01 Exit)</option>
+                            <option value="Main Gate (Club Road Exit)">Main Gate (Club Road Exit)</option>
                             <option value="Manual Gate Clearance">Manual Gate Clearance</option>
                         </select>
                     </div>

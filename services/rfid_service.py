@@ -69,7 +69,7 @@ def prioritize_member_tags(tags: list[str]) -> list[str]:
         pass
     return tags
 
-def process_rfid_direct(tag: str, direction: str):
+def process_rfid_direct(tag: str, direction: str, gate_name: str = None):
     now = time.time()
     clean_tag = tag.strip().upper()
 
@@ -83,26 +83,37 @@ def process_rfid_direct(tag: str, direction: str):
         if not is_tag_registered(clean_tag):
             return  # Suppress secondary windshield transponder on passing member car
 
-    log_id = execute_access_decision(clean_tag, direction or "Auto", path_full=None, is_ai_trigger=False)
+    log_id = execute_access_decision(clean_tag, direction or "Auto", path_full=None, is_ai_trigger=False, gate_name=gate_name)
     if log_id:
         with config.FUSION_LOCK:
             config.LAST_GATE_PASSAGE["time"] = now
             config.LAST_GATE_PASSAGE["log_id"] = log_id
 
-def rfid_tcp_client_worker(direction: str, ip_setting_key: str):
+def rfid_tcp_client_worker(direction: str, ip_setting_key: str, gate_name: str = None, reader_id: str = None):
+    r_key = reader_id or direction
+    resolved_gate = gate_name or f"Gate-01 {direction} Reader"
+
     while True:
         target_ip = get_setting(ip_setting_key, "")
         if not target_ip:
-            config.READER_STATUS[direction] = "NO_IP"
+            config.READER_STATUS[r_key] = "NO_IP"
+            if direction in ("Entry", "Exit") and ("Gate01" in r_key or r_key == direction):
+                config.READER_STATUS[direction] = "NO_IP"
             time.sleep(3)
             continue
         try:
-            config.READER_STATUS[direction] = "CONNECTING"
+            config.READER_STATUS[r_key] = "CONNECTING"
+            if direction in ("Entry", "Exit") and ("Gate01" in r_key or r_key == direction):
+                config.READER_STATUS[direction] = "CONNECTING"
+
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.settimeout(5.0)
             sock.connect((target_ip, 49152))
             sock.settimeout(None)
-            config.READER_STATUS[direction] = "CONNECTED"
+
+            config.READER_STATUS[r_key] = "CONNECTED"
+            if direction in ("Entry", "Exit") and ("Gate01" in r_key or r_key == direction):
+                config.READER_STATUS[direction] = "CONNECTED"
 
             buffer = b""
             while True:
@@ -149,6 +160,7 @@ def rfid_tcp_client_worker(direction: str, ip_setting_key: str):
                         config.RECENT_TAGS.append({
                             "tag": tag,
                             "direction": direction,
+                            "gate": resolved_gate,
                             "time": time.strftime("%H:%M:%S"),
                             "epoch": now
                         })
@@ -165,11 +177,12 @@ def rfid_tcp_client_worker(direction: str, ip_setting_key: str):
                                     "tag": tag,
                                     "first_seen": now,
                                     "last_seen": now,
-                                    "direction": direction
+                                    "direction": direction,
+                                    "gate": resolved_gate
                                 })
 
                         # Submit to persistent worker pool with zero thread-creation overhead
-                        RFID_EXECUTOR.submit(process_rfid_direct, tag, direction)
+                        RFID_EXECUTOR.submit(process_rfid_direct, tag, direction, resolved_gate)
 
                     # Preserve buffer tail to avoid chopping incoming frames across recv boundaries
                     buffer = buffer[-256:]
@@ -177,13 +190,16 @@ def rfid_tcp_client_worker(direction: str, ip_setting_key: str):
                 elif len(buffer) > 4096:
                     buffer = buffer[-1024:]
         except Exception:
-            config.READER_STATUS[direction] = "DISCONNECTED"
+            config.READER_STATUS[r_key] = "DISCONNECTED"
+            if direction in ("Entry", "Exit") and ("Gate01" in r_key or r_key == direction):
+                config.READER_STATUS[direction] = "DISCONNECTED"
             time.sleep(3)
         finally:
             try:
                 sock.close()
             except Exception:
                 pass
+
 
 def buffer_cleaner_worker():
     while True:

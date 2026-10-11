@@ -478,36 +478,58 @@ async function loadHardwareSettingsStatus() {
         const res = await fetch('/api/tools/status');
         if (!res.ok) return;
         const s = await res.json();
-        const entryOk = s.readers?.Entry === 'CONNECTED';
-        const exitOk = s.readers?.Exit === 'CONNECTED';
+        const g1EntryOk = (s.readers?.Gate01_Entry || s.readers?.Entry) === 'CONNECTED';
+        const g1ExitOk = (s.readers?.Gate01_Exit || s.readers?.Exit) === 'CONNECTED';
+        const crEntryOk = s.readers?.ClubRoad_Entry === 'CONNECTED';
+        const crExitOk = s.readers?.ClubRoad_Exit === 'CONNECTED';
         const camOk = s.cameras?.Hikvision === 'ONLINE';
 
         grid.innerHTML = `
-            <div class="p-4 rounded-xl border ${entryOk ? 'border-emerald-200 bg-emerald-50/40' : 'border-rose-200 bg-rose-50/40'} flex items-center justify-between">
+            <div class="p-4 rounded-xl border ${g1EntryOk ? 'border-emerald-200 bg-emerald-50/40' : 'border-rose-200 bg-rose-50/40'} flex items-center justify-between">
                 <div>
-                    <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Entry RFID Reader</span>
+                    <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Gate-01 Entry Reader</span>
                     <h4 class="font-bold text-slate-800 text-sm mt-0.5">Fixed UHF Antenna</h4>
-                    <p class="text-xs font-mono text-slate-500 mt-1">192.168.0.217:60000</p>
+                    <p class="text-xs font-mono text-slate-500 mt-1">${document.getElementById('setEntry')?.value || '192.168.0.217'}:49152</p>
                 </div>
-                <span class="px-2.5 py-1 rounded-full text-xs font-bold ${entryOk ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-rose-100 text-rose-800 border border-rose-300'}">
-                    ${entryOk ? 'ONLINE' : 'DISCONNECTED'}
+                <span class="px-2.5 py-1 rounded-full text-xs font-bold ${g1EntryOk ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-rose-100 text-rose-800 border border-rose-300'}">
+                    ${g1EntryOk ? 'ONLINE' : (s.readers?.Gate01_Entry || s.readers?.Entry || 'DISCONNECTED')}
                 </span>
             </div>
-            <div class="p-4 rounded-xl border ${exitOk ? 'border-emerald-200 bg-emerald-50/40' : 'border-rose-200 bg-rose-50/40'} flex items-center justify-between">
+            <div class="p-4 rounded-xl border ${g1ExitOk ? 'border-emerald-200 bg-emerald-50/40' : 'border-rose-200 bg-rose-50/40'} flex items-center justify-between">
                 <div>
-                    <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Exit RFID Reader</span>
+                    <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Gate-01 Exit Reader</span>
                     <h4 class="font-bold text-slate-800 text-sm mt-0.5">Fixed UHF Antenna</h4>
-                    <p class="text-xs font-mono text-slate-500 mt-1">192.168.0.216:60000</p>
+                    <p class="text-xs font-mono text-slate-500 mt-1">${document.getElementById('setExit')?.value || '192.168.0.216'}:49152</p>
                 </div>
-                <span class="px-2.5 py-1 rounded-full text-xs font-bold ${exitOk ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-rose-100 text-rose-800 border border-rose-300'}">
-                    ${exitOk ? 'ONLINE' : 'DISCONNECTED'}
+                <span class="px-2.5 py-1 rounded-full text-xs font-bold ${g1ExitOk ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-rose-100 text-rose-800 border border-rose-300'}">
+                    ${g1ExitOk ? 'ONLINE' : (s.readers?.Gate01_Exit || s.readers?.Exit || 'DISCONNECTED')}
                 </span>
             </div>
-            <div class="p-4 rounded-xl border ${camOk ? 'border-emerald-200 bg-emerald-50/40' : 'border-rose-200 bg-rose-50/40'} flex items-center justify-between">
+            <div class="p-4 rounded-xl border ${crEntryOk ? 'border-emerald-200 bg-emerald-50/40' : 'border-slate-200 bg-slate-50/40'} flex items-center justify-between">
+                <div>
+                    <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Club Road Entry Reader</span>
+                    <h4 class="font-bold text-slate-800 text-sm mt-0.5">Main Gate UHF Antenna</h4>
+                    <p class="text-xs font-mono text-slate-500 mt-1">${document.getElementById('setClubRoadEntry')?.value || 'Unconfigured'}</p>
+                </div>
+                <span class="px-2.5 py-1 rounded-full text-xs font-bold ${crEntryOk ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-slate-100 text-slate-600 border border-slate-300'}">
+                    ${crEntryOk ? 'ONLINE' : (s.readers?.ClubRoad_Entry || 'NO_IP')}
+                </span>
+            </div>
+            <div class="p-4 rounded-xl border ${crExitOk ? 'border-emerald-200 bg-emerald-50/40' : 'border-slate-200 bg-slate-50/40'} flex items-center justify-between">
+                <div>
+                    <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Club Road Exit Reader</span>
+                    <h4 class="font-bold text-slate-800 text-sm mt-0.5">Main Gate UHF Antenna</h4>
+                    <p class="text-xs font-mono text-slate-500 mt-1">${document.getElementById('setClubRoadExit')?.value || 'Unconfigured'}</p>
+                </div>
+                <span class="px-2.5 py-1 rounded-full text-xs font-bold ${crExitOk ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-slate-100 text-slate-600 border border-slate-300'}">
+                    ${crExitOk ? 'ONLINE' : (s.readers?.ClubRoad_Exit || 'NO_IP')}
+                </span>
+            </div>
+            <div class="p-4 rounded-xl border ${camOk ? 'border-emerald-200 bg-emerald-50/40' : 'border-rose-200 bg-rose-50/40'} flex items-center justify-between md:col-span-2">
                 <div>
                     <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Hikvision AI Camera</span>
                     <h4 class="font-bold text-slate-800 text-sm mt-0.5">Line-Crossing Optical Sensor</h4>
-                    <p class="text-xs font-mono text-slate-500 mt-1">192.168.0.220:554</p>
+                    <p class="text-xs font-mono text-slate-500 mt-1">${document.getElementById('setHik')?.value || '192.168.0.220:554'}</p>
                 </div>
                 <span class="px-2.5 py-1 rounded-full text-xs font-bold ${camOk ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-rose-100 text-rose-800 border border-rose-300'}">
                     ${camOk ? 'ONLINE' : 'OFFLINE'}
@@ -907,18 +929,25 @@ async function loadHardware() {
         const grid = document.getElementById('hwGrid');
         if (!grid) return;
 
+        const g1EntryStatus = s.readers?.Gate01_Entry || s.readers?.Entry || 'DISCONNECTED';
+        const g1ExitStatus = s.readers?.Gate01_Exit || s.readers?.Exit || 'DISCONNECTED';
+        const crEntryStatus = s.readers?.ClubRoad_Entry || 'NO_IP';
+        const crExitStatus = s.readers?.ClubRoad_Exit || 'NO_IP';
+
         grid.innerHTML =
-            renderHwRow('Entry RFID Reader', s.readers.Entry, s.readers.Entry === 'CONNECTED') +
-            renderHwRow('Exit RFID Reader', s.readers.Exit, s.readers.Exit === 'CONNECTED') +
+            renderHwRow('Gate-01 Entry Reader', g1EntryStatus, g1EntryStatus === 'CONNECTED') +
+            renderHwRow('Gate-01 Exit Reader', g1ExitStatus, g1ExitStatus === 'CONNECTED') +
+            renderHwRow('Club Road Entry Reader', crEntryStatus, crEntryStatus === 'CONNECTED') +
+            renderHwRow('Club Road Exit Reader', crExitStatus, crExitStatus === 'CONNECTED') +
             renderHwRow('Hikvision HD AI Camera', s.cameras.Hikvision, s.cameras.Hikvision === 'ONLINE');
 
         if (document.getElementById('hwFtp')) document.getElementById('hwFtp').innerText = s.ftp_events || 0;
         const last = s.recent_tags && s.recent_tags.length ? s.recent_tags[s.recent_tags.length - 1] : null;
         if (document.getElementById('hwLastTag')) {
-            document.getElementById('hwLastTag').innerText = last ? `${last.tag.substring(0, 16)}... ${last.time}` : 'None';
+            document.getElementById('hwLastTag').innerText = last ? `${last.tag.substring(0, 16)}... ${last.time}${last.gate ? ' (' + last.gate + ')' : ''}` : 'None';
         }
 
-        const allOk = (s.readers.Entry === 'CONNECTED') && (s.readers.Exit === 'CONNECTED') && (s.cameras.Hikvision === 'ONLINE');
+        const allOk = (g1EntryStatus === 'CONNECTED') && (g1ExitStatus === 'CONNECTED') && (s.cameras.Hikvision === 'ONLINE');
         const badge = document.getElementById('sysBadge');
         if (badge) {
             badge.className = 'inline-flex items-center px-3 py-1.5 rounded-full mb-2 border ' + (allOk ? 'bg-emerald-100 border-emerald-200' : 'bg-amber-100 border-amber-200');
@@ -3124,6 +3153,8 @@ async function loadSettings() {
         if (document.getElementById('setMsg')) document.getElementById('setMsg').value = s.traffic_msg || '';
         if (document.getElementById('setEntry')) document.getElementById('setEntry').value = s.entry_reader_ip || '';
         if (document.getElementById('setExit')) document.getElementById('setExit').value = s.exit_reader_ip || '';
+        if (document.getElementById('setClubRoadEntry')) document.getElementById('setClubRoadEntry').value = s.clubroad_entry_reader_ip || '';
+        if (document.getElementById('setClubRoadExit')) document.getElementById('setClubRoadExit').value = s.clubroad_exit_reader_ip || '';
         if (document.getElementById('setHik')) document.getElementById('setHik').value = s.hikvision_cam_url || '';
     } catch (e) {
         console.error('loadSettings error:', e);
@@ -3137,6 +3168,8 @@ async function saveSettings() {
         traffic_msg: document.getElementById('setMsg')?.value || '',
         entry_reader_ip: document.getElementById('setEntry')?.value || '',
         exit_reader_ip: document.getElementById('setExit')?.value || '',
+        clubroad_entry_reader_ip: document.getElementById('setClubRoadEntry')?.value || '',
+        clubroad_exit_reader_ip: document.getElementById('setClubRoadExit')?.value || '',
         hikvision_cam_url: document.getElementById('setHik')?.value || ''
     };
 

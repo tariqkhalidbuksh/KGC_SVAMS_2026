@@ -247,6 +247,7 @@ async function submitRFIDTest(btn) {
 
     const tag = $('simTag2').value.trim();
     const dir = $('simDir2').value;
+    const gate = $('simGate') ? $('simGate').value : 'Gate-01';
 
     if (!tag) {
         alert('Please enter an EPC tag or select a registered member.');
@@ -263,7 +264,8 @@ async function submitRFIDTest(btn) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 tag: tag,
-                direction: dir
+                direction: dir,
+                gate: gate
             })
         });
         const data = await res.json();
@@ -272,7 +274,7 @@ async function submitRFIDTest(btn) {
         if (box) {
             box.classList.remove('hidden');
             box.className = 'mt-4 text-sm rounded-xl px-4 py-3 bg-emerald-50 border border-emerald-200 text-emerald-800';
-            box.innerHTML = `RFID Antenna Scan Processed: Log ID #${data.log_id}.`;
+            box.innerHTML = `RFID Antenna Scan Processed (${gate}): Log ID #${data.log_id}.`;
         }
         loadTestReport();
     } catch (e) {
@@ -294,7 +296,7 @@ async function loadTestReport() {
         const rows = await res.json();
 
         if (!rows.length) {
-            body.innerHTML = '<tr><td colspan="7" class="p-8 text-center text-slate-400 font-bold">No test records generated yet</td></tr>';
+            body.innerHTML = '<tr><td colspan="8" class="p-8 text-center text-slate-400 font-bold">No test records generated yet</td></tr>';
             return;
         }
 
@@ -308,6 +310,7 @@ async function loadTestReport() {
                 <td class="p-4 text-xs font-mono text-slate-500">${timeStr}</td>
                 <td class="p-4 font-bold ${isUnreg ? 'text-rose-600' : 'text-slate-800'}">${r.name}</td>
                 <td class="p-4 font-mono font-bold text-indigo-600">${r.vehicle_number || '--'}</td>
+                <td class="p-4"><span class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-700">${r.gate || 'Gate-01'}</span></td>
                 <td class="p-4">
                     <span class="text-[10px] font-extrabold px-2.5 py-1 rounded-full ${
                         r.access_type.includes('Verified') ? 'bg-emerald-100 text-emerald-800' :
@@ -319,7 +322,7 @@ async function loadTestReport() {
             </tr>`;
         }).join('');
     } catch (e) {
-        body.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-rose-500">Error loading report: ${e.message}</td></tr>`;
+        body.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-rose-500">Error loading report: ${e.message}</td></tr>`;
     }
 }
 

@@ -31,8 +31,13 @@ async def lifespan(app_instance: FastAPI):
     threading.Thread(target=start_ftp_server, daemon=True, name="FTPDaemon").start()
     threading.Thread(target=start_smtp_server, daemon=True, name="SMTPDaemon").start()
     threading.Thread(target=folder_watcher_worker, daemon=True, name="FolderWatcher").start()
-    threading.Thread(target=rfid_tcp_client_worker, args=("Entry", "entry_reader_ip"), daemon=True, name="RFIDEntryWorker").start()
-    threading.Thread(target=rfid_tcp_client_worker, args=("Exit", "exit_reader_ip"), daemon=True, name="RFIDExitWorker").start()
+    # Gate-01 (Clifton / Main) UHF RFID Readers
+    threading.Thread(target=rfid_tcp_client_worker, args=("Entry", "entry_reader_ip", "Gate-01 Entry Reader", "Gate01_Entry"), daemon=True, name="Gate01_EntryWorker").start()
+    threading.Thread(target=rfid_tcp_client_worker, args=("Exit", "exit_reader_ip", "Gate-01 Exit Reader", "Gate01_Exit"), daemon=True, name="Gate01_ExitWorker").start()
+
+    # Main Gate (Club Road) UHF RFID Readers
+    threading.Thread(target=rfid_tcp_client_worker, args=("Entry", "clubroad_entry_reader_ip", "Main Gate (Club Road) Entry Reader", "ClubRoad_Entry"), daemon=True, name="ClubRoad_EntryWorker").start()
+    threading.Thread(target=rfid_tcp_client_worker, args=("Exit", "clubroad_exit_reader_ip", "Main Gate (Club Road) Exit Reader", "ClubRoad_Exit"), daemon=True, name="ClubRoad_ExitWorker").start()
     threading.Thread(target=preview_stream_worker, args=("Hikvision", "hikvision_cam_url"), daemon=True, name="HikStreamWorker").start()
     threading.Thread(target=buffer_cleaner_worker, daemon=True, name="BufferCleaner").start()
     yield

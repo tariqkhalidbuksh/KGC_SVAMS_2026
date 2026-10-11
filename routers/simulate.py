@@ -36,7 +36,8 @@ async def simulate_rfid_full(request: Request):
         return {"ok": True, "buffered": True, "queue_len": len(config.PENDING_RFID_BUFFER)}
     else:
         bypass = bool(body.get("bypass_cooldown", False))
-        log_id = execute_access_decision(tag, direction, path_full, path_plate, is_ai_trigger=False, bypass_cooldown=bypass)
+        gate = body.get("gate_name") or body.get("gate_no") or body.get("gate") or None
+        log_id = execute_access_decision(tag, direction, path_full, path_plate, is_ai_trigger=False, bypass_cooldown=bypass, gate_name=gate)
         return {"ok": True, "log_id": log_id, "mode": "direct"}
 
 @router.post("/simulate-linecross")
@@ -97,7 +98,7 @@ async def simulate_recent_logs(limit: int = 15):
         conn = get_db_connection()
         try:
             rows = conn.execute("""SELECT d.id, d.mem_id, d.name, d.vehicle_number, d.access_type, d.direction,
-                    d.gate_no, d.image_path, d.plate_image_path, d.scanned_tag, d.timestamp,
+                    d.gate_no, d.gate_no as gate, d.image_path, d.plate_image_path, d.scanned_tag, d.timestamp,
                     m.Make_Model as make_model, m.Profile_pic as profile_pic
                 FROM daily_logs d LEFT JOIN members m ON d.mem_id = m.Mem_id AND d.vehicle_number = m.Car_number
                 ORDER BY d.id DESC LIMIT ?""", (limit,)).fetchall()

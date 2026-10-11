@@ -150,6 +150,8 @@ def init_db():
                     'hikvision_cam_url': 'rtsp://admin:TheKG1886@192.168.0.220:554/Streaming/Channels/101',
                     'entry_reader_ip': '192.168.0.217',
                     'exit_reader_ip': '192.168.0.216',
+                    'clubroad_entry_reader_ip': '',
+                    'clubroad_exit_reader_ip': '',
                 }
                 for key, val in default_settings.items():
                     conn.execute("INSERT OR IGNORE INTO settings (config_key, config_value) VALUES (?, ?)", (key, val))
