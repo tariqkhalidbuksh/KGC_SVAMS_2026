@@ -343,18 +343,91 @@ async def upload_profile(file: UploadFile = File(...)):
         f_out.write(contents)
     return {"ok": True, "path": target_path.replace("\\", "/")}
 
+def _load_uploaded_spreadsheet(temp_file: str, filename_lower: str) -> pd.DataFrame:
+    """
+    Robustly reads Excel (.xlsx, .xls) and CSV spreadsheets across all available engines
+    (xlrd, openpyxl, pandas, csv), accurately handling files where binary format does not
+    match the file extension (e.g. OLE2 .xls binary saved with .xlsx extension).
+    """
+    # Detect OLE2 binary header (Excel 97-2003 BIFF8 format) or ZIP (modern .xlsx)
+    is_ole2 = False
+    is_zip = False
+    try:
+        with open(temp_file, "rb") as f:
+            magic = f.read(8)
+            if magic.startswith(b'\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1'):
+                is_ole2 = True
+            elif magic.startswith(b'PK\x03\x04'):
+                is_zip = True
+    except Exception:
+        pass
+
+    errors = []
+
+    # 1. If binary .xls (OLE2 format)
+    if is_ole2 or filename_lower.endswith('.xls'):
+        try:
+            import xlrd
+            wb = xlrd.open_workbook(temp_file)
+            sh = wb.sheet_by_index(0)
+            rows = [sh.row_values(r) for r in range(sh.nrows)]
+            if rows:
+                cols = [str(c).strip() for c in rows[0]]
+                return pd.DataFrame(rows[1:], columns=cols)
+            return pd.DataFrame()
+        except ImportError:
+            errors.append("xlrd package is not installed (run 'pip install xlrd>=2.0.1')")
+        except Exception as e:
+            errors.append(f"xlrd: {e}")
+
+    # 2. If modern zipped Excel (.xlsx format)
+    if is_zip or filename_lower.endswith('.xlsx'):
+        try:
+            return pd.read_excel(temp_file, engine='openpyxl')
+        except Exception as e:
+            errors.append(f"openpyxl: {e}")
+
+    # 3. Generic pandas read_excel fallback
+    try:
+        return pd.read_excel(temp_file)
+    except Exception as e:
+        errors.append(f"pd.read_excel: {e}")
+
+    # 4. Fallback to openpyxl directly
+    try:
+        import openpyxl
+        wb = openpyxl.load_workbook(temp_file, data_only=True)
+        sh = wb.active
+        rows = list(sh.iter_rows(values_only=True))
+        if rows:
+            cols = [str(c).strip() if c is not None else "" for c in rows[0]]
+            return pd.DataFrame(rows[1:], columns=cols)
+        return pd.DataFrame()
+    except Exception as e:
+        errors.append(f"openpyxl direct: {e}")
+
+    # 5. CSV Fallback
+    for enc in ('utf-8-sig', 'utf-8', 'latin1', 'cp1252'):
+        try:
+            return pd.read_csv(temp_file, encoding=enc)
+        except Exception:
+            pass
+
+    err_details = "; ".join(errors) if errors else "Unsupported or corrupted spreadsheet file format"
+    raise ValueError(f"Unable to parse spreadsheet. Details: {err_details}")
+
 @router.post("/import-members")
 async def import_members(request: Request, file: UploadFile = File(...)):
     check_edit_permission(request)
     filename_lower = file.filename.lower()
     if not filename_lower.endswith(('.csv', '.xlsx', '.xls')):
-        raise HTTPException(400, "Only .csv or .xlsx spreadsheets are supported")
+        raise HTTPException(400, "Only .csv, .xlsx, or .xls spreadsheets are supported")
     contents = await file.read()
     temp_file = f"_import_{secrets.token_hex(4)}{os.path.splitext(filename_lower)[1]}"
     with open(temp_file, "wb") as f_out:
         f_out.write(contents)
     try:
-        df = pd.read_excel(temp_file) if filename_lower.endswith(('.xlsx', '.xls')) else pd.read_csv(temp_file)
+        df = _load_uploaded_spreadsheet(temp_file, filename_lower)
     except Exception as exc:
         try:
             os.remove(temp_file)
