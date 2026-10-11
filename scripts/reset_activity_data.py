@@ -41,9 +41,8 @@ def reset_activity_data():
     c.execute("DELETE FROM raw_reader_logs")
     c.execute("DELETE FROM camera_audit_logs")
     c.execute("DELETE FROM unregistered_tags")
-    c.execute("DELETE FROM guest_passes")
     c.execute("UPDATE members SET Current_Location = 'Outside'")
-    c.execute("DELETE FROM sqlite_sequence WHERE name IN ('daily_logs', 'raw_reader_logs', 'camera_audit_logs', 'unregistered_tags', 'guest_passes')")
+    c.execute("DELETE FROM sqlite_sequence WHERE name IN ('daily_logs', 'raw_reader_logs', 'camera_audit_logs', 'unregistered_tags')")
     conn.commit()
 
     # Reclaim disk space

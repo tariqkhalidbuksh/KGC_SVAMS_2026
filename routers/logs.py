@@ -857,68 +857,6 @@ async def api_deduplicate_camera_audits():
     removed = deduplicate_camera_audit_logs()
     return {"ok": True, "removed_duplicates": removed}
 
-THUMB_CACHE_DIR = os.path.join(config.STATIC_DIR, "cache", "thumbs")
-os.makedirs(THUMB_CACHE_DIR, exist_ok=True)
-
-@router.get("/thumbnail")
-async def get_image_thumbnail(path: str, w: int = 440, q: int = 65):
-    """
-    High-speed downsampled thumbnail endpoint for Camera Audit grid cards.
-    Reduces full-resolution image payloads by ~90% and disk-caches for sub-millisecond serving.
-    """
-    if not path or not path.strip():
-        raise HTTPException(400, "Image path is required")
-
-    clean_path = path.strip().replace("\\", "/").lstrip("/")
-    if ".." in clean_path:
-        raise HTTPException(400, "Invalid image path")
-
-    candidates = [
-        clean_path,
-        os.path.join(config.STATIC_DIR, clean_path),
-        os.path.join(config.STATIC_DIR, os.path.basename(clean_path))
-    ]
-    if os.path.isabs(path):
-        candidates.insert(0, path)
-
-    target_file = None
-    for cand in candidates:
-        if os.path.exists(cand) and os.path.isfile(cand):
-            target_file = os.path.abspath(cand)
-            break
-
-    if not target_file:
-        placeholder = os.path.join(config.STATIC_DIR, "img", "no-car.svg")
-        if os.path.exists(placeholder):
-            return FileResponse(placeholder, media_type="image/svg+xml")
-        raise HTTPException(404, "Source image not found")
-
-    w = max(80, min(w, 800))
-    q = max(30, min(q, 95))
-
-    try:
-        mtime = os.path.getmtime(target_file)
-        cache_key = hashlib.md5(f"{clean_path}_{mtime}_{w}_{q}".encode()).hexdigest()
-        thumb_file = os.path.join(THUMB_CACHE_DIR, f"{cache_key}.jpg")
-
-        if not os.path.exists(thumb_file):
-            with PILImage.open(target_file) as im:
-                if im.mode not in ("RGB", "L"):
-                    im = im.convert("RGB")
-                orig_w, orig_h = im.size
-                if orig_w > w:
-                    calc_h = int(orig_h * (w / float(orig_w)))
-                    im.thumbnail((w, calc_h), PILImage.Resampling.BILINEAR)
-                im.save(thumb_file, "JPEG", quality=q, optimize=True)
-
-        return FileResponse(
-            thumb_file,
-            media_type="image/jpeg",
-            headers={"Cache-Control": "public, max-age=604800, immutable"}
-        )
-    except Exception:
-        return FileResponse(target_file)
-
 @router.get("/audit/{log_id}/pdf")
 async def get_audit_log_pdf(log_id: int):
     with config.DB_LOCK:
@@ -1584,10 +1522,12 @@ async def post_manual_exit(request: Request):
                 ))
                 new_exit_id = cur.lastrowid
 
-                if mem_id and mem_id not in ("GUEST-LOG", "AI-CAM", "UNREGISTERED"):
+                if scanned_tag and scanned_tag != "NO_TAG":
+                    conn.execute("UPDATE members SET Current_Location = 'Outside' WHERE UPPER(E_tag_id) = ?", (scanned_tag.upper(),))
+                elif mem_id and display_vehicle and mem_id not in ("GUEST-LOG", "AI-CAM", "UNREGISTERED") and display_vehicle != "UNREGISTERED":
+                    conn.execute("UPDATE members SET Current_Location = 'Outside' WHERE Mem_id = ? AND UPPER(REPLACE(REPLACE(Car_number, '-', ''), ' ', '')) = UPPER(REPLACE(REPLACE(?, '-', ''), ' ', ''))", (mem_id, display_vehicle))
+                elif mem_id and mem_id not in ("GUEST-LOG", "AI-CAM", "UNREGISTERED"):
                     conn.execute("UPDATE members SET Current_Location = 'Outside' WHERE Mem_id = ?", (mem_id,))
-                elif scanned_tag and scanned_tag != "NO_TAG":
-                    conn.execute("UPDATE members SET Current_Location = 'Outside' WHERE E_tag_id = ?", (scanned_tag,))
 
                 config.LATEST_LOG_CACHE = None
 
@@ -1713,10 +1653,16 @@ async def post_bulk_manual_exit(request: Request):
                         exit_timestamp
                     ))
 
-                    if mem and mem not in ("GUEST-LOG", "AI-CAM", "UNREGISTERED"):
-                        conn.execute("UPDATE members SET Current_Location = 'Outside' WHERE Mem_id = ?", (v.get("mem_id"),))
-                    elif tag and tag != "NO_TAG":
-                        conn.execute("UPDATE members SET Current_Location = 'Outside' WHERE E_tag_id = ?", (v.get("scanned_tag"),))
+                    tag_val = v.get("scanned_tag") or tag
+                    plate_val = v.get("vehicle_number") or plate
+                    mem_val = v.get("mem_id") or mem
+
+                    if tag_val and tag_val != "NO_TAG":
+                        conn.execute("UPDATE members SET Current_Location = 'Outside' WHERE UPPER(E_tag_id) = ?", (tag_val.upper(),))
+                    elif mem_val and plate_val and mem_val not in ("GUEST-LOG", "AI-CAM", "UNREGISTERED") and plate_val not in ("UNREGISTERED", "NO PLATE", ""):
+                        conn.execute("UPDATE members SET Current_Location = 'Outside' WHERE Mem_id = ? AND UPPER(REPLACE(REPLACE(Car_number, '-', ''), ' ', '')) = UPPER(REPLACE(REPLACE(?, '-', ''), ' ', ''))", (mem_val, plate_val))
+                    elif mem_val and mem_val not in ("GUEST-LOG", "AI-CAM", "UNREGISTERED"):
+                        conn.execute("UPDATE members SET Current_Location = 'Outside' WHERE Mem_id = ?", (mem_val,))
 
                     exited_records.append({
                         "vehicle_number": v.get("vehicle_number") or plate,

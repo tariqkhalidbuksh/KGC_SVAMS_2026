@@ -28,7 +28,9 @@ from fastapi import HTTPException
 def check_admin_permission(request: Request):
     from routers.auth import get_current_user_optional
     user = get_current_user_optional(request)
-    if user and user.get("role") != "Admin":
+    if not user:
+        raise HTTPException(401, "Authentication required. Please log in.")
+    if user.get("role") != "Admin":
         raise HTTPException(403, "Administrator privileges required. Viewer and Editor accounts cannot modify system configuration.")
 
 @router.post("/settings")
@@ -65,10 +67,9 @@ async def reset_activity_data(request: Request = None):
                 conn.execute("DELETE FROM daily_logs")
                 conn.execute("DELETE FROM raw_reader_logs")
                 conn.execute("DELETE FROM camera_audit_logs")
-                conn.execute("DELETE FROM guest_passes")
                 conn.execute("DELETE FROM unregistered_tags")
                 conn.execute("UPDATE members SET Current_Location = 'Outside'")
-                conn.execute("DELETE FROM sqlite_sequence WHERE name IN ('daily_logs', 'raw_reader_logs', 'camera_audit_logs', 'guest_passes', 'unregistered_tags')")
+                conn.execute("DELETE FROM sqlite_sequence WHERE name IN ('daily_logs', 'raw_reader_logs', 'camera_audit_logs', 'unregistered_tags')")
             conn.execute("VACUUM")
             
             # Count retained members and settings

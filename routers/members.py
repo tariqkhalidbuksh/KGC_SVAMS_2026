@@ -14,7 +14,9 @@ router = APIRouter(prefix="/api", tags=["Members & Vehicles"])
 def check_edit_permission(request: Request):
     from routers.auth import get_current_user_optional
     user = get_current_user_optional(request)
-    if user and user.get("role") == "Viewer":
+    if not user:
+        raise HTTPException(401, "Authentication required. Please log in.")
+    if user.get("role") == "Viewer":
         raise HTTPException(403, "Viewer accounts have read-only access. Modifications are restricted.")
 
 @router.post("/align-member-photos")

@@ -55,6 +55,13 @@ def execute_access_decision(
                     (clean_tag, clean_tag, clean_tag)
                 ).fetchone()
 
+                # Rescues any registered member tags with human 23-char database typos
+                if not member and len(clean_tag) == 24:
+                    member = conn.execute(
+                        "SELECT * FROM members WHERE LENGTH(E_tag_id)=23 AND ? LIKE (UPPER(E_tag_id) || '%') LIMIT 1",
+                        (clean_tag,)
+                    ).fetchone()
+
                 if member:
                     raw_status = (member['Status'] or 'Active').strip()
                     name = member['Name']

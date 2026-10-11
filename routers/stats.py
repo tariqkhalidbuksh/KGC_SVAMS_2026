@@ -136,7 +136,7 @@ async def get_stats():
             overstay_row = conn.execute("""
                 SELECT COUNT(*) as c FROM daily_logs d
                 WHERE d.direction = 'Entry'
-                  AND d.timestamp <= datetime('now', '-8 hours')
+                  AND d.timestamp <= datetime('now', 'localtime', '-8 hours')
                   AND NOT EXISTS (
                       SELECT 1 FROM daily_logs e
                       WHERE e.direction = 'Exit'
