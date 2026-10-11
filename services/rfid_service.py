@@ -14,11 +14,36 @@ EXCLUDE_NOISE_PREFIXES = (
     "EF55", "ECCF", "EC4C", "EB0C", "E5DC", "E53C", "EE01", "E1CC", "E09C", "E32C", "E388", "E00000000"
 )
 
+def is_tag_registered(tag: str) -> bool:
+    """Fast check whether an EPC tag belongs to a registered club member."""
+    clean_tag = tag.strip().upper()
+    try:
+        from database import get_db_connection
+        with config.DB_LOCK:
+            conn = get_db_connection()
+            try:
+                row = conn.execute(
+                    "SELECT 1 FROM members WHERE UPPER(E_tag_id) = ? LIMIT 1",
+                    (clean_tag,)
+                ).fetchone()
+                if not row and len(clean_tag) == 24:
+                    row = conn.execute(
+                        "SELECT 1 FROM members WHERE LENGTH(E_tag_id)=23 AND ? LIKE (UPPER(E_tag_id) || '%') LIMIT 1",
+                        (clean_tag,)
+                    ).fetchone()
+                return bool(row)
+            finally:
+                conn.close()
+    except Exception:
+        return False
+
 def prioritize_member_tags(tags: list[str]) -> list[str]:
     """
     When multiple RFID tags are detected in the same antenna window (e.g. car carries both
-    a Gymkhana Club E-Tag and an NHA Motorway M-Tag / Sindh Excise tag on windshield),
-    ensures any tag registered to a Gymkhana member is processed first.
+    a Gymkhana Club E-Tag and an NHA Motorway M-Tag / Sindh Excise tag on windshield):
+    If ANY tag belongs to a verified Gymkhana member, ONLY return the member tag(s).
+    Secondary windshield tags (such as NHA M-Tag) are completely dropped so they never
+    create phantom guest logs.
     """
     if len(tags) <= 1:
         return tags
@@ -37,10 +62,9 @@ def prioritize_member_tags(tags: list[str]) -> list[str]:
                 conn.close()
 
         if registered_set:
-            # Place verified Gymkhana tags first
-            reg = [t for t in tags if t in registered_set]
-            unreg = [t for t in tags if t not in registered_set]
-            return reg + unreg
+            # If a verified Gymkhana member tag is detected in this burst,
+            # ONLY return the member tag(s). Completely drop secondary windshield tags!
+            return [t for t in tags if t in registered_set]
     except Exception:
         pass
     return tags
@@ -49,11 +73,16 @@ def process_rfid_direct(tag: str, direction: str):
     now = time.time()
     clean_tag = tag.strip().upper()
 
-    # If a registered member just passed through the gate within the last 3.5 seconds,
-    # suppress secondary unregistered tags (e.g. M-Tag on same windshield) from creating duplicate guest alerts
     with config.FUSION_LOCK:
         time_since_passage = now - config.LAST_GATE_PASSAGE.get("time", 0.0)
-    
+
+    # If a registered member just passed through the gate within the last 4.0 seconds:
+    # Any secondary transponder on that vehicle (such as an NHA M-Tag or Sindh Excise)
+    # arriving in a subsequent packet burst must NOT trigger a duplicate GUEST-LOG!
+    if time_since_passage < 4.0:
+        if not is_tag_registered(clean_tag):
+            return  # Suppress secondary windshield transponder on passing member car
+
     log_id = execute_access_decision(clean_tag, direction or "Auto", path_full=None, is_ai_trigger=False)
     if log_id:
         with config.FUSION_LOCK:
@@ -83,18 +112,21 @@ def rfid_tcp_client_worker(direction: str, ip_setting_key: str):
                 buffer += data
                 hex_stream = buffer.hex().upper()
 
-                # Prioritize standard EPC Gen2 tags:
-                # 1. Matches E2... (covers 100% of Karachi Gymkhana E280 & E200 member tags)
-                # 2. Matches general 24-hex EPC tags
+                # Strictly match standard EPC Gen2 tags:
+                # 1. 100% of legitimate Karachi Gymkhana tags start with E2 (E280... and E200...)
+                # 2. Rejects reader protocol framing bytes (EE..., EC..., E3..., CCFFFF...)
                 found_tags = re.findall(
-                    r'(?:3000|3400|3800)?(E2[0-9A-F]{22}|E[0-9A-F]{23})',
+                    r'(?:3000|3400|3800)?(E2[0-9A-F]{22})',
                     hex_stream
                 )
                 
-                # Filter out reader protocol noise and unaligned framing headers
+                # Filter out reader protocol noise, framing patterns, and corrupted data
                 valid_tags = [
                     t for t in found_tags
-                    if len(t) == 24 and not any(t.startswith(np) for np in EXCLUDE_NOISE_PREFIXES)
+                    if len(t) == 24 
+                    and "CCFFFF" not in t 
+                    and "FFFF" not in t
+                    and not any(t.startswith(np) for np in EXCLUDE_NOISE_PREFIXES)
                 ]
 
                 # De-duplicate within the same packet batch while preserving order
@@ -141,6 +173,7 @@ def rfid_tcp_client_worker(direction: str, ip_setting_key: str):
 
                     # Preserve buffer tail to avoid chopping incoming frames across recv boundaries
                     buffer = buffer[-256:]
+
                 elif len(buffer) > 4096:
                     buffer = buffer[-1024:]
         except Exception:
