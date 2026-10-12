@@ -1148,6 +1148,8 @@ function resetAuditFilters() {
     if (searchInput) searchInput.value = '';
     const camSelect = document.getElementById('auditCamera');
     if (camSelect) camSelect.value = 'all';
+    const tagTypeSel = document.getElementById('auditTagType');
+    if (tagTypeSel) tagTypeSel.value = 'all';
     currentAuditStatus = 'all';
     document.querySelectorAll('.audit-status-pill').forEach(b => {
         b.className = 'audit-status-pill px-3 py-1 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition';
@@ -1177,6 +1179,7 @@ async function loadAudit(page = currentAuditPage, isSilent = false) {
     const startD = document.getElementById('auditDate')?.value || '';
     const endD = document.getElementById('auditEndDate')?.value || '';
     const cam = document.getElementById('auditCamera')?.value || 'all';
+    const tagType = document.getElementById('auditTagType')?.value || 'all';
     const q = (document.getElementById('auditSearch') || {}).value || '';
     const bodyEl = document.getElementById('auditBody');
     if (!bodyEl) return;
@@ -1189,7 +1192,7 @@ async function loadAudit(page = currentAuditPage, isSilent = false) {
 
     try {
         const dateParam = (currentAuditDatePreset === 'all' && !startD) ? 'all' : startD;
-        const url = `/api/audit?date=${encodeURIComponent(dateParam)}&start_date=${encodeURIComponent(startD)}&end_date=${encodeURIComponent(endD)}&camera=${encodeURIComponent(cam)}&page=${page}&limit=${currentAuditLimit}&search=${encodeURIComponent(q)}&status=${currentAuditStatus}`;
+        const url = `/api/audit?date=${encodeURIComponent(dateParam)}&start_date=${encodeURIComponent(startD)}&end_date=${encodeURIComponent(endD)}&camera=${encodeURIComponent(cam)}&tag_type=${encodeURIComponent(tagType)}&page=${page}&limit=${currentAuditLimit}&search=${encodeURIComponent(q)}&status=${currentAuditStatus}`;
         const res = await fetch(url);
         const data = await res.json();
 
@@ -1283,10 +1286,18 @@ async function loadAudit(page = currentAuditPage, isSilent = false) {
                 methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300">VIP Committee</span>`;
             } else if (accType.includes('Security Alert')) {
                 methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-rose-100 text-rose-800 border border-rose-300">Security Alert</span>`;
+            } else if (accType.includes('NHA M-Tag') || (thumb.mem_id || '') === 'NHA-MTAG') {
+                methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200/90 shadow-2xs">🚗 NHA M-Tag</span>`;
+            } else if (accType.includes('Society Tag') || (thumb.mem_id || '') === 'SOCIETY-TAG') {
+                methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200/90 shadow-2xs">🏢 Society Tag</span>`;
+            } else if (accType.includes('Commercial') || (thumb.mem_id || '') === 'FLEET-TAG') {
+                methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-300 shadow-2xs">🚚 Commercial Tag</span>`;
+            } else if (accType.includes('Club Tag') || accType.includes('Unassigned') || (thumb.mem_id || '') === 'CLUB-STOCK') {
+                methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200/90 shadow-2xs">🎫 Spare Club Tag</span>`;
             } else if (isMember) {
                 methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/70">Verified Member</span>`;
             } else if (isUnreg) {
-                methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200/70">Unknown RFID</span>`;
+                methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200/70">⚠️ Unknown RFID</span>`;
             } else {
                 methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200/70">Optical Capture</span>`;
             }
@@ -1314,7 +1325,7 @@ async function loadAudit(page = currentAuditPage, isSilent = false) {
                             : `<div class="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-xs ${isUnreg || isNoTag ? 'bg-rose-100 text-rose-600' : 'bg-indigo-50 text-indigo-600'}">${initial}</div>`
                         }
                         <div class="min-w-0">
-                            <p class="font-bold text-slate-800 text-xs truncate max-w-[110px] ${isUnreg || isNoTag ? 'text-rose-600' : ''}">${thumb.name || 'Unregistered'}</p>
+                            <p class="font-bold text-slate-800 text-xs truncate max-w-[120px] ${isUnreg && !accType.includes('NHA') && !accType.includes('Society') && !accType.includes('Commercial') && !accType.includes('Club Tag') ? 'text-rose-600' : ''}">${thumb.name || 'Unregistered'}</p>
                             <p class="text-[10px] text-slate-400 font-mono">${thumb.mem_id || '—'}</p>
                         </div>
                     </div>
@@ -2541,11 +2552,26 @@ async function loadUnregisteredTags(countOnly = false) {
                 '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>Inside Club</span>' :
                 '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-100 text-slate-600 border border-slate-200"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>Outside</span>';
 
+            let tagBadge = '';
+            const tType = (t.tag_type || '');
+            if (tType.includes('NHA') || t.tag.startsWith('E2801105') || t.tag.startsWith('E2801114')) {
+                tagBadge = '<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 shadow-2xs">🚗 NHA M-Tag</span>';
+            } else if (tType.includes('Society') || t.tag.startsWith('E2803821') || t.tag.startsWith('E2003412')) {
+                tagBadge = '<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 shadow-2xs">🏢 Society Tag</span>';
+            } else if (tType.includes('Commercial') || t.tag.startsWith('E280F336')) {
+                tagBadge = '<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-300 shadow-2xs">🚚 Commercial Tag</span>';
+            } else if (tType.includes('Club Tag') || tType.includes('Unassigned') || t.tag.startsWith('E28068940') || t.tag.startsWith('E28068900') || t.tag.startsWith('E20047')) {
+                tagBadge = '<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 shadow-2xs">🎫 Spare Club Tag</span>';
+            } else {
+                tagBadge = '<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 shadow-2xs">⚠️ Unregistered</span>';
+            }
+
             return `
             <tr class="hover:bg-amber-50/40 transition">
                 <td class="p-3.5 pl-5">
-                    <div class="flex items-center gap-2">
-                        <span class="font-mono text-xs font-extrabold text-amber-900 bg-amber-50 border border-amber-200/90 px-2.5 py-1 rounded-lg select-all">${t.tag}</span>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="font-mono text-xs font-extrabold text-slate-900 bg-slate-50 border border-slate-200/90 px-2.5 py-1 rounded-lg select-all">${t.tag}</span>
+                        ${tagBadge}
                         <button type="button" onclick="navigator.clipboard.writeText('${t.tag}'); this.innerText='Copied!'; setTimeout(() => this.innerText='Copy', 1500);"
                                 class="text-[10px] font-bold text-slate-500 hover:text-slate-800 bg-white border border-slate-200 px-2 py-0.5 rounded shadow-2xs">
                             Copy

@@ -126,18 +126,47 @@ async function updateRecentEntries() {
         }
 
         container.innerHTML = entries.map(entry => {
-            const isUnreg = (entry.access_type || '').includes('Unknown') || 
-                            (entry.access_type || '').includes('No RFID') || 
+            const acc = entry.access_type || '';
+            const memId = entry.mem_id || '';
+            const isNHA = acc.includes('NHA M-Tag') || memId === 'NHA-MTAG';
+            const isSociety = acc.includes('Society Tag') || memId === 'SOCIETY-TAG';
+            const isCommercial = acc.includes('Commercial Tag') || memId === 'FLEET-TAG';
+            const isStock = acc.includes('Club Tag') || memId === 'CLUB-STOCK';
+            const isUnreg = !isNHA && !isSociety && !isCommercial && !isStock && (
+                            acc.includes('Unknown') || 
+                            acc.includes('No RFID') || 
                             (entry.name || '').includes('Unregistered') ||
-                            (entry.mem_id || '').includes('UNREGISTERED');
-            const displayName = isUnreg ? 'Unregistered Vehicle' : entry.name;
-            const plate = isUnreg ? (entry.scanned_tag || 'NO TAG') : (entry.vehicle_number || '--');
+                            memId.includes('UNREGISTERED') ||
+                            memId === 'GUEST-LOG');
+
+            let displayName = entry.name;
+            if (isNHA) displayName = '🚗 NHA Motorway M-Tag';
+            else if (isSociety) displayName = '🏢 Society Pass';
+            else if (isCommercial) displayName = '🚚 Commercial Tag';
+            else if (isStock) displayName = '🎫 Spare Club Tag';
+            else if (isUnreg) displayName = 'Unregistered Vehicle';
+
+            const plate = (isUnreg || isNHA || isSociety || isCommercial || isStock) ? (entry.scanned_tag || entry.vehicle_number || 'NO TAG') : (entry.vehicle_number || '--');
             const timeStr = formatTimestamp(entry.timestamp);
             const dir = entry.direction || 'Entry';
 
             let badgeClass = 'bg-emerald-50 text-emerald-700 border-emerald-200';
-            if (isUnreg) {
+            let badgeLabel = dir.toUpperCase();
+            if (isNHA) {
+                badgeClass = 'bg-amber-50 text-amber-800 border-amber-200';
+                badgeLabel = 'M-TAG';
+            } else if (isSociety) {
+                badgeClass = 'bg-indigo-50 text-indigo-700 border-indigo-200';
+                badgeLabel = 'SOCIETY';
+            } else if (isCommercial) {
+                badgeClass = 'bg-slate-100 text-slate-700 border-slate-300';
+                badgeLabel = 'COMMERCIAL';
+            } else if (isStock) {
+                badgeClass = 'bg-blue-50 text-blue-700 border-blue-200';
+                badgeLabel = 'CLUB STOCK';
+            } else if (isUnreg) {
                 badgeClass = 'bg-rose-50 text-rose-700 border-rose-200';
+                badgeLabel = 'ALERT';
             } else if (dir === 'Exit') {
                 badgeClass = 'bg-blue-50 text-blue-700 border-blue-200';
             }

@@ -79,7 +79,10 @@ def init_db():
                 unreg_cols = [col['name'] for col in conn.execute("PRAGMA table_info(unregistered_tags)").fetchall()]
                 if 'Current_Location' not in unreg_cols:
                     conn.execute("ALTER TABLE unregistered_tags ADD COLUMN Current_Location TEXT DEFAULT 'Outside'")
+                if 'tag_type' not in unreg_cols:
+                    conn.execute("ALTER TABLE unregistered_tags ADD COLUMN tag_type TEXT DEFAULT 'Unregistered Visitor'")
                 conn.execute("CREATE INDEX IF NOT EXISTS idx_unreg_loc ON unregistered_tags(Current_Location)")
+                conn.execute("CREATE INDEX IF NOT EXISTS idx_unreg_tag_type ON unregistered_tags(tag_type)")
                 conn.execute("UPDATE unregistered_tags SET Current_Location = 'Outside' WHERE Current_Location IS NULL OR Current_Location = ''")
 
                 conn.execute("""CREATE TABLE IF NOT EXISTS daily_logs (

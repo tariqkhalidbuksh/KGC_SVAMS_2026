@@ -35,6 +35,23 @@ def log_camera_audit_event(
         finally:
             conn.close()
 
+def classify_unregistered_tag(clean_tag: str) -> tuple[str, str, str, str]:
+    """
+    Intelligently classifies non-member RFID tags based on their silicon manufacturer & known deployment signatures:
+    Returns (name, mem_id, access_type, resolved_status)
+    """
+    clean_upper = clean_tag.upper()
+    if clean_upper.startswith(("E2801105", "E2801114")):
+        return ("NHA Motorway M-Tag", "NHA-MTAG", "NHA M-Tag", "NHA M-Tag")
+    elif clean_upper.startswith("E280F336"):
+        return ("Third-Party Fleet Tag", "FLEET-TAG", "Commercial Tag", "Commercial Tag")
+    elif clean_upper.startswith(("E2803821", "E2003412")):
+        return ("Society / Resident Tag", "SOCIETY-TAG", "Society Tag", "Society Tag")
+    elif clean_upper.startswith(("E28068940", "E28068900", "E20047")):
+        return ("Unassigned Gymkhana Tag", "CLUB-STOCK", "Unassigned Club Tag", "Unassigned Stock")
+    else:
+        return ("Unregistered Visitor", "GUEST-LOG", "RFID Unknown", "Unregistered")
+
 def execute_access_decision(
     tag: str,
     direction: str = None,
@@ -82,13 +99,10 @@ def execute_access_decision(
                         access_type = "RFID Verified"
                         resolved_status = "Active"
                 else:
-                    name = "Unregistered Visitor"
-                    mem_id = "GUEST-LOG"
+                    name, mem_id, access_type, resolved_status = classify_unregistered_tag(clean_tag)
                     car = clean_tag
-                    access_type = "RFID Unknown"
                     make_model = None
                     profile_pic = None
-                    resolved_status = "Unregistered"
 
                 member_loc = (member['Current_Location'] or '').strip() if member else ""
 
@@ -173,16 +187,17 @@ def execute_access_decision(
 
                     new_loc = "Outside" if resolved_direction == "Exit" else "Inside"
 
-                    # Track into unregistered_tags table with Current_Location
+                    # Track into unregistered_tags table with Current_Location and tag_type
                     conn.execute("""
-                        INSERT INTO unregistered_tags (tag, first_seen, last_seen, direction, Current_Location, read_count)
-                        VALUES (?, ?, ?, ?, ?, 1)
+                        INSERT INTO unregistered_tags (tag, first_seen, last_seen, direction, Current_Location, read_count, tag_type)
+                        VALUES (?, ?, ?, ?, ?, 1, ?)
                         ON CONFLICT(tag) DO UPDATE SET
                             last_seen = excluded.last_seen,
                             direction = excluded.direction,
                             Current_Location = excluded.Current_Location,
-                            read_count = unregistered_tags.read_count + 1
-                    """, (clean_tag, pkt_now, pkt_now, resolved_direction, new_loc))
+                            read_count = unregistered_tags.read_count + 1,
+                            tag_type = excluded.tag_type
+                    """, (clean_tag, pkt_now, pkt_now, resolved_direction, new_loc, access_type))
 
                 conn.execute(
                     "INSERT INTO raw_reader_logs (tag_scanned, system_response, direction, timestamp) VALUES (?, ?, ?, ?)",

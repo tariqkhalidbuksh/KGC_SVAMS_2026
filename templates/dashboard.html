@@ -735,6 +735,20 @@
                                 </select>
                             </div>
 
+                            <!-- Tag / Vehicle Classification Filter -->
+                            <div class="flex items-center gap-1.5 bg-white border border-slate-200 rounded-xl px-3 py-1.5 shadow-sm">
+                                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                                <select id="auditTagType" onchange="loadAudit(1)" class="text-xs font-bold border-0 bg-transparent text-slate-700 focus:outline-none pr-1">
+                                    <option value="all">All Vehicle Types</option>
+                                    <option value="members">Verified Members Only</option>
+                                    <option value="nha">🚗 Flagged NHA M-Tags</option>
+                                    <option value="society">🏢 Society Passes</option>
+                                    <option value="commercial">🚚 Commercial Fleet Tags</option>
+                                    <option value="stock">🎫 Spare Club Tags</option>
+                                    <option value="unregistered">All External &amp; Unregistered</option>
+                                </select>
+                            </div>
+
                             <!-- Search Input -->
                             <input id="auditSearch" oninput="onAuditSearchInput()" placeholder="Search plate, name, EPC, ID..."
                                    class="text-xs font-bold border border-slate-200 rounded-xl pl-3 pr-3 py-2 bg-white w-48 md:w-56 shadow-sm focus:outline-none focus:border-indigo-500">

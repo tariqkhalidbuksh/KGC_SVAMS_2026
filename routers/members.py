@@ -618,7 +618,7 @@ async def get_unregistered_tags(limit: int = 50):
         try:
             limit = min(max(5, limit), 200)
             rows = conn.execute(
-                "SELECT id, tag, first_seen, last_seen, direction, Current_Location, read_count FROM unregistered_tags ORDER BY id DESC LIMIT ?",
+                "SELECT id, tag, first_seen, last_seen, direction, Current_Location, read_count, COALESCE(tag_type, 'Unregistered Visitor') as tag_type FROM unregistered_tags ORDER BY id DESC LIMIT ?",
                 (limit,)
             ).fetchall()
             return [dict(r) for r in rows]

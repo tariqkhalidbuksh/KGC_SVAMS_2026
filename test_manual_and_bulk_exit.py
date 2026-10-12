@@ -36,10 +36,10 @@ def setup_test_db(tmp_path, monkeypatch):
     """)
 
     # Entry timestamps on today's date (guaranteed fresh and on the same calendar day)
-    pkt_today = config.get_pkt_today()
-    t_alpha = f"{pkt_today} 08:00:00"
-    t_beta = f"{pkt_today} 08:30:00"
-    t_vip = f"{pkt_today} 09:00:00"
+    now_dt = datetime.now()
+    t_alpha = (now_dt - timedelta(hours=2)).strftime("%Y-%m-%d %H:%M:%S")
+    t_beta = (now_dt - timedelta(hours=1, minutes=30)).strftime("%Y-%m-%d %H:%M:%S")
+    t_vip = (now_dt - timedelta(hours=1)).strftime("%Y-%m-%d %H:%M:%S")
 
     # Seed Entry logs: Alpha, Beta, VIP are currently inside
     conn.execute("""
@@ -61,8 +61,7 @@ def test_single_manual_exit():
     assert len(data["audits"]) >= 1
     assert data["audits"][0]["status"] == "Inside Facility"
 
-    pkt_today = config.get_pkt_today()
-    exit_time = f"{pkt_today} 10:00:00"
+    exit_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # Manually exit Member Alpha with custom timestamp and camera image proof
     payload = {

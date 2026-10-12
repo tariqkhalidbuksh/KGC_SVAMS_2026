@@ -505,6 +505,7 @@ async def get_audit(
     start_date: str = "",
     end_date: str = "",
     camera: str = "all",
+    tag_type: str = "all",
     page: int = 1,
     limit: int = 25,
     search: str = "",
@@ -537,7 +538,7 @@ async def get_audit(
         def _match_search(audit_item):
             e = audit_item.get('entry') or {}
             x = audit_item.get('exit') or {}
-            combined_text = f"{e.get('name', '')} {x.get('name', '')} {e.get('mem_id', '')} {x.get('mem_id', '')} {e.get('vehicle_number', '')} {x.get('vehicle_number', '')} {e.get('scanned_tag', '')} {x.get('scanned_tag', '')} {e.get('make_model', '')} {x.get('make_model', '')}".lower()
+            combined_text = f"{e.get('name', '')} {x.get('name', '')} {e.get('mem_id', '')} {x.get('mem_id', '')} {e.get('vehicle_number', '')} {x.get('vehicle_number', '')} {e.get('scanned_tag', '')} {x.get('scanned_tag', '')} {e.get('make_model', '')} {x.get('make_model', '')} {e.get('access_type', '')} {x.get('access_type', '')}".lower()
             return search_term in combined_text
         filtered = [a for a in filtered if _match_search(a)]
 
@@ -552,6 +553,28 @@ async def get_audit(
             filtered = [a for a in filtered if a['is_alert']]
         elif status_filter == "overstay":
             filtered = [a for a in filtered if a.get('is_overstay')]
+
+    # 4. Tag type / Category filter
+    tag_type_filter = (tag_type or "").strip().lower()
+    if tag_type_filter and tag_type_filter != "all":
+        def _match_tag_type(audit_item):
+            e = audit_item.get('entry') or {}
+            x = audit_item.get('exit') or {}
+            combined = f"{e.get('access_type', '')} {x.get('access_type', '')} {e.get('mem_id', '')} {x.get('mem_id', '')} {e.get('name', '')} {x.get('name', '')}".lower()
+            if tag_type_filter == "members":
+                return not any(ex in combined for ex in ('guest-log', 'nha', 'm-tag', 'society', 'fleet', 'commercial', 'unassigned', 'stock', 'unknown'))
+            elif tag_type_filter == "nha":
+                return 'nha' in combined or 'm-tag' in combined
+            elif tag_type_filter == "society":
+                return 'society' in combined or 'resident' in combined
+            elif tag_type_filter == "commercial":
+                return 'commercial' in combined or 'fleet' in combined
+            elif tag_type_filter == "stock":
+                return 'stock' in combined or 'unassigned' in combined
+            elif tag_type_filter == "unregistered":
+                return any(ex in combined for ex in ('guest-log', 'nha', 'm-tag', 'society', 'fleet', 'commercial', 'unassigned', 'stock', 'unknown'))
+            return True
+        filtered = [a for a in filtered if _match_tag_type(a)]
 
     # Sort strictly by the most recent movement event (newest entry or exit timestamp first)
     filtered.sort(key=_audit_sort_key, reverse=True)
