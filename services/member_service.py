@@ -1,10 +1,14 @@
 import os
+import re
 import sqlite3
 import config
 from database import get_db_connection
 
 def get_possible_filenames(mem_id: str) -> list[str]:
-    """Generates candidate base filenames for a given member ID."""
+    """
+    Generates comprehensive candidate base filenames for a given member ID,
+    including leading-zero stripped (e.g., '0045' -> '45'), padded, and compound formats.
+    """
     if not mem_id:
         return []
     clean_id = str(mem_id).strip()
@@ -17,18 +21,56 @@ def get_possible_filenames(mem_id: str) -> list[str]:
         clean_id.replace(" ", "_"),
         clean_id.replace(" ", "")
     ]
+
+    # 1. Leading-zero stripped variants (e.g., '0045' -> '45', '01234' -> '1234')
+    stripped_zero = clean_id.lstrip('0') or '0'
+    if stripped_zero != clean_id:
+        candidates.extend([
+            stripped_zero,
+            stripped_zero.lower(),
+            stripped_zero.upper(),
+            stripped_zero.replace("/", "_").replace("\\", "_"),
+            stripped_zero.replace("/", "-").replace("\\", "-"),
+            stripped_zero.replace(" ", "")
+        ])
+
+    # 2. Compound ID leading-zero normalization (e.g., 'M-0045' -> 'M-45', 'A/0012' -> 'A/12')
+    compound_stripped = re.sub(r'(^|[^0-9])0+([0-9]+)', r'\1\2', clean_id)
+    if compound_stripped != clean_id:
+        candidates.extend([
+            compound_stripped,
+            compound_stripped.lower(),
+            compound_stripped.upper(),
+            compound_stripped.replace("/", "_").replace("\\", "_"),
+            compound_stripped.replace("/", "-").replace("\\", "-"),
+            compound_stripped.replace(" ", "")
+        ])
+
+    # 3. Padded variants for numeric IDs (e.g., if ID is '45', also checks '0045', '00045', '000045')
+    if stripped_zero.isdigit():
+        for pad_len in (3, 4, 5, 6):
+            if pad_len > len(stripped_zero):
+                candidates.append(stripped_zero.zfill(pad_len))
+
+    # 4. Pure numeric segment extraction (e.g., 'M-0045' -> '45')
+    num_only = re.sub(r'\D', '', clean_id).lstrip('0') or '0'
+    if num_only and num_only != clean_id and num_only != stripped_zero:
+        candidates.append(num_only)
+
     seen = set()
     result = []
     for c in candidates:
-        if c and c not in seen:
-            seen.add(c)
-            result.append(c)
+        c_str = str(c).strip()
+        if c_str and c_str.lower() not in seen:
+            seen.add(c_str.lower())
+            result.append(c_str)
     return result
 
 def find_member_photo_file(mem_id: str) -> str | None:
     """
     Searches config.MEMBER_PROFILE_IMG_DIR and config.PROFILE_DIR for an image
     matching mem_id. Returns relative path (using forward slashes) or None.
+    Handles leading zeros (0, 00) normalization seamlessly.
     """
     if not mem_id:
         return None
@@ -60,11 +102,16 @@ def find_member_photo_file(mem_id: str) -> str | None:
             for f in dir_files:
                 stem, ext = os.path.splitext(f)
                 if ext.lower() in [".jpg", ".jpeg", ".png", ".webp", ".bmp"]:
-                    files_map[stem.lower()] = os.path.join(directory, f)
+                    stem_lower = stem.lower()
+                    files_map[stem_lower] = os.path.join(directory, f)
+                    stripped_stem = stem_lower.lstrip('0') or '0'
+                    if stripped_stem not in files_map:
+                        files_map[stripped_stem] = os.path.join(directory, f)
 
             for base in bases:
-                if base.lower() in files_map:
-                    return files_map[base.lower()].replace("\\", "/")
+                base_lower = base.lower()
+                if base_lower in files_map:
+                    return files_map[base_lower].replace("\\", "/")
         except Exception:
             pass
 
@@ -74,6 +121,8 @@ def align_member_photos() -> dict:
     """
     Scans static/member_profile_img and static/profiles directories and updates all
     member records in the database where a photo file exists matching member Mem_id.
+    Includes robust leading-zero (0, 00) normalization so files without zeros (e.g. 45.jpg)
+    align with membership numbers like 0045, 01234, etc.
     """
     search_dirs = [
         getattr(config, 'MEMBER_PROFILE_IMG_DIR', os.path.join(config.STATIC_DIR, "member_profile_img")),
@@ -93,15 +142,32 @@ def align_member_photos() -> dict:
                     if ext.lower() in valid_exts:
                         rel_path = os.path.join(d, entry.name).replace("\\", "/")
                         stem_lower = stem.lower()
-                        if stem_lower not in image_map:
-                            image_map[stem_lower] = rel_path
                         
-                        sanitized_underscore = stem_lower.replace("-", "_").replace("/", "_").replace(" ", "_")
-                        sanitized_hyphen = stem_lower.replace("_", "-").replace("/", "-").replace(" ", "-")
-                        if sanitized_underscore not in image_map:
-                            image_map[sanitized_underscore] = rel_path
-                        if sanitized_hyphen not in image_map:
-                            image_map[sanitized_hyphen] = rel_path
+                        keys = [
+                            stem_lower,
+                            stem_lower.replace("-", "_").replace("/", "_").replace(" ", "_"),
+                            stem_lower.replace("_", "-").replace("/", "-").replace(" ", "-"),
+                            stem_lower.replace(" ", "")
+                        ]
+
+                        # Leading-zero stripped (e.g. image '0045.jpg' matches '45')
+                        stripped_stem = stem_lower.lstrip('0') or '0'
+                        if stripped_stem != stem_lower:
+                            keys.extend([
+                                stripped_stem,
+                                stripped_stem.replace("-", "_").replace("/", "_").replace(" ", "_"),
+                                stripped_stem.replace("_", "-").replace("/", "-").replace(" ", "-"),
+                                stripped_stem.replace(" ", "")
+                            ])
+
+                        # Compound normalization
+                        compound_stem = re.sub(r'(^|[^0-9])0+([0-9]+)', r'\1\2', stem_lower)
+                        if compound_stem != stem_lower:
+                            keys.append(compound_stem)
+
+                        for k in keys:
+                            if k not in image_map:
+                                image_map[k] = rel_path
         except Exception as exc:
             print(f"[SCAN MEMBER IMAGES ERROR] {exc}")
 
@@ -123,18 +189,13 @@ def align_member_photos() -> dict:
                 if not mem_id:
                     continue
 
-                mem_id_lower = mem_id.lower()
-                candidates = [
-                    mem_id_lower,
-                    mem_id_lower.replace("/", "_").replace("\\", "_").replace(" ", "_"),
-                    mem_id_lower.replace("/", "-").replace("\\", "-").replace(" ", "-"),
-                    mem_id_lower.replace(" ", ""),
-                ]
+                candidates = get_possible_filenames(mem_id)
 
                 matched_pic = None
                 for cand in candidates:
-                    if cand in image_map:
-                        matched_pic = image_map[cand]
+                    cand_lower = cand.lower()
+                    if cand_lower in image_map:
+                        matched_pic = image_map[cand_lower]
                         break
 
                 if matched_pic:

@@ -274,6 +274,48 @@ class TestMemberAPI:
             if os.path.exists(dummy_img_path):
                 os.remove(dummy_img_path)
 
+    def test_align_member_photos_leading_zeros(self, setup_test_db):
+        # Scenario: Member ID in database has leading zeros '0045' and '0123'
+        # but physical photo files in folder are named '45.jpg' and '123.jpg'
+        client.post("/api/add-member", json={
+            "mem_id": "0045",
+            "name": "Zero Leading User",
+            "car_number": "ZERO-45",
+            "e_tag_id": "EPC-ZERO-45"
+        })
+        client.post("/api/add-member", json={
+            "mem_id": "0123",
+            "name": "Single Zero User",
+            "car_number": "ZERO-123",
+            "e_tag_id": "EPC-ZERO-123"
+        })
+
+        img_dir = config.MEMBER_PROFILE_IMG_DIR
+        os.makedirs(img_dir, exist_ok=True)
+        img_45 = os.path.join(img_dir, "45.jpg")
+        img_123 = os.path.join(img_dir, "123.jpg")
+        with open(img_45, "wb") as f: f.write(b"img45")
+        with open(img_123, "wb") as f: f.write(b"img123")
+
+        try:
+            res = client.post("/api/align-member-photos")
+            assert res.status_code == 200
+            data = res.json()
+            assert data["ok"] is True
+
+            res_members = client.get("/api/members?all=true")
+            members = res_members.json()
+            mem_45 = next((m for m in members if m["Mem_id"] == "0045"), None)
+            mem_123 = next((m for m in members if m["Mem_id"] == "0123"), None)
+            assert mem_45 is not None
+            assert mem_123 is not None
+            assert "45.jpg" in (mem_45["Profile_pic"] or "")
+            assert "123.jpg" in (mem_123["Profile_pic"] or "")
+        finally:
+            for p in (img_45, img_123):
+                if os.path.exists(p):
+                    os.remove(p)
+
 
 class TestSettingsAndStatsAPI:
     def test_settings_get_and_post(self, setup_test_db):

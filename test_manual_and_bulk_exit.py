@@ -35,11 +35,11 @@ def setup_test_db(tmp_path, monkeypatch):
         ('M-103', 'Staff Whitelist', 'VIP-999', 'Land Cruiser', 'TAG-VIP', 'Inside', 'Active')
     """)
 
-    # Entry timestamps on today's date (guaranteed fresh and on the same calendar day)
-    now_dt = datetime.now()
-    t_alpha = (now_dt - timedelta(hours=2)).strftime("%Y-%m-%d %H:%M:%S")
-    t_beta = (now_dt - timedelta(hours=1, minutes=30)).strftime("%Y-%m-%d %H:%M:%S")
-    t_vip = (now_dt - timedelta(hours=1)).strftime("%Y-%m-%d %H:%M:%S")
+    # Entry timestamps on today's PKT date (guaranteed fresh and on the same calendar day)
+    pkt_today = config.get_pkt_today()
+    t_alpha = f"{pkt_today} 00:01:00"
+    t_beta = f"{pkt_today} 00:02:00"
+    t_vip = f"{pkt_today} 00:03:00"
 
     # Seed Entry logs: Alpha, Beta, VIP are currently inside
     conn.execute("""
@@ -61,7 +61,8 @@ def test_single_manual_exit():
     assert len(data["audits"]) >= 1
     assert data["audits"][0]["status"] == "Inside Facility"
 
-    exit_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    pkt_today = config.get_pkt_today()
+    exit_time = f"{pkt_today} 02:01:00"
 
     # Manually exit Member Alpha with custom timestamp and camera image proof
     payload = {
@@ -157,8 +158,8 @@ def test_bulk_manual_exit_execution():
 def test_unregistered_car_manual_exit():
     """Verify that unknown/unregistered vehicles can be manually exited cleanly."""
     conn = get_db_connection()
-    now = datetime.now()
-    entry_time = (now - timedelta(hours=1)).strftime("%Y-%m-%d %H:%M:%S")
+    pkt_today = config.get_pkt_today()
+    entry_time = f"{pkt_today} 00:01:30"
     cur = conn.execute("""
         INSERT INTO daily_logs (mem_id, name, vehicle_number, access_type, direction, gate_no, scanned_tag, timestamp)
         VALUES ('UNREGISTERED', 'Unregistered Driver', 'UNREGISTERED', 'Optical Capture - No RFID', 'Entry', 'Gate-01-In', 'NO_TAG', ?)
@@ -176,7 +177,7 @@ def test_unregistered_car_manual_exit():
     assert unreg_item["status"] in ("Alert / Inside", "Inside Facility")
 
     # Perform manual exit with log_id
-    exit_time = now.strftime("%Y-%m-%d %H:%M:%S")
+    exit_time = f"{pkt_today} 01:00:00"
     manual_res = client.post("/api/audit/manual-exit", json={
         "log_id": entry_id,
         "vehicle_number": "UNREGISTERED",
