@@ -1286,24 +1286,28 @@ async function loadAudit(page = currentAuditPage, isSilent = false) {
             let methodPill = '';
             const accType = thumbAcc;
             const cleanTag = String(thumb.scanned_tag || '').toUpperCase();
-            if (accType.includes('VIP')) {
-                methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300">VIP Committee</span>`;
-            } else if (accType.includes('Security Alert')) {
-                methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-rose-100 text-rose-800 border border-rose-300">Security Alert</span>`;
-            } else if (accType.includes('NHA') || accType.includes('M-Tag') || cleanTag.startsWith('E2801105') || cleanTag.startsWith('E2801114')) {
-                methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200/90 shadow-2xs">🚗 NHA M-Tag</span>`;
-            } else if (accType.includes('Society') || accType.includes('Resident') || cleanTag.startsWith('E2803821') || cleanTag.startsWith('E2003412')) {
-                methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200/90 shadow-2xs">🏢 Society Tag</span>`;
-            } else if (accType.includes('Commercial') || accType.includes('Fleet') || cleanTag.startsWith('E280F336')) {
-                methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-300 shadow-2xs">🚚 Commercial Tag</span>`;
-            } else if (accType.includes('Club Tag') || accType.includes('Spare') || accType.includes('Unassigned') || cleanTag.startsWith('E28068940') || cleanTag.startsWith('E28068900') || cleanTag.startsWith('E20047')) {
-                methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200/90 shadow-2xs">🎫 Spare Club Tag</span>`;
-            } else if (isMember) {
-                methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/70">Verified Member</span>`;
-            } else if (isUnreg) {
-                methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200/70">⚠️ Unknown RFID</span>`;
+            if (isMember) {
+                if (accType.includes('VIP')) {
+                    methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300">VIP Committee</span>`;
+                } else {
+                    methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/70">Verified Member</span>`;
+                }
             } else {
-                methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200/70">Optical Capture</span>`;
+                if (accType.includes('Security Alert')) {
+                    methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-rose-100 text-rose-800 border border-rose-300">Security Alert</span>`;
+                } else if (accType.includes('NHA') || accType.includes('M-Tag') || cleanTag.startsWith('E2801105') || cleanTag.startsWith('E2801114')) {
+                    methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200/90 shadow-2xs">🚗 NHA M-Tag</span>`;
+                } else if (accType.includes('Society') || accType.includes('Resident') || cleanTag.startsWith('E2803821') || cleanTag.startsWith('E2003412')) {
+                    methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200/90 shadow-2xs">🏢 Society Tag</span>`;
+                } else if (accType.includes('Commercial') || accType.includes('Fleet') || cleanTag.startsWith('E280F336')) {
+                    methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-300 shadow-2xs">🚚 Commercial Tag</span>`;
+                } else if (accType.includes('Club Tag') || accType.includes('Spare') || accType.includes('Unassigned') || cleanTag.startsWith('E28068940') || cleanTag.startsWith('E28068900')) {
+                    methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200/90 shadow-2xs">🎫 Spare Club Tag</span>`;
+                } else if (isUnreg) {
+                    methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200/70">⚠️ Unknown RFID</span>`;
+                } else {
+                    methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200/70">Optical Capture</span>`;
+                }
             }
 
             const imgPath = thumb.image_path || thumb.plate_image_path;
@@ -1586,23 +1590,25 @@ function openAudit(a) {
 
     let tagClassificationBadge = '';
     let tagClassificationLabel = '';
-    const cleanEpc = (epc || '').toUpperCase();
-    const combinedAcc = `${rawAcc} ${rawName}`.toLowerCase();
-    if (combinedAcc.includes('nha') || combinedAcc.includes('m-tag') || cleanEpc.startsWith('E2801105') || cleanEpc.startsWith('E2801114')) {
-        tagClassificationLabel = 'NHA Motorway M-Tag';
-        tagClassificationBadge = `<span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-200/90 shadow-2xs">🚗 Flagged: NHA Motorway M-Tag</span>`;
-    } else if (combinedAcc.includes('society') || combinedAcc.includes('resident') || cleanEpc.startsWith('E2803821') || cleanEpc.startsWith('E2003412')) {
-        tagClassificationLabel = 'Society / Resident Pass';
-        tagClassificationBadge = `<span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200/90 shadow-2xs">🏢 Flagged: Society Pass</span>`;
-    } else if (combinedAcc.includes('commercial') || combinedAcc.includes('fleet') || cleanEpc.startsWith('E280F336')) {
-        tagClassificationLabel = 'Commercial Fleet Tag';
-        tagClassificationBadge = `<span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 border border-slate-300 shadow-2xs">🚚 Flagged: Commercial Fleet Tag</span>`;
-    } else if (combinedAcc.includes('club tag') || combinedAcc.includes('spare') || combinedAcc.includes('unassigned') || cleanEpc.startsWith('E28068940') || cleanEpc.startsWith('E28068900') || cleanEpc.startsWith('E20047')) {
-        tagClassificationLabel = 'Unassigned Gymkhana Stock Tag';
-        tagClassificationBadge = `<span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 border border-blue-200/90 shadow-2xs">🎫 Flagged: Spare Club Stock Tag</span>`;
-    } else if (epc && epc !== 'NO_TAG') {
-        tagClassificationLabel = 'Unknown External RFID Tag';
-        tagClassificationBadge = `<span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700 border border-rose-200/70 shadow-2xs">⚠️ Flagged: Unknown External RFID</span>`;
+    if (!isMember) {
+        const cleanEpc = (epc || '').toUpperCase();
+        const combinedAcc = `${rawAcc} ${rawName}`.toLowerCase();
+        if (combinedAcc.includes('nha') || combinedAcc.includes('m-tag') || cleanEpc.startsWith('E2801105') || cleanEpc.startsWith('E2801114')) {
+            tagClassificationLabel = 'NHA Motorway M-Tag';
+            tagClassificationBadge = `<span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-200/90 shadow-2xs">🚗 Flagged: NHA Motorway M-Tag</span>`;
+        } else if (combinedAcc.includes('society') || combinedAcc.includes('resident') || cleanEpc.startsWith('E2803821') || cleanEpc.startsWith('E2003412')) {
+            tagClassificationLabel = 'Society / Resident Pass';
+            tagClassificationBadge = `<span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200/90 shadow-2xs">🏢 Flagged: Society Pass</span>`;
+        } else if (combinedAcc.includes('commercial') || combinedAcc.includes('fleet') || cleanEpc.startsWith('E280F336')) {
+            tagClassificationLabel = 'Commercial Fleet Tag';
+            tagClassificationBadge = `<span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 border border-slate-300 shadow-2xs">🚚 Flagged: Commercial Fleet Tag</span>`;
+        } else if (combinedAcc.includes('club tag') || combinedAcc.includes('spare') || combinedAcc.includes('unassigned') || cleanEpc.startsWith('E28068940') || cleanEpc.startsWith('E28068900')) {
+            tagClassificationLabel = 'Unassigned Gymkhana Stock Tag';
+            tagClassificationBadge = `<span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 border border-blue-200/90 shadow-2xs">🎫 Flagged: Spare Club Stock Tag</span>`;
+        } else if (epc && epc !== 'NO_TAG') {
+            tagClassificationLabel = 'Unknown External RFID Tag';
+            tagClassificationBadge = `<span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700 border border-rose-200/70 shadow-2xs">⚠️ Flagged: Unknown External RFID</span>`;
+        }
     }
 
     currentReportIncident = a;
@@ -1868,7 +1874,7 @@ function openAudit(a) {
                         <span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-1 rounded-lg ${isMember ? 'bg-emerald-50 text-emerald-800 border border-emerald-300' : 'bg-rose-50 text-rose-800 border border-rose-300'}">
                             ${isMember ? '<svg class="w-3.5 h-3.5 text-emerald-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> REGISTERED CLUB MEMBER' : '⚠️ NON-MEMBER / UNREGISTERED VEHICLE'}
                         </span>
-                        ${tagClassificationBadge}
+                        ${!isMember && tagClassificationBadge ? tagClassificationBadge : ''}
                         ${isMember ? `<span class="text-[10px] font-mono font-bold px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200">MEM ID: ${v.mem_id}</span>` : ''}
                         ${formatReaderPill(v)}
                         <span class="text-[10px] font-black px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 border border-slate-200">DATE: ${visitDate}</span>
@@ -2187,6 +2193,18 @@ async function loadReportMovements(vehicleNumber, memId, dateStr, tripDuration, 
                                 `<span class="inline-flex items-center gap-1 font-mono font-bold text-xs text-indigo-700 bg-indigo-50 border border-indigo-200/80 px-2 py-0.5 rounded-md"><svg class="w-3 h-3 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>${m.stay_duration}</span>` : 
                                 `<span class="text-slate-300 font-mono text-xs">—</span>`;
                             const gateName = m.gate_no || (isEntry ? 'Gate-01 In' : 'Gate-01 Out');
+
+                            const mMem = String(m.mem_id || memId || '').trim();
+                            const mName = String(m.name || '').trim();
+                            const mAcc = String(m.access_type || '').trim();
+                            const mIsMember = Boolean(
+                                mMem && 
+                                !['GUEST-LOG', 'AI-CAM', 'UNREGISTERED', 'NHA-MTAG', 'SOCIETY-TAG', 'FLEET-TAG', 'CLUB-STOCK', ''].includes(mMem) && 
+                                !mName.toLowerCase().includes('unregistered') &&
+                                !mAcc.toLowerCase().includes('unregistered') &&
+                                !mAcc.toLowerCase().includes('unknown')
+                            );
+
                             return `
                                 <tr class="${isCurrent ? 'bg-indigo-50/70 font-semibold' : 'hover:bg-slate-50/70'} transition">
                                     <td class="py-2.5 px-3 font-mono font-bold text-slate-400 whitespace-nowrap">
@@ -2207,8 +2225,8 @@ async function loadReportMovements(vehicleNumber, memId, dateStr, tripDuration, 
                                     <td class="py-2.5 px-3 whitespace-nowrap">${stayBadge}</td>
                                     <td class="py-2.5 px-3 whitespace-nowrap">
                                         ${isEntry ? 
-                                            (isMember ? '<span class="inline-flex items-center gap-1.5 text-emerald-700 font-bold text-xs"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>Inside Club &bull; Authorized Entry</span>' : '<span class="inline-flex items-center gap-1.5 text-amber-700 font-bold text-xs"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>Inside Club &bull; Unregistered Transit</span>') : 
-                                            (isMember ? `<span class="inline-flex items-center gap-1.5 text-indigo-700 font-bold text-xs"><span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>Outside Club &bull; Authorized Exit</span>` : `<span class="inline-flex items-center gap-1.5 text-slate-700 font-bold text-xs"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>Outside Club &bull; Unregistered Transit</span>`)
+                                            (mIsMember ? '<span class="inline-flex items-center gap-1.5 text-emerald-700 font-bold text-xs"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>Inside Club &bull; Authorized Entry</span>' : '<span class="inline-flex items-center gap-1.5 text-amber-700 font-bold text-xs"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>Inside Club &bull; Unregistered Transit</span>') : 
+                                            (mIsMember ? `<span class="inline-flex items-center gap-1.5 text-indigo-700 font-bold text-xs"><span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>Outside Club &bull; Authorized Exit</span>` : `<span class="inline-flex items-center gap-1.5 text-slate-700 font-bold text-xs"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>Outside Club &bull; Unregistered Transit</span>`)
                                         }
                                     </td>
                                 </tr>

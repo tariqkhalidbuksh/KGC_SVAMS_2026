@@ -127,20 +127,24 @@ async function updateRecentEntries() {
 
         container.innerHTML = entries.map(entry => {
             const acc = entry.access_type || '';
-            const memId = entry.mem_id || '';
+            const memId = String(entry.mem_id || '').trim();
             const tag = (entry.scanned_tag || '').toUpperCase();
+            const name = String(entry.name || '').trim();
 
-            const isNHA = acc.includes('NHA') || acc.includes('M-Tag') || memId === 'NHA-MTAG' || tag.startsWith('E2801105') || tag.startsWith('E2801114');
-            const isSociety = acc.includes('Society') || acc.includes('Resident') || memId === 'SOCIETY-TAG' || tag.startsWith('E2803821') || tag.startsWith('E2003412');
-            const isCommercial = acc.includes('Commercial') || acc.includes('Fleet') || memId === 'FLEET-TAG' || tag.startsWith('E280F336');
-            const isStock = acc.includes('Club Tag') || acc.includes('Spare') || acc.includes('Unassigned') || memId === 'CLUB-STOCK' || tag.startsWith('E28068940') || tag.startsWith('E28068900') || tag.startsWith('E20047');
-            const isUnreg = isNHA || isSociety || isCommercial || isStock || 
-                            acc.includes('Unknown') || 
-                            acc.includes('Unregistered') ||
-                            acc.includes('No RFID') || 
-                            (entry.name || '').includes('Unregistered') ||
-                            memId.includes('UNREGISTERED') ||
-                            memId === 'GUEST-LOG';
+            const isMember = Boolean(
+                memId &&
+                !['GUEST-LOG', 'AI-CAM', 'UNREGISTERED', 'NHA-MTAG', 'SOCIETY-TAG', 'FLEET-TAG', 'CLUB-STOCK', ''].includes(memId) &&
+                !name.toLowerCase().includes('unregistered') &&
+                !acc.toLowerCase().includes('unregistered') &&
+                !acc.toLowerCase().includes('unknown') &&
+                !acc.toLowerCase().includes('no rfid')
+            );
+
+            const isNHA = !isMember && (acc.includes('NHA') || acc.includes('M-Tag') || memId === 'NHA-MTAG' || tag.startsWith('E2801105') || tag.startsWith('E2801114'));
+            const isSociety = !isMember && (acc.includes('Society') || acc.includes('Resident') || memId === 'SOCIETY-TAG' || tag.startsWith('E2803821') || tag.startsWith('E2003412'));
+            const isCommercial = !isMember && (acc.includes('Commercial') || acc.includes('Fleet') || memId === 'FLEET-TAG' || tag.startsWith('E280F336'));
+            const isStock = !isMember && (acc.includes('Club Tag') || acc.includes('Spare') || acc.includes('Unassigned') || memId === 'CLUB-STOCK' || tag.startsWith('E28068940') || tag.startsWith('E28068900'));
+            const isUnreg = !isMember;
 
             const displayName = isUnreg ? 'Unregistered Vehicle' : (entry.name || 'Member');
             let tagSignature = '';
