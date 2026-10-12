@@ -126,10 +126,11 @@ def rfid_tcp_client_worker(direction: str, ip_setting_key: str, gate_name: str =
                 # Strictly match standard EPC Gen2 tags:
                 # 1. 100% of legitimate Karachi Gymkhana tags start with E2 (E280... and E200...)
                 # 2. Rejects reader protocol framing bytes (EE..., EC..., E3..., CCFFFF...)
-                found_tags = re.findall(
+                matches = list(re.finditer(
                     r'(?:3000|3400|3800)?(E2[0-9A-F]{22})',
                     hex_stream
-                )
+                ))
+                found_tags = [m.group(1) for m in matches]
                 
                 # Filter out reader protocol noise, framing patterns, and corrupted data
                 valid_tags = [
@@ -151,12 +152,6 @@ def rfid_tcp_client_worker(direction: str, ip_setting_key: str, gate_name: str =
                     prioritized_tags = prioritize_member_tags(unique_batch)
                     now = time.time()
                     for tag in prioritized_tags:
-                        with config.BUFFER_LOCK:
-                            # 45-second universal cooldown across all readers
-                            if tag in config.GLOBAL_TAG_LOCKS and (now - config.GLOBAL_TAG_LOCKS[tag] < config.CROSS_READ_COOLDOWN):
-                                continue
-                            config.GLOBAL_TAG_LOCKS[tag] = now
-
                         config.RECENT_TAGS.append({
                             "tag": tag,
                             "direction": direction,
@@ -181,14 +176,22 @@ def rfid_tcp_client_worker(direction: str, ip_setting_key: str, gate_name: str =
                                     "gate": resolved_gate
                                 })
 
+                            # 45-second universal cooldown across all readers prevents duplicate passage logs
+                            if tag in config.GLOBAL_TAG_LOCKS and (now - config.GLOBAL_TAG_LOCKS[tag] < config.CROSS_READ_COOLDOWN):
+                                continue
+                            config.GLOBAL_TAG_LOCKS[tag] = now
+
                         # Submit to persistent worker pool with zero thread-creation overhead
                         RFID_EXECUTOR.submit(process_rfid_direct, tag, direction, resolved_gate)
 
-                    # Preserve buffer tail to avoid chopping incoming frames across recv boundaries
-                    buffer = buffer[-256:]
-
-                elif len(buffer) > 4096:
-                    buffer = buffer[-1024:]
+                # CRITICAL BUFFER MANAGEMENT:
+                # Discard all bytes up to the end of the last matched tag so processed tags
+                # are NEVER re-parsed from memory. Retain only incomplete trailing bytes.
+                if matches:
+                    consumed_bytes = (matches[-1].end() + 1) // 2
+                    buffer = buffer[consumed_bytes:]
+                elif len(buffer) > 512:
+                    buffer = buffer[-64:]
         except Exception:
             config.READER_STATUS[r_key] = "DISCONNECTED"
             if direction in ("Entry", "Exit") and ("Gate01" in r_key or r_key == direction):
