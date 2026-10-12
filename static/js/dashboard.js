@@ -1236,12 +1236,15 @@ async function loadAudit(page = currentAuditPage, isSilent = false) {
             const thumb = e || x;
             if (!thumb) return '';
 
-            const isMember = e && !['GUEST-LOG', 'AI-CAM'].includes(e.mem_id);
-            const isUnreg = (e && (e.access_type || '').includes('Unknown')) || (!e && x && (x.access_type || '').includes('Unknown'));
-            const isNoTag = (e && (e.access_type || '').includes('No RFID')) || (!e && x && (x.access_type || '').includes('No RFID'));
+            const thumbMem = String(thumb.mem_id || '').trim();
+            const thumbName = String(thumb.name || '').trim();
+            const thumbAcc = String(thumb.access_type || '').trim();
+            const isMember = Boolean(thumbMem && !['GUEST-LOG', 'AI-CAM', 'UNREGISTERED', 'NHA-MTAG', 'SOCIETY-TAG', 'FLEET-TAG', 'CLUB-STOCK'].includes(thumbMem) && !thumbName.toLowerCase().includes('unregistered') && !thumbAcc.toLowerCase().includes('unregistered'));
+            const isUnreg = !isMember;
+            const isNoTag = (thumbAcc.toLowerCase().includes('no rfid') || !thumb.scanned_tag || thumb.scanned_tag === 'NO_TAG');
 
             const pfp = thumb.profile_pic;
-            const initial = (thumb.name || '?').charAt(0).toUpperCase();
+            const initial = isUnreg ? 'U' : (thumb.name || '?').charAt(0).toUpperCase();
 
             let rowDur = a.duration;
             if (!rowDur || rowDur === '--') {
@@ -1281,18 +1284,19 @@ async function loadAudit(page = currentAuditPage, isSilent = false) {
             }
 
             let methodPill = '';
-            const accType = (thumb.access_type || '');
+            const accType = thumbAcc;
+            const cleanTag = String(thumb.scanned_tag || '').toUpperCase();
             if (accType.includes('VIP')) {
                 methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300">VIP Committee</span>`;
             } else if (accType.includes('Security Alert')) {
                 methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-rose-100 text-rose-800 border border-rose-300">Security Alert</span>`;
-            } else if (accType.includes('NHA M-Tag') || (thumb.mem_id || '') === 'NHA-MTAG') {
+            } else if (accType.includes('NHA') || accType.includes('M-Tag') || cleanTag.startsWith('E2801105') || cleanTag.startsWith('E2801114')) {
                 methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200/90 shadow-2xs">🚗 NHA M-Tag</span>`;
-            } else if (accType.includes('Society Tag') || (thumb.mem_id || '') === 'SOCIETY-TAG') {
+            } else if (accType.includes('Society') || accType.includes('Resident') || cleanTag.startsWith('E2803821') || cleanTag.startsWith('E2003412')) {
                 methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200/90 shadow-2xs">🏢 Society Tag</span>`;
-            } else if (accType.includes('Commercial') || (thumb.mem_id || '') === 'FLEET-TAG') {
+            } else if (accType.includes('Commercial') || accType.includes('Fleet') || cleanTag.startsWith('E280F336')) {
                 methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-300 shadow-2xs">🚚 Commercial Tag</span>`;
-            } else if (accType.includes('Club Tag') || accType.includes('Unassigned') || (thumb.mem_id || '') === 'CLUB-STOCK') {
+            } else if (accType.includes('Club Tag') || accType.includes('Spare') || accType.includes('Unassigned') || cleanTag.startsWith('E28068940') || cleanTag.startsWith('E28068900') || cleanTag.startsWith('E20047')) {
                 methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200/90 shadow-2xs">🎫 Spare Club Tag</span>`;
             } else if (isMember) {
                 methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/70">Verified Member</span>`;
@@ -1303,6 +1307,8 @@ async function loadAudit(page = currentAuditPage, isSilent = false) {
             }
 
             const imgPath = thumb.image_path || thumb.plate_image_path;
+            const isPlateEpc = Boolean(thumb.vehicle_number && (thumb.vehicle_number === thumb.scanned_tag || thumb.vehicle_number.length >= 18 || /^E[0-9A-F]{16,}$/i.test(thumb.vehicle_number)));
+            const displayVehicleNumber = isUnreg ? (isPlateEpc ? 'UNREGISTERED' : (thumb.vehicle_number || 'UNREGISTERED')) : (thumb.vehicle_number || 'UNKNOWN');
 
             return `
             <tr class="hover:bg-blue-50/30 transition-colors cursor-pointer border-b border-slate-100 last:border-0" onclick='openAudit(${JSON.stringify(a).replace(/'/g, "&#39;")})'>
@@ -1313,7 +1319,7 @@ async function loadAudit(page = currentAuditPage, isSilent = false) {
                             : `<div class="w-12 h-9 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-[9px] font-bold text-slate-400 flex-shrink-0">NO IMG</div>`
                         }
                         <div class="min-w-0">
-                            <p class="font-black font-mono text-slate-900 text-xs tracking-wider">${thumb.vehicle_number || 'UNKNOWN'}</p>
+                            <p class="font-black font-mono text-slate-900 text-xs tracking-wider">${displayVehicleNumber}</p>
                             ${thumb.make_model ? `<p class="text-[10px] text-slate-400 font-medium mt-0.5 truncate max-w-[110px]">${thumb.make_model}</p>` : ''}
                         </div>
                     </div>
@@ -1322,11 +1328,11 @@ async function loadAudit(page = currentAuditPage, isSilent = false) {
                     <div class="flex items-center gap-2">
                         ${pfp
                             ? `<img src="/${pfp}" class="w-7 h-7 rounded-full object-cover border border-slate-200 flex-shrink-0">`
-                            : `<div class="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-xs ${isUnreg || isNoTag ? 'bg-rose-100 text-rose-600' : 'bg-indigo-50 text-indigo-600'}">${initial}</div>`
+                            : `<div class="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-xs ${isUnreg ? 'bg-rose-100 text-rose-600' : 'bg-indigo-50 text-indigo-600'}">${initial}</div>`
                         }
                         <div class="min-w-0">
-                            <p class="font-bold text-slate-800 text-xs truncate max-w-[120px] ${isUnreg && !accType.includes('NHA') && !accType.includes('Society') && !accType.includes('Commercial') && !accType.includes('Club Tag') ? 'text-rose-600' : ''}">${thumb.name || 'Unregistered'}</p>
-                            <p class="text-[10px] text-slate-400 font-mono">${thumb.mem_id || '—'}</p>
+                            <p class="font-bold text-slate-800 text-xs truncate max-w-[120px] ${isUnreg ? 'text-rose-600 font-black' : ''}">${isUnreg ? 'Unregistered Vehicle' : (thumb.name || 'Member')}</p>
+                            <p class="text-[10px] text-slate-400 font-mono">${isUnreg ? 'Non-Member' : (thumb.mem_id || '—')}</p>
                         </div>
                     </div>
                 </td>
@@ -1561,18 +1567,43 @@ function openAudit(a) {
     const displayPlate = isPlateAnEpc ? '' : rawPlate;
 
     const rawMem = String(v.mem_id || (e ? e.mem_id : '') || (x ? x.mem_id : '') || '').trim();
+    const rawName = String(v.name || (e ? e.name : '') || (x ? x.name : '') || '').trim();
+    const rawAcc = String(v.access_type || (e ? e.access_type : '') || (x ? x.access_type : '') || '').trim();
+
     const isUnreg = Boolean(
-        (v.access_type || '').toLowerCase().includes('unknown') ||
-        (v.name || '').toLowerCase().includes('unregistered') ||
-        (v.name || '').toLowerCase().includes('guest') ||
-        ['GUEST-LOG', 'AI-CAM', 'UNREGISTERED', ''].includes(rawMem)
+        rawAcc.toLowerCase().includes('unknown') ||
+        rawAcc.toLowerCase().includes('unregistered') ||
+        rawName.toLowerCase().includes('unregistered') ||
+        rawName.toLowerCase().includes('guest') ||
+        ['GUEST-LOG', 'AI-CAM', 'UNREGISTERED', 'NHA-MTAG', 'SOCIETY-TAG', 'FLEET-TAG', 'CLUB-STOCK', ''].includes(rawMem)
     );
     const isNoTag = Boolean(
-        (v.access_type || '').toLowerCase().includes('no rfid') ||
+        rawAcc.toLowerCase().includes('no rfid') ||
         !epc ||
         epc === 'NO_TAG'
     );
-    const isMember = !isUnreg && !isNoTag && Boolean(rawMem && !['GUEST-LOG', 'AI-CAM', 'UNREGISTERED'].includes(rawMem));
+    const isMember = !isUnreg && !isNoTag && Boolean(rawMem && !['GUEST-LOG', 'AI-CAM', 'UNREGISTERED', 'NHA-MTAG', 'SOCIETY-TAG', 'FLEET-TAG', 'CLUB-STOCK'].includes(rawMem));
+
+    let tagClassificationBadge = '';
+    let tagClassificationLabel = '';
+    const cleanEpc = (epc || '').toUpperCase();
+    const combinedAcc = `${rawAcc} ${rawName}`.toLowerCase();
+    if (combinedAcc.includes('nha') || combinedAcc.includes('m-tag') || cleanEpc.startsWith('E2801105') || cleanEpc.startsWith('E2801114')) {
+        tagClassificationLabel = 'NHA Motorway M-Tag';
+        tagClassificationBadge = `<span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-200/90 shadow-2xs">🚗 Flagged: NHA Motorway M-Tag</span>`;
+    } else if (combinedAcc.includes('society') || combinedAcc.includes('resident') || cleanEpc.startsWith('E2803821') || cleanEpc.startsWith('E2003412')) {
+        tagClassificationLabel = 'Society / Resident Pass';
+        tagClassificationBadge = `<span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200/90 shadow-2xs">🏢 Flagged: Society Pass</span>`;
+    } else if (combinedAcc.includes('commercial') || combinedAcc.includes('fleet') || cleanEpc.startsWith('E280F336')) {
+        tagClassificationLabel = 'Commercial Fleet Tag';
+        tagClassificationBadge = `<span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 border border-slate-300 shadow-2xs">🚚 Flagged: Commercial Fleet Tag</span>`;
+    } else if (combinedAcc.includes('club tag') || combinedAcc.includes('spare') || combinedAcc.includes('unassigned') || cleanEpc.startsWith('E28068940') || cleanEpc.startsWith('E28068900') || cleanEpc.startsWith('E20047')) {
+        tagClassificationLabel = 'Unassigned Gymkhana Stock Tag';
+        tagClassificationBadge = `<span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 border border-blue-200/90 shadow-2xs">🎫 Flagged: Spare Club Stock Tag</span>`;
+    } else if (epc && epc !== 'NO_TAG') {
+        tagClassificationLabel = 'Unknown External RFID Tag';
+        tagClassificationBadge = `<span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700 border border-rose-200/70 shadow-2xs">⚠️ Flagged: Unknown External RFID</span>`;
+    }
 
     currentReportIncident = a;
     currentReportAnalysis = null;
@@ -1697,8 +1728,8 @@ function openAudit(a) {
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                 </div>
                 <div>
-                    <p class="font-extrabold text-amber-950 text-xs">Security Advisory: Unregistered Transit Event</p>
-                    <p class="text-[11px] text-amber-800 mt-0.5">This transit was logged without an active member account correlation. The scanned tag and camera captures are compiled below for security verification.</p>
+                    <p class="font-extrabold text-amber-950 text-xs">Security Advisory: Unregistered Transit Event ${tagClassificationLabel ? `&bull; ${tagClassificationLabel}` : ''}</p>
+                    <p class="text-[11px] text-amber-800 mt-0.5">This transit was logged for a non-member vehicle. The scanned tag signature is classified below for security records.</p>
                 </div>
             </div>
             ${epc ? `
@@ -1721,21 +1752,21 @@ function openAudit(a) {
                         <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Visitor / Driver Status</p>
                         <span class="text-[9px] font-bold text-amber-800 bg-amber-100/90 px-2 py-0.5 rounded-md border border-amber-300">UNREGISTERED</span>
                     </div>
-                    <div class="flex items-center gap-3.5 mb-4">
+                    <div class="flex items-center gap-3.5 mb-3">
                         <div class="w-16 h-16 rounded-2xl bg-amber-100 border border-amber-200 text-amber-700 flex items-center justify-center shrink-0 shadow-xs">
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                         </div>
                         <div class="min-w-0 flex-1">
-                            <p class="font-black text-base text-slate-900 leading-snug break-words">${v.name || 'Unregistered Visitor'}</p>
+                            <p class="font-black text-base text-slate-900 leading-snug break-words">Unregistered Vehicle</p>
                             <p class="text-xs font-semibold text-rose-600 mt-0.5 flex items-center gap-1">
-                                <span class="w-1.5 h-1.5 rounded-full bg-rose-500 inline-block"></span>No Member Record
+                                <span class="w-1.5 h-1.5 rounded-full bg-rose-500 inline-block"></span>No Member Record &bull; Non-Member Transit
                             </p>
-                            <p class="text-[10px] font-bold text-slate-500 mt-1 uppercase tracking-wide">Guest / Unknown Vehicle</p>
+                            ${tagClassificationBadge ? `<div class="mt-2">${tagClassificationBadge}</div>` : `<p class="text-[10px] font-bold text-slate-500 mt-1 uppercase tracking-wide">Guest / Unknown Vehicle</p>`}
                         </div>
                     </div>
                 </div>
                 <div class="space-y-2 text-xs border-t border-slate-200/90 pt-3">
-                    <div class="flex justify-between items-center"><span class="text-slate-400 font-bold">Member Account</span><span class="font-mono font-bold text-slate-500">None (GUEST / VISITOR)</span></div>
+                    <div class="flex justify-between items-center"><span class="text-slate-400 font-bold">Member Account</span><span class="font-mono font-bold text-slate-500">None (Non-Member)</span></div>
                     <div class="flex justify-between items-center"><span class="text-slate-400 font-bold">Access Protocol</span><span class="font-bold text-slate-800">${v.access_type || (epc ? 'UHF RFID Unknown' : 'Optical ANPR')}</span></div>
                 </div>
             </div>
@@ -1766,16 +1797,17 @@ function openAudit(a) {
                         No RFID Tag Detected (Camera Trigger Only)
                     </div>`}
                     <div class="text-xs text-slate-600 font-bold mt-1">
-                        ${displayPlate ? `
+                        ${(displayPlate && displayPlate !== 'UNREGISTERED') ? `
                         <div class="my-2 flex flex-col items-center">
                             ${renderSindhPlateHtml(displayPlate)}
-                        </div>` : '<div class="text-center py-1.5"><span class="text-slate-400 font-semibold italic text-[11px]">No Physical License Plate Logged</span></div>'}
+                        </div>` : '<div class="text-center py-1.5"><span class="text-slate-400 font-semibold italic text-[11px]">No Physical License Plate Logged (RFID Scanned Only)</span></div>'}
                         <span class="text-slate-500 text-[11px] block mt-1 text-center leading-snug break-words">${v.make_model || 'Make/Model not specified'}</span>
                     </div>
                 </div>
                 <div class="space-y-2 text-xs border-t border-slate-200/90 pt-3">
                     <div class="flex justify-between items-center"><span class="text-slate-400 font-bold">Reader Station</span>${formatReaderBadge(v)}</div>
                     <div class="flex justify-between items-center"><span class="text-slate-400 font-bold">Tag Registration</span><span class="font-bold text-rose-600">Unallocated / External Tag</span></div>
+                    ${tagClassificationLabel ? `<div class="flex justify-between items-center"><span class="text-slate-400 font-bold">Tag Signature</span><span class="font-bold text-slate-800">${tagClassificationLabel}</span></div>` : ''}
                 </div>
             </div>
 
@@ -1833,9 +1865,10 @@ function openAudit(a) {
                 <div class="flex items-center justify-between gap-3 flex-wrap pt-2.5 border-t border-slate-100">
                     <!-- Left: Identity Badges -->
                     <div class="flex flex-wrap items-center gap-2">
-                        <span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-1 rounded-lg ${isMember ? 'bg-emerald-50 text-emerald-800 border border-emerald-300' : (epc ? 'bg-amber-50 text-amber-900 border border-amber-300' : 'bg-rose-50 text-rose-800 border border-rose-300')}">
-                            ${isMember ? '<svg class="w-3.5 h-3.5 text-emerald-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> REGISTERED CLUB MEMBER' : (epc ? '⚠️ UNREGISTERED RFID TRANSPONDER' : '📷 OPTICAL CAPTURE ONLY')}
+                        <span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-1 rounded-lg ${isMember ? 'bg-emerald-50 text-emerald-800 border border-emerald-300' : 'bg-rose-50 text-rose-800 border border-rose-300'}">
+                            ${isMember ? '<svg class="w-3.5 h-3.5 text-emerald-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> REGISTERED CLUB MEMBER' : '⚠️ NON-MEMBER / UNREGISTERED VEHICLE'}
                         </span>
+                        ${tagClassificationBadge}
                         ${isMember ? `<span class="text-[10px] font-mono font-bold px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200">MEM ID: ${v.mem_id}</span>` : ''}
                         ${formatReaderPill(v)}
                         <span class="text-[10px] font-black px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 border border-slate-200">DATE: ${visitDate}</span>
@@ -2174,8 +2207,8 @@ async function loadReportMovements(vehicleNumber, memId, dateStr, tripDuration, 
                                     <td class="py-2.5 px-3 whitespace-nowrap">${stayBadge}</td>
                                     <td class="py-2.5 px-3 whitespace-nowrap">
                                         ${isEntry ? 
-                                            '<span class="inline-flex items-center gap-1.5 text-emerald-700 font-bold text-xs"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>Inside Club &bull; Authorized Entry</span>' : 
-                                            `<span class="inline-flex items-center gap-1.5 text-indigo-700 font-bold text-xs"><span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>Outside Club &bull; Authorized Exit</span>`
+                                            (isMember ? '<span class="inline-flex items-center gap-1.5 text-emerald-700 font-bold text-xs"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>Inside Club &bull; Authorized Entry</span>' : '<span class="inline-flex items-center gap-1.5 text-amber-700 font-bold text-xs"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>Inside Club &bull; Unregistered Transit</span>') : 
+                                            (isMember ? `<span class="inline-flex items-center gap-1.5 text-indigo-700 font-bold text-xs"><span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>Outside Club &bull; Authorized Exit</span>` : `<span class="inline-flex items-center gap-1.5 text-slate-700 font-bold text-xs"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>Outside Club &bull; Unregistered Transit</span>`)
                                         }
                                     </td>
                                 </tr>

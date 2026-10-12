@@ -562,7 +562,7 @@ async def get_audit(
             x = audit_item.get('exit') or {}
             combined = f"{e.get('access_type', '')} {x.get('access_type', '')} {e.get('mem_id', '')} {x.get('mem_id', '')} {e.get('name', '')} {x.get('name', '')}".lower()
             if tag_type_filter == "members":
-                return not any(ex in combined for ex in ('guest-log', 'nha', 'm-tag', 'society', 'fleet', 'commercial', 'unassigned', 'stock', 'unknown'))
+                return not any(ex in combined for ex in ('guest-log', 'unregistered', 'nha', 'm-tag', 'society', 'fleet', 'commercial', 'unassigned', 'stock', 'unknown'))
             elif tag_type_filter == "nha":
                 return 'nha' in combined or 'm-tag' in combined
             elif tag_type_filter == "society":
@@ -572,7 +572,7 @@ async def get_audit(
             elif tag_type_filter == "stock":
                 return 'stock' in combined or 'unassigned' in combined
             elif tag_type_filter == "unregistered":
-                return any(ex in combined for ex in ('guest-log', 'nha', 'm-tag', 'society', 'fleet', 'commercial', 'unassigned', 'stock', 'unknown'))
+                return any(ex in combined for ex in ('guest-log', 'unregistered', 'nha', 'm-tag', 'society', 'fleet', 'commercial', 'unassigned', 'stock', 'unknown'))
             return True
         filtered = [a for a in filtered if _match_tag_type(a)]
 

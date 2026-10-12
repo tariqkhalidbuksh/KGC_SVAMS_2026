@@ -390,7 +390,14 @@ def generate_audit_pdf(audit: dict) -> bytes:
             stay_note = m.get("stay_duration")
             is_manual = "Manual" in acc_type or "Out" in gate or "Manual" in gate
 
-            if "ENTRY" in direction:
+            if not is_member:
+                if "ENTRY" in direction:
+                    reader_str = '<font color="#D97706"><b>ENTRY (UNREGISTERED)</b></font>'
+                    status_text = "Unregistered Transit &bull; Inside Club"
+                else:
+                    reader_str = '<font color="#4B5563"><b>EXIT (UNREGISTERED)</b></font>'
+                    status_text = f"Unregistered Transit &bull; Outside Club (Stay: {stay_note})" if stay_note else "Unregistered Transit &bull; Outside Club"
+            elif "ENTRY" in direction:
                 reader_str = '<font color="#059669"><b>ENTRY READER (IN)</b></font>'
                 status_text = "Authorized Entry &bull; Inside Club"
             elif is_manual:

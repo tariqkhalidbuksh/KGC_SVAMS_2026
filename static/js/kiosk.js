@@ -128,25 +128,29 @@ async function updateRecentEntries() {
         container.innerHTML = entries.map(entry => {
             const acc = entry.access_type || '';
             const memId = entry.mem_id || '';
-            const isNHA = acc.includes('NHA M-Tag') || memId === 'NHA-MTAG';
-            const isSociety = acc.includes('Society Tag') || memId === 'SOCIETY-TAG';
-            const isCommercial = acc.includes('Commercial Tag') || memId === 'FLEET-TAG';
-            const isStock = acc.includes('Club Tag') || memId === 'CLUB-STOCK';
-            const isUnreg = !isNHA && !isSociety && !isCommercial && !isStock && (
+            const tag = (entry.scanned_tag || '').toUpperCase();
+
+            const isNHA = acc.includes('NHA') || acc.includes('M-Tag') || memId === 'NHA-MTAG' || tag.startsWith('E2801105') || tag.startsWith('E2801114');
+            const isSociety = acc.includes('Society') || acc.includes('Resident') || memId === 'SOCIETY-TAG' || tag.startsWith('E2803821') || tag.startsWith('E2003412');
+            const isCommercial = acc.includes('Commercial') || acc.includes('Fleet') || memId === 'FLEET-TAG' || tag.startsWith('E280F336');
+            const isStock = acc.includes('Club Tag') || acc.includes('Spare') || acc.includes('Unassigned') || memId === 'CLUB-STOCK' || tag.startsWith('E28068940') || tag.startsWith('E28068900') || tag.startsWith('E20047');
+            const isUnreg = isNHA || isSociety || isCommercial || isStock || 
                             acc.includes('Unknown') || 
+                            acc.includes('Unregistered') ||
                             acc.includes('No RFID') || 
                             (entry.name || '').includes('Unregistered') ||
                             memId.includes('UNREGISTERED') ||
-                            memId === 'GUEST-LOG');
+                            memId === 'GUEST-LOG';
 
-            let displayName = entry.name;
-            if (isNHA) displayName = '🚗 NHA Motorway M-Tag';
-            else if (isSociety) displayName = '🏢 Society Pass';
-            else if (isCommercial) displayName = '🚚 Commercial Tag';
-            else if (isStock) displayName = '🎫 Spare Club Tag';
-            else if (isUnreg) displayName = 'Unregistered Vehicle';
+            const displayName = isUnreg ? 'Unregistered Vehicle' : (entry.name || 'Member');
+            let tagSignature = '';
+            if (isNHA) tagSignature = '🚗 NHA M-Tag';
+            else if (isSociety) tagSignature = '🏢 Society Tag';
+            else if (isCommercial) tagSignature = '🚚 Commercial Tag';
+            else if (isStock) tagSignature = '🎫 Spare Club Tag';
+            else if (isUnreg) tagSignature = '⚠️ Unknown RFID';
 
-            const plate = (isUnreg || isNHA || isSociety || isCommercial || isStock) ? (entry.scanned_tag || entry.vehicle_number || 'NO TAG') : (entry.vehicle_number || '--');
+            const plate = isUnreg ? (entry.scanned_tag || 'NO TAG') : (entry.vehicle_number || '--');
             const timeStr = formatTimestamp(entry.timestamp);
             const dir = entry.direction || 'Entry';
 
@@ -176,11 +180,12 @@ async function updateRecentEntries() {
                     <div>
                         <div class="flex items-center justify-between mb-1.5">
                             <span class="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border ${badgeClass}">
-                                ${isUnreg ? 'ALERT' : dir.toUpperCase()}
+                                ${isUnreg ? badgeLabel : dir.toUpperCase()}
                             </span>
                             <span class="text-[11px] font-mono font-bold text-slate-400">${timeStr}</span>
                         </div>
-                        <h5 class="text-sm font-extrabold text-slate-900 truncate mb-1">${displayName}</h5>
+                        <h5 class="text-sm font-extrabold text-slate-900 truncate mb-0.5">${displayName}</h5>
+                        ${isUnreg && tagSignature ? `<span class="text-[10px] font-bold text-slate-500">${tagSignature}</span>` : ''}
                     </div>
                     <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between">
                         <span class="text-xs font-mono font-bold text-indigo-600 tracking-wider truncate max-w-[130px]">${plate}</span>
@@ -207,10 +212,12 @@ function displayEntry(log) {
     viewActive.classList.remove('hidden');
 
     const isUnregistered = (log.access_type || '').includes('Unknown') || 
+                           (log.access_type || '').includes('Unregistered') ||
                            (log.access_type || '').includes('No RFID') || 
                            (log.name || '').includes('Unregistered') ||
                            (log.mem_id || '').includes('UNREGISTERED') ||
-                           (log.mem_id || '').includes('GUEST');
+                           (log.mem_id || '').includes('GUEST') ||
+                           ['NHA-MTAG', 'SOCIETY-TAG', 'FLEET-TAG', 'CLUB-STOCK'].includes(log.mem_id || '');
 
     const direction = log.direction || 'Entry';
     const isExit = direction.toLowerCase() === 'exit';
@@ -237,7 +244,14 @@ function displayEntry(log) {
 
         const unregDirectionBadge = document.getElementById('unregDirectionBadge');
         if (unregDirectionBadge) {
-            unregDirectionBadge.innerText = `UNREGISTERED CAR DETECTED • ${direction.toUpperCase()} ATTEMPT`;
+            let flagNote = '';
+            const acc = log.access_type || '';
+            const tag = (log.scanned_tag || '').toUpperCase();
+            if (acc.includes('NHA') || tag.startsWith('E2801105') || tag.startsWith('E2801114')) flagNote = ' • 🚗 NHA M-TAG';
+            else if (acc.includes('Society') || tag.startsWith('E2803821') || tag.startsWith('E2003412')) flagNote = ' • 🏢 SOCIETY TAG';
+            else if (acc.includes('Commercial') || tag.startsWith('E280F336')) flagNote = ' • 🚚 COMMERCIAL TAG';
+            else if (acc.includes('Club Tag') || acc.includes('Spare') || tag.startsWith('E28068940') || tag.startsWith('E20047')) flagNote = ' • 🎫 SPARE CLUB TAG';
+            unregDirectionBadge.innerText = `UNREGISTERED CAR DETECTED • ${direction.toUpperCase()} ATTEMPT${flagNote}`;
         }
 
         if (statusBadge) {

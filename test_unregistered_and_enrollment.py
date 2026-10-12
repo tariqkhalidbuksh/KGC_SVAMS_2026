@@ -119,7 +119,7 @@ def test_enroll_unregistered_tag_endpoint_happy_path():
     conn = get_db_connection()
     log_before = conn.execute("SELECT * FROM daily_logs WHERE scanned_tag=?", (tag,)).fetchone()
     assert log_before is not None
-    assert log_before["mem_id"] == "GUEST-LOG"
+    assert log_before["mem_id"] in ("GUEST-LOG", "UNREGISTERED")
     conn.close()
 
     payload = {

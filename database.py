@@ -160,6 +160,25 @@ def init_db():
                     conn.execute("INSERT OR IGNORE INTO settings (config_key, config_value) VALUES (?, ?)", (key, val))
 
                 conn.execute("UPDATE daily_logs SET timestamp = datetime(timestamp, '+5 hours') WHERE timestamp LIKE '2026-10-02 16:%'")
+                conn.execute("""
+                    UPDATE daily_logs 
+                    SET mem_id = 'UNREGISTERED',
+                        name = 'Unregistered Vehicle',
+                        vehicle_number = 'UNREGISTERED',
+                        access_type = CASE 
+                            WHEN access_type LIKE '%NHA%' THEN 'Unregistered (NHA M-Tag)'
+                            WHEN access_type LIKE '%Society%' THEN 'Unregistered (Society Tag)'
+                            WHEN access_type LIKE '%Commercial%' THEN 'Unregistered (Commercial Tag)'
+                            WHEN access_type LIKE '%Club Tag%' OR access_type LIKE '%Unassigned%' THEN 'Unregistered (Spare Club Tag)'
+                            ELSE 'RFID Unknown'
+                        END
+                    WHERE mem_id IN ('NHA-MTAG', 'FLEET-TAG', 'SOCIETY-TAG', 'CLUB-STOCK')
+                """)
+                conn.execute("""
+                    UPDATE daily_logs 
+                    SET vehicle_number = 'UNREGISTERED'
+                    WHERE mem_id IN ('UNREGISTERED', 'GUEST-LOG') AND vehicle_number = scanned_tag
+                """)
         finally:
             conn.close()
 
