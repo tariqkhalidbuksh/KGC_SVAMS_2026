@@ -231,3 +231,105 @@ def analyze_vehicle_direction(image_path: str) -> str:
             return "Entry"
     except Exception:
         return "Entry"
+
+def grab_dahua_snapshot(dahua_url_or_key: str = None, timeout: float = 1.5) -> tuple:
+    """
+    Directly fetches a snapshot from the Dahua camera using HTTP Digest / Basic authentication.
+    Returns: (img_ndarray or None, latency_ms: float, error_msg or None)
+    Measures exact round-trip request & decode latency.
+    """
+    url = (dahua_url_or_key or "").strip() or get_setting("dahua_cam_url", "")
+    if not url:
+        return None, 0.0, "Dahua camera URL not configured"
+
+    match = re.search(r'(?:rtsp|http)://(?:([^:]+):([^@]+)@)?([0-9a-zA-Z.-]+)(?::([0-9]+))?', url)
+    if not match:
+        return None, 0.0, f"Invalid Dahua URL format: {url}"
+
+    user = match.group(1) or "admin"
+    pwd = match.group(2) or ""
+    ip = match.group(3)
+    raw_port = match.group(4)
+    http_port = raw_port if (raw_port and raw_port != "554") else "80"
+
+    endpoint = f"http://{ip}:{http_port}/cgi-bin/snapshot.cgi?channel=1"
+    t0 = time.perf_counter()
+
+    try:
+        auth = requests.auth.HTTPDigestAuth(user, pwd)
+        res = requests.get(endpoint, auth=auth, timeout=timeout)
+        if res.status_code == 401:
+            auth = requests.auth.HTTPBasicAuth(user, pwd)
+            res = requests.get(endpoint, auth=auth, timeout=timeout)
+
+        t1 = time.perf_counter()
+        latency_ms = round((t1 - t0) * 1000, 2)
+
+        if res.status_code == 200:
+            arr = np.frombuffer(res.content, np.uint8)
+            img = cv2.imdecode(arr, cv2.IMREAD_COLOR)
+            if is_valid_image(img):
+                return img, latency_ms, None
+            return None, latency_ms, "Invalid image payload returned by Dahua"
+        return None, latency_ms, f"Dahua returned HTTP {res.status_code}"
+    except requests.exceptions.Timeout:
+        t1 = time.perf_counter()
+        return None, round((t1 - t0) * 1000, 2), f"Dahua connection timed out ({timeout}s)"
+    except Exception as exc:
+        t1 = time.perf_counter()
+        return None, round((t1 - t0) * 1000, 2), f"Dahua network error: {str(exc)}"
+
+def create_simulated_anpr_frame(plate_text: str = "EAC-638", timestamp_str: str = None) -> np.ndarray:
+    """
+    Creates a simulated Dahua ANPR close-up bumper/license plate frame for sandbox testing.
+    """
+    from datetime import datetime
+    ts = timestamp_str or datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
+    h, w = 480, 640
+    frame = np.full((h, w, 3), (35, 40, 45), dtype=np.uint8)
+
+    for y in range(40, 160, 20):
+        cv2.line(frame, (80, y), (560, y), (20, 25, 30), 4)
+    for y in range(320, 440, 20):
+        cv2.line(frame, (80, y), (560, y), (20, 25, 30), 4)
+
+    px1, py1, px2, py2 = 140, 180, 500, 300
+    cv2.rectangle(frame, (px1, py1), (px2, py2), (240, 245, 250), -1)
+    cv2.rectangle(frame, (px1, py1), (px2, py2), (30, 30, 30), 4)
+    cv2.rectangle(frame, (px1+6, py1+6), (px2-6, py2-6), (30, 80, 160), 2)
+
+    cv2.putText(frame, "SINDH", (280, 205), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (30, 80, 160), 2)
+    cv2.putText(frame, plate_text, (180, 270), cv2.FONT_HERSHEY_SIMPLEX, 1.8, (20, 20, 20), 4)
+
+    cv2.putText(frame, "DAHUA ANPR [CAM-02 CLOSE-UP]", (20, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.65, (0, 220, 120), 2)
+    cv2.putText(frame, f"TIME: {ts}", (20, h - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (255, 255, 255), 1)
+    cv2.putText(frame, "FPS: 25.0 | LPR OCR CONF: 98.4%", (320, h - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 220, 255), 1)
+
+    return frame
+
+def create_simulated_hikvision_frame(direction: str = "Entry", timestamp_str: str = None) -> np.ndarray:
+    """
+    Creates a simulated Hikvision wide-overview gate camera frame for sandbox testing.
+    """
+    from datetime import datetime
+    ts = timestamp_str or datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
+    h, w = 480, 640
+    frame = np.full((h, w, 3), (70, 75, 80), dtype=np.uint8)
+    frame[0:180, :] = (160, 150, 140)
+
+    for x in range(120, 520, 40):
+        cv2.rectangle(frame, (x, 220), (x+20, 240), (0, 215, 255), -1)
+        cv2.rectangle(frame, (x+20, 220), (x+40, 240), (20, 20, 20), -1)
+
+    cv2.line(frame, (50, 300), (590, 300), (0, 255, 0), 3)
+    cv2.putText(frame, "<-- VIRTUAL TRIPWIRE (LINE CROSSING) -->", (120, 290), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (0, 255, 0), 2)
+
+    cv2.rectangle(frame, (200, 310), (440, 440), (180, 60, 50), -1)
+    cv2.rectangle(frame, (230, 260), (410, 310), (200, 80, 70), -1)
+    cv2.rectangle(frame, (250, 270), (390, 310), (220, 230, 240), -1)
+
+    cv2.putText(frame, f"HIKVISION OVERVIEW [GATE-01 {direction.upper()}]", (20, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.65, (0, 255, 255), 2)
+    cv2.putText(frame, f"TIME: {ts}", (20, h - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (255, 255, 255), 1)
+    cv2.putText(frame, "EVENT: VCA LINE_DETECTION (RULE 1)", (300, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+
+    return frame

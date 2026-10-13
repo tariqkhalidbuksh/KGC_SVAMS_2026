@@ -151,6 +151,7 @@ def init_db():
                     'club_name': 'Karachi Gymkhana Club',
                     'parking_capacity': '500',
                     'hikvision_cam_url': 'rtsp://admin:TheKG1886@192.168.0.220:554/Streaming/Channels/101',
+                    'dahua_cam_url': 'rtsp://admin:admin123@192.168.0.221:554/cam/realmonitor?channel=1&subtype=0',
                     'entry_reader_ip': '192.168.0.217',
                     'exit_reader_ip': '192.168.0.216',
                     'clubroad_entry_reader_ip': '',

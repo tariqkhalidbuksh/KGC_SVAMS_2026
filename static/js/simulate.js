@@ -17,7 +17,8 @@ async function runSelfTest() {
         { name: 'Members API', url: '/api/members?limit=1', method: 'GET' },
         { name: 'Stats API', url: '/api/stats', method: 'GET' },
         { name: 'Hardware Telemetry', url: '/api/tools/status', method: 'GET' },
-        { name: 'Instant HTTP Event Listener', url: '/api/event/hikvision', method: 'GET' }
+        { name: 'Instant HTTP Event Listener', url: '/api/event/hikvision', method: 'GET' },
+        { name: 'Dahua Camera Sim API', url: '/api/simulate/dahua-config', method: 'GET' }
     ];
 
     let html = '';
@@ -468,10 +469,195 @@ async function fireHttpCameraTrigger(btn) {
     }
 }
 
+let lastDualTestResult = null;
+
+async function loadDahuaConfig() {
+    const input = $('simDahuaUrl');
+    if (!input) return;
+    try {
+        const res = await fetch('/api/simulate/dahua-config');
+        if (res.ok) {
+            const data = await res.json();
+            if (data.dahua_url && !input.value) {
+                input.value = data.dahua_url;
+            }
+        }
+    } catch (e) {
+        console.warn('Could not load dahua config', e);
+    }
+}
+
+async function fireDualCameraSyncTest(btn) {
+    const orig = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg> Testing Dahua Shutter...`;
+        btn.disabled = true;
+    }
+
+    const dahuaUrl = $('simDahuaUrl')?.value.trim() || '';
+    const saveDahuaUrl = $('simSaveDahuaUrl')?.checked || false;
+    const dir = $('simDualDir')?.value || 'Entry';
+    const timeoutSec = parseFloat($('simDualTimeout')?.value || '2.0');
+    const simFallback = $('simDualFallback')?.checked ?? true;
+
+    const latencyBadge = $('dualLatencyBadge');
+    const resultBox = $('dualTriggerResult');
+    const previewSection = $('dualPreviewSection');
+
+    if (latencyBadge) {
+        latencyBadge.className = 'text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 animate-pulse';
+        latencyBadge.innerText = 'TRIGGERING RELAY...';
+    }
+
+    try {
+        const res = await fetch('/api/simulate/test-dual-camera-trigger', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                dahua_url: dahuaUrl,
+                save_dahua_url: saveDahuaUrl,
+                direction: dir,
+                timeout_sec: timeoutSec,
+                simulate_fallback: simFallback
+            })
+        });
+
+        if (!res.ok) {
+            const errData = await res.json().catch(() => ({}));
+            throw new Error(errData.detail || `Server returned ${res.status}`);
+        }
+
+        const data = await res.json();
+        lastDualTestResult = data;
+
+        // 1. Update Telemetry metrics
+        if ($('statHikLatency')) $('statHikLatency').innerText = `${data.hikvision?.latency_ms || 0} ms`;
+        if ($('statHikStatus')) {
+            const hStatus = data.hikvision?.status || '';
+            $('statHikStatus').innerText = hStatus.includes('ONLINE') ? 'Online Capture' : 'Simulated Frame';
+            $('statHikStatus').className = `text-[10px] font-bold block truncate ${hStatus.includes('ONLINE') ? 'text-emerald-600' : 'text-slate-500'}`;
+        }
+
+        if ($('statDahuaLatency')) $('statDahuaLatency').innerText = `${data.dahua?.latency_ms || 0} ms`;
+        if ($('statDahuaStatus')) {
+            const dStatus = data.dahua?.status || '';
+            $('statDahuaStatus').innerText = dStatus.includes('ONLINE') ? 'Online Capture' : 'Simulated (Fallback)';
+            $('statDahuaStatus').className = `text-[10px] font-bold block truncate ${dStatus.includes('ONLINE') ? 'text-cyan-600' : 'text-amber-600'}`;
+        }
+
+        if ($('statDeltaLatency')) $('statDeltaLatency').innerText = `${data.time_delta_ms || 0} ms`;
+        if ($('statDisplacement10')) $('statDisplacement10').innerText = `${data.displacement_cm?.speed_10kmh || 0} cm`;
+
+        // 2. Update Displacement numbers
+        if ($('dispVal5')) $('dispVal5').innerText = `${data.displacement_cm?.speed_5kmh || 0} cm`;
+        if ($('dispVal10')) $('dispVal10').innerText = `${data.displacement_cm?.speed_10kmh || 0} cm`;
+        if ($('dispVal15')) $('dispVal15').innerText = `${data.displacement_cm?.speed_15kmh || 0} cm`;
+        if ($('dualAnalysisNote')) $('dualAnalysisNote').innerText = data.analysis_notes || '';
+
+        // 3. Update preview images
+        if (previewSection) {
+            previewSection.classList.remove('hidden');
+        }
+        if (data.hikvision?.image_path && $('dualHikImg')) {
+            $('dualHikImg').src = '/' + data.hikvision.image_path;
+            if ($('dualHikTsBadge')) $('dualHikTsBadge').innerText = `TS: ${data.hikvision.timestamp} (${data.hikvision.latency_ms} ms)`;
+        }
+        if (data.dahua?.image_path && $('dualDahuaImg')) {
+            $('dualDahuaImg').src = '/' + data.dahua.image_path;
+            if ($('dualDahuaTsBadge')) $('dualDahuaTsBadge').innerText = `TS: ${data.dahua.timestamp} (${data.dahua.latency_ms} ms)`;
+        }
+
+        // 4. Update Header Badge
+        if (latencyBadge) {
+            latencyBadge.className = 'text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-cyan-100 text-cyan-800';
+            latencyBadge.innerText = `DAHUA: ${data.dahua?.latency_ms || 0} ms`;
+        }
+
+        // 5. Update Result Notification Banner
+        if (resultBox) {
+            resultBox.classList.remove('hidden');
+            resultBox.className = 'mt-4 text-xs rounded-xl px-4 py-3 bg-cyan-50 border border-cyan-200 text-cyan-900 font-bold';
+            resultBox.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <div>
+                        <span class="font-extrabold">&check; Benchmark Completed:</span>
+                        Hikvision Trigger dispatched at ${data.trigger_time} &bull; Dahua Shutter took <strong>${data.dahua?.latency_ms} ms</strong> &bull; Time Delta &Delta;t: <strong>${data.time_delta_ms} ms</strong>.
+                    </div>
+                    <button type="button" onclick="openDualInspectModal()" class="text-xs bg-cyan-600 hover:bg-cyan-700 text-white font-bold px-3 py-1.5 rounded-lg shadow transition">
+                        Inspect Dual Images
+                    </button>
+                </div>
+            `;
+        }
+
+    } catch (e) {
+        if (latencyBadge) {
+            latencyBadge.className = 'text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800';
+            latencyBadge.innerText = 'FAIL';
+        }
+        if (resultBox) {
+            resultBox.classList.remove('hidden');
+            resultBox.className = 'mt-4 text-xs rounded-xl px-4 py-3 bg-rose-50 border border-rose-200 text-rose-800 font-bold';
+            resultBox.innerHTML = `Dual Camera Trigger Test Error: ${e.message}`;
+        }
+    } finally {
+        if (btn) {
+            btn.innerHTML = orig;
+            btn.disabled = false;
+        }
+    }
+}
+
+function openDualInspectModal() {
+    const modal = $('dualInspectModal');
+    if (!modal) return;
+
+    if (lastDualTestResult) {
+        const d = lastDualTestResult;
+        if ($('modalTriggerTs')) $('modalTriggerTs').innerText = d.trigger_time || '--';
+        if ($('modalDahuaLatency')) $('modalDahuaLatency').innerText = `${d.dahua?.latency_ms || 0} ms`;
+        if ($('modalDeltaTs')) $('modalDeltaTs').innerText = `${d.time_delta_ms || 0} ms`;
+
+        if ($('modalHikImg') && d.hikvision?.image_path) $('modalHikImg').src = '/' + d.hikvision.image_path;
+        if ($('modalHikStatusBadge')) $('modalHikStatusBadge').innerText = d.hikvision?.status || 'N/A';
+        if ($('modalHikOverlay')) $('modalHikOverlay').innerText = `Hikvision Timestamp: ${d.hikvision?.timestamp || '--'} | Latency: ${d.hikvision?.latency_ms || 0} ms`;
+
+        if ($('modalDahuaImg') && d.dahua?.image_path) $('modalDahuaImg').src = '/' + d.dahua.image_path;
+        if ($('modalDahuaStatusBadge')) $('modalDahuaStatusBadge').innerText = d.dahua?.status || 'N/A';
+        if ($('modalDahuaOverlay')) $('modalDahuaOverlay').innerText = `Dahua Timestamp: ${d.dahua?.timestamp || '--'} | Latency: ${d.dahua?.latency_ms || 0} ms`;
+
+        if ($('modalPhysicsNote')) {
+            $('modalPhysicsNote').innerHTML = `
+                <div class="flex flex-col sm:flex-row justify-between gap-2">
+                    <div>
+                        <strong class="text-slate-800">Physical Travel Offset:</strong>
+                        At 10 km/h, vehicle travels <strong>${d.displacement_cm?.speed_10kmh || '--'} cm</strong> during shutter delay.
+                    </div>
+                    <div class="text-slate-500 font-mono text-[11px]">
+                        Hikvision: ${d.hikvision?.latency_ms}ms &bull; Dahua: ${d.dahua?.latency_ms}ms &bull; &Delta;t: ${d.time_delta_ms}ms
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    modal.classList.remove('hidden');
+}
+
+function closeDualInspectModal() {
+    const modal = $('dualInspectModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeDualInspectModal();
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     runSelfTest();
     loadMembersDropdown();
     setupMemberListener();
     setupDropZone();
     loadTestReport();
+    loadDahuaConfig();
 });

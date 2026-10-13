@@ -206,6 +206,160 @@
             <div id="httpTriggerResult" class="mt-4 hidden text-sm rounded-xl px-4 py-3"></div>
         </div>
 
+        <!-- Section 4: Hikvision -> Dahua Dual Camera HTTP Trigger & Shutter Benchmark -->
+        <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-cyan-600">
+            <div class="flex justify-between items-start mb-4 flex-wrap gap-2">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900 mb-1">4. Hikvision &rarr; Dahua Dual Camera Trigger &amp; Shutter Latency Benchmark</h2>
+                    <p class="text-sm text-slate-500">Simulate Hikvision line-crossing event triggering an instant HTTP snapshot request to Dahua ANPR camera (<code class="text-xs bg-slate-100 px-1.5 py-0.5 rounded text-slate-700">/cgi-bin/snapshot.cgi?channel=1</code>). Measures exact Dahua snapshot latency, timestamp delta (&Delta;t), and calculates vehicle travel displacement during shutter lag.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-mono font-bold bg-cyan-50 text-cyan-700 border border-cyan-200 px-3 py-1 rounded-full">BENCHMARK TEST</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                <!-- Controls Column (5 cols) -->
+                <div class="lg:col-span-5 space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Dahua Camera Address (RTSP or HTTP Snapshot)</label>
+                        <input id="simDahuaUrl" type="text" placeholder="e.g. rtsp://admin:admin123@192.168.0.221:554/cam/realmonitor?channel=1&subtype=0" 
+                               class="w-full border rounded-xl px-4 py-3 bg-slate-50 font-mono text-xs text-slate-800 focus:bg-white focus:ring-2 focus:ring-cyan-500 outline-none">
+                        <div class="flex items-center justify-between mt-1.5">
+                            <label class="inline-flex items-center gap-1.5 cursor-pointer text-xs text-slate-500">
+                                <input id="simSaveDahuaUrl" type="checkbox" checked class="rounded text-cyan-600 focus:ring-cyan-500">
+                                <span>Save URL to system settings</span>
+                            </label>
+                            <span class="text-[11px] text-slate-400">Default: 192.168.0.221</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Direction</label>
+                            <select id="simDualDir" class="w-full border rounded-xl px-3 py-2.5 bg-slate-50 font-bold text-sm text-slate-800">
+                                <option value="Entry">Entry (Inbound)</option>
+                                <option value="Exit">Exit (Outbound)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Timeout Limit</label>
+                            <select id="simDualTimeout" class="w-full border rounded-xl px-3 py-2.5 bg-slate-50 font-bold text-sm text-slate-800">
+                                <option value="2.0">2.0 seconds</option>
+                                <option value="3.0">3.0 seconds</option>
+                                <option value="1.0">1.0 second</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="p-3 bg-slate-50 border rounded-xl text-xs space-y-1.5 text-slate-600">
+                        <label class="inline-flex items-center gap-2 cursor-pointer font-bold text-slate-700">
+                            <input id="simDualFallback" type="checkbox" checked class="rounded text-cyan-600 focus:ring-cyan-500">
+                            <span>Enable Simulated Test Frame Fallback</span>
+                        </label>
+                        <p class="text-[11px] text-slate-500 leading-relaxed">
+                            When checked, if Dahua hardware is offline/unreachable on local LAN, backend generates an authentic ANPR bumper/plate test frame so you can benchmark pipeline responsiveness without hardware connected.
+                        </p>
+                    </div>
+
+                    <button type="button" onclick="fireDualCameraSyncTest(this)" id="dualTriggerBtn"
+                            class="w-full bg-cyan-600 hover:bg-cyan-700 text-white px-6 py-4 rounded-xl font-bold shadow-lg transition flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        <span>Trigger Hikvision &rarr; Snap Dahua Now</span>
+                    </button>
+                    <p class="text-xs text-slate-400 text-center">Fires Hikvision trigger event and immediately requests Dahua snapshot.</p>
+                </div>
+
+                <!-- Telemetry & Timing Metrics Column (7 cols) -->
+                <div class="lg:col-span-7 bg-slate-50 rounded-2xl p-5 border flex flex-col justify-between space-y-4">
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Timing &amp; Shutter Latency Telemetry</p>
+                            <span id="dualLatencyBadge" class="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-600">STANDBY</span>
+                        </div>
+
+                        <!-- 4 Stat Badges Grid -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
+                            <div class="bg-white p-3 rounded-xl border border-slate-200">
+                                <span class="text-[10px] font-bold uppercase text-slate-400 block">Hikvision Latency</span>
+                                <span id="statHikLatency" class="text-base font-mono font-black text-slate-800">-- ms</span>
+                                <span id="statHikStatus" class="text-[10px] font-bold text-slate-400 block truncate">Idle</span>
+                            </div>
+                            <div class="bg-white p-3 rounded-xl border border-cyan-200 ring-2 ring-cyan-500/10">
+                                <span class="text-[10px] font-bold uppercase text-cyan-600 block">Dahua Shutter</span>
+                                <span id="statDahuaLatency" class="text-base font-mono font-black text-cyan-600">-- ms</span>
+                                <span id="statDahuaStatus" class="text-[10px] font-bold text-slate-400 block truncate">Idle</span>
+                            </div>
+                            <div class="bg-white p-3 rounded-xl border border-slate-200">
+                                <span class="text-[10px] font-bold uppercase text-slate-400 block">Time Delta (&Delta;t)</span>
+                                <span id="statDeltaLatency" class="text-base font-mono font-black text-indigo-600">-- ms</span>
+                                <span class="text-[10px] font-medium text-slate-400 block">Shutter offset</span>
+                            </div>
+                            <div class="bg-white p-3 rounded-xl border border-slate-200">
+                                <span class="text-[10px] font-bold uppercase text-slate-400 block">Car Move @ 10km/h</span>
+                                <span id="statDisplacement10" class="text-base font-mono font-black text-amber-600">-- cm</span>
+                                <span class="text-[10px] font-medium text-slate-400 block">Physical drift</span>
+                            </div>
+                        </div>
+
+                        <!-- Velocity Displacement Table / Info -->
+                        <div id="dualDisplacementBox" class="p-3 bg-white border border-slate-200 rounded-xl text-xs space-y-1.5 text-slate-600">
+                            <p class="font-bold text-slate-800 flex items-center gap-1.5">
+                                <span>Vehicle Displacement Estimation (Shutter Lag Impact):</span>
+                            </p>
+                            <div class="grid grid-cols-3 gap-2 text-center pt-1 font-mono text-[11px]">
+                                <div class="bg-slate-50 p-2 rounded-lg border">
+                                    <span class="text-slate-400 block text-[10px]">At 5 km/h (Slow Crawl)</span>
+                                    <span id="dispVal5" class="font-bold text-slate-700">-- cm</span>
+                                </div>
+                                <div class="bg-slate-50 p-2 rounded-lg border border-amber-200">
+                                    <span class="text-amber-600 block text-[10px]">At 10 km/h (Gate Speed)</span>
+                                    <span id="dispVal10" class="font-bold text-amber-700">-- cm</span>
+                                </div>
+                                <div class="bg-slate-50 p-2 rounded-lg border">
+                                    <span class="text-slate-400 block text-[10px]">At 15 km/h (Rolling)</span>
+                                    <span id="dispVal15" class="font-bold text-slate-700">-- cm</span>
+                                </div>
+                            </div>
+                            <p id="dualAnalysisNote" class="text-[11px] text-slate-400 italic pt-1">Run trigger test to compute real-time capture shutter latency.</p>
+                        </div>
+                    </div>
+
+                    <!-- Dual Image Preview Side-by-Side -->
+                    <div id="dualPreviewSection" class="hidden pt-3 border-t border-slate-200">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold uppercase text-slate-600">Synchronized Dual Frames</span>
+                            <button type="button" onclick="openDualInspectModal()" class="text-xs font-bold text-cyan-600 hover:text-cyan-800 flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                <span>Inspect Full View Side-by-Side</span>
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="relative group rounded-xl overflow-hidden border border-slate-200 bg-slate-900 cursor-pointer" onclick="openDualInspectModal()">
+                                <img id="dualHikImg" src="" alt="Hikvision Overview" class="w-full h-36 object-cover transition group-hover:scale-105 duration-300">
+                                <div class="absolute top-2 left-2 bg-slate-900/80 backdrop-blur-sm text-white font-mono text-[10px] px-2 py-0.5 rounded font-bold">
+                                    HIKVISION (WIDE)
+                                </div>
+                                <div id="dualHikTsBadge" class="absolute bottom-2 left-2 right-2 bg-slate-900/80 backdrop-blur-sm text-slate-200 font-mono text-[10px] px-2 py-0.5 rounded truncate">
+                                    TS: --
+                                </div>
+                            </div>
+                            <div class="relative group rounded-xl overflow-hidden border border-slate-200 bg-slate-900 cursor-pointer" onclick="openDualInspectModal()">
+                                <img id="dualDahuaImg" src="" alt="Dahua ANPR" class="w-full h-36 object-cover transition group-hover:scale-105 duration-300">
+                                <div class="absolute top-2 left-2 bg-cyan-600/90 backdrop-blur-sm text-white font-mono text-[10px] px-2 py-0.5 rounded font-bold">
+                                    DAHUA (ANPR)
+                                </div>
+                                <div id="dualDahuaTsBadge" class="absolute bottom-2 left-2 right-2 bg-slate-900/80 backdrop-blur-sm text-slate-200 font-mono text-[10px] px-2 py-0.5 rounded truncate">
+                                    TS: --
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="dualTriggerResult" class="mt-4 hidden text-sm rounded-xl px-4 py-3"></div>
+        </div>
+
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
             <div class="p-6 border-b bg-slate-50 flex justify-between items-center flex-wrap gap-4">
                 <div>
@@ -236,6 +390,84 @@
             </div>
         </div>
     </main>
+
+    <!-- Dual Camera Inspect Modal -->
+    <div id="dualInspectModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-5xl w-full max-h-[92vh] flex flex-col overflow-hidden">
+            <div class="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-cyan-100 text-cyan-700 flex items-center justify-center font-bold">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-slate-800">Dual Camera Synchronized Inspection View</h3>
+                        <p class="text-xs text-slate-500">Side-by-side comparison of Hikvision Overview and Dahua ANPR close-up with timestamp overlay.</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeDualInspectModal()" class="w-8 h-8 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold flex items-center justify-center transition">
+                    &times;
+                </button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto space-y-6">
+                <!-- Timing Header Banner -->
+                <div class="flex flex-wrap items-center justify-between gap-3 p-3.5 bg-cyan-50 border border-cyan-200 rounded-xl text-xs">
+                    <div>
+                        <span class="text-slate-500 font-bold">Trigger Timestamp:</span>
+                        <span id="modalTriggerTs" class="font-mono font-bold text-slate-800 ml-1">--</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-500 font-bold">Dahua Shutter Latency:</span>
+                        <span id="modalDahuaLatency" class="font-mono font-black text-cyan-700 ml-1">-- ms</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-500 font-bold">Time Delta (&Delta;t):</span>
+                        <span id="modalDeltaTs" class="font-mono font-bold text-indigo-700 ml-1">-- ms</span>
+                    </div>
+                </div>
+
+                <!-- Side by side images -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-700 uppercase">Camera 1: Hikvision Overview (Wide)</span>
+                            <span id="modalHikStatusBadge" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700">CAPTURED</span>
+                        </div>
+                        <div class="rounded-xl overflow-hidden border border-slate-200 bg-slate-900 relative">
+                            <img id="modalHikImg" src="" alt="Hikvision Overview" class="w-full h-72 object-contain bg-slate-950">
+                            <div id="modalHikOverlay" class="absolute bottom-2 left-2 right-2 bg-slate-900/85 text-white font-mono text-[11px] px-3 py-1.5 rounded backdrop-blur-sm">
+                                TS: --
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-cyan-700 uppercase">Camera 2: Dahua ANPR (Close-up)</span>
+                            <span id="modalDahuaStatusBadge" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-cyan-100 text-cyan-800">CAPTURED</span>
+                        </div>
+                        <div class="rounded-xl overflow-hidden border border-cyan-300 bg-slate-900 relative">
+                            <img id="modalDahuaImg" src="" alt="Dahua ANPR" class="w-full h-72 object-contain bg-slate-950">
+                            <div id="modalDahuaOverlay" class="absolute bottom-2 left-2 right-2 bg-slate-900/85 text-white font-mono text-[11px] px-3 py-1.5 rounded backdrop-blur-sm">
+                                TS: --
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technical Assessment Footer -->
+                <div id="modalPhysicsNote" class="p-3.5 bg-slate-50 border rounded-xl text-xs text-slate-600">
+                    --
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-slate-200 bg-slate-50 flex justify-end">
+                <button type="button" onclick="closeDualInspectModal()" class="px-5 py-2 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs transition">
+                    Close Inspection
+                </button>
+            </div>
+        </div>
+    </div>
 
     <script src="/static/js/simulate.js"></script>
 </body>

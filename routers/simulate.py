@@ -126,3 +126,98 @@ async def simulate_clear_logs():
             return {"ok": True, "message": "All gate access, camera audit, and unregistered vehicle logs cleared"}
         finally:
             conn.close()
+
+@router.get("/simulate/dahua-config")
+async def get_dahua_sim_config():
+    from database import get_setting
+    return {
+        "hikvision_url": get_setting("hikvision_cam_url", ""),
+        "dahua_url": get_setting("dahua_cam_url", "rtsp://admin:admin123@192.168.0.221:554/cam/realmonitor?channel=1&subtype=0")
+    }
+
+@router.post("/simulate/test-dual-camera-trigger")
+async def test_dual_camera_trigger(request: Request):
+    from datetime import datetime
+    from database import get_setting, set_setting
+    from services.camera_service import (
+        grab_verified_snapshot,
+        grab_dahua_snapshot,
+        create_simulated_anpr_frame,
+        create_simulated_hikvision_frame,
+        save_snapshot
+    )
+
+    body = await request.json()
+    dahua_url = (body.get("dahua_url") or "").strip() or get_setting("dahua_cam_url", "")
+    if dahua_url and body.get("save_dahua_url", False):
+        set_setting("dahua_cam_url", dahua_url)
+
+    direction = body.get("direction", "Entry")
+    simulate_fallback = body.get("simulate_fallback", True)
+    timeout_sec = float(body.get("timeout_sec", 2.0))
+
+    t_trigger_start = datetime.now()
+    trigger_iso = t_trigger_start.strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
+
+    # 1. Trigger Hikvision Overview Capture
+    t0_hik = time.perf_counter()
+    hik_img = grab_verified_snapshot("Hikvision", max_timeout_sec=timeout_sec)
+    t1_hik = time.perf_counter()
+    hik_latency_ms = round((t1_hik - t0_hik) * 1000, 2)
+    hik_ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
+
+    hik_status = "ONLINE_CAPTURED"
+    if hik_img is None:
+        if simulate_fallback:
+            hik_img = create_simulated_hikvision_frame(direction=direction, timestamp_str=hik_ts)
+            hik_status = "SIMULATED_FRAME"
+        else:
+            hik_status = "OFFLINE"
+
+    hik_path = save_snapshot(hik_img, "sim_hik_wide") if hik_img is not None else None
+
+    # 2. Concurrently Trigger Dahua Snapshot Request
+    dahua_img, dahua_latency_ms, dahua_err = grab_dahua_snapshot(dahua_url, timeout=timeout_sec)
+    dahua_ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
+
+    dahua_status = "ONLINE_CAPTURED"
+    if dahua_img is None:
+        if simulate_fallback:
+            dahua_img = create_simulated_anpr_frame(plate_text="EAC-638", timestamp_str=dahua_ts)
+            dahua_status = f"SIMULATED_TEST_FRAME ({dahua_err or 'Camera Offline'})"
+        else:
+            dahua_status = f"OFFLINE ({dahua_err})"
+
+    dahua_path = save_snapshot(dahua_img, "sim_dahua_anpr") if dahua_img is not None else None
+
+    # 3. Time Delta & Velocity Displacement Analysis
+    time_delta_ms = round(abs(dahua_latency_ms - hik_latency_ms), 2)
+    sec_delay = (dahua_latency_ms / 1000.0)
+    disp_5kmh = round(sec_delay * 1.38889 * 100, 1)   # cm
+    disp_10kmh = round(sec_delay * 2.77778 * 100, 1)  # cm
+    disp_15kmh = round(sec_delay * 4.16667 * 100, 1)  # cm
+
+    return {
+        "ok": True,
+        "trigger_time": trigger_iso,
+        "hikvision": {
+            "status": hik_status,
+            "timestamp": hik_ts,
+            "latency_ms": hik_latency_ms,
+            "image_path": hik_path.replace("\\", "/") if hik_path else None
+        },
+        "dahua": {
+            "status": dahua_status,
+            "timestamp": dahua_ts,
+            "latency_ms": dahua_latency_ms,
+            "image_path": dahua_path.replace("\\", "/") if dahua_path else None,
+            "error": dahua_err
+        },
+        "time_delta_ms": time_delta_ms,
+        "displacement_cm": {
+            "speed_5kmh": disp_5kmh,
+            "speed_10kmh": disp_10kmh,
+            "speed_15kmh": disp_15kmh
+        },
+        "analysis_notes": f"Dahua HTTP Snapshot took {dahua_latency_ms} ms. At 10 km/h, the vehicle moves ~{disp_10kmh} cm during camera shutter delay."
+    }
