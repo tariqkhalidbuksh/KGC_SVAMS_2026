@@ -652,6 +652,15 @@ function openDualInspectModal() {
     modal.classList.remove('hidden');
 }
 
+function closeDualInspectModal() {
+    const modal = $('dualInspectModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeDualInspectModal();
+});
+
 function toggleDiagnosticsDrawer() {
     const drawer = $('diagnosticsDrawer');
     if (drawer) {

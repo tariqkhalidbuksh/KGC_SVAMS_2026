@@ -482,7 +482,7 @@
     </main>
 
     <!-- DUAL CAMERA INSPECT MODAL (LIGHT THEME) -->
-    <div id="dualInspectModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div id="dualInspectModal" onclick="if(event.target === this) closeDualInspectModal()" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-5xl w-full max-h-[92vh] flex flex-col overflow-hidden">
             <div class="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
                 <div class="flex items-center gap-3">
@@ -560,6 +560,7 @@
     </div>
 
     <!-- Scripts with Cache Buster -->
-    <script src="/static/js/simulate.js?v=20261014_gold_v1"></script>
+    <script src="/static/js/simulate.js?v=20261014_gold_v2"></script>
 </body>
 </html>
+
