@@ -80,3 +80,21 @@ def test_simulate_page_contains_benchmark_ui():
     assert "dualTriggerBtn" in html
     assert "dualInspectModal" in html
     assert "Vehicle Displacement Estimation" in html
+
+def test_get_event_hikvision_does_not_trigger_snapshot():
+    from database import get_db_connection
+    conn = get_db_connection()
+    count_before = conn.execute("SELECT COUNT(*) FROM camera_audit_logs").fetchone()[0]
+    conn.close()
+
+    # GET request probe must be safe and idempotent
+    res = client.get("/api/event/hikvision")
+    assert res.status_code == 200
+    assert res.json().get("status") == "listening"
+
+    # Verify audit count has NOT increased
+    conn = get_db_connection()
+    count_after = conn.execute("SELECT COUNT(*) FROM camera_audit_logs").fetchone()[0]
+    conn.close()
+
+    assert count_after == count_before

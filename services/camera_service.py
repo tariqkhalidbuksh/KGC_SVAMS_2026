@@ -234,14 +234,28 @@ def analyze_vehicle_direction(image_path: str) -> str:
 
 def grab_dahua_snapshot(dahua_url_or_key: str = None, timeout: float = 1.5) -> tuple:
     """
-    Directly fetches a snapshot from the Dahua camera using HTTP Digest / Basic authentication.
+    Fetches a live snapshot from the Dahua camera using:
+    1. Zero-lag RTSP RAM frame buffer (< 5ms) if stream worker is active
+    2. Direct HTTP Snapshot CGI (Digest/Basic auth)
+    3. Direct RTSP stream frame capture (OpenCV FFMPEG) if HTTP is firewalled/closed
     Returns: (img_ndarray or None, latency_ms: float, error_msg or None)
-    Measures exact round-trip request & decode latency.
     """
+    t0 = time.perf_counter()
     url = (dahua_url_or_key or "").strip() or get_setting("dahua_cam_url", "")
     if not url:
         return None, 0.0, "Dahua camera URL not configured"
 
+    # Tier 1: Check live RTSP RAM frame buffer
+    now = time.time()
+    with config.FRAME_LOCK:
+        raw_frame = config.LATEST_RAW_FRAMES.get("Dahua")
+        frame_time = config.LATEST_FRAME_TIMES.get("Dahua", 0.0)
+        if raw_frame is not None and (now - frame_time) <= 3.0:
+            if is_valid_image(raw_frame):
+                latency_ms = round((time.perf_counter() - t0) * 1000, 2)
+                return raw_frame.copy(), latency_ms, None
+
+    # Parse camera credentials and address
     match = re.search(r'(?:rtsp|http)://(?:([^:]+):([^@]+)@)?([0-9a-zA-Z.-]+)(?::([0-9]+))?', url)
     if not match:
         return None, 0.0, f"Invalid Dahua URL format: {url}"
@@ -252,32 +266,82 @@ def grab_dahua_snapshot(dahua_url_or_key: str = None, timeout: float = 1.5) -> t
     raw_port = match.group(4)
     http_port = raw_port if (raw_port and raw_port != "554") else "80"
 
-    endpoint = f"http://{ip}:{http_port}/cgi-bin/snapshot.cgi?channel=1"
-    t0 = time.perf_counter()
+    # Tier 2: Try HTTP Snapshot CGI endpoints
+    endpoints = [
+        f"http://{ip}:{http_port}/cgi-bin/snapshot.cgi?channel=1",
+        f"http://{ip}:{http_port}/cgi-bin/snapshot.cgi"
+    ]
+    http_timeout = min(timeout, 1.2)
+    last_http_err = None
 
-    try:
-        auth = requests.auth.HTTPDigestAuth(user, pwd)
-        res = requests.get(endpoint, auth=auth, timeout=timeout)
-        if res.status_code == 401:
-            auth = requests.auth.HTTPBasicAuth(user, pwd)
-            res = requests.get(endpoint, auth=auth, timeout=timeout)
+    for ep in endpoints:
+        try:
+            auth = requests.auth.HTTPDigestAuth(user, pwd)
+            res = requests.get(ep, auth=auth, timeout=http_timeout)
+            if res.status_code == 401:
+                auth = requests.auth.HTTPBasicAuth(user, pwd)
+                res = requests.get(ep, auth=auth, timeout=http_timeout)
 
-        t1 = time.perf_counter()
-        latency_ms = round((t1 - t0) * 1000, 2)
+            if res.status_code == 200:
+                arr = np.frombuffer(res.content, np.uint8)
+                img = cv2.imdecode(arr, cv2.IMREAD_COLOR)
+                if is_valid_image(img):
+                    latency_ms = round((time.perf_counter() - t0) * 1000, 2)
+                    with config.FRAME_LOCK:
+                        config.LATEST_RAW_FRAMES["Dahua"] = img
+                        config.LATEST_FRAME_TIMES["Dahua"] = time.time()
+                        config.CAM_STATUS["Dahua"] = "ONLINE"
+                    return img, latency_ms, None
+            else:
+                last_http_err = f"HTTP {res.status_code}"
+        except requests.exceptions.Timeout:
+            last_http_err = f"HTTP timeout ({http_timeout}s)"
+        except Exception as ex:
+            last_http_err = str(ex)
 
-        if res.status_code == 200:
-            arr = np.frombuffer(res.content, np.uint8)
-            img = cv2.imdecode(arr, cv2.IMREAD_COLOR)
-            if is_valid_image(img):
-                return img, latency_ms, None
-            return None, latency_ms, "Invalid image payload returned by Dahua"
-        return None, latency_ms, f"Dahua returned HTTP {res.status_code}"
-    except requests.exceptions.Timeout:
-        t1 = time.perf_counter()
-        return None, round((t1 - t0) * 1000, 2), f"Dahua connection timed out ({timeout}s)"
-    except Exception as exc:
-        t1 = time.perf_counter()
-        return None, round((t1 - t0) * 1000, 2), f"Dahua network error: {str(exc)}"
+    # Tier 3: Direct RTSP Frame Capture via OpenCV (if URL is RTSP)
+    last_rtsp_err = None
+    if "rtsp://" in url.lower():
+        try:
+            # Fast socket probe (200ms) to avoid OpenCV 30s block when camera host is offline
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(0.2)
+            port_to_test = int(raw_port or 554)
+            can_connect = (sock.connect_ex((ip, port_to_test)) == 0)
+            sock.close()
+
+            if can_connect:
+                os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp|fflags;nobuffer|flags;low_delay|max_delay;500000|stimeout;1500000|loglevel;fatal"
+                cap = cv2.VideoCapture(url, cv2.CAP_FFMPEG)
+                cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+                grabbed = False
+                frame = None
+                for _ in range(3):
+                    ret, frame = cap.read()
+                    if ret and is_valid_image(frame):
+                        grabbed = True
+                        break
+                cap.release()
+
+                if grabbed and frame is not None:
+                    latency_ms = round((time.perf_counter() - t0) * 1000, 2)
+                    with config.FRAME_LOCK:
+                        config.LATEST_RAW_FRAMES["Dahua"] = frame
+                        config.LATEST_FRAME_TIMES["Dahua"] = time.time()
+                        config.CAM_STATUS["Dahua"] = "ONLINE"
+                    return frame, latency_ms, None
+                else:
+                    last_rtsp_err = "RTSP opened but no valid frame received"
+            else:
+                last_rtsp_err = f"RTSP port {port_to_test} unreachable"
+        except Exception as ex:
+            last_rtsp_err = f"RTSP error: {str(ex)}"
+    else:
+        last_rtsp_err = "Not an RTSP stream"
+
+    total_latency = round((time.perf_counter() - t0) * 1000, 2)
+    err_summary = f"{last_http_err or 'HTTP failed'} / {last_rtsp_err or 'RTSP failed'}"
+    return None, total_latency, err_summary
 
 def create_simulated_anpr_frame(plate_text: str = "EAC-638", timestamp_str: str = None) -> np.ndarray:
     """

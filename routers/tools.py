@@ -331,8 +331,18 @@ async def capture_diagnostic_frame(cam: str):
 async def receive_camera_trigger(request: Request):
     """
     Sub-100ms ultra-low latency HTTP event receiver for Hikvision Alarm Center / HTTP Listening.
-    Instantly triggers Hikvision line-crossing overview capture.
+    Instantly triggers Hikvision line-crossing overview capture on POST/PUT event alerts.
+    GET requests are safe health-check probes with zero side effects.
     """
+    # Safe health-check / listener status check without side effects
+    if request.method == "GET":
+        return {
+            "ok": True,
+            "status": "listening",
+            "endpoint": request.url.path,
+            "protocol": "Hikvision HTTP Listening / Alert Stream Receiver"
+        }
+
     import os
     import time
     import cv2
@@ -358,6 +368,9 @@ async def receive_camera_trigger(request: Request):
         else:
             body = await request.body()
             body_str = body.decode(errors="ignore").lower()
+            if "heartbeat" in body_str or '"test": true' in body_str or '"test":true' in body_str:
+                return {"ok": True, "status": "heartbeat_acknowledged", "mode": "instant_http"}
+
             if any(k in body_str for k in ["rule2", "rule02", "b-a", "exit", "leaving"]):
                 direction = "Exit"
             elif any(k in body_str for k in ["rule1", "rule01", "a-b", "entry", "entering"]):

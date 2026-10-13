@@ -541,8 +541,10 @@ async function fireDualCameraSyncTest(btn) {
         if ($('statDahuaLatency')) $('statDahuaLatency').innerText = `${data.dahua?.latency_ms || 0} ms`;
         if ($('statDahuaStatus')) {
             const dStatus = data.dahua?.status || '';
-            $('statDahuaStatus').innerText = dStatus.includes('ONLINE') ? 'Online Capture' : 'Simulated (Fallback)';
-            $('statDahuaStatus').className = `text-[10px] font-bold block truncate ${dStatus.includes('ONLINE') ? 'text-cyan-600' : 'text-amber-600'}`;
+            const isOnline = dStatus.includes('ONLINE');
+            $('statDahuaStatus').innerText = isOnline ? 'Online Capture' : `Simulated (${data.dahua?.error || 'Fallback'})`;
+            $('statDahuaStatus').className = `text-[10px] font-bold block truncate ${isOnline ? 'text-cyan-600' : 'text-amber-600'}`;
+            if (data.dahua?.error) $('statDahuaStatus').title = data.dahua.error;
         }
 
         if ($('statDeltaLatency')) $('statDeltaLatency').innerText = `${data.time_delta_ms || 0} ms`;
@@ -552,7 +554,13 @@ async function fireDualCameraSyncTest(btn) {
         if ($('dispVal5')) $('dispVal5').innerText = `${data.displacement_cm?.speed_5kmh || 0} cm`;
         if ($('dispVal10')) $('dispVal10').innerText = `${data.displacement_cm?.speed_10kmh || 0} cm`;
         if ($('dispVal15')) $('dispVal15').innerText = `${data.displacement_cm?.speed_15kmh || 0} cm`;
-        if ($('dualAnalysisNote')) $('dualAnalysisNote').innerText = data.analysis_notes || '';
+        if ($('dualAnalysisNote')) {
+            let note = data.analysis_notes || '';
+            if (data.dahua?.error) {
+                note += ` (Dahua Hardware Notice: ${data.dahua.error})`;
+            }
+            $('dualAnalysisNote').innerText = note;
+        }
 
         // 3. Update preview images
         if (previewSection) {
@@ -644,17 +652,46 @@ function openDualInspectModal() {
     modal.classList.remove('hidden');
 }
 
-function closeDualInspectModal() {
-    const modal = $('dualInspectModal');
-    if (modal) modal.classList.add('hidden');
+function toggleDiagnosticsDrawer() {
+    const drawer = $('diagnosticsDrawer');
+    if (drawer) {
+        drawer.classList.toggle('hidden');
+    }
 }
 
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeDualInspectModal();
-});
+function switchCamTab(tabName) {
+    const tabs = ['benchmark', 'webhook', 'upload'];
+    tabs.forEach(t => {
+        const tabEl = $(`camTab_${t}`);
+        const btnEl = $(`camTabBtn_${t}`);
+        if (tabEl) {
+            if (t === tabName) {
+                tabEl.classList.remove('hidden');
+            } else {
+                tabEl.classList.add('hidden');
+            }
+        }
+        if (btnEl) {
+            if (t === tabName) {
+                btnEl.className = 'tab-btn active px-3 py-1.5 rounded-lg border border-transparent transition';
+            } else {
+                btnEl.className = 'tab-btn px-3 py-1.5 rounded-lg border border-transparent text-slate-600 hover:text-slate-900 transition';
+            }
+        }
+    });
+}
+
+// Explicitly register on global window scope to protect against bundling / caching issues
+window.fireDualCameraSyncTest = fireDualCameraSyncTest;
+window.openDualInspectModal = openDualInspectModal;
+window.closeDualInspectModal = closeDualInspectModal;
+window.toggleDiagnosticsDrawer = toggleDiagnosticsDrawer;
+window.switchCamTab = switchCamTab;
 
 document.addEventListener('DOMContentLoaded', () => {
-    runSelfTest();
+    if ($('selfTestGrid')) {
+        $('selfTestGrid').innerHTML = '<p class="col-span-full text-slate-400 font-medium py-1">Diagnostics standby. Click <strong>Run Diagnostics</strong> to probe endpoints.</p>';
+    }
     loadMembersDropdown();
     setupMemberListener();
     setupDropZone();
