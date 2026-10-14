@@ -3471,12 +3471,15 @@ async function loadCameraAudit(page = currentCamAuditPage) {
 
             const cleanFileName = rawPath ? rawPath.split('/').pop() : '';
 
+            const hasDahua = Boolean(item.plate_image_path);
+            const inspectLabel = hasDahua ? 'Inspect Dual HD' : 'Inspect Full HD';
+
             return `
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md hover:border-slate-300 transition duration-200 flex flex-col group">
                 <div class="relative bg-slate-900 aspect-video overflow-hidden cursor-pointer" onclick="openCamProofModalById(${item.id})">
                     <img src="${thumbSrc}" alt="Vehicle Proof" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.onerror=null; this.src='${origSrc || '/static/img/no-car.svg'}';">
                     <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                        <span class="bg-white/90 text-slate-900 px-3 py-1.5 rounded-xl text-xs font-bold shadow-lg">Inspect Full HD</span>
+                        <span class="bg-white/90 text-slate-900 px-3 py-1.5 rounded-xl text-xs font-bold shadow-lg">${inspectLabel}</span>
                     </div>
                     <div class="absolute top-2.5 left-2.5">
                         ${dirBadge}
@@ -3485,6 +3488,10 @@ async function loadCameraAudit(page = currentCamAuditPage) {
                         <span class="bg-slate-900/80 backdrop-blur-sm text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-md text-[10px] font-mono font-bold">
                             HIKVISION
                         </span>
+                        ${hasDahua ? `
+                        <span class="bg-slate-900/80 backdrop-blur-sm text-cyan-300 border border-cyan-500/30 px-2 py-0.5 rounded-md text-[10px] font-mono font-bold">
+                            + DAHUA
+                        </span>` : ''}
                     </div>
                 </div>
                 <div class="p-4 flex-1 flex flex-col justify-between">
@@ -3496,9 +3503,9 @@ async function loadCameraAudit(page = currentCamAuditPage) {
                         <p class="text-[11px] text-slate-400 font-mono mt-2 truncate" title="${cleanFileName}">${cleanFileName}</p>
                     </div>
                     <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
-                        <span class="text-[11px] font-bold text-slate-500">Camera Audit Proof</span>
+                        <span class="text-[11px] font-bold text-slate-500">${hasDahua ? 'Dual-Camera Aligned' : 'Camera Audit Proof'}</span>
                         <button type="button" onclick="openCamProofModalById(${item.id})" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition">
-                            Inspect HD &rarr;
+                            ${inspectLabel} &rarr;
                         </button>
                     </div>
                 </div>
@@ -3725,9 +3732,83 @@ window.camProofZoomReset = camProofZoomReset;
 window.camProofZoom100 = camProofZoom100;
 window.camProofRotate = camProofRotate;
 
+let currentCamAuditItem = null;
+let currentCamProofMode = 'hikvision';
+
+function switchCamProofView(mode) {
+    if (!currentCamAuditItem) return;
+    currentCamProofMode = mode;
+    const hikImgEl = document.getElementById('camProofModalImgHik');
+    const splitView = document.getElementById('camProofSplitView');
+    const zoomToolbar = document.getElementById('camProofZoomToolbar');
+    const viewerHints = document.getElementById('camProofViewerHints');
+    const zoomHud = document.getElementById('camProofZoomHudContainer');
+    const resEl = document.getElementById('camProofResolution');
+
+    const tabHik = document.getElementById('camProofTabHik');
+    const tabDahua = document.getElementById('camProofTabDahua');
+    const tabSplit = document.getElementById('camProofTabSplit');
+
+    [tabHik, tabDahua, tabSplit].forEach(btn => {
+        if (btn) {
+            btn.className = 'px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition';
+        }
+    });
+    if (mode === 'hikvision' && tabHik) tabHik.className = 'px-2.5 py-1 rounded-lg text-white bg-slate-700 transition';
+    if (mode === 'dahua' && tabDahua) tabDahua.className = 'px-2.5 py-1 rounded-lg text-white bg-slate-700 transition';
+    if (mode === 'split' && tabSplit) tabSplit.className = 'px-2.5 py-1 rounded-lg text-white bg-slate-700 transition';
+
+    const hikRaw = (currentCamAuditItem.image_path || '').replace(/^\/+/, '');
+    const dahuaRaw = (currentCamAuditItem.plate_image_path || '').replace(/^\/+/, '');
+    const hikSrc = hikRaw ? '/' + hikRaw : '';
+    const dahuaSrc = dahuaRaw ? '/' + dahuaRaw : '';
+
+    if (mode === 'split') {
+        if (hikImgEl) hikImgEl.classList.add('hidden');
+        if (splitView) splitView.classList.remove('hidden');
+        if (zoomToolbar) zoomToolbar.classList.add('opacity-40', 'pointer-events-none');
+        if (viewerHints) viewerHints.classList.add('hidden');
+        if (zoomHud) zoomHud.classList.add('hidden');
+
+        const splitHik = document.getElementById('camProofSplitImgHik');
+        const splitDahua = document.getElementById('camProofSplitImgDahua');
+        if (splitHik) splitHik.src = hikSrc || '/static/img/no-car.svg';
+        if (splitDahua) splitDahua.src = dahuaSrc || '/static/img/no-car.svg';
+
+        if (resEl) resEl.innerText = 'Dual-Camera Split: Hikvision Overview (Left) & Dahua ANPR Current Frame (Right)';
+    } else {
+        if (splitView) splitView.classList.add('hidden');
+        if (hikImgEl) hikImgEl.classList.remove('hidden');
+        if (zoomToolbar) zoomToolbar.classList.remove('opacity-40', 'pointer-events-none');
+        if (viewerHints) viewerHints.classList.remove('hidden');
+        if (zoomHud) zoomHud.classList.remove('hidden');
+
+        camProofZoomReset();
+        if (mode === 'dahua') {
+            if (hikImgEl) {
+                hikImgEl.onload = function() {
+                    if (resEl && hikImgEl.naturalWidth) {
+                        resEl.innerText = `Dahua Close-up Resolution: ${hikImgEl.naturalWidth} × ${hikImgEl.naturalHeight} px (Captured on line crossing)`;
+                    }
+                };
+                hikImgEl.src = dahuaSrc || '/static/img/no-car.svg';
+            }
+        } else {
+            if (hikImgEl) {
+                hikImgEl.onload = function() {
+                    if (resEl && hikImgEl.naturalWidth) {
+                        resEl.innerText = `Native HD Resolution: ${hikImgEl.naturalWidth} × ${hikImgEl.naturalHeight} px (Hikvision Overview)`;
+                    }
+                };
+                hikImgEl.src = hikSrc || '/static/img/no-car.svg';
+            }
+        }
+    }
+}
+window.switchCamProofView = switchCamProofView;
+
 function openCamProofModal(itemOrHikImg, timestamp, direction, eventType) {
     const modal = document.getElementById('camProofModal');
-    const hikImgEl = document.getElementById('camProofModalImgHik');
     const infoEl = document.getElementById('camProofModalInfo');
     const resEl = document.getElementById('camProofResolution');
     if (!modal) return;
@@ -3744,29 +3825,30 @@ function openCamProofModal(itemOrHikImg, timestamp, direction, eventType) {
         };
     }
 
+    currentCamAuditItem = item;
     const rawPath = (item.image_path || '').replace(/^\/+/, '');
-    // ALWAYS load the FULL RESOLUTION ORIGINAL image in modal
+    const dahuaRaw = (item.plate_image_path || '').replace(/^\/+/, '');
     const originalImgSrc = rawPath ? '/' + rawPath : '';
+    const dahuaSrc = dahuaRaw ? '/' + dahuaRaw : '';
 
     if (resEl) {
         resEl.innerText = 'Loading Full HD Resolution...';
     }
 
-    if (hikImgEl) {
-        hikImgEl.onload = function() {
-            if (resEl && hikImgEl.naturalWidth) {
-                resEl.innerText = `Native HD Resolution: ${hikImgEl.naturalWidth} × ${hikImgEl.naturalHeight} px (Full Quality Original)`;
-            }
-        };
-        hikImgEl.src = originalImgSrc || '';
-        hikImgEl.onerror = () => {
-            hikImgEl.src = '/static/img/no-car.svg';
-            if (resEl) resEl.innerText = 'Hikvision Overview Frame';
-        };
+    // Toggle camera view switcher if Dahua image exists
+    const viewSwitcher = document.getElementById('camProofViewSwitcher');
+    if (viewSwitcher) {
+        if (dahuaRaw) {
+            viewSwitcher.classList.remove('hidden');
+        } else {
+            viewSwitcher.classList.add('hidden');
+        }
     }
 
+    // Default to Hikvision view
+    switchCamProofView('hikvision');
+
     // Reset zoom and pan on opening modal
-    camProofZoomReset();
     initCamProofZoomEvents();
 
     if (infoEl) {
@@ -3774,10 +3856,11 @@ function openCamProofModal(itemOrHikImg, timestamp, direction, eventType) {
             <div class="flex items-center justify-between flex-wrap gap-3">
                 <div>
                     <div class="flex items-center gap-2">
-                        <h3 class="text-sm font-bold text-slate-800">Hikvision Camera Proof (Original Quality)</h3>
+                        <h3 class="text-sm font-bold text-slate-800">Camera Audit Proof (Synchronized Capture)</h3>
                         <span class="text-[10px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded-md">${item.event_type || 'Line Crossing'}</span>
+                        ${dahuaRaw ? '<span class="text-[10px] font-bold text-cyan-700 bg-cyan-50 border border-cyan-200 px-2 py-0.5 rounded-md font-mono">+ Dahua Current Frame</span>' : ''}
                     </div>
-                    <p class="text-xs text-slate-400 font-mono mt-0.5">Recorded: ${item.timestamp || ''} PKT &bull; Direction: ${item.direction || 'Line Crossing'} &bull; File: ${rawPath.split('/').pop()}</p>
+                    <p class="text-xs text-slate-400 font-mono mt-0.5">Recorded: ${item.timestamp || ''} PKT &bull; Direction: ${item.direction || 'Line Crossing'} &bull; Hikvision: ${rawPath.split('/').pop()}${dahuaRaw ? ` &bull; Dahua: ${dahuaRaw.split('/').pop()}` : ''}</p>
                 </div>
                 <div class="flex items-center gap-2">
                     <button type="button" onclick="enrollFromCameraAudit('${(item.detected_plate || '').replace(/'/g, "\\'")}', '${item.timestamp || ''}')" class="px-3 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition shadow-2xs flex items-center gap-1.5">
@@ -3785,7 +3868,10 @@ function openCamProofModal(itemOrHikImg, timestamp, direction, eventType) {
                         1-Click Enroll
                     </button>
                     ${originalImgSrc ? `<a href="${originalImgSrc}" download target="_blank" class="px-3 py-2 text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl hover:bg-emerald-100 transition shadow-2xs">
-                        Download Original HD
+                        Download Hikvision
+                    </a>` : ''}
+                    ${dahuaSrc ? `<a href="${dahuaSrc}" download target="_blank" class="px-3 py-2 text-xs font-bold text-cyan-700 bg-cyan-50 border border-cyan-200 rounded-xl hover:bg-cyan-100 transition shadow-2xs">
+                        Download Dahua
                     </a>` : ''}
                     <button type="button" onclick="closeCamProofModal()" class="px-3.5 py-2 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition">
                         Close

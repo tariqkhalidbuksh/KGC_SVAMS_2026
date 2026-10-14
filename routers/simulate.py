@@ -55,8 +55,23 @@ async def simulate_linecross(file: UploadFile = File(...), direction: str = Form
     with open(target_path, "wb") as f_out:
         f_out.write(contents)
     
+    # Dahua Camera Alignment: capture live or test frame on-demand (no RAM buffer)
+    from services.camera_service import grab_dahua_snapshot, create_simulated_anpr_frame, is_valid_image
+    import cv2
+    dahua_rel_path = None
+    try:
+        dahua_img, _, _ = grab_dahua_snapshot(timeout=1.0)
+        if dahua_img is None or not is_valid_image(dahua_img):
+            dahua_img = create_simulated_anpr_frame()
+        if dahua_img is not None:
+            dahua_target = os.path.join(target_dir, f"dahua_audit_{stamp}.jpg")
+            cv2.imwrite(dahua_target, dahua_img, [cv2.IMWRITE_JPEG_QUALITY, 95])
+            dahua_rel_path = f"static/camera_audits/dahua_audit_{stamp}.jpg"
+    except Exception:
+        pass
+
     rel_path = f"static/camera_audits/cam_audit_{stamp}{ext}"
-    log_camera_audit_event(rel_path, direction=direction, event_type="Hikvision Line Crossing")
+    log_camera_audit_event(rel_path, plate_image_path=dahua_rel_path, direction=direction, event_type="Hikvision Line Crossing")
     config.FTP_EVENT_COUNT["count"] += 1
     return {"ok": True, "path": rel_path.replace("\\", "/"), "direction": direction}
 

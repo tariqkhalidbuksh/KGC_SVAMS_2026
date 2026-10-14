@@ -338,13 +338,25 @@ def process_camera_line_crossing(hikvision_image_path: str, forced_direction: st
     except Exception:
         pass
 
+    # Dahua Alignment: Trigger Dahua camera to capture current frame on-demand (no RAM buffer)
+    dahua_rel_path = None
+    try:
+        from services.camera_service import grab_dahua_snapshot, is_valid_image
+        dahua_frame, dahua_latency, dahua_err = grab_dahua_snapshot(timeout=1.5)
+        if dahua_frame is not None and is_valid_image(dahua_frame):
+            dahua_target_path = os.path.join(target_dir, f"dahua_anpr_{stamp}.jpg")
+            cv2.imwrite(dahua_target_path, dahua_frame, [cv2.IMWRITE_JPEG_QUALITY, 95])
+            dahua_rel_path = f"static/camera_audits/dahua_anpr_{stamp}.jpg"
+    except Exception as d_exc:
+        print(f"[DAHUA LINE CROSS CAPTURE ERROR] {d_exc}")
+
     hik_rel_path = f"static/camera_audits/hikvision_full_{stamp}.jpg"
     direction = forced_direction or "Line Crossing"
     event_type = "Hikvision Line Crossing"
 
     new_audit_id = log_camera_audit_event(
         image_path=hik_rel_path,
-        plate_image_path=None,
+        plate_image_path=dahua_rel_path,
         direction=direction,
         event_type=event_type
     )

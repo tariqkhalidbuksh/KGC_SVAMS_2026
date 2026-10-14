@@ -1,6 +1,7 @@
 import os
 import re
 import time
+import socket
 import threading
 import cv2
 import numpy as np
@@ -234,26 +235,15 @@ def analyze_vehicle_direction(image_path: str) -> str:
 
 def grab_dahua_snapshot(dahua_url_or_key: str = None, timeout: float = 1.5) -> tuple:
     """
-    Fetches a live snapshot from the Dahua camera using:
-    1. Zero-lag RTSP RAM frame buffer (< 5ms) if stream worker is active
-    2. Direct HTTP Snapshot CGI (Digest/Basic auth)
-    3. Direct RTSP stream frame capture (OpenCV FFMPEG) if HTTP is firewalled/closed
+    Captures the current frame on-demand from Dahua without buffering in RAM:
+    1. Direct HTTP Snapshot CGI (Digest/Basic auth) - ultra-fast fresh shutter frame
+    2. Direct RTSP on-demand grab via OpenCV (if HTTP unavailable)
     Returns: (img_ndarray or None, latency_ms: float, error_msg or None)
     """
     t0 = time.perf_counter()
     url = (dahua_url_or_key or "").strip() or get_setting("dahua_cam_url", "")
     if not url:
         return None, 0.0, "Dahua camera URL not configured"
-
-    # Tier 1: Check live RTSP RAM frame buffer
-    now = time.time()
-    with config.FRAME_LOCK:
-        raw_frame = config.LATEST_RAW_FRAMES.get("Dahua")
-        frame_time = config.LATEST_FRAME_TIMES.get("Dahua", 0.0)
-        if raw_frame is not None and (now - frame_time) <= 3.0:
-            if is_valid_image(raw_frame):
-                latency_ms = round((time.perf_counter() - t0) * 1000, 2)
-                return raw_frame.copy(), latency_ms, None
 
     # Parse camera credentials and address
     match = re.search(r'(?:rtsp|http)://(?:([^:]+):([^@]+)@)?([0-9a-zA-Z.-]+)(?::([0-9]+))?', url)
