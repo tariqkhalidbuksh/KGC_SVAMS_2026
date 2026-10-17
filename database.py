@@ -108,7 +108,12 @@ def init_db():
                     tag_scanned TEXT,
                     system_response TEXT,
                     direction TEXT DEFAULT 'Unknown',
+                    gate_name TEXT DEFAULT 'Gate-01',
                     timestamp DATETIME DEFAULT (datetime('now', 'localtime')))""")
+
+                raw_cols = [col['name'] for col in conn.execute("PRAGMA table_info(raw_reader_logs)").fetchall()]
+                if 'gate_name' not in raw_cols:
+                    conn.execute("ALTER TABLE raw_reader_logs ADD COLUMN gate_name TEXT DEFAULT 'Gate-01'")
 
                 conn.execute("""CREATE TABLE IF NOT EXISTS camera_audit_logs (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,

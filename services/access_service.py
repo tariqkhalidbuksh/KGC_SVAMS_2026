@@ -212,15 +212,21 @@ def execute_access_decision(
                             tag_type = excluded.tag_type
                     """, (clean_tag, pkt_now, pkt_now, resolved_direction, new_loc, tag_type))
 
-                conn.execute(
-                    "INSERT INTO raw_reader_logs (tag_scanned, system_response, direction, timestamp) VALUES (?, ?, ?, ?)",
-                    (clean_tag, f"PROCESSED: {resolved_direction}", resolved_direction, pkt_now)
-                )
-
                 if gate_name:
                     resolved_gate = gate_name
                 else:
                     resolved_gate = "Gate-01 Entry Reader" if resolved_direction == "Entry" else "Gate-01 Exit Reader"
+
+                try:
+                    conn.execute(
+                        "INSERT INTO raw_reader_logs (tag_scanned, system_response, direction, gate_name, timestamp) VALUES (?, ?, ?, ?, ?)",
+                        (clean_tag, f"PROCESSED: {resolved_direction} via {resolved_gate}", resolved_direction, resolved_gate, pkt_now)
+                    )
+                except Exception:
+                    conn.execute(
+                        "INSERT INTO raw_reader_logs (tag_scanned, system_response, direction, timestamp) VALUES (?, ?, ?, ?)",
+                        (clean_tag, f"PROCESSED: {resolved_direction} via {resolved_gate}", resolved_direction, pkt_now)
+                    )
 
                 cursor = conn.execute("""INSERT INTO daily_logs
                     (mem_id, name, vehicle_number, access_type, direction, gate_no, image_path, plate_image_path, scanned_tag, timestamp)
@@ -257,7 +263,7 @@ def execute_access_decision(
                 car = "UNKNOWN"
                 access_type = "No RFID Detected"
                 resolved_direction = direction or "Entry"
-                resolved_gate = "Gate-01 Entry Reader" if resolved_direction == "Entry" else "Gate-01 Exit Reader"
+                resolved_gate = gate_name if gate_name else ("Gate-01 Entry Reader" if resolved_direction == "Entry" else "Gate-01 Exit Reader")
 
                 cursor = conn.execute("""INSERT INTO daily_logs
                     (mem_id, name, vehicle_number, access_type, direction, gate_no, image_path, plate_image_path, scanned_tag, timestamp)

@@ -509,7 +509,10 @@ async function loadHardwareSettingsStatus() {
                 <div>
                     <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Club Road Entry Reader</span>
                     <h4 class="font-bold text-slate-800 text-sm mt-0.5">Main Gate UHF Antenna</h4>
-                    <p class="text-xs font-mono text-slate-500 mt-1">${document.getElementById('setClubRoadEntry')?.value || 'Unconfigured'}</p>
+                    <p class="text-xs font-mono text-slate-500 mt-1">${(() => {
+                        const v = (document.getElementById('setClubRoadEntry')?.value || '').trim();
+                        return v ? (v.includes(':') ? v : `${v}:49152`) : 'Unconfigured';
+                    })()}</p>
                 </div>
                 <span class="px-2.5 py-1 rounded-full text-xs font-bold ${crEntryOk ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-slate-100 text-slate-600 border border-slate-300'}">
                     ${crEntryOk ? 'ONLINE' : (s.readers?.ClubRoad_Entry || 'NO_IP')}
@@ -519,7 +522,10 @@ async function loadHardwareSettingsStatus() {
                 <div>
                     <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Club Road Exit Reader</span>
                     <h4 class="font-bold text-slate-800 text-sm mt-0.5">Main Gate UHF Antenna</h4>
-                    <p class="text-xs font-mono text-slate-500 mt-1">${document.getElementById('setClubRoadExit')?.value || 'Unconfigured'}</p>
+                    <p class="text-xs font-mono text-slate-500 mt-1">${(() => {
+                        const v = (document.getElementById('setClubRoadExit')?.value || '').trim();
+                        return v ? (v.includes(':') ? v : `${v}:49152`) : 'Unconfigured';
+                    })()}</p>
                 </div>
                 <span class="px-2.5 py-1 rounded-full text-xs font-bold ${crExitOk ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-slate-100 text-slate-600 border border-slate-300'}">
                     ${crExitOk ? 'ONLINE' : (s.readers?.ClubRoad_Exit || 'NO_IP')}
@@ -958,48 +964,83 @@ async function loadHardware() {
     }
 }
 
+function formatGateReaderTitle(gateNo, direction) {
+    const raw = String(gateNo || '').trim();
+    const dir = String(direction || '').trim().toLowerCase();
+    
+    if (raw) {
+        const lower = raw.toLowerCase();
+        if (lower.includes('club')) {
+            if (lower.includes('entry') || dir === 'entry') return 'Club Road Entry Reader';
+            if (lower.includes('exit') || dir === 'exit') return 'Club Road Exit Reader';
+            return 'Club Road RFID Reader';
+        }
+        if (lower.includes('gate-01') || lower.includes('gate 01') || lower.includes('gate01')) {
+            if (lower.includes('bulk') || lower.includes('clearance')) return 'Gate-01 (Bulk Clearance)';
+            if (lower.includes('manual')) return 'Gate-01 (Manual Exit)';
+            if (lower.includes('entry') || dir === 'entry') return 'Gate-01 Entry Reader';
+            if (lower.includes('exit') || lower.includes('out') || dir === 'exit') return 'Gate-01 Exit Reader';
+            return raw;
+        }
+        return raw;
+    }
+    
+    if (dir === 'entry') return 'Gate-01 Entry Reader';
+    if (dir === 'exit') return 'Gate-01 Exit Reader';
+    return 'Gate-01 Reader';
+}
+
+function renderGateReaderBadge(gateNo, direction) {
+    const title = formatGateReaderTitle(gateNo, direction);
+    const lower = title.toLowerCase();
+    const isClub = lower.includes('club');
+    const isManual = lower.includes('manual') || lower.includes('bulk');
+    const isEntry = lower.includes('entry') || (direction || '').toLowerCase() === 'entry';
+    
+    let badgeClass = 'bg-slate-100 text-slate-800 border-slate-300';
+    let dotClass = 'bg-slate-500';
+    let dirPill = isEntry ? '<span class="text-[9px] font-black text-emerald-800 bg-emerald-200/90 px-1 py-0.2 rounded font-mono">IN</span>' : '<span class="text-[9px] font-black text-indigo-800 bg-indigo-200/90 px-1 py-0.2 rounded font-mono">OUT</span>';
+    
+    if (isManual) {
+        badgeClass = 'bg-amber-100/90 text-amber-900 border-amber-300';
+        dotClass = 'bg-amber-500';
+        dirPill = '<span class="text-[9px] font-black text-amber-800 bg-amber-200 px-1 py-0.2 rounded font-mono">OUT</span>';
+    } else if (isClub) {
+        if (isEntry) {
+            badgeClass = 'bg-teal-100/90 text-teal-900 border-teal-300';
+            dotClass = 'bg-teal-600';
+            dirPill = '<span class="text-[9px] font-black text-teal-800 bg-teal-200 px-1 py-0.2 rounded font-mono">IN</span>';
+        } else {
+            badgeClass = 'bg-blue-100/90 text-blue-900 border-blue-300';
+            dotClass = 'bg-blue-600';
+            dirPill = '<span class="text-[9px] font-black text-blue-800 bg-blue-200 px-1 py-0.2 rounded font-mono">OUT</span>';
+        }
+    } else {
+        if (isEntry) {
+            badgeClass = 'bg-emerald-100/90 text-emerald-900 border-emerald-300';
+            dotClass = 'bg-emerald-600';
+            dirPill = '<span class="text-[9px] font-black text-emerald-800 bg-emerald-200 px-1 py-0.2 rounded font-mono">IN</span>';
+        } else {
+            badgeClass = 'bg-indigo-100/90 text-indigo-900 border-indigo-300';
+            dotClass = 'bg-indigo-600';
+            dirPill = '<span class="text-[9px] font-black text-indigo-800 bg-indigo-200 px-1 py-0.2 rounded font-mono">OUT</span>';
+        }
+    }
+
+    return `
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-black border ${badgeClass} shadow-2xs whitespace-nowrap">
+            <span class="w-2 h-2 rounded-full ${dotClass} ${isEntry ? 'animate-pulse' : ''} shrink-0"></span>
+            <span>${title}</span>
+            ${dirPill}
+        </span>
+    `;
+}
+
 function formatReaderBadge(row, fallbackDirection) {
     if (!row && !fallbackDirection) return '';
-    const dir = (row?.direction || fallbackDirection || '').trim().toLowerCase();
-    const gate = (row?.gate_no || '').trim();
-    const isManual = (row?.access_type || '').includes('Manual') || gate.includes('Out') || gate.includes('Manual') || gate.includes('Bulk');
-
-    if (dir === 'entry') {
-        return `
-            <div class="flex flex-col gap-0.5 items-start">
-                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-black bg-emerald-50 text-emerald-800 border border-emerald-200/90 shadow-2xs">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span>ENTRY READER</span>
-                    <span class="text-[9px] font-extrabold text-emerald-700 bg-emerald-100/90 px-1 py-0.2 rounded font-mono">IN</span>
-                </span>
-                <span class="text-[9px] text-slate-400 font-mono pl-0.5">${gate || 'Gate-01 Entry Reader'}</span>
-            </div>
-        `;
-    } else if (dir === 'exit') {
-        if (isManual) {
-            return `
-                <div class="flex flex-col gap-0.5 items-start">
-                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-black bg-amber-50 text-amber-900 border border-amber-200/90 shadow-2xs">
-                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                        <span>MANUAL EXIT</span>
-                        <span class="text-[9px] font-extrabold text-amber-700 bg-amber-100/90 px-1 py-0.2 rounded font-mono">OUT</span>
-                    </span>
-                    <span class="text-[9px] text-slate-400 font-mono pl-0.5">${gate || 'Manual Clearance'}</span>
-                </div>
-            `;
-        }
-        return `
-            <div class="flex flex-col gap-0.5 items-start">
-                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-black bg-indigo-50 text-indigo-900 border border-indigo-200/90 shadow-2xs">
-                    <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
-                    <span>EXIT READER</span>
-                    <span class="text-[9px] font-extrabold text-indigo-700 bg-indigo-100 px-1 py-0.2 rounded font-mono">OUT</span>
-                </span>
-                <span class="text-[9px] text-slate-400 font-mono pl-0.5">${gate || 'Gate-01 Exit Reader'}</span>
-            </div>
-        `;
-    }
-    return `<span class="text-[10px] text-slate-400 font-mono">${gate || '--'}</span>`;
+    const dir = row?.direction || fallbackDirection || '';
+    const gate = row?.gate_no || '';
+    return renderGateReaderBadge(gate, dir);
 }
 
 async function loadActivity() {
@@ -1347,23 +1388,16 @@ async function loadAudit(page = currentAuditPage, isSilent = false) {
                             ${(x && e.timestamp && x.timestamp && String(e.timestamp).substring(0, 10) !== String(x.timestamp).substring(0, 10)) ? `<span class="text-[9px] block text-indigo-600 font-semibold tracking-tight">${String(e.timestamp).substring(0, 10)}</span>` : ''}
                             ${String(e.timestamp).split(' ')[1] || e.timestamp}
                         </p>
-                        <p class="text-[10px] text-emerald-700 font-bold mt-0.5 flex items-center gap-1">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>Entry
-                            <span class="text-[9px] text-slate-400 font-mono font-normal">${e.gate_no || 'Gate-01'}</span>
-                        </p>
+                        <div class="mt-1">${renderGateReaderBadge(e.gate_no, 'Entry')}</div>
                     </div>` : '<span class="text-slate-300 text-xs font-mono">—</span>'}
                 </td>
                 <td class="py-3 px-4">
                     ${x ? (() => {
                         const xTime = String(x.timestamp).split(' ')[1] || x.timestamp;
                         const xGate = x.gate_no || 'Gate-01';
-                        const isManual = (x.access_type || '').includes('Manual') || xGate.includes('Manual') || xGate.includes('Bulk');
                         return `<div>
                             <p class="font-mono font-bold text-slate-800 text-xs tabular-nums">${xTime}</p>
-                            <p class="text-[10px] font-bold mt-0.5 flex items-center gap-1 ${isManual ? 'text-amber-700' : 'text-indigo-600'}">
-                                <span class="w-1.5 h-1.5 rounded-full inline-block ${isManual ? 'bg-amber-500' : 'bg-indigo-500'}"></span>${isManual ? 'Manual Exit' : 'Exit'}
-                                <span class="text-[9px] text-slate-400 font-mono font-normal">${xGate}</span>
-                            </p>
+                            <div class="mt-1">${renderGateReaderBadge(xGate, 'Exit')}</div>
                         </div>`;
                     })() : `<span class="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping inline-block"></span>Still Inside
@@ -1460,18 +1494,8 @@ let reportGallerySearchQuery = '';
 function formatReaderPill(row) {
     if (!row) return '';
     const dir = (row.direction || '').trim().toLowerCase();
-    const gate = row.gate_no || 'Gate-01';
-    const isManual = (row.access_type || '').includes('Manual') || gate.includes('Manual');
-    if (dir === 'entry') {
-        return `<span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 shadow-2xs"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>ENTRY READER &bull; ${gate}</span>`;
-    } else if (dir === 'exit') {
-        if (isManual) {
-            return `<span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 shadow-2xs"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>MANUAL EXIT &bull; ${gate}</span>`;
-        }
-        return `<span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-800 border border-indigo-200 shadow-2xs"><span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>EXIT READER &bull; ${gate}</span>`;
-    }
-    return `<span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-slate-50 text-slate-700 border border-slate-200">${gate}</span>`;
-
+    const gate = row.gate_no || '';
+    return renderGateReaderBadge(gate, dir);
 }
 
 function renderSindhPlateHtml(carNum) {
@@ -2213,13 +2237,7 @@ async function loadReportMovements(vehicleNumber, memId, dateStr, tripDuration, 
                                     </td>
                                     <td class="py-2.5 px-3 font-mono font-bold text-slate-800 whitespace-nowrap">${timeStr}</td>
                                     <td class="py-2.5 px-3 whitespace-nowrap">
-                                        <div class="flex items-center gap-2">
-                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-black ${isEntry ? 'bg-emerald-50 text-emerald-800 border border-emerald-200 shadow-2xs' : 'bg-indigo-50 text-indigo-800 border border-indigo-200 shadow-2xs'}">
-                                                <span class="w-1.5 h-1.5 rounded-full ${isEntry ? 'bg-emerald-500' : 'bg-indigo-500'}"></span>
-                                                ${isEntry ? 'ENTRY READER' : 'EXIT READER'}
-                                            </span>
-                                            <span class="text-xs font-bold text-slate-700 font-mono">${gateName}</span>
-                                        </div>
+                                        ${renderGateReaderBadge(m.gate_no, isEntry ? 'Entry' : 'Exit')}
                                     </td>
                                     <td class="py-2.5 px-3 text-slate-600 whitespace-nowrap">${m.access_type || 'UHF RFID Access'}</td>
                                     <td class="py-2.5 px-3 whitespace-nowrap">${stayBadge}</td>
@@ -4150,7 +4168,7 @@ async function loadGateFeed() {
 
         if (memName) memName.innerText = log.name || 'Visitor';
         if (vehNum) vehNum.innerText = log.vehicle_number || '--';
-        if (memId) memId.innerText = `${log.mem_id || 'GUEST'} • ${log.gate_no || 'Gate-01'}`;
+        if (memId) memId.innerText = `${log.mem_id || 'GUEST'} • ${formatGateReaderTitle(log.gate_no, log.direction)}`;
 
         if (statusPill) {
             statusPill.classList.remove('hidden');
@@ -4845,7 +4863,7 @@ function renderEtagChronology(data, page = currentEtagScanPage, limit = currentE
                 <td class="py-3 px-4 font-mono font-bold text-slate-400 text-xs">${String(itemNumber).padStart(2, '0')}</td>
                 <td class="py-3 px-4 font-mono font-bold text-slate-800 text-xs">${timePart}</td>
                 <td class="py-3 px-4">${formatReaderBadge(s)}</td>
-                <td class="py-3 px-4 font-bold text-slate-700 text-xs">${s.gate_no || (isEntry ? 'Gate-01 Entry Reader' : 'Gate-01 Exit Reader')}</td>
+                <td class="py-3 px-4 font-bold text-slate-700 text-xs">${formatGateReaderTitle(s.gate_no, s.direction)}</td>
                 <td class="py-3 px-4 text-xs text-slate-600 font-medium">${s.access_type || 'UHF RFID Access'}</td>
                 <td class="py-3 px-4 font-mono font-bold text-xs text-slate-800">${s.vehicle_number || 'NO PLATE'}</td>
                 <td class="py-3 px-4">
@@ -5011,7 +5029,7 @@ function exportEtagAuditData(format = 'csv') {
         mem.mem_id || '',
         `"${(mem.name || s.name || '').replace(/"/g, '""')}"`,
         `"${(mem.vehicle_number || s.vehicle_number || '').replace(/"/g, '""')}"`,
-        s.gate_no || 'Gate-01',
+        formatGateReaderTitle(s.gate_no, s.direction),
         s.direction || '',
         s.timestamp || '',
         `"${(s.access_type || '').replace(/"/g, '""')}"`

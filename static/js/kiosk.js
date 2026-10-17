@@ -108,6 +108,32 @@ function renderLicensePlate(carNum) {
     }
 }
 
+function formatGateReaderTitle(gateNo, direction) {
+    const raw = String(gateNo || '').trim();
+    const dir = String(direction || '').trim().toLowerCase();
+    
+    if (raw) {
+        const lower = raw.toLowerCase();
+        if (lower.includes('club')) {
+            if (lower.includes('entry') || dir === 'entry') return 'Club Road Entry Reader';
+            if (lower.includes('exit') || dir === 'exit') return 'Club Road Exit Reader';
+            return 'Club Road RFID Reader';
+        }
+        if (lower.includes('gate-01') || lower.includes('gate 01') || lower.includes('gate01')) {
+            if (lower.includes('bulk') || lower.includes('clearance')) return 'Gate-01 (Bulk Clearance)';
+            if (lower.includes('manual')) return 'Gate-01 (Manual Exit)';
+            if (lower.includes('entry') || dir === 'entry') return 'Gate-01 Entry Reader';
+            if (lower.includes('exit') || lower.includes('out') || dir === 'exit') return 'Gate-01 Exit Reader';
+            return raw;
+        }
+        return raw;
+    }
+    
+    if (dir === 'entry') return 'Gate-01 Entry Reader';
+    if (dir === 'exit') return 'Gate-01 Exit Reader';
+    return 'Gate-01 Reader';
+}
+
 async function updateRecentEntries() {
     try {
         const res = await fetch('/api/recent-entries?limit=4');
@@ -157,6 +183,7 @@ async function updateRecentEntries() {
             const plate = isUnreg ? (entry.scanned_tag || 'NO TAG') : (entry.vehicle_number || '--');
             const timeStr = formatTimestamp(entry.timestamp);
             const dir = entry.direction || 'Entry';
+            const gateTitle = formatGateReaderTitle(entry.gate_no, dir);
 
             let badgeClass = 'bg-emerald-50 text-emerald-700 border-emerald-200';
             let badgeLabel = dir.toUpperCase();
@@ -191,9 +218,9 @@ async function updateRecentEntries() {
                         <h5 class="text-sm font-extrabold text-slate-900 truncate mb-0.5">${displayName}</h5>
                         ${isUnreg && tagSignature ? `<span class="text-[10px] font-bold text-slate-500">${tagSignature}</span>` : ''}
                     </div>
-                    <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between">
-                        <span class="text-xs font-mono font-bold text-indigo-600 tracking-wider truncate max-w-[130px]">${plate}</span>
-                        <span class="text-[10px] text-slate-400 font-bold uppercase">${isUnreg ? 'Gate-01' : (entry.make_model || 'Gate-01')}</span>
+                    <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between gap-1">
+                        <span class="text-xs font-mono font-bold text-indigo-600 tracking-wider truncate max-w-[110px]">${plate}</span>
+                        <span class="text-[10px] font-extrabold uppercase truncate max-w-[140px] text-right ${gateTitle.toLowerCase().includes('club') ? 'text-teal-700' : 'text-slate-600'}" title="${gateTitle}">${gateTitle}</span>
                     </div>
                 </div>
             `;
@@ -231,11 +258,21 @@ function displayEntry(log) {
     const statusBadge = document.getElementById('statusBadge');
     const badgeIcon = document.getElementById('badgeIcon');
     const accentBar = document.getElementById('accentBar');
+    const gateStationBadge = document.getElementById('gateStationBadge');
 
     const memberDisplayContainer = document.getElementById('memberDisplayContainer');
     const unregisteredDisplayContainer = document.getElementById('unregisteredDisplayContainer');
 
     if (entryTimestamp) entryTimestamp.innerText = formatTimestamp(log.timestamp);
+
+    const gateTitle = formatGateReaderTitle(log.gate_no, direction);
+    if (gateStationBadge) {
+        const isClub = gateTitle.toLowerCase().includes('club');
+        gateStationBadge.innerText = gateTitle.toUpperCase();
+        gateStationBadge.className = isClub 
+            ? 'px-3.5 py-1.5 rounded-xl text-[11px] font-mono font-black uppercase tracking-wider bg-teal-100 text-teal-900 border border-teal-300 shadow-2xs'
+            : 'px-3.5 py-1.5 rounded-xl text-[11px] font-mono font-black uppercase tracking-wider bg-indigo-100 text-indigo-900 border border-indigo-300 shadow-2xs';
+    }
 
     if (isUnregistered) {
         // Hide member container, show unregistered container
