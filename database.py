@@ -108,12 +108,7 @@ def init_db():
                     tag_scanned TEXT,
                     system_response TEXT,
                     direction TEXT DEFAULT 'Unknown',
-                    gate_name TEXT DEFAULT 'Gate-01',
                     timestamp DATETIME DEFAULT (datetime('now', 'localtime')))""")
-
-                raw_cols = [col['name'] for col in conn.execute("PRAGMA table_info(raw_reader_logs)").fetchall()]
-                if 'gate_name' not in raw_cols:
-                    conn.execute("ALTER TABLE raw_reader_logs ADD COLUMN gate_name TEXT DEFAULT 'Gate-01'")
 
                 conn.execute("""CREATE TABLE IF NOT EXISTS camera_audit_logs (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -159,8 +154,13 @@ def init_db():
                     'dahua_cam_url': 'rtsp://admin:admin123@192.168.0.221:554/cam/realmonitor?channel=1&subtype=0',
                     'entry_reader_ip': '192.168.0.217',
                     'exit_reader_ip': '192.168.0.216',
+                    'entry_reader_name': 'Gate-01 Entry Reader',
+                    'exit_reader_name': 'Gate-01 Exit Reader',
                     'clubroad_entry_reader_ip': '',
                     'clubroad_exit_reader_ip': '',
+                    'clubroad_entry_reader_name': 'Main Gate (Club Road) Entry Reader',
+                    'clubroad_exit_reader_name': 'Main Gate (Club Road) Exit Reader',
+                    'rfid_cooldown_seconds': '60',
                 }
                 for key, val in default_settings.items():
                     conn.execute("INSERT OR IGNORE INTO settings (config_key, config_value) VALUES (?, ?)", (key, val))

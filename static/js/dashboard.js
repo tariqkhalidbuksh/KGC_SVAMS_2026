@@ -509,10 +509,7 @@ async function loadHardwareSettingsStatus() {
                 <div>
                     <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Club Road Entry Reader</span>
                     <h4 class="font-bold text-slate-800 text-sm mt-0.5">Main Gate UHF Antenna</h4>
-                    <p class="text-xs font-mono text-slate-500 mt-1">${(() => {
-                        const v = (document.getElementById('setClubRoadEntry')?.value || '').trim();
-                        return v ? (v.includes(':') ? v : `${v}:49152`) : 'Unconfigured';
-                    })()}</p>
+                    <p class="text-xs font-mono text-slate-500 mt-1">${document.getElementById('setClubRoadEntry')?.value || 'Unconfigured'}</p>
                 </div>
                 <span class="px-2.5 py-1 rounded-full text-xs font-bold ${crEntryOk ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-slate-100 text-slate-600 border border-slate-300'}">
                     ${crEntryOk ? 'ONLINE' : (s.readers?.ClubRoad_Entry || 'NO_IP')}
@@ -522,10 +519,7 @@ async function loadHardwareSettingsStatus() {
                 <div>
                     <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Club Road Exit Reader</span>
                     <h4 class="font-bold text-slate-800 text-sm mt-0.5">Main Gate UHF Antenna</h4>
-                    <p class="text-xs font-mono text-slate-500 mt-1">${(() => {
-                        const v = (document.getElementById('setClubRoadExit')?.value || '').trim();
-                        return v ? (v.includes(':') ? v : `${v}:49152`) : 'Unconfigured';
-                    })()}</p>
+                    <p class="text-xs font-mono text-slate-500 mt-1">${document.getElementById('setClubRoadExit')?.value || 'Unconfigured'}</p>
                 </div>
                 <span class="px-2.5 py-1 rounded-full text-xs font-bold ${crExitOk ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-slate-100 text-slate-600 border border-slate-300'}">
                     ${crExitOk ? 'ONLINE' : (s.readers?.ClubRoad_Exit || 'NO_IP')}
@@ -964,83 +958,48 @@ async function loadHardware() {
     }
 }
 
-function formatGateReaderTitle(gateNo, direction) {
-    const raw = String(gateNo || '').trim();
-    const dir = String(direction || '').trim().toLowerCase();
-    
-    if (raw) {
-        const lower = raw.toLowerCase();
-        if (lower.includes('club')) {
-            if (lower.includes('entry') || dir === 'entry') return 'Club Road Entry Reader';
-            if (lower.includes('exit') || dir === 'exit') return 'Club Road Exit Reader';
-            return 'Club Road RFID Reader';
-        }
-        if (lower.includes('gate-01') || lower.includes('gate 01') || lower.includes('gate01')) {
-            if (lower.includes('bulk') || lower.includes('clearance')) return 'Gate-01 (Bulk Clearance)';
-            if (lower.includes('manual')) return 'Gate-01 (Manual Exit)';
-            if (lower.includes('entry') || dir === 'entry') return 'Gate-01 Entry Reader';
-            if (lower.includes('exit') || lower.includes('out') || dir === 'exit') return 'Gate-01 Exit Reader';
-            return raw;
-        }
-        return raw;
-    }
-    
-    if (dir === 'entry') return 'Gate-01 Entry Reader';
-    if (dir === 'exit') return 'Gate-01 Exit Reader';
-    return 'Gate-01 Reader';
-}
-
-function renderGateReaderBadge(gateNo, direction) {
-    const title = formatGateReaderTitle(gateNo, direction);
-    const lower = title.toLowerCase();
-    const isClub = lower.includes('club');
-    const isManual = lower.includes('manual') || lower.includes('bulk');
-    const isEntry = lower.includes('entry') || (direction || '').toLowerCase() === 'entry';
-    
-    let badgeClass = 'bg-slate-100 text-slate-800 border-slate-300';
-    let dotClass = 'bg-slate-500';
-    let dirPill = isEntry ? '<span class="text-[9px] font-black text-emerald-800 bg-emerald-200/90 px-1 py-0.2 rounded font-mono">IN</span>' : '<span class="text-[9px] font-black text-indigo-800 bg-indigo-200/90 px-1 py-0.2 rounded font-mono">OUT</span>';
-    
-    if (isManual) {
-        badgeClass = 'bg-amber-100/90 text-amber-900 border-amber-300';
-        dotClass = 'bg-amber-500';
-        dirPill = '<span class="text-[9px] font-black text-amber-800 bg-amber-200 px-1 py-0.2 rounded font-mono">OUT</span>';
-    } else if (isClub) {
-        if (isEntry) {
-            badgeClass = 'bg-teal-100/90 text-teal-900 border-teal-300';
-            dotClass = 'bg-teal-600';
-            dirPill = '<span class="text-[9px] font-black text-teal-800 bg-teal-200 px-1 py-0.2 rounded font-mono">IN</span>';
-        } else {
-            badgeClass = 'bg-blue-100/90 text-blue-900 border-blue-300';
-            dotClass = 'bg-blue-600';
-            dirPill = '<span class="text-[9px] font-black text-blue-800 bg-blue-200 px-1 py-0.2 rounded font-mono">OUT</span>';
-        }
-    } else {
-        if (isEntry) {
-            badgeClass = 'bg-emerald-100/90 text-emerald-900 border-emerald-300';
-            dotClass = 'bg-emerald-600';
-            dirPill = '<span class="text-[9px] font-black text-emerald-800 bg-emerald-200 px-1 py-0.2 rounded font-mono">IN</span>';
-        } else {
-            badgeClass = 'bg-indigo-100/90 text-indigo-900 border-indigo-300';
-            dotClass = 'bg-indigo-600';
-            dirPill = '<span class="text-[9px] font-black text-indigo-800 bg-indigo-200 px-1 py-0.2 rounded font-mono">OUT</span>';
-        }
-    }
-
-    return `
-        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-black border ${badgeClass} shadow-2xs whitespace-nowrap">
-            <span class="w-2 h-2 rounded-full ${dotClass} ${isEntry ? 'animate-pulse' : ''} shrink-0"></span>
-            <span>${title}</span>
-            ${dirPill}
-        </span>
-    `;
-}
-
 function formatReaderBadge(row, fallbackDirection) {
     if (!row && !fallbackDirection) return '';
-    const dir = row?.direction || fallbackDirection || '';
-    const gate = row?.gate_no || '';
-    return renderGateReaderBadge(gate, dir);
+    const dir = (row?.direction || fallbackDirection || '').trim().toLowerCase();
+    const gate = (row?.gate_no || '').trim();
+    const isManual = (row?.access_type || '').includes('Manual') || gate.includes('Out') || gate.includes('Manual') || gate.includes('Bulk');
+
+    if (dir === 'entry') {
+        return `
+            <div class="flex flex-col gap-0.5 items-start">
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-black bg-emerald-50 text-emerald-800 border border-emerald-200/90 shadow-2xs">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>ENTRY READER</span>
+                    <span class="text-[9px] font-extrabold text-emerald-700 bg-emerald-100/90 px-1 py-0.2 rounded font-mono">IN</span>
+                </span>
+                <span class="text-[9px] text-slate-400 font-mono pl-0.5">${gate || 'Gate-01 Entry Reader'}</span>
+            </div>
+        `;
+    } else if (dir === 'exit') {
+        if (isManual) {
+            return `
+                <div class="flex flex-col gap-0.5 items-start">
+                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-black bg-amber-50 text-amber-900 border border-amber-200/90 shadow-2xs">
+                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                        <span>MANUAL EXIT</span>
+                        <span class="text-[9px] font-extrabold text-amber-700 bg-amber-100/90 px-1 py-0.2 rounded font-mono">OUT</span>
+                    </span>
+                    <span class="text-[9px] text-slate-400 font-mono pl-0.5">${gate || 'Manual Clearance'}</span>
+                </div>
+            `;
+        }
+        return `
+            <div class="flex flex-col gap-0.5 items-start">
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-black bg-indigo-50 text-indigo-900 border border-indigo-200/90 shadow-2xs">
+                    <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+                    <span>EXIT READER</span>
+                    <span class="text-[9px] font-extrabold text-indigo-700 bg-indigo-100 px-1 py-0.2 rounded font-mono">OUT</span>
+                </span>
+                <span class="text-[9px] text-slate-400 font-mono pl-0.5">${gate || 'Gate-01 Exit Reader'}</span>
+            </div>
+        `;
+    }
+    return `<span class="text-[10px] text-slate-400 font-mono">${gate || '--'}</span>`;
 }
 
 async function loadActivity() {
@@ -1388,16 +1347,23 @@ async function loadAudit(page = currentAuditPage, isSilent = false) {
                             ${(x && e.timestamp && x.timestamp && String(e.timestamp).substring(0, 10) !== String(x.timestamp).substring(0, 10)) ? `<span class="text-[9px] block text-indigo-600 font-semibold tracking-tight">${String(e.timestamp).substring(0, 10)}</span>` : ''}
                             ${String(e.timestamp).split(' ')[1] || e.timestamp}
                         </p>
-                        <div class="mt-1">${renderGateReaderBadge(e.gate_no, 'Entry')}</div>
+                        <p class="text-[10px] text-emerald-700 font-bold mt-0.5 flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>Entry
+                            <span class="text-[9px] text-slate-400 font-mono font-normal">${e.gate_no || 'Gate-01'}</span>
+                        </p>
                     </div>` : '<span class="text-slate-300 text-xs font-mono">—</span>'}
                 </td>
                 <td class="py-3 px-4">
                     ${x ? (() => {
                         const xTime = String(x.timestamp).split(' ')[1] || x.timestamp;
                         const xGate = x.gate_no || 'Gate-01';
+                        const isManual = (x.access_type || '').includes('Manual') || xGate.includes('Manual') || xGate.includes('Bulk');
                         return `<div>
                             <p class="font-mono font-bold text-slate-800 text-xs tabular-nums">${xTime}</p>
-                            <div class="mt-1">${renderGateReaderBadge(xGate, 'Exit')}</div>
+                            <p class="text-[10px] font-bold mt-0.5 flex items-center gap-1 ${isManual ? 'text-amber-700' : 'text-indigo-600'}">
+                                <span class="w-1.5 h-1.5 rounded-full inline-block ${isManual ? 'bg-amber-500' : 'bg-indigo-500'}"></span>${isManual ? 'Manual Exit' : 'Exit'}
+                                <span class="text-[9px] text-slate-400 font-mono font-normal">${xGate}</span>
+                            </p>
                         </div>`;
                     })() : `<span class="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping inline-block"></span>Still Inside
@@ -1494,8 +1460,18 @@ let reportGallerySearchQuery = '';
 function formatReaderPill(row) {
     if (!row) return '';
     const dir = (row.direction || '').trim().toLowerCase();
-    const gate = row.gate_no || '';
-    return renderGateReaderBadge(gate, dir);
+    const gate = row.gate_no || 'Gate-01';
+    const isManual = (row.access_type || '').includes('Manual') || gate.includes('Manual');
+    if (dir === 'entry') {
+        return `<span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 shadow-2xs"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>ENTRY READER &bull; ${gate}</span>`;
+    } else if (dir === 'exit') {
+        if (isManual) {
+            return `<span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 shadow-2xs"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>MANUAL EXIT &bull; ${gate}</span>`;
+        }
+        return `<span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-800 border border-indigo-200 shadow-2xs"><span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>EXIT READER &bull; ${gate}</span>`;
+    }
+    return `<span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-slate-50 text-slate-700 border border-slate-200">${gate}</span>`;
+
 }
 
 function renderSindhPlateHtml(carNum) {
@@ -2237,7 +2213,13 @@ async function loadReportMovements(vehicleNumber, memId, dateStr, tripDuration, 
                                     </td>
                                     <td class="py-2.5 px-3 font-mono font-bold text-slate-800 whitespace-nowrap">${timeStr}</td>
                                     <td class="py-2.5 px-3 whitespace-nowrap">
-                                        ${renderGateReaderBadge(m.gate_no, isEntry ? 'Entry' : 'Exit')}
+                                        <div class="flex items-center gap-2">
+                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-black ${isEntry ? 'bg-emerald-50 text-emerald-800 border border-emerald-200 shadow-2xs' : 'bg-indigo-50 text-indigo-800 border border-indigo-200 shadow-2xs'}">
+                                                <span class="w-1.5 h-1.5 rounded-full ${isEntry ? 'bg-emerald-500' : 'bg-indigo-500'}"></span>
+                                                ${isEntry ? 'ENTRY READER' : 'EXIT READER'}
+                                            </span>
+                                            <span class="text-xs font-bold text-slate-700 font-mono">${gateName}</span>
+                                        </div>
                                     </td>
                                     <td class="py-2.5 px-3 text-slate-600 whitespace-nowrap">${m.access_type || 'UHF RFID Access'}</td>
                                     <td class="py-2.5 px-3 whitespace-nowrap">${stayBadge}</td>
@@ -2590,88 +2572,117 @@ function switchMemberSubtab(tabName) {
     }
 }
 
+let ALL_UNREGISTERED_TAGS = [];
+let UNREG_SEARCH_TIMER = null;
+
+function onUnregSearchInput() {
+    clearTimeout(UNREG_SEARCH_TIMER);
+    UNREG_SEARCH_TIMER = setTimeout(() => {
+        filterAndRenderUnregisteredTags();
+    }, 200);
+}
+
+function filterAndRenderUnregisteredTags() {
+    const searchVal = (document.getElementById('unregSearch')?.value || '').trim().toUpperCase();
+    const filtered = searchVal ? ALL_UNREGISTERED_TAGS.filter(t => 
+        (t.tag || '').toUpperCase().includes(searchVal) ||
+        (t.tag_type || '').toUpperCase().includes(searchVal) ||
+        (t.Current_Location || '').toUpperCase().includes(searchVal) ||
+        (t.direction || '').toUpperCase().includes(searchVal)
+    ) : ALL_UNREGISTERED_TAGS;
+
+    renderUnregisteredTagsTable(filtered);
+}
+
 async function loadUnregisteredTags(countOnly = false) {
     try {
-        const res = await fetch('/api/unregistered-tags?limit=50');
+        const limitVal = document.getElementById('unregLimitSelect')?.value || '500';
+        const res = await fetch(`/api/unregistered-tags?limit=${encodeURIComponent(limitVal)}`);
         if (!res.ok) return;
         const tags = await res.json();
+        ALL_UNREGISTERED_TAGS = tags;
         
         const badge = document.getElementById('unregSubtabBadge');
         const statEl = document.getElementById('statUnregTags');
+        const summaryPill = document.getElementById('unregTotalSummaryPill');
         if (badge) badge.innerText = tags.length.toLocaleString();
         if (statEl) statEl.innerText = tags.length.toLocaleString();
+        if (summaryPill) summaryPill.innerText = `Showing ${tags.length} Unassigned Tags`;
 
         if (countOnly) return;
+        filterAndRenderUnregisteredTags();
+    } catch (err) {
+        console.error('Error loading unregistered tags:', err);
+    }
+}
 
-        const body = document.getElementById('unregBody');
-        if (!body) return;
+function renderUnregisteredTagsTable(tags) {
+    const body = document.getElementById('unregBody');
+    if (!body) return;
 
-        if (!tags.length) {
-            body.innerHTML = '<tr><td colspan="7" class="p-12 text-center text-slate-400 font-bold">No unassigned RFID tags detected at the gates yet</td></tr>';
-            return;
+    if (!tags.length) {
+        body.innerHTML = '<tr><td colspan="7" class="p-12 text-center text-slate-400 font-bold">No unassigned RFID tags match the current filter</td></tr>';
+        return;
+    }
+
+    body.innerHTML = tags.map(t => {
+        const dirBadge = t.direction === 'Exit' ?
+            '<span class="px-2.5 py-1 text-xs font-bold rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200/80">Exit Gate</span>' :
+            '<span class="px-2.5 py-1 text-xs font-bold rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200/80">Entry Gate</span>';
+
+        const isInside = (t.Current_Location || 'Outside') === 'Inside';
+        const locBadge = isInside ?
+            '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>Inside Club</span>' :
+            '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-100 text-slate-600 border border-slate-200"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>Outside</span>';
+
+        let tagBadge = '';
+        const tType = (t.tag_type || '');
+        if (tType.includes('NHA') || t.tag.startsWith('E2801105') || t.tag.startsWith('E2801114')) {
+            tagBadge = '<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 shadow-2xs">🚗 NHA M-Tag</span>';
+        } else if (tType.includes('Society') || t.tag.startsWith('E2803821') || t.tag.startsWith('E2003412')) {
+            tagBadge = '<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 shadow-2xs">🏢 Society Tag</span>';
+        } else if (tType.includes('Commercial') || t.tag.startsWith('E280F336')) {
+            tagBadge = '<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-300 shadow-2xs">🚚 Commercial Tag</span>';
+        } else if (tType.includes('Club Tag') || tType.includes('Unassigned') || t.tag.startsWith('E28068940') || t.tag.startsWith('E28068900') || t.tag.startsWith('E20047')) {
+            tagBadge = '<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 shadow-2xs">🎫 Spare Club Tag</span>';
+        } else {
+            tagBadge = '<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 shadow-2xs">⚠️ Unregistered</span>';
         }
 
-        body.innerHTML = tags.map(t => {
-            const dirBadge = t.direction === 'Exit' ?
-                '<span class="px-2.5 py-1 text-xs font-bold rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200/80">Exit Gate</span>' :
-                '<span class="px-2.5 py-1 text-xs font-bold rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200/80">Entry Gate</span>';
-
-            const isInside = (t.Current_Location || 'Outside') === 'Inside';
-            const locBadge = isInside ?
-                '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>Inside Club</span>' :
-                '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-100 text-slate-600 border border-slate-200"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>Outside</span>';
-
-            let tagBadge = '';
-            const tType = (t.tag_type || '');
-            if (tType.includes('NHA') || t.tag.startsWith('E2801105') || t.tag.startsWith('E2801114')) {
-                tagBadge = '<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 shadow-2xs">🚗 NHA M-Tag</span>';
-            } else if (tType.includes('Society') || t.tag.startsWith('E2803821') || t.tag.startsWith('E2003412')) {
-                tagBadge = '<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 shadow-2xs">🏢 Society Tag</span>';
-            } else if (tType.includes('Commercial') || t.tag.startsWith('E280F336')) {
-                tagBadge = '<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-300 shadow-2xs">🚚 Commercial Tag</span>';
-            } else if (tType.includes('Club Tag') || tType.includes('Unassigned') || t.tag.startsWith('E28068940') || t.tag.startsWith('E28068900') || t.tag.startsWith('E20047')) {
-                tagBadge = '<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 shadow-2xs">🎫 Spare Club Tag</span>';
-            } else {
-                tagBadge = '<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 shadow-2xs">⚠️ Unregistered</span>';
-            }
-
-            return `
-            <tr class="hover:bg-amber-50/40 transition">
-                <td class="p-3.5 pl-5">
-                    <div class="flex items-center gap-2 flex-wrap">
-                        <span class="font-mono text-xs font-extrabold text-slate-900 bg-slate-50 border border-slate-200/90 px-2.5 py-1 rounded-lg select-all">${t.tag}</span>
-                        ${tagBadge}
-                        <button type="button" onclick="navigator.clipboard.writeText('${t.tag}'); this.innerText='Copied!'; setTimeout(() => this.innerText='Copy', 1500);"
-                                class="text-[10px] font-bold text-slate-500 hover:text-slate-800 bg-white border border-slate-200 px-2 py-0.5 rounded shadow-2xs">
-                            Copy
-                        </button>
-                    </div>
-                </td>
-                <td class="p-3.5 text-xs text-slate-500 font-medium">${t.first_seen || '--'}</td>
-                <td class="p-3.5 text-xs text-slate-700 font-bold">${t.last_seen || '--'}</td>
-                <td class="p-3.5">${dirBadge}</td>
-                <td class="p-3.5">${locBadge}</td>
-                <td class="p-3.5">
-                    <span class="font-bold text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded-md">${t.read_count || 1} Scans</span>
-                </td>
-                <td class="p-3.5 text-right pr-6">
-                    <div class="flex items-center justify-end gap-2">
-                        <button type="button" onclick="assignUnregisteredTagToMember('${t.tag}')"
-                                class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-1.5 rounded-xl shadow-xs transition inline-flex items-center gap-1.5">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                            1-Click Assign
-                        </button>
-                        <button type="button" onclick="dismissUnregisteredTag('${t.tag}')"
-                                class="text-xs font-bold text-slate-400 hover:text-rose-600 border border-slate-200 hover:border-rose-200 rounded-xl px-2.5 py-1.5 bg-white hover:bg-rose-50 transition">
-                            Dismiss
-                        </button>
-                    </div>
-                </td>
-            </tr>`;
-        }).join('');
-    } catch (e) {
-        console.error("Error loading unregistered tags:", e);
-    }
+        return `
+        <tr class="hover:bg-amber-50/40 transition">
+            <td class="p-3.5 pl-5">
+                <div class="flex items-center gap-2 flex-wrap">
+                    <span class="font-mono text-xs font-extrabold text-slate-900 bg-slate-50 border border-slate-200/90 px-2.5 py-1 rounded-lg select-all">${t.tag}</span>
+                    ${tagBadge}
+                    <button type="button" onclick="navigator.clipboard.writeText('${t.tag}'); this.innerText='Copied!'; setTimeout(() => this.innerText='Copy', 1500);"
+                            class="text-[10px] font-bold text-slate-500 hover:text-slate-800 bg-white border border-slate-200 px-2 py-0.5 rounded shadow-2xs">
+                        Copy
+                    </button>
+                </div>
+            </td>
+            <td class="p-3.5 text-xs text-slate-500 font-medium">${t.first_seen || '--'}</td>
+            <td class="p-3.5 text-xs text-slate-700 font-bold">${t.last_seen || '--'}</td>
+            <td class="p-3.5">${dirBadge}</td>
+            <td class="p-3.5">${locBadge}</td>
+            <td class="p-3.5">
+                <span class="font-bold text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded-md">${t.read_count || 1} Scans</span>
+            </td>
+            <td class="p-3.5 text-right pr-6">
+                <div class="flex items-center justify-end gap-2">
+                    <button type="button" onclick="assignUnregisteredTagToMember('${t.tag}')"
+                            class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-1.5 rounded-xl shadow-xs transition inline-flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        1-Click Assign
+                    </button>
+                    <button type="button" onclick="dismissUnregisteredTag('${t.tag}')"
+                            class="text-xs font-bold text-slate-400 hover:text-rose-600 border border-slate-200 hover:border-rose-200 rounded-xl px-2.5 py-1.5 bg-white hover:bg-rose-50 transition">
+                        Dismiss
+                    </button>
+                </div>
+            </td>
+        </tr>`;
+    }).join('');
 }
 
 function assignUnregisteredTagToMember(tag) {
@@ -3246,10 +3257,15 @@ async function loadSettings() {
         if (document.getElementById('setClubName')) document.getElementById('setClubName').value = s.club_name || '';
         if (document.getElementById('setCap')) document.getElementById('setCap').value = s.parking_capacity || '500';
         if (document.getElementById('setMsg')) document.getElementById('setMsg').value = s.traffic_msg || '';
+        if (document.getElementById('setNameEntry')) document.getElementById('setNameEntry').value = s.entry_reader_name || 'Gate-01 Entry Reader';
         if (document.getElementById('setEntry')) document.getElementById('setEntry').value = s.entry_reader_ip || '';
+        if (document.getElementById('setNameExit')) document.getElementById('setNameExit').value = s.exit_reader_name || 'Gate-01 Exit Reader';
         if (document.getElementById('setExit')) document.getElementById('setExit').value = s.exit_reader_ip || '';
+        if (document.getElementById('setNameClubRoadEntry')) document.getElementById('setNameClubRoadEntry').value = s.clubroad_entry_reader_name || 'Main Gate (Club Road) Entry Reader';
         if (document.getElementById('setClubRoadEntry')) document.getElementById('setClubRoadEntry').value = s.clubroad_entry_reader_ip || '';
+        if (document.getElementById('setNameClubRoadExit')) document.getElementById('setNameClubRoadExit').value = s.clubroad_exit_reader_name || 'Main Gate (Club Road) Exit Reader';
         if (document.getElementById('setClubRoadExit')) document.getElementById('setClubRoadExit').value = s.clubroad_exit_reader_ip || '';
+        if (document.getElementById('setCooldown')) document.getElementById('setCooldown').value = s.rfid_cooldown_seconds || '60';
         if (document.getElementById('setHik')) document.getElementById('setHik').value = s.hikvision_cam_url || '';
     } catch (e) {
         console.error('loadSettings error:', e);
@@ -3261,10 +3277,15 @@ async function saveSettings() {
         club_name: document.getElementById('setClubName')?.value || 'Karachi Gymkhana Club',
         parking_capacity: document.getElementById('setCap')?.value || '500',
         traffic_msg: document.getElementById('setMsg')?.value || '',
+        entry_reader_name: document.getElementById('setNameEntry')?.value || 'Gate-01 Entry Reader',
         entry_reader_ip: document.getElementById('setEntry')?.value || '',
+        exit_reader_name: document.getElementById('setNameExit')?.value || 'Gate-01 Exit Reader',
         exit_reader_ip: document.getElementById('setExit')?.value || '',
+        clubroad_entry_reader_name: document.getElementById('setNameClubRoadEntry')?.value || 'Main Gate (Club Road) Entry Reader',
         clubroad_entry_reader_ip: document.getElementById('setClubRoadEntry')?.value || '',
+        clubroad_exit_reader_name: document.getElementById('setNameClubRoadExit')?.value || 'Main Gate (Club Road) Exit Reader',
         clubroad_exit_reader_ip: document.getElementById('setClubRoadExit')?.value || '',
+        rfid_cooldown_seconds: document.getElementById('setCooldown')?.value || '60',
         hikvision_cam_url: document.getElementById('setHik')?.value || ''
     };
 
@@ -4058,9 +4079,41 @@ function renderKioskElements(log) {
     }
 }
 
+let miniKioskGate = 'gate01';
+
+function switchMiniKioskGate(gate) {
+    miniKioskGate = (gate === 'clubroad') ? 'clubroad' : 'gate01';
+
+    const btn01 = document.getElementById('btnMiniGate01');
+    const btnClub = document.getElementById('btnMiniClubRoad');
+    const title = document.getElementById('miniWidgetTitle');
+    const pulse = document.getElementById('miniWidgetPulse');
+    const sub = document.getElementById('miniWidgetSub');
+    const fullLink = document.getElementById('miniWidgetFullLink');
+
+    if (miniKioskGate === 'clubroad') {
+        if (btn01) btn01.className = 'px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition font-medium';
+        if (btnClub) btnClub.className = 'px-2.5 py-1 rounded-lg bg-white text-indigo-700 shadow-xs font-black transition';
+        if (title) title.innerText = 'Club Road Gate Terminal';
+        if (pulse) pulse.className = 'w-2.5 h-2.5 rounded-full bg-indigo-500 animate-pulse';
+        if (sub) sub.innerText = 'Live Club Road RFID mirror • Synchronized';
+        if (fullLink) fullLink.href = '/kiosk?gate=clubroad';
+    } else {
+        if (btn01) btn01.className = 'px-2.5 py-1 rounded-lg bg-white text-emerald-700 shadow-xs font-black transition';
+        if (btnClub) btnClub.className = 'px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition font-medium';
+        if (title) title.innerText = 'Gate-01 (Rear) Terminal';
+        if (pulse) pulse.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse';
+        if (sub) sub.innerText = 'Live Gate-01 RFID mirror • Synchronized';
+        if (fullLink) fullLink.href = '/kiosk?gate=gate01';
+    }
+
+    lastSeenTransitId = null;
+    loadGateFeed();
+}
+
 async function loadGateFeed() {
     try {
-        const res = await fetch('/api/latest-log');
+        const res = await fetch(`/api/latest-log?gate=${encodeURIComponent(miniKioskGate)}`);
         if (!res.ok) return;
         const log = await res.json();
 
@@ -4168,7 +4221,7 @@ async function loadGateFeed() {
 
         if (memName) memName.innerText = log.name || 'Visitor';
         if (vehNum) vehNum.innerText = log.vehicle_number || '--';
-        if (memId) memId.innerText = `${log.mem_id || 'GUEST'} • ${formatGateReaderTitle(log.gate_no, log.direction)}`;
+        if (memId) memId.innerText = `${log.mem_id || 'GUEST'} • ${log.gate_no || 'Gate-01'}`;
 
         if (statusPill) {
             statusPill.classList.remove('hidden');
@@ -4863,7 +4916,7 @@ function renderEtagChronology(data, page = currentEtagScanPage, limit = currentE
                 <td class="py-3 px-4 font-mono font-bold text-slate-400 text-xs">${String(itemNumber).padStart(2, '0')}</td>
                 <td class="py-3 px-4 font-mono font-bold text-slate-800 text-xs">${timePart}</td>
                 <td class="py-3 px-4">${formatReaderBadge(s)}</td>
-                <td class="py-3 px-4 font-bold text-slate-700 text-xs">${formatGateReaderTitle(s.gate_no, s.direction)}</td>
+                <td class="py-3 px-4 font-bold text-slate-700 text-xs">${s.gate_no || (isEntry ? 'Gate-01 Entry Reader' : 'Gate-01 Exit Reader')}</td>
                 <td class="py-3 px-4 text-xs text-slate-600 font-medium">${s.access_type || 'UHF RFID Access'}</td>
                 <td class="py-3 px-4 font-mono font-bold text-xs text-slate-800">${s.vehicle_number || 'NO PLATE'}</td>
                 <td class="py-3 px-4">
@@ -5029,7 +5082,7 @@ function exportEtagAuditData(format = 'csv') {
         mem.mem_id || '',
         `"${(mem.name || s.name || '').replace(/"/g, '""')}"`,
         `"${(mem.vehicle_number || s.vehicle_number || '').replace(/"/g, '""')}"`,
-        formatGateReaderTitle(s.gate_no, s.direction),
+        s.gate_no || 'Gate-01',
         s.direction || '',
         s.timestamp || '',
         `"${(s.access_type || '').replace(/"/g, '""')}"`

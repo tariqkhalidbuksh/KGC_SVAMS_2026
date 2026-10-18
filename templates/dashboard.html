@@ -110,10 +110,22 @@
                 </button>
 
                 <div class="mt-4 pt-4 border-t border-slate-100 flex flex-col text-xs font-bold space-y-1">
-                    <a href="/kiosk" target="_blank" class="nav-btn px-8 py-2.5 text-left text-slate-600 flex items-center justify-between">
-                        <span>Gate Terminal</span>
-                        <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                    <div class="px-8 py-1 text-[10px] font-black uppercase tracking-wider text-slate-400">Gate Kiosks</div>
+                    <a href="/kiosk?gate=gate01" target="_blank" class="nav-btn px-8 py-2 text-left text-emerald-700 flex items-center justify-between hover:bg-emerald-50 rounded-xl">
+                        <span class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            Gate 01 (Rear Gate)
+                        </span>
+                        <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
                     </a>
+                    <a href="/kiosk?gate=clubroad" target="_blank" class="nav-btn px-8 py-2 text-left text-indigo-700 flex items-center justify-between hover:bg-indigo-50 rounded-xl">
+                        <span class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+                            Club Road Gate
+                        </span>
+                        <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                    </a>
+                    <div class="my-1 border-t border-slate-100"></div>
                     <a href="/tools" target="_blank" class="nav-btn px-8 py-2.5 text-left text-indigo-600 flex items-center justify-between">
                         <span>Hardware Diagnostics</span>
                         <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
@@ -176,7 +188,22 @@
                         Settings
                     </button>
                     <div class="mt-4 pt-4 border-t border-slate-100 flex flex-col text-xs font-bold space-y-1">
-                        <a href="/kiosk" target="_blank" class="px-6 py-2.5 text-slate-600 flex items-center justify-between">Gate Terminal</a>
+                        <div class="px-6 py-1 text-[10px] font-black uppercase tracking-wider text-slate-400">Gate Kiosks</div>
+                        <a href="/kiosk?gate=gate01" target="_blank" class="px-6 py-2 text-emerald-700 flex items-center justify-between hover:bg-emerald-50 rounded-xl">
+                            <span class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                Gate 01 (Rear Gate)
+                            </span>
+                            <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                        </a>
+                        <a href="/kiosk?gate=clubroad" target="_blank" class="px-6 py-2 text-indigo-700 flex items-center justify-between hover:bg-indigo-50 rounded-xl">
+                            <span class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+                                Club Road Gate
+                            </span>
+                            <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                        </a>
+                        <div class="my-1 border-t border-slate-100"></div>
                         <a href="/tools" target="_blank" class="px-6 py-2.5 text-indigo-600 flex items-center justify-between">Hardware Diagnostics</a>
                         <a href="/simulate" target="_blank" class="px-6 py-2.5 text-amber-600 flex items-center justify-between">Simulation Console</a>
                     </div>
@@ -347,18 +374,24 @@
                     <!-- Gate-01 Live Kiosk Terminal Widget (Mirrors /kiosk Terminal) -->
                     <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between relative overflow-hidden">
                         <!-- Widget Header (Live Kiosk Terminal Mirror) -->
-                        <div class="flex justify-between items-center mb-3">
+                        <div class="flex flex-wrap justify-between items-center gap-2 mb-3">
                             <div>
                                 <h2 class="font-bold text-slate-800 flex items-center gap-2">
-                                    <span>Gate-01 Kiosk Terminal</span>
-                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                    <span id="miniWidgetTitle">Gate-01 Terminal</span>
+                                    <span id="miniWidgetPulse" class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
                                 </h2>
-                                <p class="text-xs text-slate-400">Live RFID gate terminal mirror &bull; Synchronized</p>
+                                <p id="miniWidgetSub" class="text-xs text-slate-400">Live RFID gate mirror &bull; Synchronized</p>
                             </div>
-                            <a href="/kiosk" target="_blank" title="Open Standalone Kiosk Terminal" class="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 transition">
-                                <span>Open Full Kiosk</span>
-                                <svg class="w-3 h-3 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                            </a>
+                            <div class="flex items-center gap-2">
+                                <div class="bg-slate-100 p-0.5 rounded-xl border border-slate-200 flex items-center text-[10px] font-bold">
+                                    <button type="button" id="btnMiniGate01" onclick="switchMiniKioskGate('gate01')" class="px-2.5 py-1 rounded-lg bg-white text-emerald-700 shadow-xs font-black transition">Gate-01</button>
+                                    <button type="button" id="btnMiniClubRoad" onclick="switchMiniKioskGate('clubroad')" class="px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition">Club Road</button>
+                                </div>
+                                <a id="miniWidgetFullLink" href="/kiosk?gate=gate01" target="_blank" title="Open Standalone Kiosk Terminal" class="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 transition">
+                                    <span>Full Screen</span>
+                                    <svg class="w-3 h-3 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                                </a>
+                            </div>
                         </div>
 
                         <!-- Kiosk Display Container (Exact replica of /kiosk) -->
@@ -644,7 +677,7 @@
                                     <th class="p-4">Vehicle</th>
                                     <th class="p-4">Identified As</th>
                                     <th class="p-4">Method</th>
-                                    <th class="p-4">Gate Reader Title &amp; Direction</th>
+                                    <th class="p-4">Reader Status</th>
                                     <th class="p-4">Evidence</th>
                                 </tr>
                             </thead>
@@ -796,8 +829,8 @@
                                     <th class="py-3 px-4 pl-5">Vehicle &amp; Plate</th>
                                     <th class="py-3 px-4">Member / Driver</th>
                                     <th class="py-3 px-4">Access Type</th>
-                                    <th class="py-3 px-4">Entry Reader &amp; Time</th>
-                                    <th class="py-3 px-4">Exit Reader &amp; Time</th>
+                                    <th class="py-3 px-4">Entry</th>
+                                    <th class="py-3 px-4">Exit</th>
                                     <th class="py-3 px-4">Duration</th>
                                     <th class="py-3 px-4">Status</th>
                                     <th class="py-3 px-4 text-right pr-5">Actions</th>
@@ -1079,14 +1112,35 @@
 
                     <!-- Subtab 2: Unknown Tags Table with 1-Click Assignment -->
                     <div id="subtabViewUnregistered" class="hidden">
-                        <div class="p-4 bg-amber-50/60 border-b border-amber-200/60 flex items-center justify-between flex-wrap gap-2 text-xs">
-                            <span class="text-amber-900 font-semibold flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-                                These RFID tags were read at the gate but are not yet registered to any club member. Use 1-Click Assign to link them immediately.
-                            </span>
-                            <button type="button" onclick="loadUnregisteredTags()" class="text-xs font-bold bg-white border border-amber-300 text-amber-900 px-3 py-1.5 rounded-lg hover:bg-amber-100/60 shadow-xs transition">
-                                Refresh Tags
-                            </button>
+                        <div class="p-4 bg-amber-50/60 border-b border-amber-200/60 flex items-center justify-between flex-wrap gap-3 text-xs">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
+                                <div>
+                                    <span class="text-amber-950 font-bold text-xs">Unregistered Vehicle Fleet</span>
+                                    <p class="text-[11px] text-amber-800/90 mt-0.5">
+                                        Each unique RFID tag detected at the gates is tracked here as one vehicle entity. Individual transit events are logged in the <strong>RFID Audit Log</strong>.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2.5 flex-wrap">
+                                <span id="unregTotalSummaryPill" class="text-[11px] font-black px-2.5 py-1.5 bg-white text-amber-900 border border-amber-200 rounded-lg shadow-2xs">
+                                    Loading tags...
+                                </span>
+                                <input id="unregSearch" oninput="onUnregSearchInput()" placeholder="Search unassigned tag..."
+                                       class="text-xs border border-amber-200 rounded-xl px-3 py-1.5 bg-white text-slate-800 w-44 md:w-56 shadow-2xs focus:outline-none focus:ring-1 focus:ring-amber-500">
+                                <div class="flex items-center gap-1 text-xs font-bold text-amber-900">
+                                    <span>Limit:</span>
+                                    <select id="unregLimitSelect" onchange="loadUnregisteredTags(false)" class="border border-amber-300 rounded-lg px-2 py-1.5 bg-white text-xs font-bold text-slate-700 shadow-2xs">
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                        <option value="250">250</option>
+                                        <option value="500" selected>500 (All)</option>
+                                    </select>
+                                </div>
+                                <button type="button" onclick="loadUnregisteredTags()" class="text-xs font-bold bg-amber-600 hover:bg-amber-700 text-white px-3.5 py-1.5 rounded-xl shadow-xs transition">
+                                    Refresh
+                                </button>
+                            </div>
                         </div>
                         <div class="overflow-x-auto min-h-[300px]">
                             <table class="w-full text-left text-sm">
@@ -1170,44 +1224,76 @@
                             </div>
 
                             <!-- Gate-01 RFID Readers -->
-                            <div class="space-y-2">
+                            <div class="space-y-3 bg-slate-50/70 p-4 rounded-xl border border-slate-200">
                                 <div class="flex items-center gap-2">
-                                    <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                                    <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
                                     <span class="text-xs font-black text-slate-800 uppercase tracking-wider">Gate-01 (Clifton / Main) RFID Readers</span>
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Gate-01 Entry Reader IP</label>
-                                        <input id="setEntry" placeholder="e.g. 192.168.0.217" class="w-full border rounded-xl p-3 bg-slate-50 font-mono text-xs text-slate-800">
+                                    <div class="space-y-2">
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Gate-01 Entry Reader Name</label>
+                                            <input id="setNameEntry" placeholder="Gate-01 Entry Reader" class="w-full border rounded-xl p-2.5 bg-white font-bold text-xs text-slate-800">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Gate-01 Entry Reader IP</label>
+                                            <input id="setEntry" placeholder="e.g. 192.168.0.217" class="w-full border rounded-xl p-2.5 bg-white font-mono text-xs text-slate-800">
+                                        </div>
                                     </div>
-                                    <div>
-                                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Gate-01 Exit Reader IP</label>
-                                        <input id="setExit" placeholder="e.g. 192.168.0.216" class="w-full border rounded-xl p-3 bg-slate-50 font-mono text-xs text-slate-800">
+                                    <div class="space-y-2">
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Gate-01 Exit Reader Name</label>
+                                            <input id="setNameExit" placeholder="Gate-01 Exit Reader" class="w-full border rounded-xl p-2.5 bg-white font-bold text-xs text-slate-800">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Gate-01 Exit Reader IP</label>
+                                            <input id="setExit" placeholder="e.g. 192.168.0.216" class="w-full border rounded-xl p-2.5 bg-white font-mono text-xs text-slate-800">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Main Gate (Club Road) RFID Readers -->
-                            <div class="space-y-2 pt-2">
+                            <div class="space-y-3 bg-slate-50/70 p-4 rounded-xl border border-slate-200">
                                 <div class="flex items-center gap-2">
-                                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
                                     <span class="text-xs font-black text-slate-800 uppercase tracking-wider">Main Gate (Club Road) RFID Readers</span>
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Club Road Entry Reader IP</label>
-                                        <input id="setClubRoadEntry" placeholder="e.g. 192.168.0.218" class="w-full border rounded-xl p-3 bg-slate-50 font-mono text-xs text-slate-800">
+                                    <div class="space-y-2">
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Club Road Entry Reader Name</label>
+                                            <input id="setNameClubRoadEntry" placeholder="Main Gate (Club Road) Entry Reader" class="w-full border rounded-xl p-2.5 bg-white font-bold text-xs text-slate-800">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Club Road Entry Reader IP</label>
+                                            <input id="setClubRoadEntry" placeholder="e.g. 192.168.0.218" class="w-full border rounded-xl p-2.5 bg-white font-mono text-xs text-slate-800">
+                                        </div>
                                     </div>
-                                    <div>
-                                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Club Road Exit Reader IP</label>
-                                        <input id="setClubRoadExit" placeholder="e.g. 192.168.0.219" class="w-full border rounded-xl p-3 bg-slate-50 font-mono text-xs text-slate-800">
+                                    <div class="space-y-2">
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Club Road Exit Reader Name</label>
+                                            <input id="setNameClubRoadExit" placeholder="Main Gate (Club Road) Exit Reader" class="w-full border rounded-xl p-2.5 bg-white font-bold text-xs text-slate-800">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Club Road Exit Reader IP</label>
+                                            <input id="setClubRoadExit" placeholder="e.g. 192.168.0.219" class="w-full border rounded-xl p-2.5 bg-white font-mono text-xs text-slate-800">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div>
-                                <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Hikvision Camera RTSP Stream URL</label>
-                                <input id="setHik" class="w-full border rounded-xl p-3 bg-slate-50 font-mono text-xs text-slate-800">
+                            <!-- RFID Universal Cooldown Window & Camera RTSP -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">RFID Cooldown &amp; De-Bounce Window (Seconds)</label>
+                                    <input id="setCooldown" type="number" min="30" max="300" placeholder="60" class="w-full border rounded-xl p-3 bg-slate-50 font-mono text-xs text-slate-800">
+                                    <p class="text-[10px] text-slate-500 mt-1">Prevents duplicate scans, antenna reflection bleeding, and rapid enter/exit toggling.</p>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Hikvision Camera RTSP Stream URL</label>
+                                    <input id="setHik" class="w-full border rounded-xl p-3 bg-slate-50 font-mono text-xs text-slate-800">
+                                </div>
                             </div>
                         </div>
 

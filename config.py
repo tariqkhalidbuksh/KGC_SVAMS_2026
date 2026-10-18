@@ -25,7 +25,7 @@ CAMERA_AUDIT_DIR = os.path.join(STATIC_DIR, "camera_audit")
 for directory_path in [SNAPSHOT_DIR, FTP_UPLOAD_DIR, TEST_DIR, PROFILE_DIR, MEMBER_PROFILE_IMG_DIR, CAMERA_AUDIT_DIR]:
     os.makedirs(directory_path, exist_ok=True)
 
-DB_LOCK = threading.Lock()
+DB_LOCK = threading.RLock()
 FUSION_LOCK = threading.Lock()
 BUFFER_LOCK = threading.Lock()
 CACHE_LOCK = threading.Lock()
@@ -41,6 +41,10 @@ LAST_GATE_PASSAGE = {"time": 0.0, "log_id": None, "md5": None}
 
 # In-memory zero-lag caches
 LATEST_LOG_CACHE = None
+LATEST_GATE_LOG_CACHE = {
+    "gate01": None,
+    "clubroad": None
+}
 MEMBERS_METRICS_CACHE = {"data": None, "timestamp": 0.0}
 FLEET_ADOPTION_CACHE = {"data": None, "timestamp": 0.0, "db_file": None}
 RECENT_CAM_TRIGGERS = deque(maxlen=30)

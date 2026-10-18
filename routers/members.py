@@ -612,15 +612,29 @@ async def toggle_member_location(request: Request):
             conn.close()
 
 @router.get("/unregistered-tags")
-async def get_unregistered_tags(limit: int = 50):
+async def get_unregistered_tags(limit: int = 500, search: str = ""):
     with config.DB_LOCK:
         conn = get_db_connection()
         try:
-            limit = min(max(5, limit), 200)
-            rows = conn.execute(
-                "SELECT id, tag, first_seen, last_seen, direction, Current_Location, read_count, COALESCE(tag_type, 'Unregistered Visitor') as tag_type FROM unregistered_tags ORDER BY id DESC LIMIT ?",
-                (limit,)
-            ).fetchall()
+            # If limit is 0 or negative, load all records (up to 2000)
+            if limit <= 0:
+                fetch_limit = 2000
+            else:
+                fetch_limit = min(max(5, limit), 2000)
+                
+            search_str = (search or "").strip().upper()
+            if search_str:
+                query = """SELECT id, tag, first_seen, last_seen, direction, Current_Location, read_count, 
+                                  COALESCE(tag_type, 'Unregistered Visitor') as tag_type 
+                           FROM unregistered_tags 
+                           WHERE UPPER(tag) LIKE ? OR UPPER(tag_type) LIKE ? OR UPPER(Current_Location) LIKE ?
+                           ORDER BY id DESC LIMIT ?"""
+                rows = conn.execute(query, (f"%{search_str}%", f"%{search_str}%", f"%{search_str}%", fetch_limit)).fetchall()
+            else:
+                rows = conn.execute(
+                    "SELECT id, tag, first_seen, last_seen, direction, Current_Location, read_count, COALESCE(tag_type, 'Unregistered Visitor') as tag_type FROM unregistered_tags ORDER BY id DESC LIMIT ?",
+                    (fetch_limit,)
+                ).fetchall()
             return [dict(r) for r in rows]
         finally:
             conn.close()

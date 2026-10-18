@@ -1,5 +1,113 @@
+let currentGate = 'gate01'; // 'gate01' (Rear Gate) or 'clubroad' (Main Gate)
 let lastEntryLogId = 0;
 let idleResetTimer = null;
+
+function initGateSelection() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const qGate = urlParams.get('gate');
+    const path = window.location.pathname.toLowerCase();
+
+    if (qGate) {
+        if (qGate.toLowerCase().includes('club') || qGate.toLowerCase().includes('main')) {
+            currentGate = 'clubroad';
+        } else {
+            currentGate = 'gate01';
+        }
+    } else if (path.includes('clubroad') || path.includes('main')) {
+        currentGate = 'clubroad';
+    } else if (path.includes('gate01') || path.includes('gate1') || path.includes('rear')) {
+        currentGate = 'gate01';
+    } else {
+        const saved = localStorage.getItem('kiosk_gate');
+        if (saved && (saved === 'clubroad' || saved === 'gate01')) {
+            currentGate = saved;
+        } else {
+            currentGate = 'gate01';
+        }
+    }
+
+    applyGateUI(currentGate);
+}
+
+function setKioskGate(gate) {
+    currentGate = (gate === 'clubroad') ? 'clubroad' : 'gate01';
+    try {
+        localStorage.setItem('kiosk_gate', currentGate);
+    } catch (e) {}
+
+    const newUrl = new URL(window.location);
+    newUrl.searchParams.set('gate', currentGate);
+    window.history.replaceState({}, '', newUrl);
+
+    applyGateUI(currentGate);
+    lastEntryLogId = 0;
+    updateRecentEntries();
+    pollEntryLogs();
+}
+
+function applyGateUI(gate) {
+    const isClub = (gate === 'clubroad');
+
+    const btnGate01 = document.getElementById('btnGate01');
+    const btnClubRoad = document.getElementById('btnClubRoad');
+    const gateSubtitle = document.getElementById('gateSubtitle');
+    const gatePulseDot = document.getElementById('gatePulseDot');
+    const gateStationBadge = document.getElementById('gateStationBadge');
+    const telemetryLaneStatus = document.getElementById('telemetryLaneStatus');
+    const recentFooterTitle = document.getElementById('recentFooterTitle');
+    const kioskWelcome = document.getElementById('kioskWelcome');
+    const kioskDescription = document.getElementById('kioskDescription');
+
+    if (isClub) {
+        document.title = "Club Road Gate Access Terminal - Karachi Gymkhana";
+        if (btnGate01) {
+            btnGate01.className = "px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100";
+            const dot = btnGate01.querySelector('span');
+            if (dot) dot.className = "w-2 h-2 rounded-full bg-slate-400";
+        }
+        if (btnClubRoad) {
+            btnClubRoad.className = "px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-md";
+            const dot = btnClubRoad.querySelector('span');
+            if (dot) dot.className = "w-2 h-2 rounded-full bg-white animate-pulse";
+        }
+        if (gateSubtitle) gateSubtitle.innerHTML = 'RFID Smart Access Terminal &bull; Club Road Gate (Main Gate)';
+        if (gatePulseDot) gatePulseDot.className = 'inline-block w-2.5 h-2.5 rounded-full bg-indigo-500 animate-pulse';
+        if (gateStationBadge) gateStationBadge.innerText = 'CLUB ROAD GATE (MAIN GATE) • FAST-TRACK';
+        if (telemetryLaneStatus) telemetryLaneStatus.innerText = 'Club Road Main Lane';
+        if (recentFooterTitle) recentFooterTitle.innerText = 'Recent Club Road Gate RFID Activity';
+        if (kioskWelcome) kioskWelcome.innerText = 'Club Road Gate • Approach For Clearance';
+        if (kioskDescription) kioskDescription.innerText = 'Club Road contactless RFID access lane armed. Please slow down to 5 km/h for instant barrier clearance.';
+    } else {
+        document.title = "Gate 01 (Rear Gate) Terminal - Karachi Gymkhana";
+        if (btnGate01) {
+            btnGate01.className = "px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2 bg-emerald-600 text-white shadow-md";
+            const dot = btnGate01.querySelector('span');
+            if (dot) dot.className = "w-2 h-2 rounded-full bg-white animate-pulse";
+        }
+        if (btnClubRoad) {
+            btnClubRoad.className = "px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100";
+            const dot = btnClubRoad.querySelector('span');
+            if (dot) dot.className = "w-2 h-2 rounded-full bg-slate-400";
+        }
+        if (gateSubtitle) gateSubtitle.innerHTML = 'RFID Smart Access Terminal &bull; Gate 01 (Rear Gate)';
+        if (gatePulseDot) gatePulseDot.className = 'inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse';
+        if (gateStationBadge) gateStationBadge.innerText = 'GATE 01 (REAR GATE) • FAST-TRACK';
+        if (telemetryLaneStatus) telemetryLaneStatus.innerText = 'Gate 01 Rear Lane';
+        if (recentFooterTitle) recentFooterTitle.innerText = 'Recent Gate 01 (Rear Gate) RFID Activity';
+        if (kioskWelcome) kioskWelcome.innerText = 'Gate 01 (Rear Gate) • Approach For Clearance';
+        if (kioskDescription) kioskDescription.innerText = 'Fast-track contactless RFID access lane armed. Please slow down to 5 km/h for instant barrier clearance.';
+    }
+}
+
+function toggleFullScreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => console.log(err));
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    }
+}
 
 function updateClock() {
     const now = new Date();
@@ -108,44 +216,19 @@ function renderLicensePlate(carNum) {
     }
 }
 
-function formatGateReaderTitle(gateNo, direction) {
-    const raw = String(gateNo || '').trim();
-    const dir = String(direction || '').trim().toLowerCase();
-    
-    if (raw) {
-        const lower = raw.toLowerCase();
-        if (lower.includes('club')) {
-            if (lower.includes('entry') || dir === 'entry') return 'Club Road Entry Reader';
-            if (lower.includes('exit') || dir === 'exit') return 'Club Road Exit Reader';
-            return 'Club Road RFID Reader';
-        }
-        if (lower.includes('gate-01') || lower.includes('gate 01') || lower.includes('gate01')) {
-            if (lower.includes('bulk') || lower.includes('clearance')) return 'Gate-01 (Bulk Clearance)';
-            if (lower.includes('manual')) return 'Gate-01 (Manual Exit)';
-            if (lower.includes('entry') || dir === 'entry') return 'Gate-01 Entry Reader';
-            if (lower.includes('exit') || lower.includes('out') || dir === 'exit') return 'Gate-01 Exit Reader';
-            return raw;
-        }
-        return raw;
-    }
-    
-    if (dir === 'entry') return 'Gate-01 Entry Reader';
-    if (dir === 'exit') return 'Gate-01 Exit Reader';
-    return 'Gate-01 Reader';
-}
-
 async function updateRecentEntries() {
     try {
-        const res = await fetch('/api/recent-entries?limit=4');
+        const res = await fetch(`/api/recent-entries?limit=4&gate=${encodeURIComponent(currentGate)}`);
         if (!res.ok) return;
         const entries = await res.json();
         const container = document.getElementById('recentCardsContainer');
         if (!container) return;
 
         if (!entries || entries.length === 0) {
+            const gateNameText = currentGate === 'clubroad' ? 'Club Road Gate' : 'Gate 01 (Rear Gate)';
             container.innerHTML = `
                 <div class="col-span-4 kiosk-card p-6 rounded-2xl text-center text-slate-400 font-semibold text-xs tracking-wider uppercase border border-slate-200">
-                    No recent RFID gate activity recorded today
+                    No recent RFID activity recorded at ${gateNameText} today
                 </div>
             `;
             return;
@@ -183,7 +266,7 @@ async function updateRecentEntries() {
             const plate = isUnreg ? (entry.scanned_tag || 'NO TAG') : (entry.vehicle_number || '--');
             const timeStr = formatTimestamp(entry.timestamp);
             const dir = entry.direction || 'Entry';
-            const gateTitle = formatGateReaderTitle(entry.gate_no, dir);
+            const gateLabel = entry.gate_no || (currentGate === 'clubroad' ? 'Club Road' : 'Gate-01');
 
             let badgeClass = 'bg-emerald-50 text-emerald-700 border-emerald-200';
             let badgeLabel = dir.toUpperCase();
@@ -218,9 +301,9 @@ async function updateRecentEntries() {
                         <h5 class="text-sm font-extrabold text-slate-900 truncate mb-0.5">${displayName}</h5>
                         ${isUnreg && tagSignature ? `<span class="text-[10px] font-bold text-slate-500">${tagSignature}</span>` : ''}
                     </div>
-                    <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between gap-1">
-                        <span class="text-xs font-mono font-bold text-indigo-600 tracking-wider truncate max-w-[110px]">${plate}</span>
-                        <span class="text-[10px] font-extrabold uppercase truncate max-w-[140px] text-right ${gateTitle.toLowerCase().includes('club') ? 'text-teal-700' : 'text-slate-600'}" title="${gateTitle}">${gateTitle}</span>
+                    <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between">
+                        <span class="text-xs font-mono font-bold text-indigo-600 tracking-wider truncate max-w-[130px]">${plate}</span>
+                        <span class="text-[10px] text-slate-400 font-bold uppercase truncate max-w-[110px]" title="${gateLabel}">${gateLabel}</span>
                     </div>
                 </div>
             `;
@@ -242,6 +325,12 @@ function displayEntry(log) {
     viewIdle.classList.add('hidden');
     viewActive.classList.remove('hidden');
 
+    const activeReaderBadge = document.getElementById('activeReaderBadge');
+    if (activeReaderBadge) {
+        const readerText = log.gate_no || (currentGate === 'clubroad' ? 'Club Road Reader' : 'Gate-01 Reader');
+        activeReaderBadge.innerText = `READER: ${readerText.toUpperCase()}`;
+    }
+
     const isUnregistered = (log.access_type || '').includes('Unknown') || 
                            (log.access_type || '').includes('Unregistered') ||
                            (log.access_type || '').includes('No RFID') || 
@@ -258,21 +347,11 @@ function displayEntry(log) {
     const statusBadge = document.getElementById('statusBadge');
     const badgeIcon = document.getElementById('badgeIcon');
     const accentBar = document.getElementById('accentBar');
-    const gateStationBadge = document.getElementById('gateStationBadge');
 
     const memberDisplayContainer = document.getElementById('memberDisplayContainer');
     const unregisteredDisplayContainer = document.getElementById('unregisteredDisplayContainer');
 
     if (entryTimestamp) entryTimestamp.innerText = formatTimestamp(log.timestamp);
-
-    const gateTitle = formatGateReaderTitle(log.gate_no, direction);
-    if (gateStationBadge) {
-        const isClub = gateTitle.toLowerCase().includes('club');
-        gateStationBadge.innerText = gateTitle.toUpperCase();
-        gateStationBadge.className = isClub 
-            ? 'px-3.5 py-1.5 rounded-xl text-[11px] font-mono font-black uppercase tracking-wider bg-teal-100 text-teal-900 border border-teal-300 shadow-2xs'
-            : 'px-3.5 py-1.5 rounded-xl text-[11px] font-mono font-black uppercase tracking-wider bg-indigo-100 text-indigo-900 border border-indigo-300 shadow-2xs';
-    }
 
     if (isUnregistered) {
         // Hide member container, show unregistered container
@@ -377,7 +456,7 @@ function displayEntry(log) {
 
 async function pollEntryLogs() {
     try {
-        const res = await fetch('/api/latest-log');
+        const res = await fetch(`/api/latest-log?gate=${encodeURIComponent(currentGate)}`);
         if (!res.ok) return;
         const latest = await res.json();
         if (!latest || !latest.id) return;
@@ -397,3 +476,6 @@ async function pollEntryLogs() {
     }
 }
 setInterval(pollEntryLogs, 400);
+
+// Initialize gate selection on page load
+initGateSelection();

@@ -107,13 +107,29 @@
             <div>
                 <h1 id="clubTitle" class="text-2xl lg:text-3xl font-black tracking-tight text-slate-900 uppercase">KARACHI GYMKHANA</h1>
                 <div class="flex items-center gap-2.5 mt-0.5">
-                    <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500">RFID Smart Access Terminal &bull; Fast-Track Lane 01</p>
+                    <span id="gatePulseDot" class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <p id="gateSubtitle" class="text-[11px] font-bold uppercase tracking-widest text-slate-500">RFID Smart Access Terminal &bull; Gate 01 (Rear Gate)</p>
                 </div>
             </div>
         </div>
 
-        <div class="flex items-center gap-4">
+        <!-- Multi-Gate Display Switcher -->
+        <div class="flex items-center gap-3">
+            <div class="bg-white/95 p-1 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-1">
+                <button id="btnGate01" type="button" onclick="setKioskGate('gate01')" class="px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2 bg-emerald-600 text-white shadow-md">
+                    <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+                    <span>Gate 01 (Rear Gate)</span>
+                </button>
+                <button id="btnClubRoad" type="button" onclick="setKioskGate('clubroad')" class="px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+                    <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+                    <span>Club Road Gate</span>
+                </button>
+            </div>
+
+            <button type="button" onclick="toggleFullScreen()" title="Toggle Fullscreen" class="p-2.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl text-slate-500 hover:text-slate-800 shadow-sm transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+            </button>
+
             <div class="kiosk-panel px-5 py-2.5 rounded-2xl flex items-center gap-5">
                 <div>
                     <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block">Club Parking</span>
@@ -198,7 +214,7 @@
                         <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
                         <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Lane Status</span>
                     </div>
-                    <p class="text-xs font-extrabold text-slate-800">Lane 01 Fast-Track</p>
+                    <p id="telemetryLaneStatus" class="text-xs font-extrabold text-slate-800">Gate 01 Rear Lane</p>
                     <p class="text-[11px] text-slate-400 font-mono mt-0.5">Approach &lt; 5 km/h</p>
                 </div>
             </div>
@@ -217,7 +233,10 @@
                         <span id="badgeText">CLEARANCE GRANTED &bull; ENTRY</span>
                     </div>
                     <span id="gateStationBadge" class="px-3.5 py-1.5 rounded-xl text-[11px] font-mono font-bold bg-slate-100 text-slate-600 border border-slate-200">
-                        GATE 01 &bull; FAST-TRACK
+                        GATE 01 (REAR GATE) &bull; FAST-TRACK
+                    </span>
+                    <span id="activeReaderBadge" class="hidden sm:inline-block px-3 py-1.5 rounded-xl text-[10px] font-mono font-extrabold bg-indigo-50 text-indigo-700 border border-indigo-200 uppercase">
+                        READER: --
                     </span>
                 </div>
                 <div class="flex items-center gap-2">
@@ -397,7 +416,7 @@
                 <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <h4 class="text-xs font-extrabold uppercase tracking-widest text-slate-700">Recent RFID Gate Activity</h4>
+                <h4 id="recentFooterTitle" class="text-xs font-extrabold uppercase tracking-widest text-slate-700">Recent RFID Gate Activity</h4>
             </div>
             <span class="text-[10px] font-mono text-slate-400 uppercase tracking-wider font-bold">Live Synchronized</span>
         </div>

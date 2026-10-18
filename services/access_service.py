@@ -5,7 +5,29 @@ import hashlib
 from datetime import datetime
 import cv2
 import config
-from database import get_db_connection
+from database import get_db_connection, get_setting
+
+def detect_gate_station(gate_name: str, conn = None) -> str:
+    """Classifies a reader or gate into 'gate01' (Rear Gate) or 'clubroad' (Main Gate)."""
+    if not gate_name:
+        return "gate01"
+    g_lower = str(gate_name).lower().strip()
+    if "club" in g_lower or "main" in g_lower:
+        return "clubroad"
+    try:
+        if conn:
+            row_e = conn.execute("SELECT config_value FROM settings WHERE config_key='clubroad_entry_reader_name'").fetchone()
+            row_x = conn.execute("SELECT config_value FROM settings WHERE config_key='clubroad_exit_reader_name'").fetchone()
+            club_entry = (row_e[0] if row_e and row_e[0] else "").lower().strip()
+            club_exit = (row_x[0] if row_x and row_x[0] else "").lower().strip()
+        else:
+            club_entry = (get_setting("clubroad_entry_reader_name", "") or "").lower().strip()
+            club_exit = (get_setting("clubroad_exit_reader_name", "") or "").lower().strip()
+        if (club_entry and club_entry in g_lower) or (club_exit and club_exit in g_lower):
+            return "clubroad"
+    except Exception:
+        pass
+    return "gate01"
 
 def log_camera_audit_event(
     image_path: str,
@@ -120,7 +142,7 @@ def execute_access_decision(
                 member_loc = (member['Current_Location'] or '').strip() if member else ""
 
                 last_tag_log = conn.execute(
-                    "SELECT id, direction, timestamp FROM daily_logs WHERE scanned_tag=? ORDER BY id DESC LIMIT 1",
+                    "SELECT id, direction, gate_no, timestamp FROM daily_logs WHERE scanned_tag=? ORDER BY id DESC LIMIT 1",
                     (clean_tag,)
                 ).fetchone()
 
@@ -134,72 +156,59 @@ def execute_access_decision(
                         
                         elapsed_sec = (datetime.now() - last_log_dt).total_seconds()
                         last_dir = last_tag_log['direction']
+                        
+                        # Load dynamic cooldown window from settings (default: config.CROSS_READ_COOLDOWN)
                         cooldown_window = getattr(config, 'CROSS_READ_COOLDOWN', 45.0)
+                        try:
+                            setting_row = conn.execute("SELECT config_value FROM settings WHERE config_key='rfid_cooldown_seconds'").fetchone()
+                            if setting_row and setting_row[0]:
+                                cooldown_window = float(setting_row[0])
+                        except Exception:
+                            pass
 
-                        # UNIVERSAL COOLDOWN (45 Seconds):
+                        # UNIVERSAL COOLDOWN:
                         # Suppresses duplicate scans, multi-reads, and cross-reader bounce between Entry & Exit
                         if not bypass_cooldown and elapsed_sec < cooldown_window:
+                            return last_tag_log['id']
+
+                        # SAME-DIRECTION LINGERING SUPPRESSION (90s):
+                        # If vehicle was already logged in the same direction recently (e.g. car idling in front of entry barrier)
+                        # drop duplicate scan to prevent multi-logging
+                        if not bypass_cooldown and direction in ("Entry", "Exit") and direction == last_dir and elapsed_sec < max(cooldown_window, 90.0):
                             return last_tag_log['id']
                     except Exception:
                         pass
 
                 # DIRECTION RESOLUTION:
-                if member:
-                    # Case 1: Bypass cooldown with forced explicit direction (e.g. manual simulation / QA)
-                    if bypass_cooldown and direction in ("Entry", "Exit"):
-                        resolved_direction = direction
-                    # Case 2: Strict State Machine (Known Physical State)
-                    elif member_loc == "Inside":
-                        # Car is physically inside club -> next transit MUST be Exit
+                # 1. Dedicated Hardware Readers (Entry vs Exit) have fixed, definitive physical directions.
+                # An Entry reader ONLY logs 'Entry'. An Exit reader ONLY logs 'Exit'.
+                # Dedicated hardware readers must never be inverted to the opposite direction by stale location flags.
+                if direction in ("Entry", "Exit"):
+                    resolved_direction = direction
+                else:
+                    # 2. Virtual/Camera/Auto Triggers: resolve direction dynamically via strict state machine
+                    active_loc = member_loc if member else ""
+                    if not member:
+                        unreg_record = conn.execute("SELECT Current_Location FROM unregistered_tags WHERE UPPER(tag)=?", (clean_tag,)).fetchone()
+                        active_loc = (unreg_record['Current_Location'] if unreg_record and unreg_record['Current_Location'] else "").strip()
+                    
+                    if active_loc == "Inside":
                         resolved_direction = "Exit"
-                    elif member_loc == "Outside":
-                        # Car is physically outside club -> next transit MUST be Entry
+                    elif active_loc == "Outside":
                         resolved_direction = "Entry"
-                    # Case 3: Cold Start / Initial State Not Yet Established -> First-Reader-Wins
+                    elif last_tag_log and last_tag_log['direction'] == "Entry":
+                        resolved_direction = "Exit"
                     else:
-                        if direction == "Exit":
-                            resolved_direction = "Exit"
-                        elif direction == "Entry":
-                            resolved_direction = "Entry"
-                        elif last_tag_log and last_tag_log['direction'] == "Entry":
-                            resolved_direction = "Exit"
-                        else:
-                            resolved_direction = "Entry"
+                        resolved_direction = "Entry"
 
-                    new_loc = "Outside" if resolved_direction == "Exit" else "Inside"
+                new_loc = "Outside" if resolved_direction == "Exit" else "Inside"
+
+                if member:
                     conn.execute(
                         "UPDATE members SET Current_Location=? WHERE UPPER(E_tag_id)=? OR (Mem_id=? AND UPPER(Car_number)=?)",
                         (new_loc, clean_tag, mem_id, car.upper())
                     )
                 else:
-                    # Unregistered Tag Handling - Standard Industry State Machine
-                    # 1. Check persistent location status in unregistered_tags table
-                    unreg_record = conn.execute(
-                        "SELECT Current_Location, direction FROM unregistered_tags WHERE UPPER(tag)=?",
-                        (clean_tag,)
-                    ).fetchone()
-                    unreg_loc = (unreg_record['Current_Location'] if unreg_record and unreg_record['Current_Location'] else "").strip()
-
-                    # 2. Strict State Machine (Known Physical State)
-                    if bypass_cooldown and direction in ("Entry", "Exit"):
-                        resolved_direction = direction
-                    elif unreg_loc == "Inside":
-                        # Car is physically inside club -> next transit MUST be Exit
-                        resolved_direction = "Exit"
-                    elif unreg_loc == "Outside":
-                        # Car is physically outside club -> next transit MUST be Entry
-                        resolved_direction = "Entry"
-                    # 3. Cold Start / Initial State Not Yet Established -> First-Reader-Wins / Reader flag
-                    else:
-                        if direction in ("Entry", "Exit"):
-                            resolved_direction = direction
-                        elif last_tag_log:
-                            resolved_direction = "Exit" if last_tag_log['direction'] == "Entry" else "Entry"
-                        else:
-                            resolved_direction = "Entry"
-
-                    new_loc = "Outside" if resolved_direction == "Exit" else "Inside"
-
                     # Track into unregistered_tags table with Current_Location and tag_type
                     conn.execute("""
                         INSERT INTO unregistered_tags (tag, first_seen, last_seen, direction, Current_Location, read_count, tag_type)
@@ -212,21 +221,15 @@ def execute_access_decision(
                             tag_type = excluded.tag_type
                     """, (clean_tag, pkt_now, pkt_now, resolved_direction, new_loc, tag_type))
 
+                conn.execute(
+                    "INSERT INTO raw_reader_logs (tag_scanned, system_response, direction, timestamp) VALUES (?, ?, ?, ?)",
+                    (clean_tag, f"PROCESSED: {resolved_direction}", resolved_direction, pkt_now)
+                )
+
                 if gate_name:
                     resolved_gate = gate_name
                 else:
                     resolved_gate = "Gate-01 Entry Reader" if resolved_direction == "Entry" else "Gate-01 Exit Reader"
-
-                try:
-                    conn.execute(
-                        "INSERT INTO raw_reader_logs (tag_scanned, system_response, direction, gate_name, timestamp) VALUES (?, ?, ?, ?, ?)",
-                        (clean_tag, f"PROCESSED: {resolved_direction} via {resolved_gate}", resolved_direction, resolved_gate, pkt_now)
-                    )
-                except Exception:
-                    conn.execute(
-                        "INSERT INTO raw_reader_logs (tag_scanned, system_response, direction, timestamp) VALUES (?, ?, ?, ?)",
-                        (clean_tag, f"PROCESSED: {resolved_direction} via {resolved_gate}", resolved_direction, pkt_now)
-                    )
 
                 cursor = conn.execute("""INSERT INTO daily_logs
                     (mem_id, name, vehicle_number, access_type, direction, gate_no, image_path, plate_image_path, scanned_tag, timestamp)
@@ -236,24 +239,29 @@ def execute_access_decision(
                 new_id = cursor.lastrowid
 
                 # Update in-memory latest log cache for ZERO-LAG KIOSK POLLING (< 0.05ms response)
+                station = detect_gate_station(resolved_gate, conn=conn)
+                log_entry = {
+                    "id": new_id,
+                    "mem_id": mem_id,
+                    "name": name,
+                    "vehicle_number": car,
+                    "access_type": access_type,
+                    "direction": resolved_direction,
+                    "gate_no": resolved_gate,
+                    "gate_station": station,
+                    "image_path": path_full,
+                    "plate_image_path": path_plate,
+                    "scanned_tag": clean_tag,
+                    "timestamp": pkt_now,
+                    "make_model": make_model,
+                    "profile_pic": profile_pic,
+                    "member_status": resolved_status,
+                    "current_location": new_loc
+                }
                 with config.CACHE_LOCK:
-                    config.LATEST_LOG_CACHE = {
-                        "id": new_id,
-                        "mem_id": mem_id,
-                        "name": name,
-                        "vehicle_number": car,
-                        "access_type": access_type,
-                        "direction": resolved_direction,
-                        "gate_no": resolved_gate,
-                        "image_path": path_full,
-                        "plate_image_path": path_plate,
-                        "scanned_tag": clean_tag,
-                        "timestamp": pkt_now,
-                        "make_model": make_model,
-                        "profile_pic": profile_pic,
-                        "member_status": resolved_status,
-                        "current_location": new_loc
-                    }
+                    config.LATEST_LOG_CACHE = log_entry
+                    if hasattr(config, "LATEST_GATE_LOG_CACHE"):
+                        config.LATEST_GATE_LOG_CACHE[station] = log_entry
 
                 return new_id
 
@@ -263,7 +271,7 @@ def execute_access_decision(
                 car = "UNKNOWN"
                 access_type = "No RFID Detected"
                 resolved_direction = direction or "Entry"
-                resolved_gate = gate_name if gate_name else ("Gate-01 Entry Reader" if resolved_direction == "Entry" else "Gate-01 Exit Reader")
+                resolved_gate = "Gate-01 Entry Reader" if resolved_direction == "Entry" else "Gate-01 Exit Reader"
 
                 cursor = conn.execute("""INSERT INTO daily_logs
                     (mem_id, name, vehicle_number, access_type, direction, gate_no, image_path, plate_image_path, scanned_tag, timestamp)
@@ -296,6 +304,13 @@ def attach_images_to_log(log_id: int, path_full: str, path_plate: str):
                 config.LATEST_LOG_CACHE["image_path"] = path_full
             if path_plate:
                 config.LATEST_LOG_CACHE["plate_image_path"] = path_plate
+        if hasattr(config, "LATEST_GATE_LOG_CACHE"):
+            for g_station, g_data in config.LATEST_GATE_LOG_CACHE.items():
+                if g_data and g_data.get("id") == log_id:
+                    if path_full:
+                        g_data["image_path"] = path_full
+                    if path_plate:
+                        g_data["plate_image_path"] = path_plate
 
 def process_camera_line_crossing(hikvision_image_path: str, forced_direction: str = None):
     if not hikvision_image_path or not os.path.exists(hikvision_image_path):

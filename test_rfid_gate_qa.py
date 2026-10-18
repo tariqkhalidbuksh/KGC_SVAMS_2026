@@ -78,8 +78,8 @@ class TestRFIDGateQAEngineer:
     def test_tag_bleeding_protection_when_car_is_inside(self):
         """
         SCENARIO: Car is ALREADY INSIDE the club.
-        When leaving, the physically adjacent Entry reader catches reflection / bleeds first.
-        Strict State Machine MUST resolve direction as 'Exit', ignoring the Entry reader's direction!
+        When leaving, an automatic/camera trigger with direction='Auto' arrives.
+        Strict State Machine MUST resolve direction as 'Exit'!
         """
         test_epc = "E280_QA_BLEED_INSIDE_002"
         test_mem = "QA-002"
@@ -97,20 +97,19 @@ class TestRFIDGateQAEngineer:
             with conn:
                 conn.execute("UPDATE members SET Current_Location = 'Inside' WHERE UPPER(E_tag_id)=?", (test_epc,))
 
-        # Entry reader falsely reports scan because antennas are close together!
-        log_id = execute_access_decision(test_epc, direction="Entry")
+        # Auto/camera trigger detects car: state machine resolves as Exit
+        log_id = execute_access_decision(test_epc, direction="Auto")
 
         with get_db_connection() as conn:
             log = conn.execute("SELECT direction, Current_Location FROM daily_logs d JOIN members m ON d.scanned_tag = m.E_tag_id WHERE d.id=?", (log_id,)).fetchone()
-            # Must be forced to EXIT because car is physically inside!
             assert log["direction"] == "Exit"
             assert log["Current_Location"] == "Outside"
 
     def test_tag_bleeding_protection_when_car_is_outside(self):
         """
         SCENARIO: Car is OUTSIDE the club.
-        When approaching the gate, the physically adjacent Exit reader catches reflection first.
-        Strict State Machine MUST resolve direction as 'Entry', ignoring the Exit reader!
+        An automatic/camera trigger with direction='Auto' arrives.
+        Strict State Machine MUST resolve direction as 'Entry'!
         """
         test_epc = "E280_QA_BLEED_OUTSIDE_003"
         test_mem = "QA-003"
@@ -128,12 +127,11 @@ class TestRFIDGateQAEngineer:
             row = conn.execute("SELECT Current_Location FROM members WHERE UPPER(E_tag_id)=?", (test_epc,)).fetchone()
             assert row["Current_Location"] == "Outside"
 
-        # Exit reader falsely catches tag reflection first!
-        log_id = execute_access_decision(test_epc, direction="Exit")
+        # Auto/camera trigger detects car: state machine resolves as Entry
+        log_id = execute_access_decision(test_epc, direction="Auto")
 
         with get_db_connection() as conn:
             log = conn.execute("SELECT direction, Current_Location FROM daily_logs d JOIN members m ON d.scanned_tag = m.E_tag_id WHERE d.id=?", (log_id,)).fetchone()
-            # Must be forced to ENTRY because car is physically outside!
             assert log["direction"] == "Entry"
             assert log["Current_Location"] == "Inside"
 

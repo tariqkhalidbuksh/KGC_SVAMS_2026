@@ -347,13 +347,29 @@ def _audit_sort_key(a):
     return (latest_ts, latest_id)
 
 @router.get("/latest-log")
-async def get_latest_log(direction: str = None):
+async def get_latest_log(direction: str = None, gate: str = None):
+    target_station = None
+    if gate:
+        gate_lower = gate.lower().strip()
+        if "club" in gate_lower or "main" in gate_lower:
+            target_station = "clubroad"
+        elif "01" in gate_lower or "gate" in gate_lower or "rear" in gate_lower:
+            target_station = "gate01"
+        else:
+            target_station = gate_lower
+
     # Zero-lag fast path: serve directly from memory cache (< 0.05ms) without acquiring DB_LOCK
     with config.CACHE_LOCK:
-        cached = config.LATEST_LOG_CACHE
-        if cached:
-            if not direction or cached.get("direction", "").lower() == direction.lower():
-                return cached
+        if target_station and hasattr(config, "LATEST_GATE_LOG_CACHE"):
+            cached = config.LATEST_GATE_LOG_CACHE.get(target_station)
+            if cached:
+                if not direction or cached.get("direction", "").lower() == direction.lower():
+                    return cached
+        elif not target_station:
+            cached = config.LATEST_LOG_CACHE
+            if cached:
+                if not direction or cached.get("direction", "").lower() == direction.lower():
+                    return cached
 
     # Fallback to database query if cache is empty
     with config.DB_LOCK:
@@ -368,28 +384,53 @@ async def get_latest_log(direction: str = None):
             if direction:
                 query += " AND LOWER(d.direction) = LOWER(?)"
                 params.append(direction)
+            if target_station == "clubroad":
+                query += " AND (d.gate_no LIKE '%Club%' OR d.gate_no LIKE '%Main%')"
+            elif target_station == "gate01":
+                query += " AND (d.gate_no NOT LIKE '%Club%' AND d.gate_no NOT LIKE '%Main%')"
             query += " ORDER BY d.id DESC LIMIT 1"
 
             row = conn.execute(query, params).fetchone()
             res = dict(row) if row else {}
             if res and not direction:
                 with config.CACHE_LOCK:
-                    config.LATEST_LOG_CACHE = res
+                    if target_station and hasattr(config, "LATEST_GATE_LOG_CACHE"):
+                        config.LATEST_GATE_LOG_CACHE[target_station] = res
+                    else:
+                        config.LATEST_LOG_CACHE = res
             return res
         finally:
             conn.close()
 
 @router.get("/recent-entries")
-async def get_recent_entries(limit: int = 4):
+async def get_recent_entries(limit: int = 4, gate: str = None):
+    target_station = None
+    if gate:
+        gate_lower = gate.lower().strip()
+        if "club" in gate_lower or "main" in gate_lower:
+            target_station = "clubroad"
+        elif "01" in gate_lower or "gate" in gate_lower or "rear" in gate_lower:
+            target_station = "gate01"
+        else:
+            target_station = gate_lower
+
     with config.DB_LOCK:
         conn = get_db_connection()
         try:
-            rows = conn.execute("""SELECT d.id, d.mem_id, d.name, d.vehicle_number, d.access_type, d.direction,
+            query = """SELECT d.id, d.mem_id, d.name, d.vehicle_number, d.access_type, d.direction,
                     d.gate_no, d.image_path, d.plate_image_path, d.scanned_tag, d.timestamp,
                     m.Make_Model as make_model, m.Profile_pic as profile_pic
                 FROM daily_logs d LEFT JOIN members m ON d.mem_id = m.Mem_id AND d.vehicle_number = m.Car_number
-                WHERE (d.scanned_tag != 'NO_TAG' AND d.scanned_tag IS NOT NULL AND d.scanned_tag != '')
-                ORDER BY d.id DESC LIMIT ?""", (limit,)).fetchall()
+                WHERE (d.scanned_tag != 'NO_TAG' AND d.scanned_tag IS NOT NULL AND d.scanned_tag != '')"""
+            params = []
+            if target_station == "clubroad":
+                query += " AND (d.gate_no LIKE '%Club%' OR d.gate_no LIKE '%Main%')"
+            elif target_station == "gate01":
+                query += " AND (d.gate_no NOT LIKE '%Club%' AND d.gate_no NOT LIKE '%Main%')"
+            query += " ORDER BY d.id DESC LIMIT ?"
+            params.append(limit)
+
+            rows = conn.execute(query, params).fetchall()
             return [dict(r) for r in rows]
         finally:
             conn.close()

@@ -87,7 +87,12 @@ async def dashboard_view(request: Request):
     return HTMLResponse(content=render_template("dashboard.html"))
 
 @app.get("/kiosk", response_class=HTMLResponse)
-async def kiosk_view(request: Request):
+@app.get("/kiosk/gate01", response_class=HTMLResponse)
+@app.get("/kiosk/gate1", response_class=HTMLResponse)
+@app.get("/kiosk/rear", response_class=HTMLResponse)
+@app.get("/kiosk/clubroad", response_class=HTMLResponse)
+@app.get("/kiosk/main", response_class=HTMLResponse)
+async def kiosk_view(request: Request, gate: str = None):
     return HTMLResponse(content=render_template("kiosk.html"))
 
 @app.get("/tools", response_class=HTMLResponse)
