@@ -160,7 +160,7 @@ def init_db():
                     'clubroad_exit_reader_ip': '',
                     'clubroad_entry_reader_name': 'Main Gate (Club Road) Entry Reader',
                     'clubroad_exit_reader_name': 'Main Gate (Club Road) Exit Reader',
-                    'rfid_cooldown_seconds': '60',
+                    'rfid_cooldown_seconds': '45',
                 }
                 for key, val in default_settings.items():
                     conn.execute("INSERT OR IGNORE INTO settings (config_key, config_value) VALUES (?, ?)", (key, val))

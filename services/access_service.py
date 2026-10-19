@@ -155,6 +155,11 @@ def execute_access_decision(
                             last_log_dt = datetime.strptime(last_log_str, "%Y-%m-%d %I:%M:%S %p")
                         
                         elapsed_sec = (datetime.now() - last_log_dt).total_seconds()
+                        # Normalize if stored timestamp was created in UTC by SQLite datetime('now') while host is in PKT (UTC+5)
+                        if 17800 < elapsed_sec < 18200:
+                            elapsed_sec -= 18000
+                        elif -18200 < elapsed_sec < -17800:
+                            elapsed_sec += 18000
                         last_dir = last_tag_log['direction']
                         
                         # Load dynamic cooldown window from settings (default: config.CROSS_READ_COOLDOWN)
@@ -172,32 +177,32 @@ def execute_access_decision(
                             return last_tag_log['id']
 
                         # SAME-DIRECTION LINGERING SUPPRESSION (90s):
-                        # If vehicle was already logged in the same direction recently (e.g. car idling in front of entry barrier)
+                        # If vehicle was already logged in the same direction recently (e.g. car idling in front of barrier)
                         # drop duplicate scan to prevent multi-logging
                         if not bypass_cooldown and direction in ("Entry", "Exit") and direction == last_dir and elapsed_sec < max(cooldown_window, 90.0):
                             return last_tag_log['id']
                     except Exception:
                         pass
 
+                # ACTIVE LOCATION DETERMINATION:
+                active_loc = member_loc if member else ""
+                if not member:
+                    unreg_record = conn.execute("SELECT Current_Location FROM unregistered_tags WHERE UPPER(tag)=?", (clean_tag,)).fetchone()
+                    active_loc = (unreg_record['Current_Location'] if unreg_record and unreg_record['Current_Location'] else "").strip()
+                
+                if not active_loc and last_tag_log:
+                    active_loc = "Inside" if last_tag_log['direction'] == "Entry" else "Outside"
+
                 # DIRECTION RESOLUTION:
-                # 1. Dedicated Hardware Readers (Entry vs Exit) have fixed, definitive physical directions.
-                # An Entry reader ONLY logs 'Entry'. An Exit reader ONLY logs 'Exit'.
-                # Dedicated hardware readers must never be inverted to the opposite direction by stale location flags.
-                if direction in ("Entry", "Exit"):
-                    resolved_direction = direction
+                # If vehicle already shows 'Inside' facility, ANY reader detecting it marks it as 'Exit'!
+                # (Antennas at adjacent gate lanes have RF spillover; a car departing will scan whichever antenna it passes)
+                # The detecting reader is recorded in gate_no so logs accurately show which reader detected the car.
+                if active_loc == "Inside":
+                    resolved_direction = "Exit"
                 else:
-                    # 2. Virtual/Camera/Auto Triggers: resolve direction dynamically via strict state machine
-                    active_loc = member_loc if member else ""
-                    if not member:
-                        unreg_record = conn.execute("SELECT Current_Location FROM unregistered_tags WHERE UPPER(tag)=?", (clean_tag,)).fetchone()
-                        active_loc = (unreg_record['Current_Location'] if unreg_record and unreg_record['Current_Location'] else "").strip()
-                    
-                    if active_loc == "Inside":
-                        resolved_direction = "Exit"
-                    elif active_loc == "Outside":
-                        resolved_direction = "Entry"
-                    elif last_tag_log and last_tag_log['direction'] == "Entry":
-                        resolved_direction = "Exit"
+                    # Vehicle is Outside or cold start / first-time arrival
+                    if direction in ("Entry", "Exit"):
+                        resolved_direction = direction
                     else:
                         resolved_direction = "Entry"
 
@@ -228,6 +233,8 @@ def execute_access_decision(
 
                 if gate_name:
                     resolved_gate = gate_name
+                elif direction in ("Entry", "Exit"):
+                    resolved_gate = f"Gate-01 {direction} Reader"
                 else:
                     resolved_gate = "Gate-01 Entry Reader" if resolved_direction == "Entry" else "Gate-01 Exit Reader"
 

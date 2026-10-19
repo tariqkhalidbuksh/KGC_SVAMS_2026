@@ -199,3 +199,188 @@ def test_unregistered_car_manual_exit():
     assert paired_item["exit"] is not None
     assert paired_item["duration"] is not None
 
+
+def test_bulk_manual_exit_mixed_fleet_members_and_unregistered():
+    """
+    DEEP TEST: Bulk manual exit with mixed registered members, unregistered RFID tags,
+    optical camera captures, and normalized exception whitelist protection.
+    """
+    conn = get_db_connection()
+    t_now = datetime.now()
+    t_entry = (t_now - timedelta(hours=1, minutes=30)).strftime("%Y-%m-%d %H:%M:%S")
+
+    # 1. Registered member inside
+    conn.execute("""
+        INSERT OR REPLACE INTO members (Mem_id, Name, Car_number, Make_Model, E_tag_id, Current_Location, Status)
+        VALUES ('M-DEEP-1', 'Deep Tester 1', 'DEP-101', 'Sedan', 'TAG-DEP-1', 'Inside', 'Active')
+    """)
+    conn.execute("""
+        INSERT INTO daily_logs (mem_id, name, vehicle_number, access_type, direction, gate_no, scanned_tag, timestamp)
+        VALUES ('M-DEEP-1', 'Deep Tester 1', 'DEP-101', 'RFID Verified', 'Entry', 'Gate-01 Entry Reader', 'TAG-DEP-1', ?)
+    """, (t_entry,))
+
+    # 2. Unregistered RFID vehicle inside (present in unregistered_tags)
+    conn.execute("""
+        INSERT OR REPLACE INTO unregistered_tags (tag, first_seen, last_seen, direction, Current_Location, read_count, tag_type)
+        VALUES ('TAG-UNREG-99', ?, ?, 'Entry', 'Inside', 3, 'NHA Motorway M-Tag')
+    """, (t_entry, t_entry))
+    conn.execute("""
+        INSERT INTO daily_logs (mem_id, name, vehicle_number, access_type, direction, gate_no, scanned_tag, timestamp)
+        VALUES ('GUEST-LOG', 'NHA M-Tag Guest', 'GUEST-99', 'NHA Motorway M-Tag (RFID)', 'Entry', 'Gate-01 Entry Reader', 'TAG-UNREG-99', ?)
+    """, (t_entry,))
+
+    # 3. Optical AI camera capture (no RFID tag)
+    conn.execute("""
+        INSERT INTO daily_logs (mem_id, name, vehicle_number, access_type, direction, gate_no, scanned_tag, timestamp)
+        VALUES ('AI-CAM', 'Camera Visitor', 'CAM-777', 'Optical Capture - No RFID', 'Entry', 'Club Road Gate', 'NO_TAG', ?)
+    """, (t_entry,))
+
+    # 4. Whitelisted staff vehicle inside (STAFF-888)
+    conn.execute("""
+        INSERT OR REPLACE INTO members (Mem_id, Name, Car_number, Make_Model, E_tag_id, Current_Location, Status)
+        VALUES ('M-STAFF', 'Club Staff', 'STAFF-888', 'SUV', 'TAG-STAFF', 'Inside', 'Active')
+    """)
+    conn.execute("""
+        INSERT INTO daily_logs (mem_id, name, vehicle_number, access_type, direction, gate_no, scanned_tag, timestamp)
+        VALUES ('M-STAFF', 'Club Staff', 'STAFF-888', 'Staff Pass', 'Entry', 'Gate-01 Entry Reader', 'TAG-STAFF', ?)
+    """, (t_entry,))
+
+    conn.commit()
+    conn.close()
+
+    # Configure whitelist with space formatting to test normalization: 'STAFF 888' protects 'STAFF-888'
+    client.post("/api/settings/bulk-exit-exceptions", json={"exceptions": ["STAFF 888", "VIP-999"]})
+
+    # Execute Bulk Manual Exit
+    bulk_ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    bulk_res = client.post("/api/audit/bulk-manual-exit", json={
+        "timestamp": bulk_ts,
+        "gate_no": "Nightly Bulk Clearance Gate",
+        "notes": "Deep Bulk Exit QA"
+    })
+    assert bulk_res.status_code == 200
+    res_data = bulk_res.json()
+    assert res_data["ok"] is True
+
+    # STAFF-888 and VIP-999 must be exempted
+    exempted_plates = [x.get("vehicle_number") for x in res_data["exempted_vehicles"]]
+    assert any("STAFF" in p for p in exempted_plates)
+
+    # Verify database state after bulk exit:
+    conn = get_db_connection()
+    # 1. Registered member is now Outside
+    m1 = conn.execute("SELECT Current_Location FROM members WHERE Mem_id='M-DEEP-1'").fetchone()
+    assert m1["Current_Location"] == "Outside"
+
+    # 2. Unregistered tag table is now Outside and direction is Exit
+    unreg = conn.execute("SELECT Current_Location, direction FROM unregistered_tags WHERE tag='TAG-UNREG-99'").fetchone()
+    assert unreg["Current_Location"] == "Outside"
+    assert unreg["direction"] == "Exit"
+
+    # 3. Whitelisted staff vehicle remains Inside
+    staff = conn.execute("SELECT Current_Location FROM members WHERE Mem_id='M-STAFF'").fetchone()
+    assert staff["Current_Location"] == "Inside"
+    conn.close()
+
+    # 4. Audit query shows all cleared vehicles as Exited with duration
+    audit_res = client.get("/api/audit?search=DEP-101")
+    assert audit_res.status_code == 200
+    dep_audit = audit_res.json()["audits"][0]
+    assert dep_audit["status"] == "Exited"
+    assert dep_audit["duration"] is not None
+
+    audit_cam = client.get("/api/audit?search=CAM-777")
+    assert audit_cam.status_code == 200
+    cam_audit = audit_cam.json()["audits"][0]
+    assert cam_audit["status"] == "Exited"
+
+    audit_unreg = client.get("/api/audit?search=TAG-UNREG-99")
+    assert audit_unreg.status_code == 200
+    unreg_audit = audit_unreg.json()["audits"][0]
+    assert unreg_audit["status"] == "Exited"
+
+    # Idempotency: Re-running bulk exit immediately when only exempt vehicles remain inside
+    re_bulk_res = client.post("/api/audit/bulk-manual-exit", json={"notes": "Immediate Second Run"})
+    assert re_bulk_res.status_code == 200
+    re_data = re_bulk_res.json()
+    assert re_data["exited_count"] == 0, "Second run should exit 0 vehicles as non-exempt are already outside"
+
+
+def test_post_bulk_exit_subsequent_scans_and_cycle():
+    """
+    DEEP TEST: Full round-trip lifecycle.
+    1. Member cleared via bulk exit overnight (Current_Location becomes 'Outside').
+    2. Next morning, arrives and enters via Gate-01 Entry Reader -> marked 'Entry'.
+    3. Exiting club later, detected by Gate-01 Entry Reader (user's overlap scenario) -> marked 'Exit'.
+    4. Confirms paired audit correctly logs 1 complete visit.
+    """
+    from services.access_service import execute_access_decision
+
+    test_tag = "TAG-CYCLE-001"
+    test_car = "CYC-900"
+    test_mem = "M-CYC"
+
+    conn = get_db_connection()
+    conn.execute("""
+        INSERT OR REPLACE INTO members (Mem_id, Name, Car_number, Make_Model, E_tag_id, Current_Location, Status)
+        VALUES (?, 'Cycle Tester', ?, 'Civic', ?, 'Inside', 'Active')
+    """, (test_mem, test_car, test_tag))
+    # Entry yesterday
+    conn.execute("""
+        INSERT INTO daily_logs (mem_id, name, vehicle_number, access_type, direction, gate_no, scanned_tag, timestamp)
+        VALUES (?, 'Cycle Tester', ?, 'RFID Verified', 'Entry', 'Gate-01 Entry Reader', ?, '2026-10-18 20:00:00')
+    """, (test_mem, test_car, test_tag))
+    conn.commit()
+    conn.close()
+
+    # Overnight bulk manual exit clears the car
+    bulk_res = client.post("/api/audit/bulk-manual-exit", json={
+        "timestamp": "2026-10-18 23:59:00",
+        "gate_no": "Nightly Bulk Clearance Gate",
+        "override_exceptions": []
+    })
+    assert bulk_res.status_code == 200
+
+    conn = get_db_connection()
+    m = conn.execute("SELECT Current_Location FROM members WHERE Mem_id=?", (test_mem,)).fetchone()
+    assert m["Current_Location"] == "Outside"
+    conn.close()
+
+    # Next morning: Car arrives from outside at Gate-01 Entry Reader
+    log_entry_id = execute_access_decision(test_tag, direction="Entry", gate_name="Gate-01 Entry Reader", bypass_cooldown=True)
+    conn = get_db_connection()
+    entry_row = conn.execute("SELECT direction, gate_no FROM daily_logs WHERE id=?", (log_entry_id,)).fetchone()
+    assert entry_row["direction"] == "Entry"
+    assert entry_row["gate_no"] == "Gate-01 Entry Reader"
+    m_in = conn.execute("SELECT Current_Location FROM members WHERE Mem_id=?", (test_mem,)).fetchone()
+    assert m_in["Current_Location"] == "Inside"
+    conn.close()
+
+    # Later: Car exits, detected by Gate-01 Entry Reader (the user's scenario!)
+    log_exit_id = execute_access_decision(test_tag, direction="Entry", gate_name="Gate-01 Entry Reader", bypass_cooldown=True)
+    conn = get_db_connection()
+    exit_row = conn.execute("SELECT direction, gate_no FROM daily_logs WHERE id=?", (log_exit_id,)).fetchone()
+    assert exit_row["direction"] == "Exit"
+    assert exit_row["gate_no"] == "Gate-01 Entry Reader"
+    m_out = conn.execute("SELECT Current_Location FROM members WHERE Mem_id=?", (test_mem,)).fetchone()
+    assert m_out["Current_Location"] == "Outside"
+    conn.close()
+
+    # Verify audit shows the newly completed visit today
+    audit_res = client.get(f"/api/audit?search={test_car}")
+    assert audit_res.status_code == 200
+    audits = audit_res.json()["audits"]
+    assert len(audits) >= 1
+    today_trip = audits[0]
+    assert today_trip["status"] == "Exited"
+    assert today_trip["entry"]["gate_no"] == "Gate-01 Entry Reader"
+    assert today_trip["exit"]["gate_no"] == "Gate-01 Entry Reader"
+
+    # Verify yesterday's bulk-exited visit is recorded on yesterday's date
+    yest_res = client.get(f"/api/audit?date=2026-10-18&search={test_car}")
+    assert yest_res.status_code == 200
+    yest_audits = yest_res.json()["audits"]
+    assert len(yest_audits) >= 1
+    assert yest_audits[0]["status"] == "Exited"
+
+

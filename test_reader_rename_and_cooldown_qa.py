@@ -23,6 +23,7 @@ def clean_test_environment():
                 conn.execute("DELETE FROM daily_logs WHERE scanned_tag LIKE 'TEST_%'")
                 conn.execute("DELETE FROM unregistered_tags WHERE tag LIKE 'TEST_%'")
                 conn.execute("DELETE FROM members WHERE Mem_id LIKE 'MEM-TEST-%' OR E_tag_id LIKE 'TEST_%'")
+                conn.execute("UPDATE settings SET config_value = '45' WHERE config_key = 'rfid_cooldown_seconds'")
     yield
     with config.DB_LOCK:
         with get_db_connection() as conn:
@@ -30,6 +31,7 @@ def clean_test_environment():
                 conn.execute("DELETE FROM daily_logs WHERE scanned_tag LIKE 'TEST_%'")
                 conn.execute("DELETE FROM unregistered_tags WHERE tag LIKE 'TEST_%'")
                 conn.execute("DELETE FROM members WHERE Mem_id LIKE 'MEM-TEST-%' OR E_tag_id LIKE 'TEST_%'")
+                conn.execute("UPDATE settings SET config_value = '45' WHERE config_key = 'rfid_cooldown_seconds'")
 
 
 def test_reader_renaming_settings_persistence_and_propagation():
@@ -133,53 +135,72 @@ def test_no_enter_and_exit_flip_on_same_reader():
             assert r["direction"] != "Exit"
 
 
-def test_both_gate_readers_dedicated_direction():
+def test_inside_vehicle_exiting_via_entry_reader_marks_as_exit():
     """
-    Tests both Gate-01 and Main Gate (Club Road) readers:
-    - Dedicated Entry reader always logs Entry.
-    - Dedicated Exit reader always logs Exit.
-    - Cross-gate trip pairs properly in Audit Log without phantom rapid flips.
+    Verifies User Requirement:
+    - If a car is already inside the club (Current_Location == 'Inside'),
+      when exiting, if an Entry reader detects the car (due to antenna overlap or shared lane),
+      the system MUST mark the transit as 'Exit', while preserving the detecting reader's name
+      in gate_no (e.g. 'Main Gate (Club Road) Entry Reader').
+    - Resolves the paired trip in the audit log as 'Exited'.
     """
-    test_tag = "TEST_BOTH_GATES_002"
+    test_tag = "TEST_INSIDE_EXIT_002"
     test_mem = "MEM-TEST-BG-2"
     test_car = "BG-7788"
 
     client.post("/api/add-member", json={
         "mem_id": test_mem,
-        "name": "Multi Gate QA Member",
+        "name": "Inside Exit Tester",
         "car_number": test_car,
         "e_tag_id": test_tag
     }, cookies={"session_user": "admin", "session_role": "Admin"})
 
-    # Step 1: Enters via Main Gate (Club Road) Entry Reader
+    # Step 1: Vehicle enters via Main Gate (Club Road) Entry Reader
     id_entry = execute_access_decision(test_tag, direction="Entry", gate_name="Main Gate (Club Road) Entry Reader", bypass_cooldown=True)
     with get_db_connection() as conn:
         e_row = conn.execute("SELECT direction, gate_no FROM daily_logs WHERE id=?", (id_entry,)).fetchone()
         assert e_row["direction"] == "Entry"
         assert e_row["gate_no"] == "Main Gate (Club Road) Entry Reader"
+        mem = conn.execute("SELECT Current_Location FROM members WHERE UPPER(E_tag_id)=?", (test_tag,)).fetchone()
+        assert mem["Current_Location"] == "Inside"
 
-    # Step 2: Second scan at Main Gate (Club Road) Entry Reader must NOT become Exit
-    id_entry_again = execute_access_decision(test_tag, direction="Entry", gate_name="Main Gate (Club Road) Entry Reader", bypass_cooldown=True)
-    with get_db_connection() as conn:
-        e2_row = conn.execute("SELECT direction, gate_no FROM daily_logs WHERE id=?", (id_entry_again,)).fetchone()
-        assert e2_row["direction"] == "Entry"
-        assert e2_row["gate_no"] == "Main Gate (Club Road) Entry Reader"
-
-    # Step 3: Vehicle legitimately exits via Gate-01 Exit Reader
-    id_exit = execute_access_decision(test_tag, direction="Exit", gate_name="Gate-01 Exit Reader", bypass_cooldown=True)
+    # Step 2: Car is already inside the club. Driver departs, and Main Gate (Club Road) Entry Reader detects it!
+    # MUST mark as Exit, but show Main Gate (Club Road) Entry Reader in gate_no!
+    id_exit = execute_access_decision(test_tag, direction="Entry", gate_name="Main Gate (Club Road) Entry Reader", bypass_cooldown=True)
     with get_db_connection() as conn:
         x_row = conn.execute("SELECT direction, gate_no FROM daily_logs WHERE id=?", (id_exit,)).fetchone()
         assert x_row["direction"] == "Exit"
-        assert x_row["gate_no"] == "Gate-01 Exit Reader"
+        assert x_row["gate_no"] == "Main Gate (Club Road) Entry Reader"
+        mem = conn.execute("SELECT Current_Location FROM members WHERE UPPER(E_tag_id)=?", (test_tag,)).fetchone()
+        assert mem["Current_Location"] == "Outside"
 
-    # Step 4: Check paired audit logs in /api/audit
+    # Step 3: Check paired audit logs in /api/audit
     audit_res = client.get(f"/api/audit?search={test_car}")
     assert audit_res.status_code == 200
     audits = audit_res.json()["audits"]
     assert len(audits) >= 1
     trip = audits[0]
+    assert trip["status"] == "Exited"
     assert trip["entry"]["gate_no"] == "Main Gate (Club Road) Entry Reader"
-    assert trip["exit"]["gate_no"] == "Gate-01 Exit Reader"
+    assert trip["exit"]["gate_no"] == "Main Gate (Club Road) Entry Reader"
+
+    # Step 4: Vehicle returns next day from Outside -> scanned at Gate-01 Entry Reader
+    id_entry2 = execute_access_decision(test_tag, direction="Entry", gate_name="Gate-01 Entry Reader", bypass_cooldown=True)
+    with get_db_connection() as conn:
+        e2_row = conn.execute("SELECT direction, gate_no FROM daily_logs WHERE id=?", (id_entry2,)).fetchone()
+        assert e2_row["direction"] == "Entry"
+        assert e2_row["gate_no"] == "Gate-01 Entry Reader"
+        mem = conn.execute("SELECT Current_Location FROM members WHERE UPPER(E_tag_id)=?", (test_tag,)).fetchone()
+        assert mem["Current_Location"] == "Inside"
+
+    # Step 5: Vehicle exits via Gate-01 Exit Reader
+    id_exit2 = execute_access_decision(test_tag, direction="Exit", gate_name="Gate-01 Exit Reader", bypass_cooldown=True)
+    with get_db_connection() as conn:
+        x2_row = conn.execute("SELECT direction, gate_no FROM daily_logs WHERE id=?", (id_exit2,)).fetchone()
+        assert x2_row["direction"] == "Exit"
+        assert x2_row["gate_no"] == "Gate-01 Exit Reader"
+        mem = conn.execute("SELECT Current_Location FROM members WHERE UPPER(E_tag_id)=?", (test_tag,)).fetchone()
+        assert mem["Current_Location"] == "Outside"
 
 
 def test_unregistered_tags_extended_limit_and_search():

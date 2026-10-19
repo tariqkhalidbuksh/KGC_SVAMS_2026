@@ -1588,12 +1588,16 @@ async def post_manual_exit(request: Request):
 
                 if scanned_tag and scanned_tag != "NO_TAG":
                     conn.execute("UPDATE members SET Current_Location = 'Outside' WHERE UPPER(E_tag_id) = ?", (scanned_tag.upper(),))
+                    conn.execute("UPDATE unregistered_tags SET Current_Location = 'Outside', direction = 'Exit' WHERE UPPER(tag) = ?", (scanned_tag.upper(),))
                 elif mem_id and display_vehicle and mem_id not in ("GUEST-LOG", "AI-CAM", "UNREGISTERED") and display_vehicle != "UNREGISTERED":
                     conn.execute("UPDATE members SET Current_Location = 'Outside' WHERE Mem_id = ? AND UPPER(REPLACE(REPLACE(Car_number, '-', ''), ' ', '')) = UPPER(REPLACE(REPLACE(?, '-', ''), ' ', ''))", (mem_id, display_vehicle))
                 elif mem_id and mem_id not in ("GUEST-LOG", "AI-CAM", "UNREGISTERED"):
                     conn.execute("UPDATE members SET Current_Location = 'Outside' WHERE Mem_id = ?", (mem_id,))
 
                 config.LATEST_LOG_CACHE = None
+                config.LATEST_GATE_LOG_CACHE = {"gate01": None, "clubroad": None}
+                config.MEMBERS_METRICS_CACHE = {"data": None, "timestamp": 0.0}
+                config.FLEET_ADOPTION_CACHE = {"data": None, "timestamp": 0.0, "db_file": None}
 
                 return {
                     "ok": True,
@@ -1683,9 +1687,10 @@ async def post_bulk_manual_exit(request: Request):
                     seen_vehicles.add(key)
 
                     is_exempt = False
-                    if plate and plate in exception_set:
+                    clean_norm = lambda s: s.replace("-", "").replace(" ", "").upper()
+                    if plate and (plate in exception_set or clean_norm(plate) in {clean_norm(x) for x in exception_set}):
                         is_exempt = True
-                    elif mem and mem in exception_set:
+                    elif mem and (mem in exception_set or clean_norm(mem) in {clean_norm(x) for x in exception_set}):
                         is_exempt = True
                     elif tag and tag in exception_set:
                         is_exempt = True
@@ -1723,6 +1728,7 @@ async def post_bulk_manual_exit(request: Request):
 
                     if tag_val and tag_val != "NO_TAG":
                         conn.execute("UPDATE members SET Current_Location = 'Outside' WHERE UPPER(E_tag_id) = ?", (tag_val.upper(),))
+                        conn.execute("UPDATE unregistered_tags SET Current_Location = 'Outside', direction = 'Exit' WHERE UPPER(tag) = ?", (tag_val.upper(),))
                     elif mem_val and plate_val and mem_val not in ("GUEST-LOG", "AI-CAM", "UNREGISTERED") and plate_val not in ("UNREGISTERED", "NO PLATE", ""):
                         conn.execute("UPDATE members SET Current_Location = 'Outside' WHERE Mem_id = ? AND UPPER(REPLACE(REPLACE(Car_number, '-', ''), ' ', '')) = UPPER(REPLACE(REPLACE(?, '-', ''), ' ', ''))", (mem_val, plate_val))
                     elif mem_val and mem_val not in ("GUEST-LOG", "AI-CAM", "UNREGISTERED"):
@@ -1735,6 +1741,9 @@ async def post_bulk_manual_exit(request: Request):
                     })
 
                 config.LATEST_LOG_CACHE = None
+                config.LATEST_GATE_LOG_CACHE = {"gate01": None, "clubroad": None}
+                config.MEMBERS_METRICS_CACHE = {"data": None, "timestamp": 0.0}
+                config.FLEET_ADOPTION_CACHE = {"data": None, "timestamp": 0.0, "db_file": None}
 
                 return {
                     "ok": True,
