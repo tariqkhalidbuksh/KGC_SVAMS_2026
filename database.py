@@ -15,6 +15,22 @@ from psycopg2.pool import ThreadedConnectionPool
 import config
 
 # PostgreSQL Connection Configuration
+# Auto-load local .env file if present (useful for server deployments)
+_env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
+if os.path.exists(_env_path):
+    try:
+        with open(_env_path, "r", encoding="utf-8") as _f:
+            for _line in _f:
+                _line = _line.strip()
+                if _line and not _line.startswith("#") and "=" in _line:
+                    _k, _v = _line.split("=", 1)
+                    _k = _k.strip()
+                    _v = _v.strip().strip('"').strip("'")
+                    if _k not in os.environ:
+                        os.environ[_k] = _v
+    except Exception:
+        pass
+
 PG_HOST = os.environ.get("PG_HOST", "127.0.0.1")
 PG_PORT = int(os.environ.get("PG_PORT", "5432"))
 PG_DBNAME = os.environ.get("PG_DBNAME", "kgc_vams")
