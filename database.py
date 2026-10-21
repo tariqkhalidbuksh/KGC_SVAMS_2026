@@ -43,7 +43,7 @@ def ensure_pg_database_exists():
     except Exception:
         pass
 
-def get_pg_pool() -> ThreadedConnectionPool:
+def get_pg_pool() -> ThreadedConnectionPool | None:
     global _PG_POOL
     if _PG_POOL is None:
         with _POOL_LOCK:
@@ -59,19 +59,24 @@ def get_pg_pool() -> ThreadedConnectionPool:
                         password=PG_PASSWORD
                     )
                 except psycopg2.OperationalError as op_err:
-                    if "does not exist" in str(op_err).lower():
+                    err_str = str(op_err).lower()
+                    if "does not exist" in err_str:
                         ensure_pg_database_exists()
-                        _PG_POOL = ThreadedConnectionPool(
-                            minconn=2,
-                            maxconn=25,
-                            host=PG_HOST,
-                            port=PG_PORT,
-                            dbname=PG_DBNAME,
-                            user=PG_USER,
-                            password=PG_PASSWORD
-                        )
+                        try:
+                            _PG_POOL = ThreadedConnectionPool(
+                                minconn=2,
+                                maxconn=25,
+                                host=PG_HOST,
+                                port=PG_PORT,
+                                dbname=PG_DBNAME,
+                                user=PG_USER,
+                                password=PG_PASSWORD
+                            )
+                        except Exception:
+                            return None
                     else:
-                        raise
+                        # Cannot connect to PostgreSQL server (e.g. connection refused)
+                        return None
     return _PG_POOL
 
 class CaseInsensitiveRow(dict):
@@ -356,35 +361,47 @@ class PostgresConnectionWrapper:
             self.commit()
         return False
 
+def _connect_sqlite(db_file: str):
+    """Initializes a case-insensitive SQLite connection matching the PostgreSQL adapter interface."""
+    import sqlite3
+    conn = sqlite3.connect(db_file, check_same_thread=False, timeout=15.0)
+    class SqliteColDesc:
+        def __init__(self, name):
+            self.name = name
+    def sqlite_case_insensitive_factory(cursor, row):
+        desc = [SqliteColDesc(col[0]) for col in cursor.description]
+        return CaseInsensitiveRow(row, desc)
+    conn.row_factory = sqlite_case_insensitive_factory
+    return conn
+
 def get_db_connection():
     """
     Returns an active database connection.
-    Connects to high-performance PostgreSQL (kgc_vams) via Connection Pool.
-    If unit tests monkeypatch app_module.DB_FILE to a temporary SQLite db,
-    transparently falls back to SQLite so isolated tests run seamlessly.
+    Connects to high-performance PostgreSQL (kgc_vams) via Connection Pool if available.
+    If PostgreSQL is unreachable, offline, not installed, or connection refused,
+    transparently falls back to SQLite (gate_access.db) with 0 crash and 0 downtime.
     """
     import sys
     app_module = sys.modules.get('app')
-    custom_db = getattr(app_module, 'DB_FILE', getattr(config, 'DB_FILE', None))
+    custom_db = getattr(app_module, 'DB_FILE', getattr(config, 'DB_FILE', 'gate_access.db'))
 
     # If test specifies an explicit non-default sqlite test database path (e.g. pytest tmp_path)
     if custom_db and custom_db != "gate_access.db" and (".db" in custom_db or "test" in custom_db):
-        import sqlite3
-        conn = sqlite3.connect(custom_db, check_same_thread=False, timeout=5.0)
-        class SqliteColDesc:
-            def __init__(self, name):
-                self.name = name
-        def sqlite_case_insensitive_factory(cursor, row):
-            desc = [SqliteColDesc(col[0]) for col in cursor.description]
-            return CaseInsensitiveRow(row, desc)
-        conn.row_factory = sqlite_case_insensitive_factory
-        return conn
+        return _connect_sqlite(custom_db)
 
-    # Enterprise PostgreSQL Connection
-    pool = get_pg_pool()
-    raw_conn = pool.getconn()
-    raw_conn.autocommit = False
-    return PostgresConnectionWrapper(raw_conn, pool=pool)
+    # Attempt PostgreSQL Connection
+    if getattr(config, 'USE_POSTGRES', True):
+        try:
+            pool = get_pg_pool()
+            if pool is not None:
+                raw_conn = pool.getconn()
+                raw_conn.autocommit = False
+                return PostgresConnectionWrapper(raw_conn, pool=pool)
+        except Exception:
+            pass
+
+    # Seamless SQLite Fallback
+    return _connect_sqlite(custom_db or "gate_access.db")
 
 def init_db():
     """

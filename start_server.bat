@@ -44,6 +44,7 @@ if %ERRORLEVEL% neq 0 (
 
 REM 3. Verify and Auto-Start PostgreSQL Engine
 echo [INFO] Checking PostgreSQL Database Service...
+set "DB_ENGINE=SQLite Engine (gate_access.db - Standalone Mode)"
 "%PYTHON_EXE%" -c "import socket; s = socket.socket(); s.settimeout(1.5); s.connect(('127.0.0.1', 5432)); s.close()" >nul 2>nul
 if %ERRORLEVEL% neq 0 (
     echo [INFO] Starting local PostgreSQL Database Engine...
@@ -51,8 +52,15 @@ if %ERRORLEVEL% neq 0 (
         "C:\PostgreSQL\pgsql\bin\pg_ctl.exe" -D "C:\PostgreSQL\data" -l "C:\PostgreSQL\data\server.log" start >nul 2>nul
     ) else (
         net start postgresql-x64-16 >nul 2>nul
+        if %ERRORLEVEL% neq 0 net start postgresql-x64-15 >nul 2>nul
+        if %ERRORLEVEL% neq 0 net start postgresql-x64-14 >nul 2>nul
+        if %ERRORLEVEL% neq 0 net start postgresql >nul 2>nul
     )
     ping 127.0.0.1 -n 3 >nul
+)
+"%PYTHON_EXE%" -c "import socket; s = socket.socket(); s.settimeout(1.5); s.connect(('127.0.0.1', 5432)); s.close()" >nul 2>nul
+if %ERRORLEVEL% equ 0 (
+    set "DB_ENGINE=Enterprise PostgreSQL 14.15 (kgc_vams @ 127.0.0.1:5432)"
 )
 
 REM 4. Display System Banner
@@ -62,7 +70,7 @@ echo   KARACHI GYMKHANA CLUB - RFID VEHICLE ACCESS SYSTEM (VAMS)
 echo ============================================================================
 echo   Directory         : %~dp0
 echo   Python Runtime    : %PYTHON_EXE%
-echo   Database Engine   : PostgreSQL (kgc_vams @ 127.0.0.1:5432)
+echo   Database Engine   : %DB_ENGINE%
 echo   Web Dashboard     : http://localhost:8000/dashboard
 echo   Kiosk Display     : http://localhost:8000/kiosk
 echo   Camera Audit      : http://localhost:8000/?tab=camera_audit

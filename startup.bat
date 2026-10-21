@@ -63,7 +63,8 @@ if %ERRORLEVEL% neq 0 (
 )
 
 REM 3. Check / Start PostgreSQL Service
-echo [3/4] Verifying PostgreSQL Database Service (Port 5432)...
+echo [3/4] Checking Database Connectivity (Port 5432)...
+set "DB_ENGINE_DISPLAY=SQLite Engine (gate_access.db - Standalone Mode)"
 "%PYTHON_EXE%" -c "import socket; s = socket.socket(); s.settimeout(1.5); s.connect(('127.0.0.1', 5432)); s.close()" >nul 2>nul
 if %ERRORLEVEL% neq 0 (
     echo [INFO] PostgreSQL not responding on 127.0.0.1:5432. Attempting auto-start...
@@ -71,17 +72,18 @@ if %ERRORLEVEL% neq 0 (
         "C:\PostgreSQL\pgsql\bin\pg_ctl.exe" -D "C:\PostgreSQL\data" -l "C:\PostgreSQL\data\server.log" start >nul 2>nul
     ) else (
         net start postgresql-x64-16 >nul 2>nul
-        if %ERRORLEVEL% neq 0 (
-            net start postgresql-x64-15 >nul 2>nul
-        )
-        if %ERRORLEVEL% neq 0 (
-            net start postgresql-x64-14 >nul 2>nul
-        )
-        if %ERRORLEVEL% neq 0 (
-            net start postgresql >nul 2>nul
-        )
+        if %ERRORLEVEL% neq 0 net start postgresql-x64-15 >nul 2>nul
+        if %ERRORLEVEL% neq 0 net start postgresql-x64-14 >nul 2>nul
+        if %ERRORLEVEL% neq 0 net start postgresql >nul 2>nul
     )
     ping 127.0.0.1 -n 3 >nul
+)
+"%PYTHON_EXE%" -c "import socket; s = socket.socket(); s.settimeout(1.5); s.connect(('127.0.0.1', 5432)); s.close()" >nul 2>nul
+if %ERRORLEVEL% equ 0 (
+    set "DB_ENGINE_DISPLAY=Enterprise PostgreSQL 14.15 (kgc_vams @ 127.0.0.1:5432)"
+    echo [SUCCESS] PostgreSQL Engine Connected on 127.0.0.1:5432.
+) else (
+    echo [INFO] PostgreSQL not active on this host. Auto-fallback active: SQLite (gate_access.db).
 )
 
 REM 4. Initialize Database Schema & Verify Default Admin User
@@ -92,6 +94,7 @@ echo.
 echo ============================================================================
 echo   KARACHI GYMKHANA CLUB - SYSTEM READY
 echo ============================================================================
+echo   Database Engine   : %DB_ENGINE_DISPLAY%
 echo   Web Portal URL    : http://localhost:8000
 echo   Admin Username    : admin
 echo   Admin Password    : admin123
