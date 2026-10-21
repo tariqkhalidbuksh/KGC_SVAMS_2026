@@ -1,6 +1,5 @@
 import os
 import re
-import sqlite3
 import config
 from database import get_db_connection
 

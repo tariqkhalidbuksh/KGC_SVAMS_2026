@@ -43,8 +43,8 @@
   |             +------------------------+------------------------+            |
   |             v                                                 v            |
   |  +--------------------+                             +-------------------+  |
-  |  | SQLite ACID Store  |                             | Zero-Lag Memory   |  |
-  |  | (10,798+ Members,  |                             | Cache (L1/L2)     |  |
+  |  | PostgreSQL DB      |                             | Zero-Lag Memory   |  |
+  |  | (10,800+ Members,  |                             | Cache (L1/L2)     |  |
   |  |  Audit Logs)       |                             +---------+---------+  |
   |  +--------------------+                                       |            |
   +---------------------------------------------------------------|------------+
@@ -95,9 +95,8 @@
 ```
 RFID_VAMS/
 ├── app.py                      # FastAPI application entry point & lifespan manager
-├── config.py                   # Centralized configuration, IPs, locks, and cache states
-├── database.py                 # SQLite schema initialization, indexes, and connection pool
-├── gate_access.db              # SQLite ACID database (10,790+ member records & logs)
+├── database.py                 # PostgreSQL 14.15 connection pooling, schema init, indexes
+├── startup.bat                 # One-click production launcher & dependency installer
 ├── etag tariq.xls              # Master membership Excel dataset
 ├── yolov8n.pt                  # YOLOv8 nano model for vehicle visual verification
 ├── requirements.txt            # Python dependencies

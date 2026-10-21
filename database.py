@@ -1,8 +1,8 @@
 """
 Database Connection & Management Module for Karachi Gymkhana RFID VAMS
-Supports Enterprise PostgreSQL Engine with High-Performance Threaded Connection Pooling,
-Dynamic Query Translation (SQLite-to-PostgreSQL), Case-Insensitive DictRow mapping,
-and Auto-Fallback.
+Enterprise PostgreSQL 14.15 Engine with High-Performance Threaded Connection Pooling,
+Dynamic Parameter Adaptation, Case-Insensitive DictRow mapping, and High-Speed RAM Caching.
+SQLite is 100% eliminated from this application.
 """
 
 import os
@@ -21,10 +21,8 @@ PG_DBNAME = os.environ.get("PG_DBNAME", "kgc_vams")
 PG_USER = os.environ.get("PG_USER", "postgres")
 PG_PASSWORD = os.environ.get("PG_PASSWORD", "")
 
-_PG_POOL: ThreadedConnectionPool | None = None
+_POOLS: dict[str, ThreadedConnectionPool] = {}
 _POOL_LOCK = threading.Lock()
-_PG_AVAILABLE = True
-_PG_NEXT_RETRY = 0.0
 
 # Ultra-fast in-memory settings cache to eliminate DB lock contention across reader/camera loops
 _SETTINGS_CACHE: dict[str, tuple[str, float]] = {}
@@ -32,19 +30,20 @@ _SETTINGS_LOCK = threading.Lock()
 SETTINGS_CACHE_TTL = 15.0  # 15 seconds cache
 
 def is_pg_service_responsive() -> bool:
-    """Fast non-blocking 50ms socket probe to verify PostgreSQL is listening before libpq blocks."""
+    """Fast non-blocking 50ms socket probe to verify PostgreSQL is listening."""
     import socket
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.settimeout(0.05)
+        s.settimeout(0.1)
         res = s.connect_ex((PG_HOST, PG_PORT))
         s.close()
         return res == 0
     except Exception:
         return False
 
-def ensure_pg_database_exists():
+def ensure_pg_database_exists(dbname: str = None):
     """Ensures the target PostgreSQL database exists; creates it via 'postgres' maintenance DB if missing."""
+    target_db = dbname or PG_DBNAME
     try:
         conn = psycopg2.connect(
             host=PG_HOST,
@@ -52,90 +51,86 @@ def ensure_pg_database_exists():
             dbname="postgres",
             user=PG_USER,
             password=PG_PASSWORD,
-            connect_timeout=2
+            connect_timeout=3
         )
         conn.autocommit = True
         cur = conn.cursor()
-        cur.execute("SELECT 1 FROM pg_database WHERE datname = %s", (PG_DBNAME,))
+        cur.execute("SELECT 1 FROM pg_database WHERE datname = %s", (target_db,))
         if not cur.fetchone():
-            cur.execute(f'CREATE DATABASE "{PG_DBNAME}"')
+            cur.execute(f'CREATE DATABASE "{target_db}"')
         cur.close()
         conn.close()
     except Exception:
         pass
 
-def get_pg_pool() -> ThreadedConnectionPool | None:
-    global _PG_POOL, _PG_AVAILABLE, _PG_NEXT_RETRY
-    if _PG_POOL is not None:
-        return _PG_POOL
+def get_pg_pool(dbname: str = None) -> ThreadedConnectionPool:
+    global _POOLS
+    target_db = dbname or os.environ.get("PG_DBNAME", PG_DBNAME)
 
-    import time
-    now = time.time()
-    if not _PG_AVAILABLE and now < _PG_NEXT_RETRY:
-        return None
+    if target_db in _POOLS:
+        return _POOLS[target_db]
 
     with _POOL_LOCK:
-        if _PG_POOL is not None:
-            return _PG_POOL
-        if not _PG_AVAILABLE and now < _PG_NEXT_RETRY:
-            return None
+        if target_db in _POOLS:
+            return _POOLS[target_db]
 
-        # Fast 50ms socket check to avoid 30-second libpq hang when port 5432 is closed
         if not is_pg_service_responsive():
-            _PG_AVAILABLE = False
-            _PG_NEXT_RETRY = now + 30.0
-            return None
+            raise RuntimeError(
+                f"PostgreSQL service is not responding on {PG_HOST}:{PG_PORT}. "
+                f"Please ensure PostgreSQL server is running and listening on port {PG_PORT}."
+            )
 
         try:
-            _PG_POOL = ThreadedConnectionPool(
-                minconn=2,
-                maxconn=25,
+            pool = ThreadedConnectionPool(
+                minconn=4,
+                maxconn=100,
                 host=PG_HOST,
                 port=PG_PORT,
-                dbname=PG_DBNAME,
+                dbname=target_db,
                 user=PG_USER,
                 password=PG_PASSWORD,
-                connect_timeout=2
+                connect_timeout=3
             )
-            _PG_AVAILABLE = True
+            _POOLS[target_db] = pool
+            return pool
         except psycopg2.OperationalError as op_err:
             err_str = str(op_err).lower()
             if "does not exist" in err_str:
-                ensure_pg_database_exists()
-                try:
-                    _PG_POOL = ThreadedConnectionPool(
-                        minconn=2,
-                        maxconn=25,
-                        host=PG_HOST,
-                        port=PG_PORT,
-                        dbname=PG_DBNAME,
-                        user=PG_USER,
-                        password=PG_PASSWORD,
-                        connect_timeout=2
-                    )
-                    _PG_AVAILABLE = True
-                except Exception:
-                    _PG_AVAILABLE = False
-                    _PG_NEXT_RETRY = now + 30.0
-                    return None
-            else:
-                _PG_AVAILABLE = False
-                _PG_NEXT_RETRY = now + 30.0
-                return None
-        except Exception:
-            _PG_AVAILABLE = False
-            _PG_NEXT_RETRY = now + 30.0
-            return None
-
-    return _PG_POOL
+                ensure_pg_database_exists(target_db)
+                pool = ThreadedConnectionPool(
+                    minconn=4,
+                    maxconn=100,
+                    host=PG_HOST,
+                    port=PG_PORT,
+                    dbname=target_db,
+                    user=PG_USER,
+                    password=PG_PASSWORD,
+                    connect_timeout=3
+                )
+                _POOLS[target_db] = pool
+                return pool
+            raise RuntimeError(f"PostgreSQL connection failed to {PG_HOST}:{PG_PORT}/{target_db}: {op_err}")
+        except Exception as e:
+            raise RuntimeError(f"PostgreSQL connection failed to {PG_HOST}:{PG_PORT}/{target_db}: {e}")
 
 class CaseInsensitiveRow(dict):
     """
-    Emulates sqlite3.Row behavior on PostgreSQL:
+    Case-Insensitive DictRow for PostgreSQL queries:
     Supports column access by case-insensitive name (row['Mem_id'], row['mem_id']),
     positional integer index (row[0]), and dict methods (.get()).
     """
     __slots__ = ('_items',)
+
+    _CANONICAL_KEYS = {
+        'mem_id': 'Mem_id',
+        'name': 'Name',
+        'car_number': 'Car_number',
+        'make_model': 'Make_Model',
+        'e_tag_id': 'E_tag_id',
+        'status': 'Status',
+        'profile_pic': 'Profile_pic',
+        'current_location': 'Current_Location',
+    }
 
     def __init__(self, data=None, description=None):
         super().__init__()
@@ -148,57 +143,66 @@ class CaseInsensitiveRow(dict):
                 low_name = raw_name.lower()
                 self[low_name] = val
                 self[raw_name] = val
-                # Populate common legacy camel/title casing used across existing endpoints
-                self[low_name.title()] = val
-                if low_name == 'e_tag_id':
-                    self['E_tag_id'] = val
-                    self['e_tag_id'] = val
-                elif low_name == 'mem_id':
-                    self['Mem_id'] = val
-                    self['mem_id'] = val
-                elif low_name == 'car_number':
-                    self['Car_number'] = val
-                    self['car_number'] = val
-                elif low_name == 'make_model':
-                    self['Make_Model'] = val
-                    self['make_model'] = val
-                elif low_name == 'profile_pic':
-                    self['Profile_pic'] = val
-                    self['profile_pic'] = val
-                elif low_name == 'current_location':
-                    self['Current_Location'] = val
-                    self['current_location'] = val
-                elif low_name == 'name':
-                    self['Name'] = val
-                    self['name'] = val
-                elif low_name == 'status':
-                    self['Status'] = val
-                    self['status'] = val
+                canonical = self._CANONICAL_KEYS.get(low_name)
+                if canonical:
+                    self[canonical] = val
 
     def __getitem__(self, key):
         if isinstance(key, int):
             return self._items[key]
-        return super().__getitem__(str(key).lower())
+        if isinstance(key, str):
+            val = super().get(key.lower())
+            if val is not None or key.lower() in self:
+                return val
+            return super().__getitem__(key)
+        return super().__getitem__(key)
 
     def get(self, key, default=None):
-        return super().get(str(key).lower(), default)
+        if isinstance(key, int):
+            if 0 <= key < len(self._items):
+                return self._items[key]
+            return default
+        if isinstance(key, str):
+            val = super().get(key.lower())
+            if val is not None or key.lower() in self:
+                return val
+            return super().get(key, default)
+        return super().get(key, default)
 
     def keys(self):
         return super().keys()
 
     def values(self):
-        return tuple(self._items)
+        return self._items
 
     def items(self):
         return super().items()
 
 class PostgresCursorWrapper:
-    """Wraps psycopg2 cursor to mirror sqlite3 cursor semantics (lastrowid, fetchone, etc.)."""
-    def __init__(self, cursor, lastrowid=None):
-        self._cursor = cursor
+    """Wraps psycopg2 cursor with row_factory, lastrowid, fetchone, fetchall, and execute semantics."""
+    def __init__(self, raw_cursor, lastrowid=None, conn_wrapper=None):
+        self._cursor = raw_cursor
         self.lastrowid = lastrowid
-        self.rowcount = cursor.rowcount if cursor else 0
-        self.description = cursor.description if cursor else None
+        self._conn_wrapper = conn_wrapper
+        self.rowcount = raw_cursor.rowcount if raw_cursor else 0
+        self.description = raw_cursor.description if raw_cursor else None
+
+    def execute(self, sql: str, parameters=None):
+        if self._conn_wrapper:
+            res = self._conn_wrapper.execute(sql, parameters)
+            self._cursor = res._cursor
+            self.lastrowid = res.lastrowid
+            self.rowcount = res.rowcount
+            self.description = res.description
+            return self
+        pg_sql, _ = PostgresConnectionWrapper._translate_query(sql)
+        if parameters:
+            self._cursor.execute(pg_sql, parameters)
+        else:
+            self._cursor.execute(pg_sql)
+        self.rowcount = self._cursor.rowcount
+        self.description = self._cursor.description
+        return self
 
     def fetchone(self):
         if not self._cursor or not self._cursor.description:
@@ -232,9 +236,9 @@ class PostgresCursorWrapper:
 
 class PostgresConnectionWrapper:
     """
-    Transparent Connection Adapter mapping sqlite3 calls directly into PostgreSQL.
-    Provides automatic query translation (? -> %s, date/strftime/now translation),
-    transaction management, and pooling.
+    High-Performance Connection Adapter for PostgreSQL.
+    Provides automatic parameter translation (? -> %s, datetime/strftime translation),
+    transaction management, and connection pool integration.
     """
     def __init__(self, raw_conn, pool=None):
         self._conn = raw_conn
@@ -243,19 +247,15 @@ class PostgresConnectionWrapper:
 
     @staticmethod
     def _translate_query(sql: str) -> tuple[str, bool]:
-        """Translates SQLite query syntax into PostgreSQL dialect."""
+        """Translates query parameters (? -> %s) and dialect expressions into PostgreSQL."""
         q = sql.strip()
         needs_returning = False
 
-        # 1. Skip sqlite_sequence table resets
-        if "sqlite_sequence" in q.lower():
+        # 1. Skip sqlite_sequence and PRAGMA table resets
+        if "sqlite_sequence" in q.lower() or q.lower().startswith("pragma"):
             return "SELECT 1", False
 
-        # 2. Skip SQLite PRAGMA statements
-        if q.lower().startswith("pragma"):
-            return "SELECT 1", False
-
-        # 3. Translate INSERT OR REPLACE INTO and INSERT OR IGNORE INTO
+        # 2. Translate INSERT OR REPLACE INTO settings
         if re.search(r"INSERT\s+OR\s+REPLACE\s+INTO\s+settings", q, re.IGNORECASE):
             q = re.sub(
                 r"INSERT\s+OR\s+REPLACE\s+INTO\s+settings\s*\(([^)]+)\)\s*VALUES\s*\(([^)]+)\)",
@@ -264,91 +264,91 @@ class PostgresConnectionWrapper:
                 flags=re.IGNORECASE
             )
         elif re.search(r"INSERT\s+OR\s+REPLACE\s+INTO\s+unregistered_tags", q, re.IGNORECASE):
-            m = re.search(r"INSERT\s+OR\s+REPLACE\s+INTO\s+unregistered_tags\s*\(([^)]+)\)\s*VALUES\s*\(([^)]+)\)", q, re.IGNORECASE)
-            if m:
-                cols = [c.strip() for c in m.group(1).split(',')]
-                update_set = ", ".join([f"{c} = EXCLUDED.{c}" for c in cols if c.lower() not in ('id', 'tag')])
-                q = f"INSERT INTO unregistered_tags ({m.group(1)}) VALUES ({m.group(2)}) ON CONFLICT (tag) DO UPDATE SET {update_set}"
+            q = re.sub(
+                r"INSERT\s+OR\s+REPLACE\s+INTO\s+unregistered_tags\s*\(([^)]+)\)\s*VALUES\s*\(([^)]+)\)",
+                r"INSERT INTO unregistered_tags (\1) VALUES (\2) ON CONFLICT (tag) DO UPDATE SET last_seen = EXCLUDED.last_seen, read_count = unregistered_tags.read_count + 1",
+                q,
+                flags=re.IGNORECASE
+            )
         elif re.search(r"INSERT\s+OR\s+REPLACE\s+INTO\s+members", q, re.IGNORECASE):
-            m = re.search(r"INSERT\s+OR\s+REPLACE\s+INTO\s+members\s*\(([^)]+)\)\s*VALUES\s*\(([^)]+)\)", q, re.IGNORECASE)
-            if m:
-                cols = [c.strip() for c in m.group(1).split(',')]
-                update_set = ", ".join([f"{c} = EXCLUDED.{c}" for c in cols if c.lower() not in ('id', 'e_tag_id')])
-                q = f"INSERT INTO members ({m.group(1)}) VALUES ({m.group(2)}) ON CONFLICT (e_tag_id) DO UPDATE SET {update_set}"
-        elif re.search(r"INSERT\s+OR\s+IGNORE\s+INTO", q, re.IGNORECASE):
-            q = re.sub(r"INSERT\s+OR\s+IGNORE\s+INTO", "INSERT INTO", q, flags=re.IGNORECASE).rstrip(";") + " ON CONFLICT DO NOTHING"
+            q = re.sub(
+                r"INSERT\s+OR\s+REPLACE\s+INTO\s+members\s*\(([^)]+)\)\s*VALUES\s*\(([^)]+)\)",
+                r"INSERT INTO members (\1) VALUES (\2) ON CONFLICT (e_tag_id) DO UPDATE SET mem_id = EXCLUDED.mem_id, name = EXCLUDED.name, car_number = EXCLUDED.car_number, make_model = EXCLUDED.make_model, status = EXCLUDED.status, profile_pic = EXCLUDED.profile_pic, current_location = EXCLUDED.current_location",
+                q,
+                flags=re.IGNORECASE
+            )
+        elif re.search(r"INSERT\s+OR\s+REPLACE\s+INTO\s+users", q, re.IGNORECASE):
+            q = re.sub(
+                r"INSERT\s+OR\s+REPLACE\s+INTO\s+users\s*\(([^)]+)\)\s*VALUES\s*\(([^)]+)\)",
+                r"INSERT INTO users (\1) VALUES (\2) ON CONFLICT (username) DO UPDATE SET password_hash = EXCLUDED.password_hash, full_name = EXCLUDED.full_name, role = EXCLUDED.role",
+                q,
+                flags=re.IGNORECASE
+            )
+        elif re.search(r"INSERT\s+OR\s+IGNORE\s+INTO\s+([a-zA-Z0-9_]+)", q, re.IGNORECASE):
+            q = re.sub(
+                r"INSERT\s+OR\s+IGNORE\s+INTO\s+([a-zA-Z0-9_]+)",
+                r"INSERT INTO \1",
+                q,
+                flags=re.IGNORECASE
+            ) + " ON CONFLICT DO NOTHING"
 
-        # 4. Translate datetime/date with interval expressions
-        q = re.sub(
-            r"datetime\('now'(?:,\s*'localtime')?,\s*'-(\d+)\s*([a-zA-Z]+)'\)",
-            r"(CURRENT_TIMESTAMP - INTERVAL '\1 \2')",
-            q,
-            flags=re.IGNORECASE
-        )
-        q = re.sub(
-            r"datetime\('now'(?:,\s*'localtime')?,\s*'\+(\d+)\s*([a-zA-Z]+)'\)",
-            r"(CURRENT_TIMESTAMP + INTERVAL '\1 \2')",
-            q,
-            flags=re.IGNORECASE
-        )
-        q = re.sub(
-            r"date\('now'(?:,\s*'localtime')?,\s*'-(\d+)\s*([a-zA-Z]+)'\)",
-            r"(CURRENT_DATE - INTERVAL '\1 \2')::date",
-            q,
-            flags=re.IGNORECASE
-        )
-        q = re.sub(
-            r"date\('now'(?:,\s*'localtime')?,\s*'\+(\d+)\s*([a-zA-Z]+)'\)",
-            r"(CURRENT_DATE + INTERVAL '\1 \2')::date",
-            q,
-            flags=re.IGNORECASE
-        )
-        # 5. Translate simple date('now') and datetime('now')
-        q = re.sub(r"date\('now'(?:,\s*'localtime')?\)", "CURRENT_DATE", q, flags=re.IGNORECASE)
-        q = re.sub(r"datetime\('now'(?:,\s*'localtime')?\)", "CURRENT_TIMESTAMP", q, flags=re.IGNORECASE)
-        # 5b. Translate date(timestamp) to timestamp::date
-        q = re.sub(r"\bdate\(([a-zA-Z0-9_\.]+)\)", r"(\1::date)", q, flags=re.IGNORECASE)
-        # 5c. Translate strftime('%H', timestamp) to TO_CHAR(timestamp, 'HH24')
-        q = re.sub(r"strftime\('%H',\s*([a-zA-Z0-9_\.]+)\)", r"TO_CHAR(\1, 'HH24')", q, flags=re.IGNORECASE)
-        # 5d. Translate strftime('%Y-%m-%d', timestamp) to TO_CHAR(timestamp, 'YYYY-MM-DD')
-        q = re.sub(r"strftime\('%Y-%m-%d',\s*([a-zA-Z0-9_\.]+)\)", r"TO_CHAR(\1, 'YYYY-MM-DD')", q, flags=re.IGNORECASE)
+        # 3. Translate SQLite date/time functions
+        def _replace_date(m):
+            args_str = m.group(1) or ""
+            interval_match = re.search(r"'-(\d+)\s+([a-zA-Z]+)'", args_str)
+            if interval_match:
+                num, unit = interval_match.groups()
+                return f"(CURRENT_DATE - INTERVAL '{num} {unit}')"
+            return "CURRENT_DATE"
 
-        # 6. Translate VACUUM
-        if q.upper() == "VACUUM":
-            return "VACUUM", False
+        def _replace_datetime(m):
+            args_str = m.group(1) or ""
+            interval_match = re.search(r"'-(\d+)\s+([a-zA-Z]+)'", args_str)
+            if interval_match:
+                num, unit = interval_match.groups()
+                return f"(CURRENT_TIMESTAMP - INTERVAL '{num} {unit}')"
+            return "CURRENT_TIMESTAMP"
 
-        # 7. Convert INSERT queries to RETURNING id if table has auto-increment primary key
-        if q.strip().upper().startswith("INSERT INTO") and "RETURNING" not in q.upper():
-            tbl_match = re.search(r"INSERT\s+INTO\s+([a-zA-Z0-9_]+)", q, re.IGNORECASE)
-            if tbl_match:
-                tbl_name = tbl_match.group(1).lower()
-                if tbl_name in ("daily_logs", "raw_reader_logs", "camera_audit_logs", "unregistered_tags", "members", "users"):
-                    q = q.rstrip(";") + " RETURNING id"
-                    needs_returning = True
+        q = re.sub(r"date\(\s*'now'\s*([^)]*)\)", _replace_date, q, flags=re.IGNORECASE)
+        q = re.sub(r"datetime\(\s*'now'\s*([^)]*)\)", _replace_datetime, q, flags=re.IGNORECASE)
 
-        # 8. Convert ? parameter placeholders into %s (ignoring literal question marks in strings)
+        # 3b. Translate timestamp LIKE -> CAST(timestamp AS TEXT) LIKE
+        q = re.sub(r"([a-zA-Z0-9_.]*timestamp)\s+LIKE", r"CAST(\1 AS TEXT) LIKE", q, flags=re.IGNORECASE)
+
+        # 3c. Translate string concatenation used as timestamp: (? || ' 10:00:00') -> CAST(? || ' 10:00:00' AS TIMESTAMP)
+        q = re.sub(r"(\?\s*\|\|\s*'[^']*')", r"CAST(\1 AS TIMESTAMP)", q)
+
+        # 4. If query is INSERT on table with auto-id, append RETURNING id
+        is_insert = bool(re.match(r"^\s*INSERT\s+INTO\s+(daily_logs|raw_reader_logs|camera_audit_logs|members|users)", q, re.IGNORECASE))
+        if is_insert and "RETURNING" not in q.upper():
+            q = q.rstrip(";") + " RETURNING id"
+            needs_returning = True
+
+        # 5. Convert ? parameter placeholders to %s and escape literal % to %% for psycopg2
         parts = []
         in_str = False
-        quote_char = None
-        for char in q:
+        str_char = ''
+        i = 0
+        while i < len(q):
+            char = q[i]
             if char in ("'", '"'):
                 if not in_str:
                     in_str = True
-                    quote_char = char
-                elif quote_char == char:
+                    str_char = char
+                elif char == str_char:
                     in_str = False
-                    quote_char = None
-                if char == '%':
-                    parts.append('%%')
-                else:
-                    parts.append(char)
+                parts.append(char)
             elif char == '%':
-                # Literal % outside of string
-                parts.append('%%')
+                if i + 1 < len(q) and q[i + 1] == '%':
+                    parts.append('%%')
+                    i += 1
+                else:
+                    parts.append('%%')
             elif char == '?' and not in_str:
                 parts.append('%s')
             else:
                 parts.append(char)
+            i += 1
 
         return "".join(parts), needs_returning
 
@@ -401,6 +401,15 @@ class PostgresConnectionWrapper:
             self._conn.close()
             self._conn = None
 
+    def __del__(self):
+        try:
+            self.close()
+        except Exception:
+            pass
+
+    def cursor(self):
+        return PostgresCursorWrapper(self._conn.cursor(), conn_wrapper=self)
+
     def __enter__(self):
         return self
 
@@ -411,85 +420,56 @@ class PostgresConnectionWrapper:
             self.commit()
         return False
 
-def _connect_sqlite(db_file: str):
-    """Initializes a case-insensitive SQLite connection matching the PostgreSQL adapter interface with high concurrency WAL mode."""
-    import sqlite3
-    conn = sqlite3.connect(db_file, check_same_thread=False, timeout=15.0)
-    try:
-        conn.execute("PRAGMA journal_mode=WAL;")
-        conn.execute("PRAGMA synchronous=NORMAL;")
-    except Exception:
-        pass
-    class SqliteColDesc:
-        def __init__(self, name):
-            self.name = name
-    def sqlite_case_insensitive_factory(cursor, row):
-        desc = [SqliteColDesc(col[0]) for col in cursor.description]
-        return CaseInsensitiveRow(row, desc)
-    conn.row_factory = sqlite_case_insensitive_factory
-    return conn
-
-def get_db_connection():
+def get_db_connection(dbname: str = None):
     """
-    Returns an active database connection.
-    Connects to high-performance PostgreSQL (kgc_vams) via Connection Pool if available.
-    If PostgreSQL is unreachable, offline, not installed, or connection refused,
-    transparently falls back to SQLite (gate_access.db) with 0 crash and 0 downtime.
+    Returns an active database connection exclusively from PostgreSQL ThreadedConnectionPool.
+    SQLite is completely eliminated from the architecture.
     """
     import sys
     app_module = sys.modules.get('app')
-    custom_db = getattr(app_module, 'DB_FILE', getattr(config, 'DB_FILE', 'gate_access.db'))
+    custom_db = getattr(app_module, 'DB_FILE', getattr(config, 'DB_FILE', ''))
 
-    # If test specifies an explicit non-default sqlite test database path (e.g. pytest tmp_path)
-    if custom_db and custom_db != "gate_access.db" and (".db" in custom_db or "test" in custom_db):
-        return _connect_sqlite(custom_db)
+    if not dbname:
+        if custom_db and ("test" in str(custom_db).lower() or "qa" in str(custom_db).lower()):
+            target_db = "kgc_vams_test"
+        else:
+            target_db = os.environ.get("PG_DBNAME", PG_DBNAME)
+    else:
+        target_db = dbname
 
-    # Attempt PostgreSQL Connection
-    if getattr(config, 'USE_POSTGRES', True):
-        try:
-            pool = get_pg_pool()
-            if pool is not None:
-                raw_conn = pool.getconn()
-                raw_conn.autocommit = False
-                return PostgresConnectionWrapper(raw_conn, pool=pool)
-        except Exception:
-            pass
+    pool = get_pg_pool(target_db)
+    raw_conn = pool.getconn()
+    raw_conn.autocommit = False
+    return PostgresConnectionWrapper(raw_conn, pool=pool)
 
-    # Seamless SQLite Fallback
-    return _connect_sqlite(custom_db or "gate_access.db")
-
-def init_db():
+def init_db(dbname: str = None):
     """
     Initializes PostgreSQL tables, schema constraints, indices, and compatibility functions.
+    Pure PostgreSQL 14.15 enterprise architecture.
     """
     with config.DB_LOCK:
-        conn = get_db_connection()
+        conn = get_db_connection(dbname=dbname)
         try:
             with conn:
-                is_pg = getattr(conn, "_conn", None) is not None
-                pk_id = "SERIAL PRIMARY KEY" if is_pg else "INTEGER PRIMARY KEY AUTOINCREMENT"
-                ts_type = "TIMESTAMP" if is_pg else "DATETIME"
-
-                if is_pg:
-                    # 1. Compatibility function: strftime
-                    conn.execute("""
-                    CREATE OR REPLACE FUNCTION strftime(fmt text, ts timestamp) RETURNS text AS $$
-                    BEGIN
-                        IF fmt = '%H' THEN
-                            RETURN to_char(ts, 'HH24');
-                        ELSIF fmt = '%Y-%m-%d' THEN
-                            RETURN to_char(ts, 'YYYY-MM-DD');
-                        ELSE
-                            RETURN to_char(ts, 'YYYY-MM-DD HH24:MI:SS');
-                        END IF;
-                    END;
-                    $$ LANGUAGE plpgsql IMMUTABLE;
-                    """)
+                # 1. Compatibility function: strftime
+                conn.execute("""
+                CREATE OR REPLACE FUNCTION strftime(fmt text, ts timestamp) RETURNS text AS $$
+                BEGIN
+                    IF fmt = '%H' THEN
+                        RETURN to_char(ts, 'HH24');
+                    ELSIF fmt = '%Y-%m-%d' THEN
+                        RETURN to_char(ts, 'YYYY-MM-DD');
+                    ELSE
+                        RETURN to_char(ts, 'YYYY-MM-DD HH24:MI:SS');
+                    END IF;
+                END;
+                $$ LANGUAGE plpgsql IMMUTABLE;
+                """)
 
                 # 2. Members Table
-                conn.execute(f"""
+                conn.execute("""
                 CREATE TABLE IF NOT EXISTS members (
-                    id {pk_id},
+                    id SERIAL PRIMARY KEY,
                     mem_id VARCHAR(50) NOT NULL,
                     name VARCHAR(255) NOT NULL,
                     car_number VARCHAR(100) NOT NULL,
@@ -498,7 +478,7 @@ def init_db():
                     status VARCHAR(50) DEFAULT 'Active',
                     profile_pic TEXT,
                     current_location VARCHAR(50) DEFAULT 'Outside',
-                    created_at {ts_type} DEFAULT CURRENT_TIMESTAMP
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )""")
                 conn.execute("CREATE INDEX IF NOT EXISTS idx_members_memid ON members(mem_id)")
                 conn.execute("CREATE INDEX IF NOT EXISTS idx_members_etag ON members(e_tag_id)")
@@ -529,20 +509,18 @@ def init_db():
                     'clubroad_entry_reader_name': 'Main Gate (Club Road) Entry Reader',
                     'clubroad_exit_reader_name': 'Main Gate (Club Road) Exit Reader',
                     'rfid_cooldown_seconds': '60',
+                    'bulk_exit_exceptions': '[]'
                 }
                 for key, val in default_settings.items():
-                    if is_pg:
-                        conn.execute("INSERT INTO settings (config_key, config_value) VALUES (?, ?) ON CONFLICT (config_key) DO NOTHING", (key, val))
-                    else:
-                        conn.execute("INSERT OR IGNORE INTO settings (config_key, config_value) VALUES (?, ?)", (key, val))
+                    conn.execute("INSERT INTO settings (config_key, config_value) VALUES (?, ?) ON CONFLICT (config_key) DO NOTHING", (key, val))
 
                 # 4. Unregistered Tags Table
-                conn.execute(f"""
+                conn.execute("""
                 CREATE TABLE IF NOT EXISTS unregistered_tags (
-                    id {pk_id},
+                    id SERIAL PRIMARY KEY,
                     tag VARCHAR(100) UNIQUE NOT NULL,
-                    first_seen {ts_type} DEFAULT CURRENT_TIMESTAMP,
-                    last_seen {ts_type} DEFAULT CURRENT_TIMESTAMP,
+                    first_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     direction VARCHAR(50) DEFAULT 'Unknown',
                     current_location VARCHAR(50) DEFAULT 'Outside',
                     read_count INTEGER DEFAULT 1,
@@ -553,10 +531,10 @@ def init_db():
                 conn.execute("CREATE INDEX IF NOT EXISTS idx_unreg_loc ON unregistered_tags(current_location)")
                 conn.execute("CREATE INDEX IF NOT EXISTS idx_unreg_tag_type ON unregistered_tags(tag_type)")
 
-                # 5. Daily Logs Table
-                conn.execute(f"""
+                # 5. Daily Activity Logs Table
+                conn.execute("""
                 CREATE TABLE IF NOT EXISTS daily_logs (
-                    id {pk_id},
+                    id SERIAL PRIMARY KEY,
                     mem_id VARCHAR(100),
                     name VARCHAR(255),
                     vehicle_number VARCHAR(100),
@@ -567,7 +545,7 @@ def init_db():
                     plate_image_path TEXT,
                     detected_plate VARCHAR(100),
                     scanned_tag VARCHAR(100),
-                    timestamp {ts_type} DEFAULT CURRENT_TIMESTAMP
+                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )""")
                 conn.execute("CREATE INDEX IF NOT EXISTS idx_logs_timestamp ON daily_logs(timestamp)")
                 conn.execute("CREATE INDEX IF NOT EXISTS idx_logs_tag ON daily_logs(scanned_tag)")
@@ -578,19 +556,19 @@ def init_db():
                 conn.execute("CREATE INDEX IF NOT EXISTS idx_logs_tag_ts ON daily_logs(scanned_tag, timestamp)")
 
                 # 6. Raw Reader Logs Table
-                conn.execute(f"""
+                conn.execute("""
                 CREATE TABLE IF NOT EXISTS raw_reader_logs (
-                    id {pk_id},
+                    id SERIAL PRIMARY KEY,
                     tag_scanned VARCHAR(100),
                     system_response TEXT,
                     direction VARCHAR(50) DEFAULT 'Unknown',
-                    timestamp {ts_type} DEFAULT CURRENT_TIMESTAMP
+                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )""")
 
                 # 7. Camera Audit Logs Table
-                conn.execute(f"""
+                conn.execute("""
                 CREATE TABLE IF NOT EXISTS camera_audit_logs (
-                    id {pk_id},
+                    id SERIAL PRIMARY KEY,
                     image_path TEXT,
                     plate_image_path TEXT,
                     detected_plate VARCHAR(100),
@@ -601,7 +579,7 @@ def init_db():
                     matched_name VARCHAR(255),
                     matched_make_model VARCHAR(255),
                     matched_profile_pic TEXT,
-                    timestamp {ts_type} DEFAULT CURRENT_TIMESTAMP,
+                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     date_str VARCHAR(50),
                     hour_str VARCHAR(50)
                 )""")

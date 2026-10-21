@@ -132,7 +132,10 @@ async def simulate_clear_logs():
                 conn.execute("DELETE FROM camera_audit_logs")
                 conn.execute("DELETE FROM unregistered_tags")
                 conn.execute("UPDATE members SET Current_Location = 'Outside'")
-                conn.execute("DELETE FROM sqlite_sequence WHERE name IN ('daily_logs', 'raw_reader_logs', 'camera_audit_logs', 'unregistered_tags')")
+                conn.execute("ALTER SEQUENCE IF EXISTS daily_logs_id_seq RESTART WITH 1")
+                conn.execute("ALTER SEQUENCE IF EXISTS raw_reader_logs_id_seq RESTART WITH 1")
+                conn.execute("ALTER SEQUENCE IF EXISTS camera_audit_logs_id_seq RESTART WITH 1")
+                conn.execute("ALTER SEQUENCE IF EXISTS unregistered_tags_id_seq RESTART WITH 1")
             with config.CACHE_LOCK:
                 config.LATEST_LOG_CACHE = None
                 config.MEMBERS_METRICS_CACHE = {"data": None, "timestamp": 0.0}

@@ -43,11 +43,11 @@ if %ERRORLEVEL% neq 0 (
 )
 
 REM 3. Verify and Auto-Start PostgreSQL Engine
-echo [INFO] Checking PostgreSQL Database Service...
-set "DB_ENGINE=SQLite Engine (gate_access.db - Standalone Mode)"
+echo [INFO] Checking PostgreSQL Database Service (127.0.0.1:5432)...
+set "DB_ENGINE=Enterprise PostgreSQL (kgc_vams @ 127.0.0.1:5432)"
 "%PYTHON_EXE%" -c "import socket; s = socket.socket(); s.settimeout(1.5); s.connect(('127.0.0.1', 5432)); s.close()" >nul 2>nul
 if %ERRORLEVEL% neq 0 (
-    echo [INFO] Starting local PostgreSQL Database Engine...
+    echo [INFO] PostgreSQL not responding on 127.0.0.1:5432. Starting engine...
     if exist "C:\PostgreSQL\pgsql\bin\pg_ctl.exe" (
         "C:\PostgreSQL\pgsql\bin\pg_ctl.exe" -D "C:\PostgreSQL\data" -l "C:\PostgreSQL\data\server.log" start >nul 2>nul
     ) else (
@@ -59,8 +59,13 @@ if %ERRORLEVEL% neq 0 (
     ping 127.0.0.1 -n 3 >nul
 )
 "%PYTHON_EXE%" -c "import socket; s = socket.socket(); s.settimeout(1.5); s.connect(('127.0.0.1', 5432)); s.close()" >nul 2>nul
-if %ERRORLEVEL% equ 0 (
-    set "DB_ENGINE=Enterprise PostgreSQL 14.15 (kgc_vams @ 127.0.0.1:5432)"
+if %ERRORLEVEL% neq 0 (
+    echo ============================================================================
+    echo [ERROR] PostgreSQL Database service (kgc_vams) could not be reached!
+    echo RFID VAMS runs exclusively on PostgreSQL. Please start PostgreSQL and retry.
+    echo ============================================================================
+    pause
+    exit /b 1
 )
 
 REM 4. Display System Banner

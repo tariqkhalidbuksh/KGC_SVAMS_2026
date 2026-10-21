@@ -1,6 +1,6 @@
 import hashlib
 import secrets
-import sqlite3
+import psycopg2
 import time
 import threading
 from datetime import datetime, timedelta
@@ -51,53 +51,30 @@ def verify_password(password: str, pw_hash: str, salt: str) -> bool:
     return secrets.compare_digest(calc_hash, pw_hash)
 
 def init_auth_tables():
-    """Initializes user management and session tables in the database."""
+    """Initializes user management and session tables in PostgreSQL."""
     with config.DB_LOCK:
         conn = get_db_connection()
         try:
             with conn:
-                is_pg = getattr(conn, "_conn", None) is not None
-                if is_pg:
-                    conn.execute("""CREATE TABLE IF NOT EXISTS users (
-                        id SERIAL PRIMARY KEY,
-                        username VARCHAR(100) UNIQUE NOT NULL,
-                        password_hash VARCHAR(255) NOT NULL,
-                        salt VARCHAR(100) NOT NULL,
-                        full_name VARCHAR(255) NOT NULL,
-                        role VARCHAR(50) NOT NULL DEFAULT 'Viewer',
-                        is_active INTEGER DEFAULT 1,
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        last_login TIMESTAMP)""")
-                    conn.execute("CREATE INDEX IF NOT EXISTS idx_users_username ON users(username)")
+                conn.execute("""CREATE TABLE IF NOT EXISTS users (
+                    id SERIAL PRIMARY KEY,
+                    username VARCHAR(100) UNIQUE NOT NULL,
+                    password_hash VARCHAR(255) NOT NULL,
+                    salt VARCHAR(100) NOT NULL,
+                    full_name VARCHAR(255) NOT NULL,
+                    role VARCHAR(50) NOT NULL DEFAULT 'Viewer',
+                    is_active INTEGER DEFAULT 1,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    last_login TIMESTAMP)""")
+                conn.execute("CREATE INDEX IF NOT EXISTS idx_users_username ON users(username)")
 
-                    conn.execute("""CREATE TABLE IF NOT EXISTS user_sessions (
-                        token VARCHAR(255) PRIMARY KEY,
-                        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        expires_at TIMESTAMP NOT NULL)""")
-                    conn.execute("CREATE INDEX IF NOT EXISTS idx_sessions_user ON user_sessions(user_id)")
-                    conn.execute("CREATE INDEX IF NOT EXISTS idx_sessions_expires ON user_sessions(expires_at)")
-                else:
-                    conn.execute("""CREATE TABLE IF NOT EXISTS users (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        username TEXT UNIQUE NOT NULL,
-                        password_hash TEXT NOT NULL,
-                        salt TEXT NOT NULL,
-                        full_name TEXT NOT NULL,
-                        role TEXT NOT NULL DEFAULT 'Viewer',
-                        is_active INTEGER DEFAULT 1,
-                        created_at TIMESTAMP DEFAULT (datetime('now', 'localtime')),
-                        last_login TIMESTAMP)""")
-                    conn.execute("CREATE INDEX IF NOT EXISTS idx_users_username ON users(username)")
-
-                    conn.execute("""CREATE TABLE IF NOT EXISTS user_sessions (
-                        token TEXT PRIMARY KEY,
-                        user_id INTEGER NOT NULL,
-                        created_at TIMESTAMP DEFAULT (datetime('now', 'localtime')),
-                        expires_at TIMESTAMP NOT NULL,
-                        FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE)""")
-                    conn.execute("CREATE INDEX IF NOT EXISTS idx_sessions_user ON user_sessions(user_id)")
-                    conn.execute("CREATE INDEX IF NOT EXISTS idx_sessions_expires ON user_sessions(expires_at)")
+                conn.execute("""CREATE TABLE IF NOT EXISTS user_sessions (
+                    token VARCHAR(255) PRIMARY KEY,
+                    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    expires_at TIMESTAMP NOT NULL)""")
+                conn.execute("CREATE INDEX IF NOT EXISTS idx_sessions_user ON user_sessions(user_id)")
+                conn.execute("CREATE INDEX IF NOT EXISTS idx_sessions_expires ON user_sessions(expires_at)")
 
                 # Seed default users if users table is empty
                 count = conn.execute("SELECT COUNT(*) FROM users").fetchone()[0]
@@ -129,7 +106,7 @@ def authenticate_user(username: str, password: str) -> dict | None:
 
             # Update last_login
             with conn:
-                conn.execute("UPDATE users SET last_login = datetime('now', 'localtime') WHERE id = ?", (row["id"],))
+                conn.execute("UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = ?", (row["id"],))
 
             return {
                 "id": row["id"],
@@ -151,7 +128,7 @@ def create_session(user_id: int, days_valid: int = 7) -> str:
         try:
             with conn:
                 # Remove expired sessions first
-                conn.execute("DELETE FROM user_sessions WHERE expires_at < datetime('now', 'localtime')")
+                conn.execute("DELETE FROM user_sessions WHERE expires_at < CURRENT_TIMESTAMP")
                 conn.execute("INSERT INTO user_sessions (token, user_id, expires_at) VALUES (?, ?, ?)",
                              (token, user_id, expires_at))
             return token
@@ -176,7 +153,7 @@ def validate_session(token: str) -> dict | None:
                 SELECT u.id, u.username, u.full_name, u.role, u.is_active, s.expires_at
                 FROM user_sessions s
                 JOIN users u ON s.user_id = u.id
-                WHERE s.token = ? AND s.expires_at > datetime('now', 'localtime') AND u.is_active = 1
+                WHERE s.token = ? AND s.expires_at > CURRENT_TIMESTAMP AND u.is_active = 1
             """, (token,)).fetchone()
             if not row:
                 return None
@@ -259,8 +236,10 @@ def create_user(username: str, password: str, full_name: str, role: str = "Viewe
                 "role": role,
                 "is_active": is_active
             }
-        except sqlite3.IntegrityError:
-            raise ValueError(f"Username '{username}' already exists")
+        except Exception as e:
+            if "unique" in str(e).lower() or "duplicate" in str(e).lower() or "already exists" in str(e).lower():
+                raise ValueError(f"Username '{username}' already exists")
+            raise
         finally:
             conn.close()
 

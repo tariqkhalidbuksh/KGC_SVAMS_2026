@@ -1,7 +1,7 @@
 import os
 import math
 import secrets
-import sqlite3
+import psycopg2
 import time
 import pandas as pd
 from fastapi import APIRouter, Request, HTTPException, File, UploadFile
@@ -113,16 +113,29 @@ async def update_member(request: Request):
         try:
             target = None
             if row_id:
-                target = conn.execute("SELECT id, Mem_id, Car_number, E_tag_id FROM members WHERE id=?", (row_id,)).fetchone()
+                if str(row_id).isdigit():
+                    target = conn.execute("SELECT id, Mem_id, Car_number, E_tag_id FROM members WHERE id=?", (int(row_id),)).fetchone()
+                else:
+                    target = conn.execute("SELECT id, Mem_id, Car_number, E_tag_id FROM members WHERE Mem_id=?", (str(row_id),)).fetchone()
 
             if not target and old_id:
+                old_id_str = str(old_id).strip()
                 if car_number:
-                    target = conn.execute(
-                        "SELECT id, Mem_id, Car_number, E_tag_id FROM members WHERE (Mem_id=? OR id=?) AND UPPER(Car_number)=?",
-                        (old_id, old_id, car_number.upper())
-                    ).fetchone()
+                    if old_id_str.isdigit():
+                        target = conn.execute(
+                            "SELECT id, Mem_id, Car_number, E_tag_id FROM members WHERE (Mem_id=? OR id=?) AND UPPER(Car_number)=?",
+                            (old_id_str, int(old_id_str), car_number.upper())
+                        ).fetchone()
+                    else:
+                        target = conn.execute(
+                            "SELECT id, Mem_id, Car_number, E_tag_id FROM members WHERE Mem_id=? AND UPPER(Car_number)=?",
+                            (old_id_str, car_number.upper())
+                        ).fetchone()
                 if not target:
-                    target = conn.execute("SELECT id, Mem_id, Car_number, E_tag_id FROM members WHERE Mem_id=? OR id=?", (old_id, old_id)).fetchone()
+                    if old_id_str.isdigit():
+                        target = conn.execute("SELECT id, Mem_id, Car_number, E_tag_id FROM members WHERE Mem_id=? OR id=?", (old_id_str, int(old_id_str))).fetchone()
+                    else:
+                        target = conn.execute("SELECT id, Mem_id, Car_number, E_tag_id FROM members WHERE Mem_id=?", (old_id_str,)).fetchone()
 
             if not target:
                 raise HTTPException(404, "Member record not found")
@@ -152,10 +165,10 @@ async def update_member(request: Request):
             return {"ok": True, "message": "Member updated successfully"}
         except HTTPException:
             raise
-        except sqlite3.IntegrityError as exc_integrity:
-            raise HTTPException(409, f"Database constraint violation: {exc_integrity}")
-        except Exception as exc_general:
-            raise HTTPException(500, f"Update failed: {exc_general}")
+        except (psycopg2.IntegrityError, Exception) as exc_integrity:
+            if "unique" in str(exc_integrity).lower() or "duplicate" in str(exc_integrity).lower() or "conflict" in str(exc_integrity).lower():
+                raise HTTPException(409, f"Database constraint violation: {exc_integrity}")
+            raise HTTPException(500, f"Update failed: {exc_integrity}")
         finally:
             conn.close()
 

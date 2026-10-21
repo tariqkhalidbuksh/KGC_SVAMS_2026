@@ -453,8 +453,10 @@ def deduplicate_camera_audit_logs() -> int:
                     is_same_path = (r['image_path'] == prev_row['image_path'])
                     is_time_dup = False
                     try:
-                        t1 = datetime.strptime(r['timestamp'][:19], "%Y-%m-%d %H:%M:%S")
-                        t2 = datetime.strptime(prev_row['timestamp'][:19], "%Y-%m-%d %H:%M:%S")
+                        ts1 = r['timestamp']
+                        ts2 = prev_row['timestamp']
+                        t1 = ts1 if isinstance(ts1, datetime) else datetime.strptime(str(ts1)[:19].replace("T", " "), "%Y-%m-%d %H:%M:%S")
+                        t2 = ts2 if isinstance(ts2, datetime) else datetime.strptime(str(ts2)[:19].replace("T", " "), "%Y-%m-%d %H:%M:%S")
                         if abs((t1 - t2).total_seconds()) < 4.0:
                             is_time_dup = True
                     except Exception:

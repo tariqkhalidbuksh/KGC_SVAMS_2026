@@ -4,7 +4,6 @@ Unit and Integration Test Suite for RFID_VAMS app.py
 """
 import pytest
 import os
-import sqlite3
 import tempfile
 from fastapi.testclient import TestClient
 
@@ -27,23 +26,39 @@ def trigger_test_passage(tag="NO_TAG", direction="Entry", path_full=None, path_p
 
 
 @pytest.fixture(autouse=True)
-def setup_test_db(tmp_path, monkeypatch):
+def setup_test_db(monkeypatch):
     """
-    Fixture to setup an isolated SQLite database for each test.
+    Fixture to setup an isolated PostgreSQL test environment for each test.
     """
-    db_file = os.path.join(tmp_path, "test_gate_access.db")
-    monkeypatch.setattr(app_module, "DB_FILE", db_file)
-    
+    monkeypatch.setattr(app_module, "DB_FILE", "kgc_vams_test")
+    monkeypatch.setattr(config, "DB_FILE", "kgc_vams_test")
+
     # Initialize DB schema
     init_db()
-    yield db_file
+    with config.DB_LOCK:
+        conn = get_db_connection()
+        try:
+            with conn:
+                conn.execute("DELETE FROM daily_logs")
+                conn.execute("DELETE FROM raw_reader_logs")
+                conn.execute("DELETE FROM camera_audit_logs")
+                conn.execute("DELETE FROM unregistered_tags")
+                conn.execute("DELETE FROM members")
+                conn.execute("UPDATE settings SET config_value='Karachi Gymkhana Club' WHERE config_key='club_name'")
+                conn.execute("UPDATE settings SET config_value='500' WHERE config_key='parking_capacity'")
+        finally:
+            conn.close()
+    import database
+    with database._SETTINGS_LOCK:
+        database._SETTINGS_CACHE.clear()
+    yield
 
 
 class TestDatabaseAndCoreLogic:
     def test_init_db_tables_created(self, setup_test_db):
         conn = get_db_connection()
         cursor = conn.cursor()
-        tables = [row[0] for row in cursor.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()]
+        tables = [row[0] for row in cursor.execute("SELECT table_name FROM information_schema.tables WHERE table_schema='public'").fetchall()]
         conn.close()
         
         assert "members" in tables

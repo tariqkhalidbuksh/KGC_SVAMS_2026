@@ -233,6 +233,10 @@ async def get_etag_audit(
                 log_rows = conn.execute(log_sql2, log_params2).fetchall()
                 logs = [dict(r) for r in log_rows]
 
+            for l in logs:
+                if l.get("timestamp"):
+                    l["timestamp"] = str(l["timestamp"])[:19].replace("T", " ")
+
             # 4. If member not matched by E_tag_id, infer from logs (or all-time history)
             if not mem_row:
                 for l in logs:
@@ -355,8 +359,8 @@ async def get_etag_audit(
                 })
 
             most_active_reader = max(readers_count.items(), key=lambda x: x[1])[0] if readers_count else "Gate-01"
-            first_seen = logs[-1].get("timestamp")
-            last_seen = logs[0].get("timestamp")
+            first_seen = str(logs[-1].get("timestamp"))[:19].replace("T", " ") if logs and logs[-1].get("timestamp") else None
+            last_seen = str(logs[0].get("timestamp"))[:19].replace("T", " ") if logs and logs[0].get("timestamp") else None
 
             return {
                 "tag_id": clean_tag,

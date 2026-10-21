@@ -12,7 +12,8 @@ LOCAL_TZ = datetime.now().astimezone().tzinfo
 PKT_TZ = LOCAL_TZ
 TZ_OFFSET_STRING = "localtime"
 
-DB_FILE = "gate_access.db"
+DB_FILE = "kgc_vams"
+DB_NAME = "kgc_vams"
 USE_POSTGRES = True
 STATIC_DIR = "static"
 LOGO_PATH = os.path.join(STATIC_DIR, "club_logo.png")

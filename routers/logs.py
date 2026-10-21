@@ -1049,16 +1049,16 @@ async def export_audit(
         e_reader = ent.get('gate_no') or ('Gate-01 Entry Reader' if ent else 'N/A')
         x_reader = ext.get('gate_no') or ('Gate-01 Exit Reader' if ext else 'N/A')
         club_presence = "Inside Club" if a.get('status') in ("Inside Facility", "Alert / Inside") else ("Inside Club (Overstay >8h)" if a.get('is_overstay') else "Outside Club")
-        rec_date = (ext.get('timestamp') or ent.get('timestamp') or '')[:10]
+        rec_date = str(ext.get('timestamp') or ent.get('timestamp') or '')[:10]
         records.append({
             "Date": rec_date,
             "Member ID": ent.get('mem_id') or ext.get('mem_id') or 'GUEST',
             "Member Name": ent.get('name') or ext.get('name') or 'Visitor',
             "Vehicle Number": ent.get('vehicle_number') or ext.get('vehicle_number') or 'N/A',
             "Make / Model": ent.get('make_model') or ext.get('make_model') or 'N/A',
-            "Entry Time": ent.get('timestamp') or 'N/A',
+            "Entry Time": str(ent.get('timestamp'))[:19].replace("T", " ") if ent.get('timestamp') else 'N/A',
             "Entry Reader": e_reader,
-            "Exit Time": ext.get('timestamp') or 'N/A',
+            "Exit Time": str(ext.get('timestamp'))[:19].replace("T", " ") if ext.get('timestamp') else 'N/A',
             "Exit Reader": x_reader,
             "Duration": a.get('duration') or 'N/A',
             "Club Status": club_presence,
