@@ -83,6 +83,16 @@ def test_reader_renaming_settings_persistence_and_propagation():
         assert row["gate_no"] == "Gate-01 North Inbound RFID"
         assert row["direction"] == "Entry"
 
+    # Restore default settings
+    default_names = {
+        "entry_reader_name": "Gate-01 Entry Reader",
+        "exit_reader_name": "Gate-01 Exit Reader",
+        "clubroad_entry_reader_name": "Club Road Main Inbound RFID",
+        "clubroad_exit_reader_name": "Club Road Main Outbound RFID",
+        "rfid_cooldown_seconds": "45"
+    }
+    client.post("/api/settings", json=default_names, cookies={"session_user": "admin", "session_role": "Admin"})
+
 
 def test_no_enter_and_exit_flip_on_same_reader():
     """

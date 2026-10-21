@@ -35,11 +35,11 @@ def setup_test_db(tmp_path, monkeypatch):
         ('M-103', 'Staff Whitelist', 'VIP-999', 'Land Cruiser', 'TAG-VIP', 'Inside', 'Active')
     """)
 
-    # Entry timestamps ~2 hours ago on today's PKT date (so duration is 2h and status is Inside Facility, not Overstay)
-    t_now = datetime.now()
-    t_alpha = (t_now - timedelta(hours=2, minutes=5)).strftime("%Y-%m-%d %H:%M:%S")
-    t_beta = (t_now - timedelta(hours=2, minutes=3)).strftime("%Y-%m-%d %H:%M:%S")
-    t_vip = (t_now - timedelta(hours=2, minutes=1)).strftime("%Y-%m-%d %H:%M:%S")
+    # Entry timestamps on today's PKT date (so duration is calculated consistently across midnight)
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    t_alpha = f"{today_str} 00:05:00"
+    t_beta = f"{today_str} 00:07:00"
+    t_vip = f"{today_str} 00:09:00"
 
     # Seed Entry logs: Alpha, Beta, VIP are currently inside
     conn.execute("""
@@ -61,7 +61,8 @@ def test_single_manual_exit():
     assert len(data["audits"]) >= 1
     assert data["audits"][0]["status"] == "Inside Facility"
 
-    exit_time = (datetime.now() - timedelta(minutes=5)).strftime("%Y-%m-%d %H:%M:%S")
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    exit_time = f"{today_str} 02:10:00"
 
     # Manually exit Member Alpha with custom timestamp and camera image proof
     payload = {
@@ -123,9 +124,9 @@ def test_bulk_manual_exit_execution():
     client.post("/api/settings/bulk-exit-exceptions", json={"exceptions": ["VIP-999"]})
 
     # Execute bulk manual exit
-    now = datetime.now()
+    today_str = datetime.now().strftime("%Y-%m-%d")
     bulk_res = client.post("/api/audit/bulk-manual-exit", json={
-        "timestamp": now.strftime("%Y-%m-%d %H:%M:%S"),
+        "timestamp": f"{today_str} 02:15:00",
         "gate_no": "Gate-01-Out (Bulk Exit)",
         "notes": "Nightly Clearance"
     })

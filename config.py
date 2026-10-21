@@ -13,6 +13,7 @@ PKT_TZ = LOCAL_TZ
 TZ_OFFSET_STRING = "localtime"
 
 DB_FILE = "gate_access.db"
+USE_POSTGRES = True
 STATIC_DIR = "static"
 LOGO_PATH = os.path.join(STATIC_DIR, "club_logo.png")
 SNAPSHOT_DIR = os.path.join(STATIC_DIR, "snapshots")
@@ -46,6 +47,10 @@ LATEST_GATE_LOG_CACHE = {
     "clubroad": None
 }
 MEMBERS_METRICS_CACHE = {"data": None, "timestamp": 0.0}
+MEMBERS_DIRECTORY_CACHE = {"etag": {}, "mem_id": {}, "plate": {}, "timestamp": 0.0, "db_file": None}
+STATS_CACHE = {"data": None, "timestamp": 0.0, "db_file": None}
+CHARTS_CACHE = {"data": None, "timestamp": 0.0, "db_file": None}
+AUDIT_LOGS_CACHE = {}  # key -> {"data": logs, "timestamp": float}
 FLEET_ADOPTION_CACHE = {"data": None, "timestamp": 0.0, "db_file": None}
 RECENT_CAM_TRIGGERS = deque(maxlen=30)
 
@@ -84,4 +89,12 @@ def invalidate_member_cache():
         FLEET_ADOPTION_CACHE["data"] = None
         FLEET_ADOPTION_CACHE["timestamp"] = 0.0
         FLEET_ADOPTION_CACHE["db_file"] = None
+        MEMBERS_DIRECTORY_CACHE["timestamp"] = 0.0
+        MEMBERS_DIRECTORY_CACHE["etag"].clear()
+        MEMBERS_DIRECTORY_CACHE["mem_id"].clear()
+        MEMBERS_DIRECTORY_CACHE["plate"].clear()
+        MEMBERS_DIRECTORY_CACHE["db_file"] = None
+        STATS_CACHE["data"] = None
+        CHARTS_CACHE["data"] = None
+        AUDIT_LOGS_CACHE.clear()
 

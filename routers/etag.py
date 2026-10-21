@@ -67,7 +67,7 @@ async def get_recent_scanned_tags(
                     FROM daily_logs d
                     LEFT JOIN members m ON d.scanned_tag = m.E_tag_id
                     {where_str}
-                    GROUP BY UPPER(TRIM(d.scanned_tag))
+                    GROUP BY UPPER(TRIM(d.scanned_tag)), m.Name, m.Car_number, m.Mem_id, m.Make_Model, m.Profile_pic, m.Status
                     ORDER BY last_seen DESC
                     LIMIT ? OFFSET ?
                 """
@@ -103,7 +103,7 @@ async def get_recent_scanned_tags(
                     WHERE d.scanned_tag IS NOT NULL
                       AND d.scanned_tag != ''
                       AND UPPER(TRIM(d.scanned_tag)) != 'NO_TAG'
-                    GROUP BY d.scanned_tag
+                    GROUP BY d.scanned_tag, m.Name, m.Car_number, m.Mem_id, m.Make_Model, m.Profile_pic, m.Status
                     ORDER BY last_seen DESC
                     LIMIT ? OFFSET ?
                 """

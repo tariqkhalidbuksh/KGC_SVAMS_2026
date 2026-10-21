@@ -256,38 +256,50 @@ def grab_dahua_snapshot(dahua_url_or_key: str = None, timeout: float = 1.5) -> t
     raw_port = match.group(4)
     http_port = raw_port if (raw_port and raw_port != "554") else "80"
 
-    # Tier 2: Try HTTP Snapshot CGI endpoints
-    endpoints = [
-        f"http://{ip}:{http_port}/cgi-bin/snapshot.cgi?channel=1",
-        f"http://{ip}:{http_port}/cgi-bin/snapshot.cgi"
-    ]
-    http_timeout = min(timeout, 1.2)
+    # Tier 2: Try HTTP Snapshot CGI endpoints (probe port first to avoid multi-second timeouts when offline)
+    can_connect_http = False
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(0.15)
+        can_connect_http = (sock.connect_ex((ip, int(http_port))) == 0)
+        sock.close()
+    except Exception:
+        can_connect_http = False
+
     last_http_err = None
+    if can_connect_http:
+        endpoints = [
+            f"http://{ip}:{http_port}/cgi-bin/snapshot.cgi?channel=1",
+            f"http://{ip}:{http_port}/cgi-bin/snapshot.cgi"
+        ]
+        http_timeout = min(timeout, 1.2)
 
-    for ep in endpoints:
-        try:
-            auth = requests.auth.HTTPDigestAuth(user, pwd)
-            res = requests.get(ep, auth=auth, timeout=http_timeout)
-            if res.status_code == 401:
-                auth = requests.auth.HTTPBasicAuth(user, pwd)
+        for ep in endpoints:
+            try:
+                auth = requests.auth.HTTPDigestAuth(user, pwd)
                 res = requests.get(ep, auth=auth, timeout=http_timeout)
+                if res.status_code == 401:
+                    auth = requests.auth.HTTPBasicAuth(user, pwd)
+                    res = requests.get(ep, auth=auth, timeout=http_timeout)
 
-            if res.status_code == 200:
-                arr = np.frombuffer(res.content, np.uint8)
-                img = cv2.imdecode(arr, cv2.IMREAD_COLOR)
-                if is_valid_image(img):
-                    latency_ms = round((time.perf_counter() - t0) * 1000, 2)
-                    with config.FRAME_LOCK:
-                        config.LATEST_RAW_FRAMES["Dahua"] = img
-                        config.LATEST_FRAME_TIMES["Dahua"] = time.time()
-                        config.CAM_STATUS["Dahua"] = "ONLINE"
-                    return img, latency_ms, None
-            else:
-                last_http_err = f"HTTP {res.status_code}"
-        except requests.exceptions.Timeout:
-            last_http_err = f"HTTP timeout ({http_timeout}s)"
-        except Exception as ex:
-            last_http_err = str(ex)
+                if res.status_code == 200:
+                    arr = np.frombuffer(res.content, np.uint8)
+                    img = cv2.imdecode(arr, cv2.IMREAD_COLOR)
+                    if is_valid_image(img):
+                        latency_ms = round((time.perf_counter() - t0) * 1000, 2)
+                        with config.FRAME_LOCK:
+                            config.LATEST_RAW_FRAMES["Dahua"] = img
+                            config.LATEST_FRAME_TIMES["Dahua"] = time.time()
+                            config.CAM_STATUS["Dahua"] = "ONLINE"
+                        return img, latency_ms, None
+                else:
+                    last_http_err = f"HTTP {res.status_code}"
+            except requests.exceptions.Timeout:
+                last_http_err = f"HTTP timeout ({http_timeout}s)"
+            except Exception as ex:
+                last_http_err = str(ex)
+    else:
+        last_http_err = f"HTTP port {http_port} unreachable"
 
     # Tier 3: Direct RTSP Frame Capture via OpenCV (if URL is RTSP)
     last_rtsp_err = None

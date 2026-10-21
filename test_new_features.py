@@ -65,10 +65,10 @@ def test_fifo_rfid_sequence():
     duplicate_id = execute_access_decision(test_tag)
     assert duplicate_id == log_id1
 
-    # Simulate 50s passing by updating log1 timestamp in database
+    # Simulate 70s passing by updating log1 timestamp in database
     with get_db_connection() as conn:
         with conn:
-            conn.execute("UPDATE daily_logs SET timestamp = datetime('now', '-50 seconds') WHERE id=?", (log_id1,))
+            conn.execute("UPDATE daily_logs SET timestamp = datetime('now', '-70 seconds') WHERE id=?", (log_id1,))
 
     # 2nd scan after cooldown -> Exit
     log_id2 = execute_access_decision(test_tag)
@@ -77,10 +77,10 @@ def test_fifo_rfid_sequence():
         row2 = conn.execute("SELECT direction FROM daily_logs WHERE id=?", (log_id2,)).fetchone()
         assert row2["direction"] == "Exit"
 
-    # Simulate 50s passing by updating log2 timestamp in database
+    # Simulate 70s passing by updating log2 timestamp in database
     with get_db_connection() as conn:
         with conn:
-            conn.execute("UPDATE daily_logs SET timestamp = datetime('now', '-50 seconds') WHERE id=?", (log_id2,))
+            conn.execute("UPDATE daily_logs SET timestamp = datetime('now', '-70 seconds') WHERE id=?", (log_id2,))
 
     # 3rd scan after cooldown -> Entry
     log_id3 = execute_access_decision(test_tag)

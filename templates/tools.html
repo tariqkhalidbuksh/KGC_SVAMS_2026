@@ -191,6 +191,17 @@
                         <button type="button" onclick="setPollInterval(2000)" id="rateBtn2" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-xs">2s (Optimal)</button>
                         <button type="button" onclick="setPollInterval(5000)" id="rateBtn5" class="px-2.5 py-1 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition">5s (Eco)</button>
                     </div>
+                    <!-- Real Physical Hardware Probe vs Benchmark Mode Toggle -->
+                    <div class="flex items-center gap-1.5 bg-slate-100 border border-slate-200 rounded-xl p-1">
+                        <button type="button" id="modePhysicalBtn" onclick="setTelemetryMode(false)" class="px-3 py-1 rounded-lg text-xs font-black transition flex items-center gap-1.5 bg-white text-slate-900 shadow-2xs">
+                            <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                            <span>Live Hardware (Strict)</span>
+                        </button>
+                        <button type="button" id="modeSyntheticBtn" onclick="setTelemetryMode(true)" class="px-3 py-1 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                            <span>Benchmark Emulation</span>
+                        </button>
+                    </div>
                     <button type="button" id="pauseResumeBtn" onclick="togglePauseStream()" class="text-xs font-bold px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 transition shadow-2xs">
                         Pause Stream
                     </button>

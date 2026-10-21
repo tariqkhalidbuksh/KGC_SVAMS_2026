@@ -49,26 +49,48 @@ def init_auth_tables():
         conn = get_db_connection()
         try:
             with conn:
-                conn.execute("""CREATE TABLE IF NOT EXISTS users (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    username TEXT UNIQUE NOT NULL,
-                    password_hash TEXT NOT NULL,
-                    salt TEXT NOT NULL,
-                    full_name TEXT NOT NULL,
-                    role TEXT NOT NULL DEFAULT 'Viewer',
-                    is_active INTEGER DEFAULT 1,
-                    created_at TIMESTAMP DEFAULT (datetime('now', 'localtime')),
-                    last_login TIMESTAMP)""")
-                conn.execute("CREATE INDEX IF NOT EXISTS idx_users_username ON users(username)")
+                is_pg = getattr(conn, "_conn", None) is not None
+                if is_pg:
+                    conn.execute("""CREATE TABLE IF NOT EXISTS users (
+                        id SERIAL PRIMARY KEY,
+                        username VARCHAR(100) UNIQUE NOT NULL,
+                        password_hash VARCHAR(255) NOT NULL,
+                        salt VARCHAR(100) NOT NULL,
+                        full_name VARCHAR(255) NOT NULL,
+                        role VARCHAR(50) NOT NULL DEFAULT 'Viewer',
+                        is_active INTEGER DEFAULT 1,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        last_login TIMESTAMP)""")
+                    conn.execute("CREATE INDEX IF NOT EXISTS idx_users_username ON users(username)")
 
-                conn.execute("""CREATE TABLE IF NOT EXISTS user_sessions (
-                    token TEXT PRIMARY KEY,
-                    user_id INTEGER NOT NULL,
-                    created_at TIMESTAMP DEFAULT (datetime('now', 'localtime')),
-                    expires_at TIMESTAMP NOT NULL,
-                    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE)""")
-                conn.execute("CREATE INDEX IF NOT EXISTS idx_sessions_user ON user_sessions(user_id)")
-                conn.execute("CREATE INDEX IF NOT EXISTS idx_sessions_expires ON user_sessions(expires_at)")
+                    conn.execute("""CREATE TABLE IF NOT EXISTS user_sessions (
+                        token VARCHAR(255) PRIMARY KEY,
+                        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        expires_at TIMESTAMP NOT NULL)""")
+                    conn.execute("CREATE INDEX IF NOT EXISTS idx_sessions_user ON user_sessions(user_id)")
+                    conn.execute("CREATE INDEX IF NOT EXISTS idx_sessions_expires ON user_sessions(expires_at)")
+                else:
+                    conn.execute("""CREATE TABLE IF NOT EXISTS users (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        username TEXT UNIQUE NOT NULL,
+                        password_hash TEXT NOT NULL,
+                        salt TEXT NOT NULL,
+                        full_name TEXT NOT NULL,
+                        role TEXT NOT NULL DEFAULT 'Viewer',
+                        is_active INTEGER DEFAULT 1,
+                        created_at TIMESTAMP DEFAULT (datetime('now', 'localtime')),
+                        last_login TIMESTAMP)""")
+                    conn.execute("CREATE INDEX IF NOT EXISTS idx_users_username ON users(username)")
+
+                    conn.execute("""CREATE TABLE IF NOT EXISTS user_sessions (
+                        token TEXT PRIMARY KEY,
+                        user_id INTEGER NOT NULL,
+                        created_at TIMESTAMP DEFAULT (datetime('now', 'localtime')),
+                        expires_at TIMESTAMP NOT NULL,
+                        FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE)""")
+                    conn.execute("CREATE INDEX IF NOT EXISTS idx_sessions_user ON user_sessions(user_id)")
+                    conn.execute("CREATE INDEX IF NOT EXISTS idx_sessions_expires ON user_sessions(expires_at)")
 
                 # Seed default users if users table is empty
                 count = conn.execute("SELECT COUNT(*) FROM users").fetchone()[0]
@@ -108,7 +130,7 @@ def authenticate_user(username: str, password: str) -> dict | None:
                 "full_name": row["full_name"],
                 "role": row["role"],
                 "is_active": row["is_active"],
-                "last_login": row["last_login"]
+                "last_login": str(row["last_login"]) if row["last_login"] is not None else None
             }
         finally:
             conn.close()
@@ -176,7 +198,15 @@ def list_users() -> list[dict]:
                 FROM users
                 ORDER BY role = 'Admin' DESC, role = 'Editor' DESC, username ASC
             """).fetchall()
-            return [dict(r) for r in rows]
+            out = []
+            for r in rows:
+                d = dict(r)
+                if d.get("created_at") is not None:
+                    d["created_at"] = str(d["created_at"])
+                if d.get("last_login") is not None:
+                    d["last_login"] = str(d["last_login"])
+                out.append(d)
+            return out
         finally:
             conn.close()
 

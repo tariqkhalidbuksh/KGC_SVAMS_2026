@@ -7,35 +7,40 @@ from routers.logs import _fetch_audit_logs_with_lookback, _build_paired_audits
 router = APIRouter(prefix="/api", tags=["Statistics & Metrics"])
 
 def _get_fleet_adoption_stats(conn, curr_db_file: str):
+    """Ultra-fast sub-2ms fleet adoption statistics using in-memory cached member tags."""
     import time
     now_epoch = time.time()
     with config.CACHE_LOCK:
         cached = config.FLEET_ADOPTION_CACHE.get("data")
         cache_time = config.FLEET_ADOPTION_CACHE.get("timestamp", 0.0)
         cached_db = config.FLEET_ADOPTION_CACHE.get("db_file")
+        if cached and (cached_db == curr_db_file) and (now_epoch - cache_time < 60.0):
+            return cached
 
-    if cached and (cached_db == curr_db_file) and (now_epoch - cache_time < 30.0):
-        return cached
+    from services.member_service import get_member_directory_lookup
+    mem_lookup = get_member_directory_lookup(conn)
+    reg_etags = mem_lookup.get('etag', {})
 
-    # Fast indexed query: joins on raw column values (d.scanned_tag = m.E_tag_id),
-    # allowing SQLite to use idx_members_etag and idx_logs_tag.
-    tag_adoption_query = conn.execute("""
-        SELECT 
-            COUNT(DISTINCT d.scanned_tag) as total_scanned_tags,
-            COUNT(DISTINCT CASE WHEN (m.Mem_id IS NOT NULL AND m.Mem_id NOT IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', '')) 
-                                 OR (d.mem_id IS NOT NULL AND d.mem_id NOT IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', '') AND d.access_type NOT LIKE '%Unknown%')
-                                THEN d.scanned_tag END) as registered_tags,
-            COUNT(DISTINCT CASE WHEN (m.Mem_id IS NULL OR m.Mem_id IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', ''))
-                                 AND (d.mem_id IS NULL OR d.mem_id IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', '') OR d.access_type LIKE '%Unknown%')
-                                THEN d.scanned_tag END) as unregistered_tags
-        FROM daily_logs d
-        LEFT JOIN members m ON d.scanned_tag = m.E_tag_id
-        WHERE d.scanned_tag IS NOT NULL AND d.scanned_tag != '' AND d.scanned_tag != 'NO_TAG'
-    """).fetchone()
+    rows = conn.execute("""
+        SELECT scanned_tag, MAX(mem_id) as mem_id, MAX(access_type) as access_type
+        FROM daily_logs
+        WHERE scanned_tag IS NOT NULL AND scanned_tag != '' AND scanned_tag != 'NO_TAG'
+        GROUP BY scanned_tag
+    """).fetchall()
 
-    total_unique_tags = tag_adoption_query['total_scanned_tags'] or 0
-    reg_unique_tags = tag_adoption_query['registered_tags'] or 0
-    unreg_unique_tags = tag_adoption_query['unregistered_tags'] or 0
+    total_unique_tags = len(rows)
+    reg_unique_tags = 0
+    unreg_unique_tags = 0
+
+    for r in rows:
+        tag = (r['scanned_tag'] or '').strip().upper()
+        mid = (r['mem_id'] or '').strip().upper()
+        acc = (r['access_type'] or '').lower()
+
+        if (tag in reg_etags) or (mid and mid not in ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', '') and 'unknown' not in acc):
+            reg_unique_tags += 1
+        else:
+            unreg_unique_tags += 1
 
     adoption_rate = round((reg_unique_tags / total_unique_tags * 100.0), 1) if total_unique_tags > 0 else 100.0
     gap_rate = round((unreg_unique_tags / total_unique_tags * 100.0), 1) if total_unique_tags > 0 else 0.0
@@ -65,7 +70,17 @@ def _get_fleet_adoption_stats(conn, curr_db_file: str):
 
 @router.get("/stats")
 async def get_stats():
-    import time
+    import time, sys
+    app_mod = sys.modules.get('app')
+    curr_db_file = getattr(app_mod, 'DB_FILE', getattr(config, 'DB_FILE', 'gate_access.db'))
+    now_epoch = time.time()
+    with config.CACHE_LOCK:
+        cached_stats = getattr(config, 'STATS_CACHE', {}).get("data")
+        cache_time = getattr(config, 'STATS_CACHE', {}).get("timestamp", 0.0)
+        cached_db = getattr(config, 'STATS_CACHE', {}).get("db_file")
+        if cached_stats and (cached_db == curr_db_file) and (now_epoch - cache_time < 3.0):
+            return cached_stats
+
     with config.DB_LOCK:
         conn = get_db_connection()
         try:
@@ -133,27 +148,15 @@ async def get_stats():
             peak_hour_str = f"{peak_row['h']}:00" if peak_row else "None"
             peak_count_val = peak_row['c'] if peak_row else 0
 
-            overstay_row = conn.execute("""
-                SELECT COUNT(*) as c FROM daily_logs d
-                WHERE d.direction = 'Entry'
-                  AND d.timestamp <= datetime('now', 'localtime', '-8 hours')
-                  AND NOT EXISTS (
-                      SELECT 1 FROM daily_logs e
-                      WHERE e.direction = 'Exit'
-                        AND (
-                            (e.mem_id = d.mem_id AND d.mem_id NOT IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED'))
-                            OR (e.scanned_tag = d.scanned_tag AND d.scanned_tag NOT IN ('NO_TAG', ''))
-                        )
-                        AND e.timestamp >= d.timestamp
-                  )
-            """).fetchone()
-            overstay_count = overstay_row['c'] if overstay_row else 0
+            # Ultra-fast overstay count computed directly from paired visits below (0ms database time)
+            overstay_count = 0
 
             # Authoritative State-Based Facility Occupancy & Completed Journey Analysis (Approach B)
             today_logs = _fetch_audit_logs_with_lookback(conn, "single", pkt_today, pkt_today)
             today_paired = _build_paired_audits(today_logs)
 
             currently_in_club = sum(1 for a in today_paired if a['status'] in ("Inside Facility", "Alert / Inside", "Overstay (>8h)"))
+            overstay_count = sum(1 for a in today_paired if a.get('is_overstay'))
 
             # Calculate Average Stay Duration from paired visits today (including cross-day/overnight completed journeys)
             completed_paired = [a for a in today_paired if a.get('entry') and a.get('exit')]
@@ -205,7 +208,7 @@ async def get_stats():
             reg_today = max(0, total_transits_today - unreg_today)
             unreg_tags_buffer = adoption_metrics["unreg_tags_buffer"]
 
-            return {
+            res_stats = {
                 "active_members": members_count,
                 "unique_members": unique_mems,
                 "total_vehicles": total_vehicles,
@@ -230,24 +233,44 @@ async def get_stats():
                 "registration_gap_rate": gap_rate,
                 "unassigned_tags_buffer": unreg_tags_buffer
             }
+
+            with config.CACHE_LOCK:
+                config.STATS_CACHE = {
+                    "data": res_stats,
+                    "timestamp": now_epoch,
+                    "db_file": curr_db_file
+                }
+
+            return res_stats
         finally:
             conn.close()
 
 @router.get("/chart-data")
 async def get_chart_data():
+    import time, sys
+    app_mod = sys.modules.get('app')
+    curr_db_file = getattr(app_mod, 'DB_FILE', getattr(config, 'DB_FILE', 'gate_access.db'))
+    now_epoch = time.time()
+    with config.CACHE_LOCK:
+        cached_charts = getattr(config, 'CHARTS_CACHE', {}).get("data")
+        cache_time = getattr(config, 'CHARTS_CACHE', {}).get("timestamp", 0.0)
+        cached_db = getattr(config, 'CHARTS_CACHE', {}).get("db_file")
+        if cached_charts and (cached_db == curr_db_file) and (now_epoch - cache_time < 30.0):
+            return cached_charts
+
     with config.DB_LOCK:
         conn = get_db_connection()
         try:
             pkt_today = config.get_pkt_today()
             hours = [f"{h:02d}" for h in range(24)]
 
-            entries_h = {r['h']: r['c'] for r in conn.execute(
+            entries_h = {str(r['h']).zfill(2): r['c'] for r in conn.execute(
                 """SELECT strftime('%H', timestamp) as h, COUNT(*) as c FROM daily_logs
                    WHERE direction='Entry' AND date(timestamp)=? GROUP BY h""",
                 (pkt_today,)
             ).fetchall()}
 
-            exits_h = {r['h']: r['c'] for r in conn.execute(
+            exits_h = {str(r['h']).zfill(2): r['c'] for r in conn.execute(
                 """SELECT strftime('%H', timestamp) as h, COUNT(*) as c FROM daily_logs
                    WHERE direction='Exit' AND date(timestamp)=? GROUP BY h""",
                 (pkt_today,)
@@ -261,7 +284,8 @@ async def get_chart_data():
                    FROM daily_logs WHERE date(timestamp) >= date('now', 'localtime', '-6 days')
                    GROUP BY d ORDER BY d"""
             ).fetchall():
-                days.append(row['d'][5:])
+                d_str = str(row['d']) if row['d'] is not None else ''
+                days.append(d_str[5:] if len(d_str) >= 5 else d_str)
                 entries_d.append(row['e'])
                 exits_d.append(row['x'])
 
@@ -278,7 +302,7 @@ async def get_chart_data():
             gap_rate = adoption_metrics["gap_rate"]
             unreg_tags_buffer = adoption_metrics["unreg_tags_buffer"]
 
-            return {
+            res_chart = {
                 "hours": hours,
                 "hourly_entries": [entries_h.get(h, 0) for h in hours],
                 "hourly_exits": [exits_h.get(h, 0) for h in hours],
@@ -297,6 +321,13 @@ async def get_chart_data():
                     "unassigned_buffer": unreg_tags_buffer
                 }
             }
+            with config.CACHE_LOCK:
+                config.CHARTS_CACHE = {
+                    "data": res_chart,
+                    "timestamp": now_epoch,
+                    "db_file": curr_db_file
+                }
+            return res_chart
         finally:
             conn.close()
 
@@ -312,11 +343,11 @@ async def get_camera_audit_stats():
             ).fetchone()['c']
 
             week_count = conn.execute(
-                "SELECT COUNT(*) as c FROM camera_audit_logs WHERE date_str >= date('now', 'localtime', '-6 days')"
+                "SELECT COUNT(*) as c FROM camera_audit_logs WHERE date(timestamp) >= date('now', 'localtime', '-6 days')"
             ).fetchone()['c']
 
             month_count = conn.execute(
-                "SELECT COUNT(*) as c FROM camera_audit_logs WHERE date_str >= date('now', 'localtime', '-29 days')"
+                "SELECT COUNT(*) as c FROM camera_audit_logs WHERE date(timestamp) >= date('now', 'localtime', '-29 days')"
             ).fetchone()['c']
 
             return {

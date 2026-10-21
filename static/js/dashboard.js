@@ -703,8 +703,135 @@ async function loadStats() {
 
         updateParkingDonut(s.currently_in_club || 0, cap);
         updateAdoptionDonut(allReg, allUnreg);
+
+        // Update live hardware & system health pills
+        updateDashboardHealth();
     } catch (err) {
         console.error('loadStats error:', err);
+    }
+}
+
+async function updateDashboardHealth() {
+    try {
+        const clk = document.getElementById('systemLiveClock');
+        if (clk) {
+            clk.innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' PKT';
+        }
+
+        const res = await fetch('/api/tools/status');
+        if (!res.ok) return;
+        const h = await res.json();
+
+        // Check Gate-01 readers
+        const g1EntryConn = (h.readers?.Gate01_Entry === 'CONNECTED' || h.readers?.Entry === 'CONNECTED');
+        const g1ExitConn = (h.readers?.Gate01_Exit === 'CONNECTED' || h.readers?.Exit === 'CONNECTED');
+        const g1Online = g1EntryConn || g1ExitConn;
+        const g1Stat = document.getElementById('liveGate01Stat');
+        const g1Dot = document.getElementById('gate01Indicator');
+        if (g1Stat) {
+            g1Stat.innerText = g1Online ? 'Online • Port 2121' : 'Offline / Waiting';
+            g1Stat.className = g1Online ? 'text-xs font-black text-emerald-700' : 'text-xs font-black text-rose-700';
+        }
+        if (g1Dot) {
+            g1Dot.className = g1Online ? 'w-2.5 h-2.5 rounded-full bg-emerald-500 ring-4 ring-emerald-100' : 'w-2.5 h-2.5 rounded-full bg-rose-500 ring-4 ring-rose-100';
+        }
+
+        // Check Club Road readers
+        const crEntryConn = (h.readers?.ClubRoad_Entry === 'CONNECTED');
+        const crExitConn = (h.readers?.ClubRoad_Exit === 'CONNECTED');
+        const crOnline = crEntryConn || crExitConn;
+        const crStat = document.getElementById('liveClubRoadStat');
+        const crDot = document.getElementById('clubRoadIndicator');
+        if (crStat) {
+            crStat.innerText = crOnline ? 'Online • Port 2121' : 'Offline / Waiting';
+            crStat.className = crOnline ? 'text-xs font-black text-blue-700' : 'text-xs font-black text-rose-700';
+        }
+        if (crDot) {
+            crDot.className = crOnline ? 'w-2.5 h-2.5 rounded-full bg-blue-500 ring-4 ring-blue-100' : 'w-2.5 h-2.5 rounded-full bg-rose-500 ring-4 ring-rose-100';
+        }
+
+        // Check Camera Feed
+        const camOnline = (h.cameras?.Hikvision === 'ONLINE');
+        const camReconnecting = (h.cameras?.Hikvision === 'RECONNECTING');
+        const camStat = document.getElementById('liveCamStat');
+        const camDot = document.getElementById('camIndicator');
+        if (camStat) {
+            if (camOnline) {
+                camStat.innerText = 'Online • HD Stream';
+                camStat.className = 'text-xs font-black text-emerald-700';
+            } else if (camReconnecting) {
+                camStat.innerText = 'Reconnecting...';
+                camStat.className = 'text-xs font-black text-amber-700';
+            } else {
+                camStat.innerText = 'Disconnected';
+                camStat.className = 'text-xs font-black text-rose-700';
+            }
+        }
+        if (camDot) {
+            if (camOnline) {
+                camDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 ring-4 ring-emerald-100';
+            } else if (camReconnecting) {
+                camDot.className = 'w-2.5 h-2.5 rounded-full bg-amber-500 ring-4 ring-amber-100 animate-pulse';
+            } else {
+                camDot.className = 'w-2.5 h-2.5 rounded-full bg-rose-500 ring-4 ring-rose-100';
+            }
+        }
+
+        // System Core Badge
+        const coreBadge = document.getElementById('subsystemCoreBadge');
+        if (coreBadge) {
+            if (!g1Online && !crOnline && !camOnline) {
+                coreBadge.innerText = 'Core Standby • Hardware Offline';
+            } else {
+                coreBadge.innerText = 'VAMS Core Active';
+            }
+        }
+
+        // Build System Health Warning Notice
+        const warnBanner = document.getElementById('systemHealthWarningBanner');
+        const warnTitle = document.getElementById('healthWarningTitle');
+        const warnMsg = document.getElementById('healthWarningMessage');
+        const warnBadge = document.getElementById('healthWarningBadge');
+        const warnWrapper = document.getElementById('healthWarningIconWrapper');
+        const warnBtn = document.getElementById('healthWarningActionBtn');
+
+        if (warnBanner) {
+            const missingHardware = [];
+            if (!g1Online) missingHardware.push('Gate-01 Reader');
+            if (!crOnline) missingHardware.push('Club Road Gate Reader');
+            if (!camOnline) missingHardware.push(camReconnecting ? 'Hikvision Camera (Reconnecting)' : 'Hikvision Camera');
+
+            if (missingHardware.length > 0) {
+                warnBanner.classList.remove('hidden');
+                const isAllDown = (!g1Online && !crOnline && !camOnline);
+
+                if (isAllDown) {
+                    warnBanner.className = 'rounded-3xl p-4 sm:p-5 border border-rose-200 bg-rose-50/80 shadow-xs transition-all duration-300';
+                    warnTitle.innerText = 'Hardware Disconnected — Running in Autonomous Standby';
+                    warnTitle.className = 'text-sm font-black tracking-tight text-rose-950';
+                    warnMsg.innerText = `Physical readers (${missingHardware.join(', ')}) are not currently connected to TCP/RTSP sockets. Passages can still be entered manually or simulated via Simulation Console.`;
+                    warnMsg.className = 'text-xs font-semibold text-rose-800 mt-0.5';
+                    warnBadge.innerText = 'HARDWARE OFFLINE';
+                    warnBadge.className = 'text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md font-mono bg-rose-100 text-rose-800 border border-rose-300';
+                    warnWrapper.className = 'w-10 h-10 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center shrink-0';
+                    warnBtn.className = 'text-xs font-bold px-3.5 py-1.5 rounded-xl border border-rose-300 bg-white hover:bg-rose-100 text-rose-900 transition shadow-2xs flex items-center gap-1.5';
+                } else {
+                    warnBanner.className = 'rounded-3xl p-4 sm:p-5 border border-amber-200 bg-amber-50/80 shadow-xs transition-all duration-300';
+                    warnTitle.innerText = 'Partial Hardware Alert — Some Devices Not Detected';
+                    warnTitle.className = 'text-sm font-black tracking-tight text-amber-950';
+                    warnMsg.innerText = `Attention required: ${missingHardware.join(', ')} currently disconnected. Verify device IP addresses and network power.`;
+                    warnMsg.className = 'text-xs font-semibold text-amber-800 mt-0.5';
+                    warnBadge.innerText = 'ATTENTION NEEDED';
+                    warnBadge.className = 'text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md font-mono bg-amber-100 text-amber-800 border border-amber-300';
+                    warnWrapper.className = 'w-10 h-10 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0';
+                    warnBtn.className = 'text-xs font-bold px-3.5 py-1.5 rounded-xl border border-amber-300 bg-white hover:bg-amber-100 text-amber-900 transition shadow-2xs flex items-center gap-1.5';
+                }
+            } else {
+                warnBanner.classList.add('hidden');
+            }
+        }
+    } catch (e) {
+        console.error('updateDashboardHealth error:', e);
     }
 }
 
@@ -729,26 +856,30 @@ function initCharts() {
                 {
                     label: 'Entries',
                     data: [],
-                    borderColor: '#10B981',
-                    backgroundColor: 'rgba(16, 185, 129, 0.14)',
+                    borderColor: '#059669',
+                    backgroundColor: 'rgba(5, 150, 105, 0.08)',
                     fill: true,
-                    tension: 0.35,
+                    tension: 0.32,
                     borderWidth: 2.5,
-                    pointRadius: 3,
+                    pointRadius: 3.5,
                     pointHoverRadius: 6,
-                    pointBackgroundColor: '#10B981'
+                    pointBackgroundColor: '#FFFFFF',
+                    pointBorderColor: '#059669',
+                    pointBorderWidth: 2
                 },
                 {
                     label: 'Exits',
                     data: [],
-                    borderColor: '#3B82F6',
-                    backgroundColor: 'rgba(59, 130, 246, 0.08)',
+                    borderColor: '#2563EB',
+                    backgroundColor: 'rgba(37, 99, 235, 0.06)',
                     fill: true,
-                    tension: 0.35,
+                    tension: 0.32,
                     borderWidth: 2.5,
-                    pointRadius: 3,
+                    pointRadius: 3.5,
                     pointHoverRadius: 6,
-                    pointBackgroundColor: '#3B82F6'
+                    pointBackgroundColor: '#FFFFFF',
+                    pointBorderColor: '#2563EB',
+                    pointBorderWidth: 2
                 }
             ]
         },
@@ -762,22 +893,69 @@ function initCharts() {
             plugins: {
                 legend: { display: false },
                 tooltip: {
-                    backgroundColor: '#0F172A',
-                    titleFont: { weight: 'bold', size: 12 },
-                    bodyFont: { size: 11 },
-                    padding: 10,
-                    cornerRadius: 8
+                    backgroundColor: '#FFFFFF',
+                    titleColor: '#0F172A',
+                    bodyColor: '#334155',
+                    borderColor: '#E2E8F0',
+                    borderWidth: 1,
+                    titleFont: { weight: '800', size: 12 },
+                    bodyFont: { weight: '600', size: 11 },
+                    padding: 12,
+                    boxPadding: 4,
+                    cornerRadius: 12,
+                    usePointStyle: true,
+                    callbacks: {
+                        title: function(items) {
+                            if (!items.length) return '';
+                            const hr = parseInt(items[0].label, 10);
+                            const ampm = hr >= 12 ? 'PM' : 'AM';
+                            const displayHr = hr % 12 === 0 ? 12 : hr % 12;
+                            return `Time Window: ${displayHr}:00 ${ampm} - ${displayHr}:59 ${ampm}`;
+                        },
+                        label: function(item) {
+                            return ` ${item.dataset.label}: ${item.parsed.y} vehicles`;
+                        }
+                    }
                 }
             },
             scales: {
                 x: {
-                    grid: { display: false },
-                    ticks: { maxRotation: 0, font: { size: 10 } }
+                    grid: { 
+                        display: true,
+                        color: 'rgba(241, 245, 249, 1)',
+                        drawTicks: false
+                    },
+                    ticks: { 
+                        maxRotation: 0, 
+                        font: { size: 10, weight: '600' },
+                        color: '#64748B',
+                        padding: 6,
+                        callback: function(val, index) {
+                            const label = this.getLabelForValue(val);
+                            const h = parseInt(label, 10);
+                            if (h % 2 === 0) {
+                                const ampm = h >= 12 ? 'PM' : 'AM';
+                                const dH = h % 12 === 0 ? 12 : h % 12;
+                                return `${dH} ${ampm}`;
+                            }
+                            return '';
+                        }
+                    }
                 },
                 y: {
                     beginAtZero: true,
-                    ticks: { precision: 0, stepSize: 1, font: { size: 10 } },
-                    grid: { color: 'rgba(226, 232, 240, 0.7)' }
+                    suggestedMax: 10,
+                    ticks: { 
+                        precision: 0, 
+                        stepSize: 5, 
+                        font: { size: 10, weight: '600' },
+                        color: '#64748B',
+                        padding: 8
+                    },
+                    grid: { 
+                        color: 'rgba(241, 245, 249, 1)',
+                        drawBorder: false
+                    }
                 }
             }
         }
@@ -874,7 +1052,10 @@ async function loadCharts() {
                     const tot = en + ex;
                     if (tot > maxTotal) {
                         maxTotal = tot;
-                        peakHourStr = `${c.hours[i]}:00 (${tot} transits)`;
+                        const hrNum = parseInt(c.hours[i], 10);
+                        const ampm = hrNum >= 12 ? 'PM' : 'AM';
+                        const dHr = hrNum % 12 === 0 ? 12 : hrNum % 12;
+                        peakHourStr = `${dHr}:00 ${ampm} (${tot} transits)`;
                     }
                 }
             }
@@ -950,9 +1131,17 @@ async function loadHardware() {
         const allOk = (g1EntryStatus === 'CONNECTED') && (g1ExitStatus === 'CONNECTED') && (s.cameras.Hikvision === 'ONLINE');
         const badge = document.getElementById('sysBadge');
         if (badge) {
-            badge.className = 'inline-flex items-center px-3 py-1.5 rounded-full mb-2 border ' + (allOk ? 'bg-emerald-100 border-emerald-200' : 'bg-amber-100 border-amber-200');
-            badge.innerHTML = `<div class="w-2 h-2 rounded-full ${allOk ? 'bg-emerald-500' : 'bg-amber-500'} animate-pulse mr-2"></div><span class="text-xs font-bold ${allOk ? 'text-emerald-700' : 'text-amber-700'}">${allOk ? 'ALL SYSTEMS OPERATIONAL' : 'ATTENTION REQUIRED'}</span>`;
+            if (allOk) {
+                badge.className = 'inline-flex items-center bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-full mb-1.5 shadow-2xs';
+                badge.innerHTML = `<div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse mr-2"></div><span class="text-xs font-black text-emerald-800">ALL SYSTEMS ONLINE</span>`;
+            } else {
+                badge.className = 'inline-flex items-center bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-full mb-1.5 shadow-2xs';
+                badge.innerHTML = `<div class="w-2 h-2 rounded-full bg-amber-500 animate-pulse mr-2"></div><span class="text-xs font-black text-amber-800">ATTENTION REQUIRED</span>`;
+            }
         }
+
+        // Also synchronize header subsystem health
+        updateDashboardHealth();
     } catch (err) {
         console.error('loadHardware error:', err);
     }
@@ -4140,6 +4329,9 @@ async function loadGateFeed() {
 
         const isFirstLoad = (lastSeenTransitId === null);
         const isNewTransit = (lastSeenTransitId !== null && lastSeenTransitId !== log.id);
+        if (!isFirstLoad && !isNewTransit) {
+            return; // Zero-overhead bypass: transit unchanged, preserve 60FPS UI
+        }
         lastSeenTransitId = log.id;
 
         // Render data into Kiosk elements
@@ -5517,11 +5709,51 @@ document.addEventListener('DOMContentLoaded', () => {
         switchTab(urlTab);
     }
 
-    setInterval(loadStats, 5000);
-    setInterval(loadGateFeed, 800);
-    setInterval(loadCharts, 30000);
-    setInterval(loadHardware, 3000);
-    setInterval(loadActivity, 5000);
+    // Adaptive non-colliding polling loops: guarantees zero request pileup
+    async function pollGateFeed() {
+        if (!document.hidden) {
+            try { await loadGateFeed(); } catch (e) {}
+        }
+        setTimeout(pollGateFeed, document.hidden ? 3000 : 800);
+    }
+    async function pollStats() {
+        if (!document.hidden) {
+            try { await loadStats(); } catch (e) {}
+        }
+        setTimeout(pollStats, document.hidden ? 15000 : 5000);
+    }
+    async function pollHardware() {
+        if (!document.hidden) {
+            try { await loadHardware(); } catch (e) {}
+        }
+        setTimeout(pollHardware, document.hidden ? 10000 : 3000);
+    }
+    async function pollActivity() {
+        if (!document.hidden) {
+            try { await loadActivity(); } catch (e) {}
+        }
+        setTimeout(pollActivity, document.hidden ? 15000 : 5000);
+    }
+    async function pollCharts() {
+        if (!document.hidden) {
+            try { await loadCharts(); } catch (e) {}
+        }
+        setTimeout(pollCharts, document.hidden ? 60000 : 30000);
+    }
+
+    pollGateFeed();
+    pollStats();
+    pollHardware();
+    pollActivity();
+    pollCharts();
+
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+            loadGateFeed();
+            loadStats();
+            loadHardware();
+        }
+    });
 
     // Smart auto-refresh: Vehicle Audit refreshes every 10s silently when visible
     setInterval(() => {

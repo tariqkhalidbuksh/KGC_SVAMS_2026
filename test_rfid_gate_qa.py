@@ -62,10 +62,10 @@ class TestRFIDGateQAEngineer:
             assert log1["direction"] == "Entry"
             assert log1["Current_Location"] == "Inside"
 
-        # Expire cooldown artificially
+        # Expire cooldown artificially (exceeds default 60s cooldown)
         with get_db_connection() as conn:
             with conn:
-                conn.execute("UPDATE daily_logs SET timestamp = datetime('now', '-50 seconds') WHERE id=?", (log_id1,))
+                conn.execute("UPDATE daily_logs SET timestamp = datetime('now', '-70 seconds') WHERE id=?", (log_id1,))
 
         # Transit 2: Inside -> Exit
         log_id2 = execute_access_decision(test_epc, direction="Exit")

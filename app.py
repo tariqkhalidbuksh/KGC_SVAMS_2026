@@ -9,6 +9,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.gzip import GZipMiddleware
 
 import config
 from database import init_db, get_db_connection
@@ -40,9 +41,12 @@ async def lifespan(app_instance: FastAPI):
     threading.Thread(target=rfid_tcp_client_worker, args=("Exit", "clubroad_exit_reader_ip", "Main Gate (Club Road) Exit Reader", "ClubRoad_Exit"), daemon=True, name="ClubRoad_ExitWorker").start()
     threading.Thread(target=preview_stream_worker, args=("Hikvision", "hikvision_cam_url"), daemon=True, name="HikStreamWorker").start()
     threading.Thread(target=buffer_cleaner_worker, daemon=True, name="BufferCleaner").start()
+    from services.rfid_service import midnight_auto_exit_worker
+    threading.Thread(target=midnight_auto_exit_worker, daemon=True, name="MidnightAutoExitWorker").start()
     yield
 
 app = FastAPI(title="Karachi Gymkhana Club - Smart Vehicle Access", lifespan=lifespan)
+app.add_middleware(GZipMiddleware, minimum_size=500)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.include_router(auth.router)
@@ -155,6 +159,22 @@ def free_port(port: int):
                     subprocess.run(f"taskkill /F /PID {pid}", shell=True, capture_output=True)
     except Exception:
         pass
+
+
+@app.post("/api/admin/restart")
+async def admin_restart(request: Request):
+    from routers.auth import get_current_user_optional
+    user = get_current_user_optional(request)
+    if not user or user.get("role") != "Admin":
+        from fastapi import HTTPException
+        raise HTTPException(403, "Administrator privileges required to restart server.")
+
+    def _do_restart():
+        import time
+        time.sleep(0.5)
+        os._exit(0)
+    threading.Thread(target=_do_restart, daemon=True).start()
+    return {"ok": True, "message": "Server restarting via watchdog..."}
 
 if __name__ == "__main__":
     import uvicorn

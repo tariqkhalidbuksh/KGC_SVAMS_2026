@@ -134,6 +134,10 @@ def execute_access_decision(
                         access_type = "RFID Verified"
                         resolved_status = "Active"
                 else:
+                    # Never track, log, or flag vehicles with unregistered M-Tags
+                    if clean_tag.startswith(("E2801105", "E2801114")):
+                        return None
+
                     name, mem_id, car, access_type, tag_type = classify_unregistered_tag(clean_tag)
                     make_model = None
                     profile_pic = None
@@ -148,14 +152,18 @@ def execute_access_decision(
 
                 if last_tag_log:
                     try:
-                        last_log_str = last_tag_log['timestamp']
+                        last_log_str = str(last_tag_log['timestamp'])
                         try:
-                            last_log_dt = datetime.strptime(last_log_str, "%Y-%m-%d %H:%M:%S")
+                            last_log_dt = datetime.strptime(last_log_str[:19], "%Y-%m-%d %H:%M:%S")
                         except ValueError:
-                            last_log_dt = datetime.strptime(last_log_str, "%Y-%m-%d %I:%M:%S %p")
-                        
+                            try:
+                                last_log_dt = datetime.strptime(last_log_str, "%Y-%m-%d %I:%M:%S %p")
+                            except Exception:
+                                last_log_dt = datetime.now()
+
+                        # Stored timestamp is saved with config.get_pkt_now() (local time)
+                        # or in unit tests with SQLite datetime('now', '-50 seconds') (UTC time).
                         elapsed_sec = (datetime.now() - last_log_dt).total_seconds()
-                        # Normalize if stored timestamp was created in UTC by SQLite datetime('now') while host is in PKT (UTC+5)
                         if 17800 < elapsed_sec < 18200:
                             elapsed_sec -= 18000
                         elif -18200 < elapsed_sec < -17800:
@@ -193,11 +201,31 @@ def execute_access_decision(
                 if not active_loc and last_tag_log:
                     active_loc = "Inside" if last_tag_log['direction'] == "Entry" else "Outside"
 
+                # Check for post-midnight exit adjustment:
+                # If vehicle was auto-cleared at 23:59:00 last night and is physically scanning at an Exit reader
+                # after midnight (e.g. 00:00 to 06:00), adjust the auto-exit log instead of creating a broken state.
+                is_post_midnight_adjust = False
+                midnight_log_id = None
+                if last_tag_log and direction == "Exit":
+                    try:
+                        last_ts_str = str(last_tag_log['timestamp'])
+                        last_log_id = last_tag_log['id']
+                        # Check if last log was an auto-midnight exit within the last 8 hours
+                        auto_exit_check = conn.execute(
+                            "SELECT id, access_type, timestamp FROM daily_logs WHERE id = ? AND access_type LIKE '%Auto Midnight Exit%'",
+                            (last_log_id,)
+                        ).fetchone()
+                        if auto_exit_check:
+                            is_post_midnight_adjust = True
+                            midnight_log_id = auto_exit_check['id']
+                    except Exception:
+                        pass
+
                 # DIRECTION RESOLUTION:
                 # If vehicle already shows 'Inside' facility, ANY reader detecting it marks it as 'Exit'!
                 # (Antennas at adjacent gate lanes have RF spillover; a car departing will scan whichever antenna it passes)
                 # The detecting reader is recorded in gate_no so logs accurately show which reader detected the car.
-                if active_loc == "Inside":
+                if active_loc == "Inside" or is_post_midnight_adjust:
                     resolved_direction = "Exit"
                 else:
                     # Vehicle is Outside or cold start / first-time arrival
@@ -238,12 +266,23 @@ def execute_access_decision(
                 else:
                     resolved_gate = "Gate-01 Entry Reader" if resolved_direction == "Entry" else "Gate-01 Exit Reader"
 
-                cursor = conn.execute("""INSERT INTO daily_logs
-                    (mem_id, name, vehicle_number, access_type, direction, gate_no, image_path, plate_image_path, scanned_tag, timestamp)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-                    (mem_id, name, car, access_type, resolved_direction, resolved_gate, path_full, path_plate, clean_tag, pkt_now))
-                conn.commit()
-                new_id = cursor.lastrowid
+                if is_post_midnight_adjust and midnight_log_id:
+                    # Seamlessly adjust the auto-midnight cutoff log to the actual physical exit
+                    adjusted_access = f"{access_type} (Post-Midnight Adjusted)"
+                    conn.execute("""
+                        UPDATE daily_logs 
+                        SET timestamp = ?, gate_no = ?, access_type = ?, image_path = COALESCE(?, image_path), plate_image_path = COALESCE(?, plate_image_path)
+                        WHERE id = ?
+                    """, (pkt_now, resolved_gate, adjusted_access, path_full, path_plate, midnight_log_id))
+                    conn.commit()
+                    new_id = midnight_log_id
+                else:
+                    cursor = conn.execute("""INSERT INTO daily_logs
+                        (mem_id, name, vehicle_number, access_type, direction, gate_no, image_path, plate_image_path, scanned_tag, timestamp)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                        (mem_id, name, car, access_type, resolved_direction, resolved_gate, path_full, path_plate, clean_tag, pkt_now))
+                    conn.commit()
+                    new_id = cursor.lastrowid
 
                 # Update in-memory latest log cache for ZERO-LAG KIOSK POLLING (< 0.05ms response)
                 station = detect_gate_station(resolved_gate, conn=conn)

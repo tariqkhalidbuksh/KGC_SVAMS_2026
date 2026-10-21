@@ -175,10 +175,31 @@ async def get_members(page: int = 1, limit: int = 25, search: str = "", all: boo
             offset = (page - 1) * limit
             search_clean = search.strip()
 
-            total_vehicles = conn.execute("SELECT COUNT(*) FROM members").fetchone()[0]
-            unique_members = conn.execute("SELECT COUNT(DISTINCT Mem_id) FROM members WHERE Mem_id != '' AND Mem_id IS NOT NULL").fetchone()[0]
-            total_active = conn.execute("SELECT COUNT(*) FROM members WHERE Status='Active' OR Status IS NULL OR Status=''").fetchone()[0]
-            total_tagged = conn.execute("SELECT COUNT(*) FROM members WHERE E_tag_id != '' AND E_tag_id IS NOT NULL").fetchone()[0]
+            now_epoch = time.time()
+            with config.CACHE_LOCK:
+                cached_counts = getattr(config, 'MEMBERS_METRICS_CACHE', {}).get("data")
+                cache_time = getattr(config, 'MEMBERS_METRICS_CACHE', {}).get("timestamp", 0.0)
+
+            if cached_counts and (now_epoch - cache_time < 30.0):
+                total_vehicles = cached_counts.get("total_vehicles", 0)
+                unique_members = cached_counts.get("unique_mems", 0)
+                total_active = cached_counts.get("members_count", 0)
+                total_tagged = cached_counts.get("total_tagged", 0)
+            else:
+                total_vehicles = conn.execute("SELECT COUNT(*) FROM members").fetchone()[0]
+                unique_members = conn.execute("SELECT COUNT(DISTINCT Mem_id) FROM members WHERE Mem_id != '' AND Mem_id IS NOT NULL").fetchone()[0]
+                total_active = conn.execute("SELECT COUNT(*) FROM members WHERE Status='Active' OR Status IS NULL OR Status=''").fetchone()[0]
+                total_tagged = conn.execute("SELECT COUNT(*) FROM members WHERE E_tag_id != '' AND E_tag_id IS NOT NULL").fetchone()[0]
+                with config.CACHE_LOCK:
+                    config.MEMBERS_METRICS_CACHE = {
+                        "data": {
+                            "total_vehicles": total_vehicles,
+                            "unique_mems": unique_members,
+                            "members_count": total_active,
+                            "total_tagged": total_tagged
+                        },
+                        "timestamp": now_epoch
+                    }
 
             if not grouped:
                 if search_clean:
@@ -217,7 +238,7 @@ async def get_members(page: int = 1, limit: int = 25, search: str = "", all: boo
                                SELECT DISTINCT Mem_id FROM members
                                WHERE Name LIKE ? OR Mem_id LIKE ? OR Car_number LIKE ? OR E_tag_id LIKE ? OR Make_Model LIKE ?
                            )
-                           GROUP BY m.Mem_id
+                           GROUP BY m.Mem_id, m.Name, m.Profile_pic, m.Status
                            ORDER BY m.Name ASC LIMIT ? OFFSET ?""",
                         (like_pat, like_pat, like_pat, like_pat, like_pat, limit, offset)
                     ).fetchall()
@@ -228,7 +249,7 @@ async def get_members(page: int = 1, limit: int = 25, search: str = "", all: boo
                                   COUNT(m.id) as vehicle_count,
                                   SUM(CASE WHEN m.E_tag_id IS NOT NULL AND m.E_tag_id != '' THEN 1 ELSE 0 END) as tagged_count
                            FROM members m
-                           GROUP BY m.Mem_id
+                           GROUP BY m.Mem_id, m.Name, m.Profile_pic, m.Status
                            ORDER BY m.Name ASC LIMIT ? OFFSET ?""",
                         (limit, offset)
                     ).fetchall()

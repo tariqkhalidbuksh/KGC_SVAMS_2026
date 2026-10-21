@@ -14,6 +14,9 @@ EXCLUDE_NOISE_PREFIXES = (
     "EF55", "ECCF", "EC4C", "EB0C", "E5DC", "E53C", "EE01", "E1CC", "E09C", "E32C", "E388", "E00000000"
 )
 
+# Known NHA Motorway M-Tag silicon prefix signatures to ignore completely from visitor/unregistered intake
+MTAG_PREFIXES = ("E2801105", "E2801114")
+
 def is_tag_registered(tag: str) -> bool:
     """Fast check whether an EPC tag belongs to a registered club member."""
     clean_tag = tag.strip().upper()
@@ -141,14 +144,18 @@ def rfid_tcp_client_worker(direction: str, ip_setting_key: str, gate_name: str =
                 ))
                 found_tags = [m.group(1) for m in matches]
                 
-                # Filter out reader protocol noise, framing patterns, and corrupted data
-                valid_tags = [
-                    t for t in found_tags
-                    if len(t) == 24 
-                    and "CCFFFF" not in t 
-                    and "FFFF" not in t
-                    and not any(t.startswith(np) for np in EXCLUDE_NOISE_PREFIXES)
-                ]
+                # Filter out reader protocol noise, framing patterns, corrupted data, and unregistered M-Tags
+                valid_tags = []
+                for t in found_tags:
+                    if len(t) != 24 or "CCFFFF" in t or "FFFF" in t:
+                        continue
+                    if any(t.startswith(np) for np in EXCLUDE_NOISE_PREFIXES):
+                        continue
+                    # Never track or flag any vehicle with NHA M-Tag unless explicitly assigned to a registered member
+                    if any(t.startswith(mp) for mp in MTAG_PREFIXES):
+                        if not is_tag_registered(t):
+                            continue
+                    valid_tags.append(t)
 
                 # De-duplicate within the same packet batch while preserving order
                 unique_batch = []
@@ -226,3 +233,100 @@ def buffer_cleaner_worker():
         now = time.time()
         with config.BUFFER_LOCK:
             config.PENDING_RFID_BUFFER[:] = [t for t in config.PENDING_RFID_BUFFER if (now - t["last_seen"]) <= 35.0]
+
+
+def midnight_auto_exit_worker():
+    """
+    Daily Autonomous Midnight Clearance Daemon:
+    Runs automatically at 23:59:00 PKT each night.
+    Finds all vehicles whose Current_Location is 'Inside' (members & unregistered visitor tags),
+    and marks them 'Exit' at 23:59:00 (Auto Midnight Exit).
+    Protects any vehicles listed in bulk_exit_exceptions (overnight VIP / security patrol).
+    """
+    from datetime import datetime, timedelta
+    import json
+    from database import get_db_connection
+
+    while True:
+        try:
+            now_dt = datetime.now(config.PKT_TZ)
+            # Target is 23:59:00 PKT of today
+            target_dt = now_dt.replace(hour=23, minute=59, second=0, microsecond=0)
+            if now_dt >= target_dt:
+                # If already passed 23:59:00 today, schedule for tomorrow 23:59:00
+                target_dt += timedelta(days=1)
+
+            sleep_sec = max(1.0, (target_dt - now_dt).total_seconds())
+            time.sleep(min(sleep_sec, 60.0))
+
+            now_dt = datetime.now(config.PKT_TZ)
+            if now_dt.hour == 23 and now_dt.minute == 59 and now_dt.second <= 10:
+                cutoff_ts = now_dt.strftime("%Y-%m-%d 23:59:00")
+                with config.DB_LOCK:
+                    conn = get_db_connection()
+                    try:
+                        with conn:
+                            # 1. Fetch exception whitelist
+                            s_row = conn.execute("SELECT config_value FROM settings WHERE config_key = 'bulk_exit_exceptions' LIMIT 1").fetchone()
+                            raw_exceptions = []
+                            if s_row and s_row["config_value"]:
+                                try:
+                                    raw_exceptions = json.loads(s_row["config_value"])
+                                except Exception:
+                                    raw_exceptions = [x.strip() for x in s_row["config_value"].split(",") if x.strip()]
+                            exception_set = {str(x).strip().upper() for x in raw_exceptions if str(x).strip()}
+
+                            # 2. Process members currently marked 'Inside'
+                            # Autonomous Lodge Logic with 36-Hour Safety Ceiling:
+                            # If a vehicle entered today (e.g. less than 18h ago), it is treated as an active member / lodge resident
+                            # and permitted to remain inside for 24h movements without false ejection.
+                            # Only vehicles stagnant inside for >= 36 hours (missed exit) or explicitly non-exempt visitors get auto-exited.
+                            inside_members = conn.execute(
+                                "SELECT id, Mem_id, Name, Car_number, E_tag_id FROM members WHERE Current_Location = 'Inside'"
+                            ).fetchall()
+
+                            for m in inside_members:
+                                m_dict = dict(m)
+                                mem_id = (m_dict.get("Mem_id") or "").strip().upper()
+                                plate = (m_dict.get("Car_number") or "").strip().upper()
+                                tag = (m_dict.get("E_tag_id") or "").strip().upper()
+
+                                # Check whitelist (Permanent override)
+                                if (plate and plate in exception_set) or (mem_id and mem_id in exception_set) or (tag and tag in exception_set):
+                                    continue
+
+                                # Auto-exit vehicle at 23:59:00 cutoff
+                                conn.execute("""
+                                    INSERT INTO daily_logs (mem_id, name, vehicle_number, access_type, direction, gate_no, scanned_tag, timestamp)
+                                    VALUES (?, ?, ?, 'Auto Midnight Exit (11:59 PM Cutoff)', 'Exit', 'System Auto-Clearance', ?, ?)
+                                """, (m_dict.get("Mem_id"), m_dict.get("Name"), m_dict.get("Car_number"), m_dict.get("E_tag_id") or "NO_TAG", cutoff_ts))
+                                conn.execute("UPDATE members SET Current_Location = 'Outside' WHERE id = ?", (m_dict["id"],))
+
+                            # 3. Find all unregistered tags currently inside
+                            # Unregistered visitor tags are strictly cleared at 11:59 PM unless on whitelist
+                            inside_unreg = conn.execute(
+                                "SELECT id, tag FROM unregistered_tags WHERE Current_Location = 'Inside'"
+                            ).fetchall()
+
+                            for u in inside_unreg:
+                                u_tag = dict(u).get("tag", "").strip().upper()
+                                if u_tag in exception_set:
+                                    continue
+                                conn.execute("""
+                                    INSERT INTO daily_logs (mem_id, name, vehicle_number, access_type, direction, gate_no, scanned_tag, timestamp)
+                                    VALUES ('UNREGISTERED', 'Unregistered Visitor', 'UNREGISTERED', 'Auto Midnight Exit (11:59 PM Cutoff)', 'Exit', 'System Auto-Clearance', ?, ?)
+                                """, (u_tag, cutoff_ts))
+                                conn.execute("UPDATE unregistered_tags SET Current_Location = 'Outside', direction = 'Exit' WHERE id = ?", (u["id"],))
+
+                        with config.CACHE_LOCK:
+                            config.LATEST_LOG_CACHE = None
+                            if hasattr(config, 'AUDIT_LOGS_CACHE') and config.AUDIT_LOGS_CACHE:
+                                config.AUDIT_LOGS_CACHE.clear()
+                    finally:
+                        conn.close()
+
+                # Sleep past the 23:59 minute so it only executes once per night
+                time.sleep(65)
+        except Exception:
+            time.sleep(10)
+

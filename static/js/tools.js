@@ -50,8 +50,8 @@ const DEVICE_CONFIG = {
         type: 'CAMERA'
     },
     'Database': {
-        name: 'SQLite Core Storage',
-        short: 'SQLite Engine',
+        name: 'Database Engine',
+        short: 'PostgreSQL Engine',
         color: '#059669', // Emerald
         bg: 'rgba(5, 150, 105, 0.08)',
         border: 'rgba(5, 150, 105, 0.4)',
@@ -65,6 +65,7 @@ let pollTimer = null;
 let isStreamPaused = false;
 let audioEnabled = false;
 let audioCtx = null;
+let useSyntheticMode = false;
 
 // Time-Series Graph Data (Max 45 points)
 const MAX_GRAPH_POINTS = 45;
@@ -506,7 +507,7 @@ async function fetchTelemetry() {
     if (isStreamPaused) return;
 
     try {
-        const res = await fetch('/api/tools/telemetry?synthetic=true');
+        const res = await fetch(`/api/tools/telemetry?synthetic=${useSyntheticMode}`);
         if (!res.ok) return;
         const data = await res.json();
 
@@ -737,7 +738,7 @@ async function pingDevice(deviceId, btn) {
     if (cardEl) cardEl.classList.add('ring-2', 'ring-blue-400');
 
     try {
-        const res = await fetch(`/api/tools/ping/${deviceId}`, { method: 'POST' });
+        const res = await fetch(`/api/tools/ping/${deviceId}?synthetic=${useSyntheticMode}`, { method: 'POST' });
         const data = await res.json();
         const r = data.result || {};
 
@@ -809,6 +810,23 @@ function setPollInterval(ms) {
 
     if (pollTimer) clearInterval(pollTimer);
     pollTimer = setInterval(fetchTelemetry, pollIntervalMs);
+}
+
+function setTelemetryMode(useSynthetic) {
+    useSyntheticMode = !!useSynthetic;
+    const physBtn = document.getElementById('modePhysicalBtn');
+    const synthBtn = document.getElementById('modeSyntheticBtn');
+
+    if (physBtn && synthBtn) {
+        if (!useSyntheticMode) {
+            physBtn.className = 'px-3 py-1 rounded-lg text-xs font-black transition flex items-center gap-1.5 bg-white text-slate-900 shadow-2xs border border-slate-200';
+            synthBtn.className = 'px-3 py-1 rounded-lg text-xs font-bold text-slate-500 hover:text-slate-800 transition flex items-center gap-1.5';
+        } else {
+            synthBtn.className = 'px-3 py-1 rounded-lg text-xs font-black transition flex items-center gap-1.5 bg-white text-blue-700 shadow-2xs border border-blue-200';
+            physBtn.className = 'px-3 py-1 rounded-lg text-xs font-bold text-slate-500 hover:text-slate-800 transition flex items-center gap-1.5';
+        }
+    }
+    fetchTelemetry();
 }
 
 function togglePauseStream() {

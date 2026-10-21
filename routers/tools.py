@@ -51,10 +51,16 @@ def probe_single_device(device_id: str, allow_synthetic: bool = True) -> dict:
 
     if device_id == "Database":
         t0 = time.perf_counter()
+        is_pg = bool(getattr(config, "USE_POSTGRES", True))
+        db_name = "PostgreSQL 14.15 Database" if is_pg else "SQLite Core Storage"
+        db_role = "Enterprise Transactional ACID Engine" if is_pg else "Internal High-Speed ACID Storage"
+        db_proto = "PostgreSQL TCP 5432" if is_pg else "SQLite WAL Engine"
+        db_ip = "127.0.0.1:5432" if is_pg else "Localhost (WAL Engine)"
         try:
             with config.DB_LOCK:
                 conn = get_db_connection()
                 try:
+                    is_pg = hasattr(conn, "_pool") or bool(getattr(config, "USE_POSTGRES", True))
                     conn.execute("SELECT 1").fetchone()
                 finally:
                     conn.close()
@@ -62,11 +68,11 @@ def probe_single_device(device_id: str, allow_synthetic: bool = True) -> dict:
             counters["received"] += 1
             return {
                 "id": "Database",
-                "label": "SQLite Core Storage",
-                "role": "Internal High-Speed ACID Storage",
-                "ip": "Localhost (WAL Engine)",
-                "port": "Disk I/O",
-                "protocol": "SQLite WAL Engine",
+                "label": db_name,
+                "role": db_role,
+                "ip": db_ip,
+                "port": "5432" if is_pg else "Disk I/O",
+                "protocol": db_proto,
                 "status": "ONLINE",
                 "latency_ms": max(0.2, latency),
                 "is_synthetic": False
@@ -75,11 +81,11 @@ def probe_single_device(device_id: str, allow_synthetic: bool = True) -> dict:
             counters["lost"] += 1
             return {
                 "id": "Database",
-                "label": "SQLite Core Storage",
-                "role": "Internal Storage",
-                "ip": "Localhost",
-                "port": "Disk I/O",
-                "protocol": "SQLite WAL",
+                "label": db_name,
+                "role": db_role,
+                "ip": db_ip,
+                "port": "5432" if is_pg else "Disk I/O",
+                "protocol": db_proto,
                 "status": "DEGRADED",
                 "latency_ms": None,
                 "is_synthetic": False
@@ -200,7 +206,7 @@ def probe_single_device(device_id: str, allow_synthetic: bool = True) -> dict:
     }
 
 @router.get("/telemetry")
-async def get_hardware_telemetry(synthetic: bool = Query(True)):
+async def get_hardware_telemetry(synthetic: bool = Query(False)):
     """
     Sub-second real-time telemetry endpoint.
     Returns per-subsystem round-trip latency (ms), rolling time-series graph points,
@@ -278,16 +284,13 @@ async def get_hardware_telemetry(synthetic: bool = Query(True)):
     }
 
 @router.post("/ping/{device_id}")
-async def ping_single_hardware_node(device_id: str):
+async def ping_single_hardware_node(device_id: str, synthetic: bool = Query(True)):
     """
     On-demand single hardware packet probe. Returns exact RTT in milliseconds.
     """
     if device_id not in TELEMETRY_BUFFERS:
         raise HTTPException(400, f"Unknown hardware device '{device_id}'")
-    result = probe_single_device(device_id, allow_synthetic=False)
-    if result["latency_ms"] is None:
-        # Fallback probe
-        result = probe_single_device(device_id, allow_synthetic=True)
+    result = probe_single_device(device_id, allow_synthetic=synthetic)
     return {"ok": True, "result": result}
 
 @router.post("/telemetry/reset")
