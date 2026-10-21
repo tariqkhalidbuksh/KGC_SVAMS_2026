@@ -1,9 +1,16 @@
 import hashlib
 import secrets
 import sqlite3
+import time
+import threading
 from datetime import datetime, timedelta
 import config
 from database import get_db_connection
+
+# In-memory session validation cache to eliminate DB lock contention across requests
+_SESSION_CACHE: dict[str, tuple[dict, float]] = {}
+_SESSION_LOCK = threading.Lock()
+SESSION_CACHE_TTL = 30.0  # 30 seconds TTL
 
 DEFAULT_USERS = [
     {
@@ -155,6 +162,13 @@ def validate_session(token: str) -> dict | None:
     """Validates session token and returns user info if valid, else None."""
     if not token:
         return None
+
+    now = time.time()
+    with _SESSION_LOCK:
+        cached = _SESSION_CACHE.get(token)
+        if cached and now < cached[1]:
+            return cached[0]
+
     with config.DB_LOCK:
         conn = get_db_connection()
         try:
@@ -166,13 +180,16 @@ def validate_session(token: str) -> dict | None:
             """, (token,)).fetchone()
             if not row:
                 return None
-            return {
+            user_data = {
                 "id": row["id"],
                 "username": row["username"],
                 "full_name": row["full_name"],
                 "role": row["role"],
                 "is_active": row["is_active"]
             }
+            with _SESSION_LOCK:
+                _SESSION_CACHE[token] = (user_data, now + SESSION_CACHE_TTL)
+            return user_data
         finally:
             conn.close()
 
@@ -180,6 +197,8 @@ def destroy_session(token: str):
     """Deletes session token."""
     if not token:
         return
+    with _SESSION_LOCK:
+        _SESSION_CACHE.pop(token, None)
     with config.DB_LOCK:
         conn = get_db_connection()
         try:
@@ -295,6 +314,9 @@ def update_user(user_id: int, full_name: str = None, role: str = None, is_active
             with conn:
                 conn.execute(f"UPDATE users SET {', '.join(updates)} WHERE id = ?", params)
 
+            with _SESSION_LOCK:
+                _SESSION_CACHE.clear()
+
             updated = conn.execute("SELECT id, username, full_name, role, is_active, created_at, last_login FROM users WHERE id = ?", (user_id,)).fetchone()
             return dict(updated)
         finally:
@@ -320,6 +342,9 @@ def delete_user(user_id: int, current_user_id: int = None) -> bool:
             with conn:
                 conn.execute("DELETE FROM user_sessions WHERE user_id = ?", (user_id,))
                 conn.execute("DELETE FROM users WHERE id = ?", (user_id,))
+
+            with _SESSION_LOCK:
+                _SESSION_CACHE.clear()
             return True
         finally:
             conn.close()

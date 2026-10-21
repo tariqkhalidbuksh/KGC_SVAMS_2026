@@ -9,7 +9,7 @@ def _compat_client_init(self, *args, **kwargs):
 httpx.Client.__init__ = _compat_client_init
 
 from app import app
-from database import get_db_connection
+from database import get_db_connection, set_setting
 from services.access_service import execute_access_decision
 import config
 
@@ -23,7 +23,7 @@ def clean_test_environment():
                 conn.execute("DELETE FROM daily_logs WHERE scanned_tag LIKE 'TEST_%'")
                 conn.execute("DELETE FROM unregistered_tags WHERE tag LIKE 'TEST_%'")
                 conn.execute("DELETE FROM members WHERE Mem_id LIKE 'MEM-TEST-%' OR E_tag_id LIKE 'TEST_%'")
-                conn.execute("UPDATE settings SET config_value = '45' WHERE config_key = 'rfid_cooldown_seconds'")
+    set_setting("rfid_cooldown_seconds", "45")
     yield
     with config.DB_LOCK:
         with get_db_connection() as conn:
@@ -31,7 +31,7 @@ def clean_test_environment():
                 conn.execute("DELETE FROM daily_logs WHERE scanned_tag LIKE 'TEST_%'")
                 conn.execute("DELETE FROM unregistered_tags WHERE tag LIKE 'TEST_%'")
                 conn.execute("DELETE FROM members WHERE Mem_id LIKE 'MEM-TEST-%' OR E_tag_id LIKE 'TEST_%'")
-                conn.execute("UPDATE settings SET config_value = '45' WHERE config_key = 'rfid_cooldown_seconds'")
+    set_setting("rfid_cooldown_seconds", "45")
 
 
 def test_reader_renaming_settings_persistence_and_propagation():

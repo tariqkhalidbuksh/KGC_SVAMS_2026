@@ -47,6 +47,14 @@ async def lifespan(app_instance: FastAPI):
 
 app = FastAPI(title="Karachi Gymkhana Club - Smart Vehicle Access", lifespan=lifespan)
 app.add_middleware(GZipMiddleware, minimum_size=500)
+
+@app.middleware("http")
+async def add_performance_headers(request: Request, call_next):
+    response = await call_next(request)
+    if request.url.path.startswith("/static/"):
+        response.headers["Cache-Control"] = "public, max-age=86400"
+    return response
+
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.include_router(auth.router)
@@ -65,10 +73,16 @@ async def direct_camera_trigger(request: Request):
     from routers.tools import receive_camera_trigger
     return await receive_camera_trigger(request)
 
+_TEMPLATE_CACHE: dict[str, str] = {}
+
 def render_template(template_name: str) -> str:
+    if template_name in _TEMPLATE_CACHE:
+        return _TEMPLATE_CACHE[template_name]
     path = os.path.join("templates", template_name)
     with open(path, "r", encoding="utf-8") as f:
-        return f.read()
+        content = f.read()
+        _TEMPLATE_CACHE[template_name] = content
+        return content
 
 @app.get("/login", response_class=HTMLResponse)
 async def login_view(request: Request):

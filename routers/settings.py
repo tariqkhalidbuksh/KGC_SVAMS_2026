@@ -2,7 +2,7 @@ import os
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse, FileResponse, StreamingResponse
 import config
-from database import get_db_connection
+from database import get_db_connection, set_setting
 from services.camera_service import stream_video
 
 router = APIRouter(prefix="/api", tags=["Settings & Streaming"])
@@ -37,15 +37,9 @@ def check_admin_permission(request: Request):
 async def save_settings(request: Request):
     check_admin_permission(request)
     body = await request.json()
-    with config.DB_LOCK:
-        conn = get_db_connection()
-        try:
-            with conn:
-                for key, val in body.items():
-                    conn.execute("INSERT OR REPLACE INTO settings (config_key, config_value) VALUES (?, ?)", (key, str(val)))
-            return {"ok": True}
-        finally:
-            conn.close()
+    for key, val in body.items():
+        set_setting(key, str(val))
+    return {"ok": True}
 
 @router.get("/stream/hikvision")
 async def stream_hikvision():
@@ -174,15 +168,7 @@ async def save_bulk_exit_exceptions(request: Request):
             seen.add(c)
             cleaned.append(c)
 
-    with config.DB_LOCK:
-        conn = get_db_connection()
-        try:
-            with conn:
-                conn.execute(
-                    "INSERT OR REPLACE INTO settings (config_key, config_value) VALUES ('bulk_exit_exceptions', ?)",
-                    (json.dumps(cleaned),)
-                )
-            return {"ok": True, "exceptions": cleaned}
-        finally:
-            conn.close()
+    import json
+    set_setting("bulk_exit_exceptions", json.dumps(cleaned))
+    return {"ok": True, "exceptions": cleaned}
 

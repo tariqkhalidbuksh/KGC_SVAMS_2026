@@ -121,6 +121,22 @@ def grab_verified_snapshot(cam_key: str = "Hikvision", max_timeout_sec: float = 
 
     return None
 
+def is_rtsp_host_reachable(cam_url: str, timeout: float = 0.15) -> bool:
+    """Probes RTSP host and port (default 554) with a non-blocking socket to prevent 30-second OpenCV hang."""
+    try:
+        m = re.search(r"://(?:[^@]+@)?([^:/]+)(?::(\d+))?", cam_url)
+        if not m:
+            return True
+        host = m.group(1)
+        port = int(m.group(2)) if m.group(2) else 554
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(timeout)
+        res = s.connect_ex((host, port))
+        s.close()
+        return res == 0
+    except Exception:
+        return False
+
 def preview_stream_worker(cam_key: str, url_setting_key: str):
     norm_key = cam_key.capitalize()
     while True:
@@ -128,6 +144,14 @@ def preview_stream_worker(cam_key: str, url_setting_key: str):
         if not cam_url:
             time.sleep(2)
             continue
+
+        # Fast 150ms socket check prevents 30-second OpenCV native hang when camera is offline
+        if not is_rtsp_host_reachable(cam_url, timeout=0.15):
+            with config.FRAME_LOCK:
+                config.CAM_STATUS[norm_key] = "OFFLINE"
+            time.sleep(4.0)
+            continue
+
         try:
             # Real-time zero-lag RTSP options: TCP transport, drop buffer queues, minimal delay, quiet logs
             os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp|fflags;nobuffer|flags;low_delay|max_delay;100000|loglevel;fatal"

@@ -8,6 +8,7 @@ and Auto-Fallback.
 import os
 import sys
 import re
+import time
 import threading
 import psycopg2
 from psycopg2.pool import ThreadedConnectionPool
@@ -22,6 +23,25 @@ PG_PASSWORD = os.environ.get("PG_PASSWORD", "")
 
 _PG_POOL: ThreadedConnectionPool | None = None
 _POOL_LOCK = threading.Lock()
+_PG_AVAILABLE = True
+_PG_NEXT_RETRY = 0.0
+
+# Ultra-fast in-memory settings cache to eliminate DB lock contention across reader/camera loops
+_SETTINGS_CACHE: dict[str, tuple[str, float]] = {}
+_SETTINGS_LOCK = threading.Lock()
+SETTINGS_CACHE_TTL = 15.0  # 15 seconds cache
+
+def is_pg_service_responsive() -> bool:
+    """Fast non-blocking 50ms socket probe to verify PostgreSQL is listening before libpq blocks."""
+    import socket
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(0.05)
+        res = s.connect_ex((PG_HOST, PG_PORT))
+        s.close()
+        return res == 0
+    except Exception:
+        return False
 
 def ensure_pg_database_exists():
     """Ensures the target PostgreSQL database exists; creates it via 'postgres' maintenance DB if missing."""
@@ -31,7 +51,8 @@ def ensure_pg_database_exists():
             port=PG_PORT,
             dbname="postgres",
             user=PG_USER,
-            password=PG_PASSWORD
+            password=PG_PASSWORD,
+            connect_timeout=2
         )
         conn.autocommit = True
         cur = conn.cursor()
@@ -44,10 +65,43 @@ def ensure_pg_database_exists():
         pass
 
 def get_pg_pool() -> ThreadedConnectionPool | None:
-    global _PG_POOL
-    if _PG_POOL is None:
-        with _POOL_LOCK:
-            if _PG_POOL is None:
+    global _PG_POOL, _PG_AVAILABLE, _PG_NEXT_RETRY
+    if _PG_POOL is not None:
+        return _PG_POOL
+
+    import time
+    now = time.time()
+    if not _PG_AVAILABLE and now < _PG_NEXT_RETRY:
+        return None
+
+    with _POOL_LOCK:
+        if _PG_POOL is not None:
+            return _PG_POOL
+        if not _PG_AVAILABLE and now < _PG_NEXT_RETRY:
+            return None
+
+        # Fast 50ms socket check to avoid 30-second libpq hang when port 5432 is closed
+        if not is_pg_service_responsive():
+            _PG_AVAILABLE = False
+            _PG_NEXT_RETRY = now + 30.0
+            return None
+
+        try:
+            _PG_POOL = ThreadedConnectionPool(
+                minconn=2,
+                maxconn=25,
+                host=PG_HOST,
+                port=PG_PORT,
+                dbname=PG_DBNAME,
+                user=PG_USER,
+                password=PG_PASSWORD,
+                connect_timeout=2
+            )
+            _PG_AVAILABLE = True
+        except psycopg2.OperationalError as op_err:
+            err_str = str(op_err).lower()
+            if "does not exist" in err_str:
+                ensure_pg_database_exists()
                 try:
                     _PG_POOL = ThreadedConnectionPool(
                         minconn=2,
@@ -56,27 +110,23 @@ def get_pg_pool() -> ThreadedConnectionPool | None:
                         port=PG_PORT,
                         dbname=PG_DBNAME,
                         user=PG_USER,
-                        password=PG_PASSWORD
+                        password=PG_PASSWORD,
+                        connect_timeout=2
                     )
-                except psycopg2.OperationalError as op_err:
-                    err_str = str(op_err).lower()
-                    if "does not exist" in err_str:
-                        ensure_pg_database_exists()
-                        try:
-                            _PG_POOL = ThreadedConnectionPool(
-                                minconn=2,
-                                maxconn=25,
-                                host=PG_HOST,
-                                port=PG_PORT,
-                                dbname=PG_DBNAME,
-                                user=PG_USER,
-                                password=PG_PASSWORD
-                            )
-                        except Exception:
-                            return None
-                    else:
-                        # Cannot connect to PostgreSQL server (e.g. connection refused)
-                        return None
+                    _PG_AVAILABLE = True
+                except Exception:
+                    _PG_AVAILABLE = False
+                    _PG_NEXT_RETRY = now + 30.0
+                    return None
+            else:
+                _PG_AVAILABLE = False
+                _PG_NEXT_RETRY = now + 30.0
+                return None
+        except Exception:
+            _PG_AVAILABLE = False
+            _PG_NEXT_RETRY = now + 30.0
+            return None
+
     return _PG_POOL
 
 class CaseInsensitiveRow(dict):
@@ -362,9 +412,14 @@ class PostgresConnectionWrapper:
         return False
 
 def _connect_sqlite(db_file: str):
-    """Initializes a case-insensitive SQLite connection matching the PostgreSQL adapter interface."""
+    """Initializes a case-insensitive SQLite connection matching the PostgreSQL adapter interface with high concurrency WAL mode."""
     import sqlite3
     conn = sqlite3.connect(db_file, check_same_thread=False, timeout=15.0)
+    try:
+        conn.execute("PRAGMA journal_mode=WAL;")
+        conn.execute("PRAGMA synchronous=NORMAL;")
+    except Exception:
+        pass
     class SqliteColDesc:
         def __init__(self, name):
             self.name = name
@@ -560,15 +615,27 @@ def init_db():
     init_auth_tables()
 
 def get_setting(key: str, default: str = "") -> str:
+    now = time.time()
+    with _SETTINGS_LOCK:
+        cached = _SETTINGS_CACHE.get(key)
+        if cached and now < cached[1]:
+            return cached[0]
+
     with config.DB_LOCK:
         conn = get_db_connection()
         try:
             row = conn.execute("SELECT config_value FROM settings WHERE config_key = ?", (key,)).fetchone()
-            return row['config_value'] if row else default
+            val = row['config_value'] if row else default
+            with _SETTINGS_LOCK:
+                _SETTINGS_CACHE[key] = (val, now + SETTINGS_CACHE_TTL)
+            return val
         finally:
             conn.close()
 
 def set_setting(key: str, value: str):
+    now = time.time()
+    with _SETTINGS_LOCK:
+        _SETTINGS_CACHE[key] = (value, now + SETTINGS_CACHE_TTL)
     with config.DB_LOCK:
         conn = get_db_connection()
         try:
