@@ -76,6 +76,10 @@ def process_rfid_direct(tag: str, direction: str, gate_name: str = None):
     now = time.time()
     clean_tag = tag.strip().upper()
 
+    # Drop unregistered NHA Motorway M-Tag immediately at hardware listener level
+    if clean_tag.startswith(MTAG_PREFIXES) and not is_tag_registered(clean_tag):
+        return
+
     with config.FUSION_LOCK:
         time_since_passage = now - config.LAST_GATE_PASSAGE.get("time", 0.0)
 
