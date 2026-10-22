@@ -925,7 +925,42 @@ async def get_audit(
     total_pages = math.ceil(total_filtered / limit) if total_filtered > 0 else 1
     paginated_items = filtered[offset:offset + limit]
 
-    return {
+    adoption_stats = {}
+    with config.CACHE_LOCK:
+        if config.STATS_CACHE and config.STATS_CACHE.get("data"):
+            sc = config.STATS_CACHE["data"]
+            adoption_stats = {
+                "today_adoption_rate": sc.get("today_adoption_rate", 0),
+                "today_registered_transits": sc.get("today_registered_transits", 0),
+                "today_unregistered_transits": sc.get("today_unregistered_transits", 0),
+                "today_total_transits": sc.get("today_total_transits", 0),
+                "yesterday_adoption_rate": sc.get("yesterday_adoption_rate", 0),
+                "yesterday_registered_transits": sc.get("yesterday_registered_transits", 0),
+                "yesterday_unregistered_transits": sc.get("yesterday_unregistered_transits", 0),
+                "yesterday_total_transits": sc.get("yesterday_total_transits", 0),
+                "adoption_delta_vs_yesterday": sc.get("adoption_delta_vs_yesterday", 0),
+            }
+
+    if not adoption_stats:
+        try:
+            from routers.stats import get_stats
+            st = await get_stats()
+            if isinstance(st, dict):
+                adoption_stats = {
+                    "today_adoption_rate": st.get("today_adoption_rate", 0),
+                    "today_registered_transits": st.get("today_registered_transits", 0),
+                    "today_unregistered_transits": st.get("today_unregistered_transits", 0),
+                    "today_total_transits": st.get("today_total_transits", 0),
+                    "yesterday_adoption_rate": st.get("yesterday_adoption_rate", 0),
+                    "yesterday_registered_transits": st.get("yesterday_registered_transits", 0),
+                    "yesterday_unregistered_transits": st.get("yesterday_unregistered_transits", 0),
+                    "yesterday_total_transits": st.get("yesterday_total_transits", 0),
+                    "adoption_delta_vs_yesterday": st.get("adoption_delta_vs_yesterday", 0),
+                }
+        except Exception:
+            pass
+
+    res = {
         "date": display_label,
         "total": total_filtered,
         "total_filtered": total_filtered,
@@ -944,6 +979,8 @@ async def get_audit(
         "total_pages": total_pages,
         "audits": paginated_items
     }
+    res.update(adoption_stats)
+    return res
 
 def _build_paired_audits(logs):
     # Sort all logs strictly chronologically

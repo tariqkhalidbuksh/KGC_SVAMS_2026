@@ -871,8 +871,8 @@
             </div>
 
             <div id="tab-logs" class="hidden space-y-6">
-                <!-- 5 Modern Telemetry Status Cards (Light Theme Rounded-3xl) -->
-                <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <!-- 6 Modern Telemetry Status Cards (Light Theme Rounded-3xl) -->
+                <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
                     <div class="bg-white p-5 rounded-3xl border border-slate-200/90 shadow-xs flex items-center gap-4 hover:shadow-md transition">
                         <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-700 flex items-center justify-center font-black text-xs shadow-2xs">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
@@ -921,6 +921,30 @@
                             <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Security Alerts</p>
                             <h3 id="auditStatAlerts" class="text-2xl font-black text-rose-700 tabular-nums">0</h3>
                             <p class="text-[11px] text-slate-500 font-medium">Unregistered tags</p>
+                        </div>
+                    </div>
+                    <!-- 6. Today Tag Adoption & Yesterday Comparison Card -->
+                    <div class="bg-white p-4 rounded-3xl border border-slate-200/90 shadow-xs flex flex-col justify-between hover:shadow-md transition">
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-[10px] uppercase tracking-wider font-extrabold text-slate-400">Today Tag Adoption</span>
+                                <div class="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center font-black text-xs shadow-2xs">
+                                    <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                                </div>
+                            </div>
+                            <div class="flex items-baseline justify-between gap-1">
+                                <h3 id="todayAdoptionRateVal" class="text-2xl font-black text-slate-900 tabular-nums">--%</h3>
+                                <span id="todayAdoptionDeltaBadge" class="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 tabular-nums">--%</span>
+                            </div>
+                        </div>
+                        <div class="mt-1 pt-1 border-t border-slate-100 flex flex-col justify-end">
+                            <div class="h-12 w-full relative">
+                                <canvas id="todayVsYesterdayChart"></canvas>
+                            </div>
+                            <div class="flex justify-between items-center text-[10px] font-semibold text-slate-500 pt-1 mt-0.5 border-t border-slate-100/80">
+                                <span title="Yesterday adoption rate &amp; registered transits">Yest: <strong id="auditStatYestAdoption" class="text-slate-700 font-mono">--%</strong></span>
+                                <span title="Today adoption rate &amp; registered transits">Today: <strong id="auditStatTodayAdoptionSub" class="text-emerald-700 font-mono">--%</strong></span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2572,6 +2596,6 @@
         </div>
     </div>
 
-    <script src="/static/js/dashboard.js"></script>
+    <script src="/static/js/dashboard.js?v=20261022_adoption_v3"></script>
 </body>
 </html>

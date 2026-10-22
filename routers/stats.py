@@ -208,6 +208,32 @@ async def get_stats():
             reg_today = max(0, total_transits_today - unreg_today)
             unreg_tags_buffer = adoption_metrics["unreg_tags_buffer"]
 
+            # Today Tag Adoption
+            today_adoption_rate = round((reg_today / total_transits_today * 100.0), 1) if total_transits_today > 0 else 0.0
+
+            # Yesterday Tag Adoption for Comparison
+            from datetime import timedelta
+            yesterday_date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+            total_transits_yesterday = conn.execute(
+                "SELECT COUNT(*) as c FROM daily_logs WHERE date(timestamp) = ?",
+                (yesterday_date,)
+            ).fetchone()['c']
+
+            unreg_yesterday = conn.execute("""
+                SELECT COUNT(*) as c FROM daily_logs
+                WHERE date(timestamp) = ?
+                  AND (
+                    access_type LIKE '%Unknown%'
+                    OR access_type LIKE '%No RFID%'
+                    OR mem_id IN ('GUEST-LOG', 'AI-CAM', 'UNREGISTERED', '')
+                    OR scanned_tag IN ('NO_TAG', '', NULL)
+                  )
+            """, (yesterday_date,)).fetchone()['c']
+
+            reg_yesterday = max(0, total_transits_yesterday - unreg_yesterday)
+            yesterday_adoption_rate = round((reg_yesterday / total_transits_yesterday * 100.0), 1) if total_transits_yesterday > 0 else 0.0
+            adoption_delta_vs_yesterday = round(today_adoption_rate - yesterday_adoption_rate, 1)
+
             res_stats = {
                 "active_members": members_count,
                 "unique_members": unique_mems,
@@ -223,6 +249,15 @@ async def get_stats():
                 "paired_visits_count": paired_visits_count,
                 "registered_transits_today": reg_today,
                 "unregistered_transits_today": unreg_today,
+                "today_adoption_rate": today_adoption_rate,
+                "today_registered_transits": reg_today,
+                "today_unregistered_transits": unreg_today,
+                "today_total_transits": total_transits_today,
+                "yesterday_adoption_rate": yesterday_adoption_rate,
+                "yesterday_registered_transits": reg_yesterday,
+                "yesterday_unregistered_transits": unreg_yesterday,
+                "yesterday_total_transits": total_transits_yesterday,
+                "adoption_delta_vs_yesterday": adoption_delta_vs_yesterday,
                 "registered_transits_all_time": reg_unique_tags,
                 "unregistered_transits_all_time": unreg_unique_tags,
                 "total_transits_all_time": total_unique_tags,

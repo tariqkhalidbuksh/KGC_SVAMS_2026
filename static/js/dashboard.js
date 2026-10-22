@@ -865,6 +865,12 @@ function switchTab(name, btn) {
 
     // Load or refresh data for the selected tab
     if (name === 'logs') {
+        if (window.latestStatsData) {
+            updateTodayAdoptionCard(window.latestStatsData);
+        }
+        if (todayAdoptionCompChart) {
+            setTimeout(() => { try { todayAdoptionCompChart.resize(); } catch(e){} }, 60);
+        }
         const dInput = document.getElementById('auditDate');
         if (dInput && !dInput.value) {
             setAuditDatePreset('today');
@@ -956,6 +962,8 @@ async function loadStats() {
 
         updateParkingDonut(s.currently_in_club || 0, cap);
         updateAdoptionDonut(allReg, allUnreg);
+        window.latestStatsData = s;
+        updateTodayAdoptionCard(s);
 
         // Update live hardware & system health pills
         updateDashboardHealth();
@@ -1294,6 +1302,118 @@ function updateAdoptionDonut(reg, unreg) {
     if (adoptionChart) {
         adoptionChart.data.datasets[0].data = (reg === 0 && unreg === 0) ? [0, 0] : [reg, unreg];
         adoptionChart.update();
+    }
+}
+
+let todayAdoptionCompChart = null;
+
+function updateTodayAdoptionCard(s) {
+    if (!s) return;
+    const todayRate = (s.today_adoption_rate !== undefined && s.today_adoption_rate !== null) ? s.today_adoption_rate : 0;
+    const yestRate = (s.yesterday_adoption_rate !== undefined && s.yesterday_adoption_rate !== null) ? s.yesterday_adoption_rate : 0;
+    const delta = (s.adoption_delta_vs_yesterday !== undefined && s.adoption_delta_vs_yesterday !== null) ? s.adoption_delta_vs_yesterday : parseFloat((todayRate - yestRate).toFixed(1));
+    const todayReg = s.today_registered_transits || s.registered_transits_today || 0;
+    const todayUnreg = s.today_unregistered_transits || s.unregistered_transits_today || 0;
+    const yestReg = s.yesterday_registered_transits || 0;
+    const yestUnreg = s.yesterday_unregistered_transits || 0;
+
+    const rateValEl = document.getElementById('todayAdoptionRateVal');
+    if (rateValEl) rateValEl.innerText = `${todayRate}%`;
+
+    const deltaBadgeEl = document.getElementById('todayAdoptionDeltaBadge');
+    if (deltaBadgeEl) {
+        const numDelta = parseFloat(delta);
+        const sign = numDelta > 0 ? '+' : '';
+        deltaBadgeEl.innerText = `${sign}${numDelta}% vs Yest`;
+        if (numDelta > 0) {
+            deltaBadgeEl.className = 'text-[10px] font-black px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 tabular-nums';
+        } else if (numDelta < 0) {
+            deltaBadgeEl.className = 'text-[10px] font-black px-1.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 tabular-nums';
+        } else {
+            deltaBadgeEl.className = 'text-[10px] font-black px-1.5 py-0.5 rounded-full bg-slate-50 text-slate-600 border border-slate-200 tabular-nums';
+        }
+    }
+
+    const todaySubEl = document.getElementById('auditStatTodayAdoptionSub');
+    if (todaySubEl) todaySubEl.innerText = `${todayRate}% (${todayReg})`;
+
+    const yestSubEl = document.getElementById('auditStatYestAdoption');
+    if (yestSubEl) yestSubEl.innerText = `${yestRate}% (${yestReg})`;
+
+    const canvas = document.getElementById('todayVsYesterdayChart');
+    if (!canvas || typeof Chart === 'undefined') return;
+
+    if (!todayAdoptionCompChart) {
+        todayAdoptionCompChart = new Chart(canvas, {
+            type: 'bar',
+            data: {
+                labels: ['Yest', 'Today'],
+                datasets: [
+                    {
+                        label: 'Member Tags',
+                        data: [yestReg, todayReg],
+                        backgroundColor: '#10B981',
+                        borderRadius: 3,
+                        barThickness: 8
+                    },
+                    {
+                        label: 'Guest / Unreg',
+                        data: [yestUnreg, todayUnreg],
+                        backgroundColor: '#F59E0B',
+                        borderRadius: 3,
+                        barThickness: 8
+                    }
+                ]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: { top: 1, bottom: 1, left: 0, right: 2 }
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                        display: false,
+                        max: Math.max(todayReg + todayUnreg, yestReg + yestUnreg, 10)
+                    },
+                    y: {
+                        stacked: true,
+                        display: true,
+                        grid: { display: false },
+                        ticks: {
+                            font: { size: 9, weight: '700' },
+                            color: '#64748B'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#0F172A',
+                        padding: 6,
+                        titleFont: { size: 10, weight: 'bold' },
+                        bodyFont: { size: 10 },
+                        callbacks: {
+                            label: function(ctx) {
+                                const total = ctx.chart.data.datasets.reduce((acc, d) => acc + (d.data[ctx.dataIndex] || 0), 0);
+                                const val = ctx.raw || 0;
+                                const pct = total > 0 ? ((val / total) * 100).toFixed(1) : '0.0';
+                                return ` ${ctx.dataset.label}: ${val.toLocaleString()} (${pct}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    } else {
+        todayAdoptionCompChart.data.datasets[0].data = [yestReg, todayReg];
+        todayAdoptionCompChart.data.datasets[1].data = [yestUnreg, todayUnreg];
+        if (todayAdoptionCompChart.options.scales && todayAdoptionCompChart.options.scales.x) {
+            todayAdoptionCompChart.options.scales.x.max = Math.max(todayReg + todayUnreg, yestReg + yestUnreg, 10);
+        }
+        todayAdoptionCompChart.update();
     }
 }
 
@@ -1680,6 +1800,12 @@ async function loadAudit(page = currentAuditPage, isSilent = false) {
             document.getElementById('auditStatOverstay').innerText = v.toLocaleString();
         }
         if (document.getElementById('auditBadgeDate')) document.getElementById('auditBadgeDate').innerText = data.date || 'Today';
+
+        if (data.today_adoption_rate !== undefined) {
+            updateTodayAdoptionCard(data);
+        } else if (window.latestStatsData) {
+            updateTodayAdoptionCard(window.latestStatsData);
+        }
 
         auditData = data.audits || [];
         const total = data.total_filtered !== undefined ? data.total_filtered : auditData.length;
