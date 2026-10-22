@@ -1,17 +1,17 @@
 @echo off
-title Karachi Gymkhana - RFID VAMS Automated Setup & Launcher
+title "Karachi Gymkhana - RFID VAMS Automated Setup and Launcher"
 cd /d "%~dp0"
 
 REM ============================================================================
 REM Karachi Gymkhana Club - RFID Vehicle Access Management System (VAMS)
-REM Automated Setup, Dependency Installer & Production Startup
+REM Automated Setup, Dependency Installer and Production Startup
 REM Default Administrator: admin / admin123
 REM ============================================================================
 
 cls
 echo ============================================================================
 echo   KARACHI GYMKHANA CLUB - RFID VEHICLE ACCESS MANAGEMENT SYSTEM (VAMS)
-echo   Automated Environment Setup & Production Launcher
+echo   Automated Environment Setup and Production Launcher
 echo ============================================================================
 echo.
 
@@ -21,31 +21,13 @@ if exist "%~dp0.venv\Scripts\python.exe" (
     set "PYTHON_EXE=%~dp0.venv\Scripts\python.exe"
 )
 if "%PYTHON_EXE%"=="" (
-    where python >nul 2>nul
-    if %ERRORLEVEL% equ 0 (
-        set "PYTHON_EXE=python"
-    )
+    for /f "tokens=*" %%i in ('where python 2^>nul') do if not defined PYTHON_EXE set "PYTHON_EXE=%%i"
 )
 if "%PYTHON_EXE%"=="" (
-    where py >nul 2>nul
-    if %ERRORLEVEL% equ 0 (
-        set "PYTHON_EXE=py"
-    )
+    for /f "tokens=*" %%i in ('where py 2^>nul') do if not defined PYTHON_EXE set "PYTHON_EXE=%%i"
 )
 
-if "%PYTHON_EXE%"=="" (
-    echo ============================================================================
-    echo [ERROR] Python was not found on your system!
-    echo.
-    echo Please install Python 3.10 or higher from:
-    echo   https://www.python.org/downloads/
-    echo.
-    echo IMPORTANT: Make sure to check "Add Python to PATH" during installation.
-    echo ============================================================================
-    echo.
-    pause
-    exit /b 1
-)
+if "%PYTHON_EXE%"=="" goto :python_not_found
 
 echo [1/4] Python Runtime Detected: %PYTHON_EXE%
 
@@ -53,14 +35,7 @@ REM 2. Install / Verify Dependencies
 echo [2/4] Verifying and installing required packages from requirements.txt...
 "%PYTHON_EXE%" -m pip install --upgrade pip >nul 2>nul
 "%PYTHON_EXE%" -m pip install -r requirements.txt
-if %ERRORLEVEL% neq 0 (
-    echo.
-    echo [ERROR] Dependency installation failed!
-    echo Please verify your internet connection or run pip with administrator rights.
-    echo.
-    pause
-    exit /b 1
-)
+if %ERRORLEVEL% neq 0 goto :pip_failed
 
 REM 3. Check / Start PostgreSQL Service
 echo [3/4] Checking PostgreSQL Database Service (127.0.0.1:5432)...
@@ -84,40 +59,13 @@ if %ERRORLEVEL% neq 0 (
     ping 127.0.0.1 -n 3 >nul
 )
 "%PYTHON_EXE%" -c "import socket, sys; s = socket.socket(); s.settimeout(1.5); res = s.connect_ex(('127.0.0.1', 5432)); s.close(); sys.exit(res)" >nul 2>nul
-if %ERRORLEVEL% equ 0 (
-    echo [SUCCESS] PostgreSQL Database Engine Connected on 127.0.0.1:5432.
-) else (
-    echo ============================================================================
-    echo [ERROR] PostgreSQL Database Service is NOT reachable on 127.0.0.1:5432!
-    echo ============================================================================
-    echo RFID VAMS runs exclusively on PostgreSQL.
-    echo.
-    echo QUICK FIX INSTRUCTIONS:
-    echo 1. IF POSTGRESQL IS INSTALLED ON THIS SERVER:
-    echo    - Press Win + R, type services.msc, and press Enter.
-    echo    - Locate "postgresql-x64-..." or "PostgreSQL Server".
-    echo    - Right-click and select "Start".
-    echo.
-    echo 2. IF POSTGRESQL IS NOT INSTALLED YET:
-    echo    - Download and install official PostgreSQL for Windows from:
-    echo      https://www.postgresql.org/download/windows/
-    echo    - During setup, use port 5432 and set your superuser password.
-    echo.
-    echo 3. IF POSTGRESQL USES A PASSWORD OR RUNS ON A DIFFERENT IP/PORT:
-    echo    - Create a .env file in this directory (see .env.example) and set:
-    echo        PG_HOST=127.0.0.1
-    echo        PG_PORT=5432
-    echo        PG_USER=postgres
-    echo        PG_PASSWORD=your_password
-    echo ============================================================================
-    echo.
-    pause
-    exit /b 1
-)
+if %ERRORLEVEL% neq 0 goto :pg_error
 
-REM 4. Initialize Database Schema & Verify Default Admin User
-echo [4/4] Initializing Database Schema & Verifying Admin User (admin / admin123)...
-"%PYTHON_EXE%" -c "from database import init_db, get_db_connection; from services.auth_service import init_auth_tables, hash_password; init_db(); init_auth_tables(); conn = get_db_connection(); u = conn.execute('SELECT id FROM users WHERE LOWER(username)=\'admin\'').fetchone(); (None if u else (conn.execute('INSERT INTO users (username, password_hash, salt, full_name, role, is_active) VALUES (?, ?, ?, ?, ?, 1)', ('admin', hash_password('admin123')[0], hash_password('admin123')[1], 'System Administrator', 'Admin')), conn.commit())); conn.close(); print('[SUCCESS] Database & Admin user (admin / admin123) verified.')"
+echo [SUCCESS] PostgreSQL Database Engine Connected on 127.0.0.1:5432.
+
+REM 4. Initialize Database Schema and Verify Default Admin User
+echo [4/4] Initializing Database Schema and Verifying Admin User (admin / admin123)...
+"%PYTHON_EXE%" -c "from database import init_db, get_db_connection; from services.auth_service import init_auth_tables, hash_password; init_db(); init_auth_tables(); conn = get_db_connection(); u = conn.execute('SELECT id FROM users WHERE LOWER(username)=\'admin\'').fetchone(); (None if u else (conn.execute('INSERT INTO users (username, password_hash, salt, full_name, role, is_active) VALUES (?, ?, ?, ?, ?, 1)', ('admin', hash_password('admin123')[0], hash_password('admin123')[1], 'System Administrator', 'Admin')), conn.commit())); conn.close(); print('[SUCCESS] Database and Admin user (admin / admin123) verified.')"
 
 echo.
 echo ============================================================================
@@ -148,3 +96,54 @@ echo [WATCHDOG] Restarting server in 5 seconds... (Press Ctrl+C to stop)
 echo ============================================================================
 ping 127.0.0.1 -n 6 >nul
 goto server_loop
+
+:python_not_found
+echo ============================================================================
+echo [ERROR] Python was not found on your system!
+echo.
+echo Please install Python 3.10 or higher from:
+echo   https://www.python.org/downloads/
+echo.
+echo IMPORTANT: Make sure to check "Add Python to PATH" during installation.
+echo ============================================================================
+echo.
+pause
+exit /b 1
+
+:pip_failed
+echo.
+echo ============================================================================
+echo [ERROR] Dependency installation failed!
+echo Please verify your internet connection or run pip with administrator rights.
+echo ============================================================================
+echo.
+pause
+exit /b 1
+
+:pg_error
+echo ============================================================================
+echo [ERROR] PostgreSQL Database Service is NOT reachable on 127.0.0.1:5432!
+echo ============================================================================
+echo RFID VAMS runs exclusively on PostgreSQL.
+echo.
+echo QUICK FIX INSTRUCTIONS:
+echo 1. IF POSTGRESQL IS INSTALLED ON THIS SERVER:
+echo    - Press Win + R, type services.msc, and press Enter.
+echo    - Locate postgresql-x64-... or PostgreSQL Server.
+echo    - Right-click and select Start.
+echo.
+echo 2. IF POSTGRESQL IS NOT INSTALLED YET:
+echo    - Download and install official PostgreSQL for Windows from:
+echo      https://www.postgresql.org/download/windows/
+echo    - During setup, use port 5432 and set your superuser password.
+echo.
+echo 3. IF POSTGRESQL USES A PASSWORD OR RUNS ON A DIFFERENT IP/PORT:
+echo    - Create a .env file in this directory [see .env.example] and set:
+echo        PG_HOST=127.0.0.1
+echo        PG_PORT=5432
+echo        PG_USER=postgres
+echo        PG_PASSWORD=your_password
+echo ============================================================================
+echo.
+pause
+exit /b 1
