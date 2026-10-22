@@ -36,10 +36,11 @@ set "DB_ENGINE=Enterprise PostgreSQL (kgc_vams @ 127.0.0.1:5432)"
 "%PYTHON_EXE%" -c "import socket, sys; s = socket.socket(); s.settimeout(1.0); res = s.connect_ex(('127.0.0.1', 5432)); s.close(); sys.exit(res)" >nul 2>nul
 if %ERRORLEVEL% neq 0 (
     echo [INFO] PostgreSQL not responding on 127.0.0.1:5432. Attempting auto-start...
+    "%PYTHON_EXE%" -c "import database; database.ensure_pg_service_started()" >nul 2>nul
     if exist "C:\PostgreSQL\pgsql\bin\pg_ctl.exe" (
         "C:\PostgreSQL\pgsql\bin\pg_ctl.exe" status -D "C:\PostgreSQL\data" >nul 2>nul
         if %ERRORLEVEL% neq 0 (
-            "C:\PostgreSQL\pgsql\bin\pg_ctl.exe" -D "C:\PostgreSQL\data" -l "C:\PostgreSQL\data\server.log" start -w -t 5 >nul 2>nul
+            "C:\PostgreSQL\pgsql\bin\pg_ctl.exe" -D "C:\PostgreSQL\data" -l "C:\PostgreSQL\server.log" start -w -t 10 >nul 2>nul
         )
     ) else (
         powershell -NoProfile -Command "Get-Service *postgres* -ErrorAction SilentlyContinue | Start-Service" >nul 2>nul
@@ -49,7 +50,7 @@ if %ERRORLEVEL% neq 0 (
         if %ERRORLEVEL% neq 0 net start postgresql-x64-14 >nul 2>nul
         if %ERRORLEVEL% neq 0 net start postgresql >nul 2>nul
     )
-    ping 127.0.0.1 -n 3 >nul
+    ping 127.0.0.1 -n 2 >nul
 )
 "%PYTHON_EXE%" -c "import socket, sys; s = socket.socket(); s.settimeout(1.5); res = s.connect_ex(('127.0.0.1', 5432)); s.close(); sys.exit(res)" >nul 2>nul
 if %ERRORLEVEL% neq 0 goto :pg_error

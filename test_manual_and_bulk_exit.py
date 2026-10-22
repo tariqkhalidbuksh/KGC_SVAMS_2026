@@ -35,11 +35,11 @@ def setup_test_db(tmp_path, monkeypatch):
         ('M-103', 'Staff Whitelist', 'VIP-999', 'Land Cruiser', 'TAG-VIP', 'Inside', 'Active')
     """)
 
-    # Entry timestamps on today's PKT date (so duration is calculated consistently across midnight)
-    today_str = datetime.now().strftime("%Y-%m-%d")
-    t_alpha = f"{today_str} 00:05:00"
-    t_beta = f"{today_str} 00:07:00"
-    t_vip = f"{today_str} 00:09:00"
+    # Entry timestamps dynamically anchored within the last 2-3 hours so status is Inside Facility regardless of execution hour
+    now = datetime.now()
+    t_alpha = (now - timedelta(hours=3, minutes=5)).strftime("%Y-%m-%d %H:%M:%S")
+    t_beta = (now - timedelta(hours=2, minutes=50)).strftime("%Y-%m-%d %H:%M:%S")
+    t_vip = (now - timedelta(hours=2, minutes=40)).strftime("%Y-%m-%d %H:%M:%S")
 
     # Seed Entry logs: Alpha, Beta, VIP are currently inside
     conn.execute("""
@@ -61,8 +61,8 @@ def test_single_manual_exit():
     assert len(data["audits"]) >= 1
     assert data["audits"][0]["status"] == "Inside Facility"
 
-    today_str = datetime.now().strftime("%Y-%m-%d")
-    exit_time = f"{today_str} 02:10:00"
+    # Exit time exactly 2h 5m after Alpha entry
+    exit_time = (datetime.now() - timedelta(hours=1)).strftime("%Y-%m-%d %H:%M:%S")
 
     # Manually exit Member Alpha with custom timestamp and camera image proof
     payload = {

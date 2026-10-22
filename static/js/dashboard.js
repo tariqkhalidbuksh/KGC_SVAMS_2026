@@ -153,29 +153,282 @@ async function logout() {
 function switchSettingsSubtab(name) {
     const hwView = document.getElementById('settingsViewHardware');
     const uView = document.getElementById('settingsViewUsers');
+    const dbView = document.getElementById('settingsViewDatabase');
     const hwBtn = document.getElementById('subtabSetHwBtn');
     const uBtn = document.getElementById('subtabSetUsersBtn');
+    const dbBtn = document.getElementById('subtabSetDbBtn');
+
+    if (hwView) hwView.classList.add('hidden');
+    if (uView) uView.classList.add('hidden');
+    if (dbView) dbView.classList.add('hidden');
+
+    const inactiveBtnClass = 'px-5 py-2.5 rounded-xl text-xs font-bold text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition flex items-center gap-2';
+    const activeBtnClass = 'px-5 py-2.5 rounded-xl text-xs font-extrabold bg-white border border-slate-200 shadow-xs text-indigo-700 flex items-center gap-2 transition';
+
+    if (hwBtn) hwBtn.className = inactiveBtnClass;
+    if (uBtn) uBtn.className = inactiveBtnClass;
+    if (dbBtn) dbBtn.className = inactiveBtnClass;
 
     if (name === 'users') {
-        if (hwView) hwView.classList.add('hidden');
         if (uView) uView.classList.remove('hidden');
-        if (hwBtn) {
-            hwBtn.className = 'px-5 py-2.5 rounded-xl text-xs font-bold text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition flex items-center gap-2';
-        }
-        if (uBtn) {
-            uBtn.className = 'px-5 py-2.5 rounded-xl text-xs font-extrabold bg-white border border-slate-200 shadow-xs text-indigo-700 flex items-center gap-2 transition';
-        }
+        if (uBtn) uBtn.className = activeBtnClass;
         loadUsers();
+    } else if (name === 'database') {
+        if (dbView) dbView.classList.remove('hidden');
+        if (dbBtn) dbBtn.className = activeBtnClass;
+        loadDatabaseStatus();
     } else {
         if (hwView) hwView.classList.remove('hidden');
-        if (uView) uView.classList.add('hidden');
-        if (hwBtn) {
-            hwBtn.className = 'px-5 py-2.5 rounded-xl text-xs font-extrabold bg-white border border-slate-200 shadow-xs text-indigo-700 flex items-center gap-2 transition';
-        }
-        if (uBtn) {
-            uBtn.className = 'px-5 py-2.5 rounded-xl text-xs font-bold text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition flex items-center gap-2';
-        }
+        if (hwBtn) hwBtn.className = activeBtnClass;
         loadHardwareSettingsStatus();
+    }
+}
+
+let selectedDbFile = null;
+
+async function loadDatabaseStatus() {
+    try {
+        const res = await fetch('/api/database/status');
+        if (!res.ok) {
+            if (res.status === 403 || res.status === 401) {
+                console.warn('Admin privileges required to view database status.');
+            }
+            return;
+        }
+        const data = await res.json();
+        if (!data.ok) return;
+
+        const nameEl = document.getElementById('dbStatName');
+        const hostEl = document.getElementById('dbStatHost');
+        const memEl = document.getElementById('dbStatMembers');
+        const logsEl = document.getElementById('dbStatLogs');
+        const sizeEl = document.getElementById('dbStatDiskSize');
+        const toolsEl = document.getElementById('dbStatTools');
+        const repoEl = document.getElementById('dbRepoBackupDetails');
+
+        if (nameEl) nameEl.textContent = `${data.database || 'kgc_vams'}`;
+        if (hostEl) hostEl.textContent = `${data.host}:${data.port} (${data.size || 'PostgreSQL'})`;
+        if (memEl) memEl.textContent = Number(data.counts?.members || 0).toLocaleString();
+        if (logsEl) logsEl.textContent = Number(data.counts?.daily_logs || 0).toLocaleString();
+        if (sizeEl) sizeEl.textContent = data.size || '--';
+        if (toolsEl) {
+            if (data.tools?.pg_dump && data.tools?.psql) {
+                toolsEl.textContent = 'Native CLI Tools Active';
+                toolsEl.className = 'text-[11px] text-emerald-600 font-bold';
+            } else {
+                toolsEl.textContent = 'Standard SQL Engine';
+                toolsEl.className = 'text-[11px] text-slate-400';
+            }
+        }
+        if (repoEl && data.canonical_backup) {
+            const cb = data.canonical_backup;
+            repoEl.textContent = cb.exists ? `kgc_vams_backup.sql (${cb.size_display || ''})` : 'kgc_vams_backup.sql';
+        }
+        const tsEl = document.getElementById('dbExportTimestamp');
+        if (tsEl) tsEl.textContent = `Server: ${new Date().toLocaleTimeString()}`;
+    } catch (e) {
+        console.error('loadDatabaseStatus error:', e);
+    }
+}
+
+async function executeDatabaseExport(forcedScope) {
+    const btn = document.getElementById('btnExportDb');
+    const btnText = document.getElementById('btnExportDbText');
+    const notice = document.getElementById('dbExportNotice');
+
+    let scope = forcedScope;
+    if (!scope) {
+        const radios = document.getElementsByName('dbExportScope');
+        for (const r of radios) {
+            if (r.checked) {
+                scope = r.value;
+                break;
+            }
+        }
+    }
+    scope = scope || 'full';
+
+    if (btn) btn.disabled = true;
+    if (btnText) btnText.textContent = 'Generating Database Dump...';
+    if (notice) {
+        notice.className = 'text-xs font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200 p-2.5 rounded-xl block';
+        notice.textContent = 'Dumping PostgreSQL database tables... Please wait.';
+    }
+
+    try {
+        const res = await fetch(`/api/database/export?mode=${encodeURIComponent(scope)}`);
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.detail || 'Failed to export database.');
+        }
+
+        const dispo = res.headers.get('Content-Disposition') || '';
+        let filename = `kgc_vams_backup_${new Date().toISOString().slice(0, 10)}_${scope}.sql`;
+        const match = dispo.match(/filename="?([^"]+)"?/);
+        if (match && match[1]) filename = match[1];
+
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+
+        if (notice) {
+            const sizeMb = (blob.size / (1024 * 1024)).toFixed(2);
+            notice.className = 'text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl block';
+            notice.textContent = `✓ Export completed! Saved as ${filename} (${sizeMb} MB).`;
+        }
+    } catch (e) {
+        console.error('Database export error:', e);
+        if (notice) {
+            notice.className = 'text-xs font-bold text-rose-800 bg-rose-50 border border-rose-200 p-2.5 rounded-xl block';
+            notice.textContent = `Export Error: ${e.message}`;
+        }
+    } finally {
+        if (btn) btn.disabled = false;
+        if (btnText) btnText.textContent = 'Export & Download SQL Backup';
+    }
+}
+
+function onDbImportFilePicked(e) {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+
+    if (!file.name.toLowerCase().endsWith('.sql')) {
+        alert('Please choose a valid .sql file (PostgreSQL database backup dump).');
+        e.target.value = '';
+        return;
+    }
+
+    selectedDbFile = file;
+    const badge = document.getElementById('dbSelectedFileBadge');
+    const nameEl = document.getElementById('dbSelectedFileName');
+    const sizeEl = document.getElementById('dbSelectedFileSize');
+    const dropText = document.getElementById('dbFileDropText');
+    const dropSub = document.getElementById('dbFileDropSub');
+
+    if (badge) badge.classList.remove('hidden');
+    if (nameEl) nameEl.textContent = file.name;
+    if (sizeEl) sizeEl.textContent = `(${(file.size / (1024 * 1024)).toFixed(2)} MB)`;
+    if (dropText) dropText.textContent = 'File ready to restore';
+    if (dropSub) dropSub.textContent = 'Click to choose a different .sql backup';
+
+    updateImportBtnState();
+}
+
+function updateImportBtnState() {
+    const btn = document.getElementById('btnImportDb');
+    const check = document.getElementById('dbConfirmImportCheck');
+    if (!btn) return;
+
+    const isReady = selectedDbFile && check && check.checked;
+    if (isReady) {
+        btn.disabled = false;
+        btn.className = 'w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 px-6 rounded-2xl font-black text-xs shadow-lg shadow-indigo-600/20 hover:shadow-indigo-600/30 transition flex items-center justify-center gap-2 cursor-pointer';
+    } else {
+        btn.disabled = true;
+        btn.className = 'w-full bg-slate-300 text-slate-500 py-3.5 px-6 rounded-2xl font-black text-xs transition flex items-center justify-center gap-2 cursor-not-allowed';
+    }
+}
+
+async function executeDatabaseImport() {
+    if (!selectedDbFile) {
+        alert('Please select a .sql database backup file to import.');
+        return;
+    }
+    const check = document.getElementById('dbConfirmImportCheck');
+    if (!check || !check.checked) {
+        alert('Please tick the confirmation checkbox to confirm updating the database.');
+        return;
+    }
+
+    const confirmed = confirm(
+        `Are you sure you want to import "${selectedDbFile.name}" (${(selectedDbFile.size / (1024*1024)).toFixed(2)} MB)?\n\n` +
+        `This will update and synchronize database tables with this backup dump.`
+    );
+    if (!confirmed) return;
+
+    const btn = document.getElementById('btnImportDb');
+    const btnText = document.getElementById('btnImportDbText');
+    const notice = document.getElementById('dbImportNotice');
+    const summaryCard = document.getElementById('dbRestoreSummaryCard');
+
+    if (btn) btn.disabled = true;
+    if (btnText) btnText.textContent = 'Importing & Restoring Database...';
+    if (notice) {
+        notice.className = 'text-xs font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200 p-2.5 rounded-xl block';
+        notice.textContent = 'Uploading SQL dump and synchronizing tables... Please keep this window open.';
+    }
+
+    const formData = new FormData();
+    formData.append('file', selectedDbFile);
+
+    try {
+        const res = await fetch('/api/database/import', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+            throw new Error(data.detail || 'Database import failed.');
+        }
+
+        if (notice) {
+            notice.className = 'text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl block';
+            notice.textContent = `✓ ${data.message || 'Database restored successfully!'}`;
+        }
+
+        // Show detailed summary card
+        if (summaryCard) {
+            summaryCard.classList.remove('hidden');
+            const summaryMsg = document.getElementById('dbRestoreSummaryMsg');
+            if (summaryMsg) summaryMsg.textContent = data.message || 'All records and schema synchronized.';
+
+            const countsGrid = document.getElementById('dbRestoreCountsGrid');
+            if (countsGrid && data.counts) {
+                const c = data.counts;
+                countsGrid.innerHTML = `
+                    <div class="bg-white p-3 rounded-xl border border-emerald-200 text-center">
+                        <span class="block text-[10px] uppercase font-bold text-slate-400">Members</span>
+                        <span class="text-base font-black text-slate-900">${Number(c.members || 0).toLocaleString()}</span>
+                    </div>
+                    <div class="bg-white p-3 rounded-xl border border-emerald-200 text-center">
+                        <span class="block text-[10px] uppercase font-bold text-slate-400">Passage Logs</span>
+                        <span class="text-base font-black text-slate-900">${Number(c.daily_logs || 0).toLocaleString()}</span>
+                    </div>
+                    <div class="bg-white p-3 rounded-xl border border-emerald-200 text-center">
+                        <span class="block text-[10px] uppercase font-bold text-slate-400">User Accounts</span>
+                        <span class="text-base font-black text-slate-900">${Number(c.users || 0)}</span>
+                    </div>
+                    <div class="bg-white p-3 rounded-xl border border-emerald-200 text-center">
+                        <span class="block text-[10px] uppercase font-bold text-slate-400">Settings</span>
+                        <span class="text-base font-black text-slate-900">${Number(c.settings || 0)}</span>
+                    </div>
+                `;
+            }
+        }
+
+        // Refresh live dashboard metrics
+        loadDatabaseStatus();
+        if (typeof loadStats === 'function') loadStats();
+        if (typeof loadMembers === 'function') loadMembers();
+        if (typeof loadUsers === 'function') loadUsers();
+
+    } catch (e) {
+        console.error('Database import error:', e);
+        if (notice) {
+            notice.className = 'text-xs font-bold text-rose-800 bg-rose-50 border border-rose-200 p-2.5 rounded-xl block';
+            notice.textContent = `Import Error: ${e.message}`;
+        }
+    } finally {
+        if (btn) btn.disabled = false;
+        if (btnText) btnText.textContent = 'Import & Restore Database';
+        updateImportBtnState();
     }
 }
 
@@ -841,8 +1094,23 @@ let parkingChart = null;
 let adoptionChart = null;
 
 function initCharts() {
+    if (typeof Chart === 'undefined') {
+        console.warn('Chart.js is not loaded yet');
+        return;
+    }
+
     const hourlyEl = document.getElementById('hourlyChart');
+    const weeklyEl = document.getElementById('weeklyChart');
+    const parkingEl = document.getElementById('parkingChart');
+    const adoptEl = document.getElementById('adoptionChart');
+
     if (!hourlyEl) return;
+
+    // Safely destroy existing chart instances before creating new ones
+    if (hourlyChart) { try { hourlyChart.destroy(); } catch (e) {} hourlyChart = null; }
+    if (weeklyChart) { try { weeklyChart.destroy(); } catch (e) {} weeklyChart = null; }
+    if (parkingChart) { try { parkingChart.destroy(); } catch (e) {} parkingChart = null; }
+    if (adoptionChart) { try { adoptionChart.destroy(); } catch (e) {} adoptionChart = null; }
 
     Chart.defaults.font.family = "'Plus Jakarta Sans', system-ui, sans-serif";
     Chart.defaults.font.size = 11;
@@ -961,36 +1229,39 @@ function initCharts() {
         }
     });
 
-    weeklyChart = new Chart(document.getElementById('weeklyChart'), {
-        type: 'bar',
-        data: {
-            labels: [],
-            datasets: [
-                { label: 'Entries', data: [], backgroundColor: '#34D399', borderRadius: 6, barPercentage: 0.55 },
-                { label: 'Exits', data: [], backgroundColor: '#93C5FD', borderRadius: 6, barPercentage: 0.55 }
-            ]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { position: 'bottom', labels: { boxWidth: 10 } } },
-            scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
-        }
-    });
+    if (weeklyEl) {
+        weeklyChart = new Chart(weeklyEl, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [
+                    { label: 'Entries', data: [], backgroundColor: '#34D399', borderRadius: 6, barPercentage: 0.55 },
+                    { label: 'Exits', data: [], backgroundColor: '#93C5FD', borderRadius: 6, barPercentage: 0.55 }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { position: 'bottom', labels: { boxWidth: 10 } } },
+                scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+            }
+        });
+    }
 
-    parkingChart = new Chart(document.getElementById('parkingChart'), {
-        type: 'doughnut',
-        data: {
-            labels: ['Occupied', 'Available'],
-            datasets: [{ data: [0, 100], backgroundColor: ['#3B82F6', '#E2E8F0'], borderWidth: 0, cutout: '78%' }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } }
-        }
-    });
+    if (parkingEl) {
+        parkingChart = new Chart(parkingEl, {
+            type: 'doughnut',
+            data: {
+                labels: ['Occupied', 'Available'],
+                datasets: [{ data: [0, 100], backgroundColor: ['#3B82F6', '#E2E8F0'], borderWidth: 0, cutout: '78%' }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } }
+            }
+        });
+    }
 
-    const adoptEl = document.getElementById('adoptionChart');
     if (adoptEl) {
         adoptionChart = new Chart(adoptEl, {
             type: 'doughnut',
@@ -1028,6 +1299,9 @@ function updateAdoptionDonut(reg, unreg) {
 
 async function loadCharts() {
     try {
+        if (!hourlyChart && typeof Chart !== 'undefined') {
+            initCharts();
+        }
         const res = await fetch('/api/chart-data');
         if (!res.ok) return;
         const c = await res.json();
@@ -5778,4 +6052,30 @@ document.addEventListener('DOMContentLoaded', () => {
             loadEtagAudit(currentAuditedTag, true);
         }
     }, 10000);
+
+    // Database Import Drag and Drop Handler
+    const dbDropzone = document.getElementById('dbDropzone');
+    if (dbDropzone) {
+        ['dragenter', 'dragover'].forEach(name => {
+            dbDropzone.addEventListener(name, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dbDropzone.classList.add('border-indigo-500', 'bg-indigo-50/50');
+            });
+        });
+        ['dragleave', 'drop'].forEach(name => {
+            dbDropzone.addEventListener(name, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dbDropzone.classList.remove('border-indigo-500', 'bg-indigo-50/50');
+            });
+        });
+        dbDropzone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt && dt.files;
+            if (files && files.length) {
+                onDbImportFilePicked({ target: { files } });
+            }
+        });
+    }
 });

@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Command Center | Karachi Gymkhana Club</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="/static/js/chart.umd.min.js"></script>
+    <script>if (typeof Chart === 'undefined') { document.write('<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"><\/script>'); }</script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <style>
         * { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; }
@@ -1402,6 +1403,10 @@
                                     <span>User Accounts</span>
                                     <span id="usersBadgeCount" class="bg-indigo-100 text-indigo-700 font-mono text-[10px] px-2 py-0.5 rounded-full font-bold">3</span>
                                 </button>
+                                <button type="button" id="subtabSetDbBtn" onclick="switchSettingsSubtab('database')" class="px-5 py-2.5 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 transition flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>
+                                    <span>Database Backup &amp; Sync</span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -1683,6 +1688,33 @@
                         </div>
                     </div>
 
+                    <!-- Quick Database Sync & Migration Shortcut Card -->
+                    <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-6 md:p-8 rounded-3xl text-white shadow-md border border-indigo-500/20 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        <div>
+                            <div class="flex items-center gap-2 mb-2 flex-wrap">
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/30">Local &amp; Server Sync</span>
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Atomic SQL Export</span>
+                            </div>
+                            <h2 class="font-extrabold text-xl text-white flex items-center gap-2.5">
+                                <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>
+                                <span>Database Portability, Backup &amp; Migration</span>
+                            </h2>
+                            <p class="text-xs text-slate-300 mt-1 max-w-2xl font-normal leading-relaxed">
+                                Easily export and download the complete database as a portable <code class="bg-black/30 px-1.5 py-0.5 rounded font-mono text-amber-300">.sql</code> dump file to sync with another computer, or upload and import a backup from your other machine.
+                            </p>
+                        </div>
+                        <div class="flex items-center gap-3 flex-wrap shrink-0">
+                            <button type="button" onclick="executeDatabaseExport('full')" class="px-5 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs shadow-lg shadow-indigo-600/30 transition flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                <span>Export Database (.sql)</span>
+                            </button>
+                            <button type="button" onclick="switchSettingsSubtab('database')" class="px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs border border-white/15 transition flex items-center gap-2 backdrop-blur-sm">
+                                <span>Open Full Sync Console</span>
+                                <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- System Maintenance & Data Reset Card -->
                     <div class="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200 space-y-4 text-sm">
                         <div class="flex items-start justify-between flex-wrap gap-4">
@@ -1789,6 +1821,198 @@
                                 <tbody id="usersTableBody" class="divide-y divide-slate-100"></tbody>
                             </table>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Subtab 3: Database Backup & Migration Console -->
+                <div id="settingsViewDatabase" class="hidden space-y-6">
+                    <!-- 4-Card Executive Telemetry Grid for Database -->
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 border-l-4 border-l-indigo-600">
+                            <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center font-black">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Database Engine</p>
+                                <h3 id="dbStatName" class="text-base font-black text-slate-900 truncate">kgc_vams</h3>
+                                <p class="text-[11px] text-slate-500 font-mono" id="dbStatHost">127.0.0.1:5432</p>
+                            </div>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 border-l-4 border-l-emerald-500">
+                            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-black">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Members Directory</p>
+                                <h3 id="dbStatMembers" class="text-2xl font-black text-emerald-700 tabular-nums">--</h3>
+                                <p class="text-[11px] text-slate-400">Total registered profiles</p>
+                            </div>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 border-l-4 border-l-blue-500">
+                            <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center font-black">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Gate Passage Logs</p>
+                                <h3 id="dbStatLogs" class="text-2xl font-black text-blue-700 tabular-nums">--</h3>
+                                <p class="text-[11px] text-slate-400">Recorded access events</p>
+                            </div>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 border-l-4 border-l-amber-500">
+                            <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center font-black">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Database Storage</p>
+                                <h3 id="dbStatDiskSize" class="text-2xl font-black text-amber-700 tabular-nums">--</h3>
+                                <p class="text-[11px] text-slate-400" id="dbStatTools">CLI tools ready</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sync Instructions Card -->
+                    <div class="bg-gradient-to-r from-indigo-50 via-blue-50 to-slate-50 border border-indigo-100 rounded-3xl p-6 text-slate-700 flex flex-col sm:flex-row items-start gap-4">
+                        <div class="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <div class="text-xs space-y-1">
+                            <h4 class="font-bold text-sm text-indigo-950">How to sync database between Local Machine &amp; Gate Server</h4>
+                            <p class="text-slate-600 leading-relaxed">
+                                <strong>1. To send updates from this machine to another:</strong> Click <strong>"Export &amp; Download SQL Dump"</strong> below. Transfer the downloaded <code class="bg-white/80 px-1 py-0.5 rounded border border-indigo-200 font-mono text-indigo-700">.sql</code> file to the other machine via USB or network, open this page there, and click <strong>"Import Database"</strong>.
+                            </p>
+                            <p class="text-slate-600 leading-relaxed">
+                                <strong>2. Automated Compatibility:</strong> All exports use PostgreSQL standard portable DDL with self-clearing sequences and table recreation. It seamlessly works between development machines, laptops, and Windows/Linux servers.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 2-Column Grid: Export Card & Import Card -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- EXPORT CARD -->
+                        <div class="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200 flex flex-col justify-between space-y-6">
+                            <div>
+                                <div class="flex items-center justify-between gap-4 mb-3">
+                                    <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-2xs">Non-Destructive • Safe</span>
+                                    <span class="text-xs text-slate-400 font-mono" id="dbExportTimestamp">Ready</span>
+                                </div>
+                                <h3 class="text-xl font-black text-slate-900 flex items-center gap-3">
+                                    <span class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                    </span>
+                                    <span>Export Database (Backup)</span>
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-2 font-medium leading-relaxed">
+                                    Generate and download a self-contained <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-slate-700">.sql</code> dump of the database. You can import this file into any other machine to replicate or update its data.
+                                </p>
+
+                                <div class="mt-6 space-y-3">
+                                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Select Export Scope</label>
+                                    
+                                    <label class="flex items-start gap-3 p-4 rounded-2xl border border-slate-200 hover:border-indigo-400 bg-slate-50/60 cursor-pointer transition">
+                                        <input type="radio" name="dbExportScope" value="full" checked class="mt-1 text-indigo-600 focus:ring-indigo-500">
+                                        <div>
+                                            <span class="font-extrabold text-xs text-slate-900 block">Full Institutional Database (Recommended)</span>
+                                            <span class="text-[11px] text-slate-500">Includes all 10,805 members, vehicles, UHF RFID tags, gate passage logs, audit telemetry, user accounts, and system configuration.</span>
+                                        </div>
+                                    </label>
+
+                                    <label class="flex items-start gap-3 p-4 rounded-2xl border border-slate-200 hover:border-indigo-400 bg-slate-50/60 cursor-pointer transition">
+                                        <input type="radio" name="dbExportScope" value="compact" class="mt-1 text-indigo-600 focus:ring-indigo-500">
+                                        <div>
+                                            <span class="font-extrabold text-xs text-slate-900 block">Directory &amp; Settings Only (Fast Sync)</span>
+                                            <span class="text-[11px] text-slate-500">Includes members, vehicles, tags, and settings, but omits large historical gate passage logs. Ideal for rapid membership updates.</span>
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <div class="mt-4 p-3.5 bg-slate-50 rounded-2xl border border-slate-200 text-[11px] text-slate-600 flex items-center justify-between">
+                                    <span class="font-medium">Repository Backup File:</span>
+                                    <span class="font-mono font-bold text-slate-800" id="dbRepoBackupDetails">kgc_vams_backup.sql</span>
+                                </div>
+                            </div>
+
+                            <div class="pt-4 border-t space-y-3">
+                                <button type="button" id="btnExportDb" onclick="executeDatabaseExport()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 px-6 rounded-2xl font-black text-xs shadow-lg shadow-emerald-600/20 hover:shadow-emerald-600/30 transition flex items-center justify-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                    <span id="btnExportDbText">Export &amp; Download SQL Backup</span>
+                                </button>
+                                <div id="dbExportNotice" class="text-xs font-semibold text-center hidden"></div>
+                            </div>
+                        </div>
+
+                        <!-- IMPORT CARD -->
+                        <div class="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200 flex flex-col justify-between space-y-6">
+                            <div>
+                                <div class="flex items-center justify-between gap-4 mb-3">
+                                    <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-indigo-50 text-indigo-700 border border-indigo-200 shadow-2xs">Update / Restore Mode</span>
+                                    <span class="text-xs text-rose-600 font-bold flex items-center gap-1">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                        <span>Overwrites Target Tables</span>
+                                    </span>
+                                </div>
+                                <h3 class="text-xl font-black text-slate-900 flex items-center gap-3">
+                                    <span class="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                                    </span>
+                                    <span>Import Database (.sql)</span>
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-2 font-medium leading-relaxed">
+                                    Upload a <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-slate-700">.sql</code> backup exported from your other machine. Tables will be updated and system caches refreshed automatically.
+                                </p>
+
+                                <!-- Dropzone / File Picker -->
+                                <div class="mt-6">
+                                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Select SQL Backup File</label>
+                                    
+                                    <div id="dbDropzone" onclick="document.getElementById('dbImportFileInput').click()" class="border-2 border-dashed border-slate-300 hover:border-indigo-500 rounded-3xl p-6 text-center cursor-pointer bg-slate-50/50 hover:bg-indigo-50/30 transition group">
+                                        <input type="file" id="dbImportFileInput" accept=".sql" onchange="onDbImportFilePicked(event)" class="hidden">
+                                        <div class="w-12 h-12 rounded-2xl bg-indigo-100 group-hover:bg-indigo-200 text-indigo-700 flex items-center justify-center mx-auto mb-3 transition">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                                        </div>
+                                        <p class="text-xs font-extrabold text-slate-800" id="dbFileDropText">Click to select or drag &amp; drop .sql file</p>
+                                        <p class="text-[11px] text-slate-400 mt-1" id="dbFileDropSub">Accepts PostgreSQL .sql backup dumps (up to 500 MB)</p>
+                                        
+                                        <!-- Selected File Badge -->
+                                        <div id="dbSelectedFileBadge" class="hidden mt-3 inline-flex items-center gap-2 bg-indigo-50 border border-indigo-200 text-indigo-800 px-3.5 py-1.5 rounded-xl text-xs font-bold font-mono">
+                                            <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                            <span id="dbSelectedFileName">backup.sql</span>
+                                            <span id="dbSelectedFileSize" class="text-indigo-600 font-sans">(-- MB)</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Confirmation Checkbox -->
+                                <div class="mt-4">
+                                    <label class="flex items-start gap-2.5 p-3 rounded-2xl bg-amber-50/70 border border-amber-200/80 cursor-pointer">
+                                        <input type="checkbox" id="dbConfirmImportCheck" onchange="updateImportBtnState()" class="mt-0.5 text-indigo-600 rounded focus:ring-indigo-500">
+                                        <span class="text-[11px] text-amber-950 font-medium">
+                                            I confirm that I want to update/replace the database tables with the contents of the uploaded SQL dump.
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="pt-4 border-t space-y-3">
+                                <button type="button" id="btnImportDb" onclick="executeDatabaseImport()" disabled class="w-full bg-slate-300 text-slate-500 py-3.5 px-6 rounded-2xl font-black text-xs transition flex items-center justify-center gap-2 cursor-not-allowed">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                                    <span id="btnImportDbText">Import &amp; Restore Database</span>
+                                </button>
+                                <div id="dbImportNotice" class="text-xs font-semibold text-center hidden"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Import Summary Success Modal / Card (Shown after restore) -->
+                    <div id="dbRestoreSummaryCard" class="hidden bg-emerald-50 border border-emerald-200 rounded-3xl p-6 shadow-sm space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-extrabold text-sm text-emerald-900 flex items-center gap-2">
+                                <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                <span>Database Successfully Restored and Active</span>
+                            </h4>
+                            <button type="button" onclick="document.getElementById('dbRestoreSummaryCard').classList.add('hidden')" class="text-xs text-emerald-700 hover:text-emerald-900 font-bold">&times; Dismiss</button>
+                        </div>
+                        <p class="text-xs text-emerald-800" id="dbRestoreSummaryMsg"></p>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2" id="dbRestoreCountsGrid"></div>
                     </div>
                 </div>
             </div>

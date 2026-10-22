@@ -141,9 +141,9 @@ async def get_stats():
                 (pkt_today,)
             ).fetchone()['c']
 
-            peak_row = conn.execute("""SELECT strftime('%H', timestamp) as h, COUNT(*) as c FROM daily_logs
+            peak_row = conn.execute("""SELECT to_char(timestamp, 'HH24') as h, COUNT(*) as c FROM daily_logs
                 WHERE direction='Entry' AND date(timestamp)=?
-                GROUP BY h ORDER BY c DESC LIMIT 1""", (pkt_today,)).fetchone()
+                GROUP BY to_char(timestamp, 'HH24') ORDER BY c DESC LIMIT 1""", (pkt_today,)).fetchone()
 
             peak_hour_str = f"{peak_row['h']}:00" if peak_row else "None"
             peak_count_val = peak_row['c'] if peak_row else 0
@@ -265,29 +265,37 @@ async def get_chart_data():
             hours = [f"{h:02d}" for h in range(24)]
 
             entries_h = {str(r['h']).zfill(2): r['c'] for r in conn.execute(
-                """SELECT strftime('%H', timestamp) as h, COUNT(*) as c FROM daily_logs
-                   WHERE direction='Entry' AND date(timestamp)=? GROUP BY h""",
+                """SELECT to_char(timestamp, 'HH24') as h, COUNT(*) as c FROM daily_logs
+                   WHERE direction='Entry' AND date(timestamp)=? GROUP BY to_char(timestamp, 'HH24')""",
                 (pkt_today,)
             ).fetchall()}
 
             exits_h = {str(r['h']).zfill(2): r['c'] for r in conn.execute(
-                """SELECT strftime('%H', timestamp) as h, COUNT(*) as c FROM daily_logs
-                   WHERE direction='Exit' AND date(timestamp)=? GROUP BY h""",
+                """SELECT to_char(timestamp, 'HH24') as h, COUNT(*) as c FROM daily_logs
+                   WHERE direction='Exit' AND date(timestamp)=? GROUP BY to_char(timestamp, 'HH24')""",
                 (pkt_today,)
             ).fetchall()}
 
-            days, entries_d, exits_d = [], [], []
+            from datetime import datetime, timedelta
+            today_dt = datetime.now()
+            past_7_dates = [(today_dt - timedelta(days=i)).strftime("%Y-%m-%d") for i in range(6, -1, -1)]
+            days_map = {d: {"e": 0, "x": 0} for d in past_7_dates}
+
             for row in conn.execute(
                 """SELECT date(timestamp) as d,
                        SUM(CASE WHEN direction='Entry' THEN 1 ELSE 0 END) as e,
                        SUM(CASE WHEN direction='Exit' THEN 1 ELSE 0 END) as x
-                   FROM daily_logs WHERE date(timestamp) >= date('now', 'localtime', '-6 days')
+                   FROM daily_logs WHERE date(timestamp) >= (CURRENT_DATE - INTERVAL '6 days')
                    GROUP BY d ORDER BY d"""
             ).fetchall():
                 d_str = str(row['d']) if row['d'] is not None else ''
-                days.append(d_str[5:] if len(d_str) >= 5 else d_str)
-                entries_d.append(row['e'])
-                exits_d.append(row['x'])
+                if d_str in days_map:
+                    days_map[d_str]["e"] = int(row['e'] or 0)
+                    days_map[d_str]["x"] = int(row['x'] or 0)
+
+            days = [d[5:] for d in past_7_dates]
+            entries_d = [days_map[d]["e"] for d in past_7_dates]
+            exits_d = [days_map[d]["x"] for d in past_7_dates]
 
             import sys
             app_mod = sys.modules.get('app')

@@ -71,7 +71,7 @@ DROP SEQUENCE IF EXISTS public.camera_audit_logs_id_seq;
 DROP TABLE IF EXISTS public.camera_audit_logs;
 DROP FUNCTION IF EXISTS public.strftime(fmt text, ts timestamp without time zone);
 --
--- Name: strftime(text, timestamp without time zone); Type: FUNCTION; Schema: public; Owner: postgres
+-- Name: strftime(text, timestamp without time zone); Type: FUNCTION; Schema: public; Owner: -
 --
 
 CREATE FUNCTION public.strftime(fmt text, ts timestamp without time zone) RETURNS text
@@ -89,14 +89,12 @@ CREATE FUNCTION public.strftime(fmt text, ts timestamp without time zone) RETURN
                 $$;
 
 
-ALTER FUNCTION public.strftime(fmt text, ts timestamp without time zone) OWNER TO postgres;
-
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
 --
--- Name: camera_audit_logs; Type: TABLE; Schema: public; Owner: postgres
+-- Name: camera_audit_logs; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.camera_audit_logs (
@@ -117,10 +115,8 @@ CREATE TABLE public.camera_audit_logs (
 );
 
 
-ALTER TABLE public.camera_audit_logs OWNER TO postgres;
-
 --
--- Name: camera_audit_logs_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: camera_audit_logs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public.camera_audit_logs_id_seq
@@ -132,17 +128,15 @@ CREATE SEQUENCE public.camera_audit_logs_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.camera_audit_logs_id_seq OWNER TO postgres;
-
 --
--- Name: camera_audit_logs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: camera_audit_logs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
 ALTER SEQUENCE public.camera_audit_logs_id_seq OWNED BY public.camera_audit_logs.id;
 
 
 --
--- Name: daily_logs; Type: TABLE; Schema: public; Owner: postgres
+-- Name: daily_logs; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.daily_logs (
@@ -161,10 +155,8 @@ CREATE TABLE public.daily_logs (
 );
 
 
-ALTER TABLE public.daily_logs OWNER TO postgres;
-
 --
--- Name: daily_logs_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: daily_logs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public.daily_logs_id_seq
@@ -176,17 +168,15 @@ CREATE SEQUENCE public.daily_logs_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.daily_logs_id_seq OWNER TO postgres;
-
 --
--- Name: daily_logs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: daily_logs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
 ALTER SEQUENCE public.daily_logs_id_seq OWNED BY public.daily_logs.id;
 
 
 --
--- Name: members; Type: TABLE; Schema: public; Owner: postgres
+-- Name: members; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.members (
@@ -203,10 +193,8 @@ CREATE TABLE public.members (
 );
 
 
-ALTER TABLE public.members OWNER TO postgres;
-
 --
--- Name: members_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: members_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public.members_id_seq
@@ -218,17 +206,15 @@ CREATE SEQUENCE public.members_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.members_id_seq OWNER TO postgres;
-
 --
--- Name: members_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: members_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
 ALTER SEQUENCE public.members_id_seq OWNED BY public.members.id;
 
 
 --
--- Name: raw_reader_logs; Type: TABLE; Schema: public; Owner: postgres
+-- Name: raw_reader_logs; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.raw_reader_logs (
@@ -240,10 +226,8 @@ CREATE TABLE public.raw_reader_logs (
 );
 
 
-ALTER TABLE public.raw_reader_logs OWNER TO postgres;
-
 --
--- Name: raw_reader_logs_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: raw_reader_logs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public.raw_reader_logs_id_seq
@@ -255,17 +239,15 @@ CREATE SEQUENCE public.raw_reader_logs_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.raw_reader_logs_id_seq OWNER TO postgres;
-
 --
--- Name: raw_reader_logs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: raw_reader_logs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
 ALTER SEQUENCE public.raw_reader_logs_id_seq OWNED BY public.raw_reader_logs.id;
 
 
 --
--- Name: settings; Type: TABLE; Schema: public; Owner: postgres
+-- Name: settings; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.settings (
@@ -274,10 +256,8 @@ CREATE TABLE public.settings (
 );
 
 
-ALTER TABLE public.settings OWNER TO postgres;
-
 --
--- Name: unregistered_tags; Type: TABLE; Schema: public; Owner: postgres
+-- Name: unregistered_tags; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.unregistered_tags (
@@ -292,10 +272,8 @@ CREATE TABLE public.unregistered_tags (
 );
 
 
-ALTER TABLE public.unregistered_tags OWNER TO postgres;
-
 --
--- Name: unregistered_tags_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: unregistered_tags_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public.unregistered_tags_id_seq
@@ -307,17 +285,15 @@ CREATE SEQUENCE public.unregistered_tags_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.unregistered_tags_id_seq OWNER TO postgres;
-
 --
--- Name: unregistered_tags_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: unregistered_tags_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
 ALTER SEQUENCE public.unregistered_tags_id_seq OWNED BY public.unregistered_tags.id;
 
 
 --
--- Name: user_sessions; Type: TABLE; Schema: public; Owner: postgres
+-- Name: user_sessions; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.user_sessions (
@@ -328,10 +304,8 @@ CREATE TABLE public.user_sessions (
 );
 
 
-ALTER TABLE public.user_sessions OWNER TO postgres;
-
 --
--- Name: users; Type: TABLE; Schema: public; Owner: postgres
+-- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.users (
@@ -347,10 +321,8 @@ CREATE TABLE public.users (
 );
 
 
-ALTER TABLE public.users OWNER TO postgres;
-
 --
--- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public.users_id_seq
@@ -362,59 +334,57 @@ CREATE SEQUENCE public.users_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.users_id_seq OWNER TO postgres;
-
 --
--- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
 ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
--- Name: camera_audit_logs id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: camera_audit_logs id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.camera_audit_logs ALTER COLUMN id SET DEFAULT nextval('public.camera_audit_logs_id_seq'::regclass);
 
 
 --
--- Name: daily_logs id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: daily_logs id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.daily_logs ALTER COLUMN id SET DEFAULT nextval('public.daily_logs_id_seq'::regclass);
 
 
 --
--- Name: members id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: members id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.members ALTER COLUMN id SET DEFAULT nextval('public.members_id_seq'::regclass);
 
 
 --
--- Name: raw_reader_logs id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: raw_reader_logs id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.raw_reader_logs ALTER COLUMN id SET DEFAULT nextval('public.raw_reader_logs_id_seq'::regclass);
 
 
 --
--- Name: unregistered_tags id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: unregistered_tags id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.unregistered_tags ALTER COLUMN id SET DEFAULT nextval('public.unregistered_tags_id_seq'::regclass);
 
 
 --
--- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
 
 
 --
--- Data for Name: camera_audit_logs; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: camera_audit_logs; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.camera_audit_logs (id, image_path, plate_image_path, detected_plate, direction, event_type, ocr_status, matched_mem_id, matched_name, matched_make_model, matched_profile_pic, "timestamp", date_str, hour_str) FROM stdin;
@@ -8643,11 +8613,12 @@ COPY public.camera_audit_logs (id, image_path, plate_image_path, detected_plate,
 15681	static/camera_audits/hikvision_full_1791483882959.jpg			Line Crossing	Hikvision Line Crossing						2026-10-08 23:24:42	2026-10-08	23:00
 15682	static/camera_audits/hikvision_full_1791483939527.jpg			Line Crossing	Hikvision Line Crossing						2026-10-08 23:25:39	2026-10-08	23:00
 15683	static/camera_audits/hikvision_full_1791483982500.jpg			Line Crossing	Hikvision Line Crossing						2026-10-08 23:26:22	2026-10-08	23:00
+15684	static/camera_audits/hikvision_full_1792629983443.jpg	\N	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 05:46:23	2026-10-22	05:00
 \.
 
 
 --
--- Data for Name: daily_logs; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: daily_logs; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.daily_logs (id, mem_id, name, vehicle_number, access_type, direction, gate_no, image_path, plate_image_path, detected_plate, scanned_tag, "timestamp") FROM stdin;
@@ -13632,7 +13603,7 @@ COPY public.daily_logs (id, mem_id, name, vehicle_number, access_type, direction
 
 
 --
--- Data for Name: members; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: members; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status, profile_pic, current_location, created_at) FROM stdin;
@@ -24445,7 +24416,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 
 
 --
--- Data for Name: raw_reader_logs; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: raw_reader_logs; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.raw_reader_logs (id, tag_scanned, system_response, direction, "timestamp") FROM stdin;
@@ -25454,7 +25425,7 @@ COPY public.raw_reader_logs (id, tag_scanned, system_response, direction, "times
 
 
 --
--- Data for Name: settings; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: settings; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.settings (config_key, config_value) FROM stdin;
@@ -25477,7 +25448,7 @@ bulk_exit_exceptions	[]
 
 
 --
--- Data for Name: unregistered_tags; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: unregistered_tags; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.unregistered_tags (id, tag, first_seen, last_seen, direction, current_location, read_count, tag_type) FROM stdin;
@@ -26228,7 +26199,7 @@ COPY public.unregistered_tags (id, tag, first_seen, last_seen, direction, curren
 
 
 --
--- Data for Name: user_sessions; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: user_sessions; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.user_sessions (token, user_id, created_at, expires_at) FROM stdin;
@@ -26238,7 +26209,7 @@ rYUUrVf3Cd4mLzJiubm20k3pJ3gdhOB9oqX8UeShfIY	1	2026-10-22 02:26:28.532141	2026-10
 
 
 --
--- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.users (id, username, password_hash, salt, full_name, role, is_active, created_at, last_login) FROM stdin;
@@ -26249,49 +26220,49 @@ COPY public.users (id, username, password_hash, salt, full_name, role, is_active
 
 
 --
--- Name: camera_audit_logs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: camera_audit_logs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.camera_audit_logs_id_seq', 15683, true);
+SELECT pg_catalog.setval('public.camera_audit_logs_id_seq', 15684, true);
 
 
 --
--- Name: daily_logs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: daily_logs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
 SELECT pg_catalog.setval('public.daily_logs_id_seq', 9544, true);
 
 
 --
--- Name: members_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: members_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
 SELECT pg_catalog.setval('public.members_id_seq', 10849, true);
 
 
 --
--- Name: raw_reader_logs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: raw_reader_logs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
 SELECT pg_catalog.setval('public.raw_reader_logs_id_seq', 1001, true);
 
 
 --
--- Name: unregistered_tags_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: unregistered_tags_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
 SELECT pg_catalog.setval('public.unregistered_tags_id_seq', 1891, true);
 
 
 --
--- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
 SELECT pg_catalog.setval('public.users_id_seq', 3, true);
 
 
 --
--- Name: camera_audit_logs camera_audit_logs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: camera_audit_logs camera_audit_logs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.camera_audit_logs
@@ -26299,7 +26270,7 @@ ALTER TABLE ONLY public.camera_audit_logs
 
 
 --
--- Name: daily_logs daily_logs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: daily_logs daily_logs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.daily_logs
@@ -26307,7 +26278,7 @@ ALTER TABLE ONLY public.daily_logs
 
 
 --
--- Name: members members_e_tag_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: members members_e_tag_id_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.members
@@ -26315,7 +26286,7 @@ ALTER TABLE ONLY public.members
 
 
 --
--- Name: members members_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: members members_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.members
@@ -26323,7 +26294,7 @@ ALTER TABLE ONLY public.members
 
 
 --
--- Name: raw_reader_logs raw_reader_logs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: raw_reader_logs raw_reader_logs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.raw_reader_logs
@@ -26331,7 +26302,7 @@ ALTER TABLE ONLY public.raw_reader_logs
 
 
 --
--- Name: settings settings_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: settings settings_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.settings
@@ -26339,7 +26310,7 @@ ALTER TABLE ONLY public.settings
 
 
 --
--- Name: unregistered_tags unregistered_tags_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: unregistered_tags unregistered_tags_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.unregistered_tags
@@ -26347,7 +26318,7 @@ ALTER TABLE ONLY public.unregistered_tags
 
 
 --
--- Name: unregistered_tags unregistered_tags_tag_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: unregistered_tags unregistered_tags_tag_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.unregistered_tags
@@ -26355,7 +26326,7 @@ ALTER TABLE ONLY public.unregistered_tags
 
 
 --
--- Name: user_sessions user_sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: user_sessions user_sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.user_sessions
@@ -26363,7 +26334,7 @@ ALTER TABLE ONLY public.user_sessions
 
 
 --
--- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.users
@@ -26371,7 +26342,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: users users_username_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: users users_username_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.users
@@ -26379,154 +26350,154 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: idx_cam_audit_date; Type: INDEX; Schema: public; Owner: postgres
+-- Name: idx_cam_audit_date; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_cam_audit_date ON public.camera_audit_logs USING btree (date_str);
 
 
 --
--- Name: idx_cam_audit_plate; Type: INDEX; Schema: public; Owner: postgres
+-- Name: idx_cam_audit_plate; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_cam_audit_plate ON public.camera_audit_logs USING btree (detected_plate);
 
 
 --
--- Name: idx_logs_dir_ts; Type: INDEX; Schema: public; Owner: postgres
+-- Name: idx_logs_dir_ts; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_logs_dir_ts ON public.daily_logs USING btree (direction, "timestamp");
 
 
 --
--- Name: idx_logs_direction; Type: INDEX; Schema: public; Owner: postgres
+-- Name: idx_logs_direction; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_logs_direction ON public.daily_logs USING btree (direction);
 
 
 --
--- Name: idx_logs_memid; Type: INDEX; Schema: public; Owner: postgres
+-- Name: idx_logs_memid; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_logs_memid ON public.daily_logs USING btree (mem_id);
 
 
 --
--- Name: idx_logs_tag; Type: INDEX; Schema: public; Owner: postgres
+-- Name: idx_logs_tag; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_logs_tag ON public.daily_logs USING btree (scanned_tag);
 
 
 --
--- Name: idx_logs_tag_ts; Type: INDEX; Schema: public; Owner: postgres
+-- Name: idx_logs_tag_ts; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_logs_tag_ts ON public.daily_logs USING btree (scanned_tag, "timestamp");
 
 
 --
--- Name: idx_logs_timestamp; Type: INDEX; Schema: public; Owner: postgres
+-- Name: idx_logs_timestamp; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_logs_timestamp ON public.daily_logs USING btree ("timestamp");
 
 
 --
--- Name: idx_logs_veh; Type: INDEX; Schema: public; Owner: postgres
+-- Name: idx_logs_veh; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_logs_veh ON public.daily_logs USING btree (vehicle_number);
 
 
 --
--- Name: idx_members_car; Type: INDEX; Schema: public; Owner: postgres
+-- Name: idx_members_car; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_members_car ON public.members USING btree (car_number);
 
 
 --
--- Name: idx_members_curr_loc; Type: INDEX; Schema: public; Owner: postgres
+-- Name: idx_members_curr_loc; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_members_curr_loc ON public.members USING btree (current_location);
 
 
 --
--- Name: idx_members_etag; Type: INDEX; Schema: public; Owner: postgres
+-- Name: idx_members_etag; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_members_etag ON public.members USING btree (e_tag_id);
 
 
 --
--- Name: idx_members_memid; Type: INDEX; Schema: public; Owner: postgres
+-- Name: idx_members_memid; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_members_memid ON public.members USING btree (mem_id);
 
 
 --
--- Name: idx_members_status; Type: INDEX; Schema: public; Owner: postgres
+-- Name: idx_members_status; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_members_status ON public.members USING btree (status);
 
 
 --
--- Name: idx_sessions_expires; Type: INDEX; Schema: public; Owner: postgres
+-- Name: idx_sessions_expires; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_sessions_expires ON public.user_sessions USING btree (expires_at);
 
 
 --
--- Name: idx_sessions_user; Type: INDEX; Schema: public; Owner: postgres
+-- Name: idx_sessions_user; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_sessions_user ON public.user_sessions USING btree (user_id);
 
 
 --
--- Name: idx_unreg_last_seen; Type: INDEX; Schema: public; Owner: postgres
+-- Name: idx_unreg_last_seen; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_unreg_last_seen ON public.unregistered_tags USING btree (last_seen);
 
 
 --
--- Name: idx_unreg_loc; Type: INDEX; Schema: public; Owner: postgres
+-- Name: idx_unreg_loc; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_unreg_loc ON public.unregistered_tags USING btree (current_location);
 
 
 --
--- Name: idx_unreg_tag; Type: INDEX; Schema: public; Owner: postgres
+-- Name: idx_unreg_tag; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_unreg_tag ON public.unregistered_tags USING btree (tag);
 
 
 --
--- Name: idx_unreg_tag_type; Type: INDEX; Schema: public; Owner: postgres
+-- Name: idx_unreg_tag_type; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_unreg_tag_type ON public.unregistered_tags USING btree (tag_type);
 
 
 --
--- Name: idx_users_username; Type: INDEX; Schema: public; Owner: postgres
+-- Name: idx_users_username; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_users_username ON public.users USING btree (username);
 
 
 --
--- Name: user_sessions user_sessions_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: user_sessions user_sessions_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.user_sessions

@@ -57,8 +57,88 @@ def is_pg_service_responsive() -> bool:
     except Exception:
         return False
 
+_PG_PROCESS = None
+
+def _cleanup_pg_process():
+    global _PG_PROCESS
+    if _PG_PROCESS and _PG_PROCESS.poll() is None:
+        try:
+            _PG_PROCESS.terminate()
+            _PG_PROCESS.wait(timeout=2)
+        except Exception:
+            try:
+                _PG_PROCESS.kill()
+            except Exception:
+                pass
+
+import atexit
+atexit.register(_cleanup_pg_process)
+
+def ensure_pg_service_started() -> bool:
+    """Ensures local PostgreSQL server is running; starts it automatically if missing/down."""
+    global _PG_PROCESS
+    if is_pg_service_responsive():
+        return True
+
+    if PG_HOST not in ("127.0.0.1", "localhost", "::1"):
+        return False
+
+    data_dir = r"C:\PostgreSQL\data"
+    bin_dir = r"C:\PostgreSQL\pgsql\bin"
+    postgres_exe = os.path.join(bin_dir, "postgres.exe")
+
+    if not os.path.exists(postgres_exe) or not os.path.exists(data_dir):
+        return False
+
+    pid_file = os.path.join(data_dir, "postmaster.pid")
+    if os.path.exists(pid_file):
+        try:
+            with open(pid_file, "r") as f:
+                pid = int(f.readline().strip())
+            import psutil
+            if not psutil.pid_exists(pid):
+                os.remove(pid_file)
+        except Exception:
+            try:
+                os.remove(pid_file)
+            except Exception:
+                pass
+
+    try:
+        import subprocess
+        log_path = r"C:\PostgreSQL\server.log"
+        log_file = open(log_path, "a", encoding="utf-8")
+        _PG_PROCESS = subprocess.Popen(
+            [postgres_exe, "-D", data_dir],
+            stdout=log_file,
+            stderr=log_file
+        )
+    except Exception:
+        return False
+
+    start_t = time.time()
+    while time.time() - start_t < 15:
+        time.sleep(0.5)
+        try:
+            c = psycopg2.connect(
+                host=PG_HOST,
+                port=PG_PORT,
+                dbname="postgres",
+                user=PG_USER,
+                password=PG_PASSWORD,
+                connect_timeout=1
+            )
+            c.close()
+            return True
+        except Exception:
+            pass
+
+    return is_pg_service_responsive()
+
 def ensure_pg_database_exists(dbname: str = None):
     """Ensures the target PostgreSQL database exists; creates it via 'postgres' maintenance DB if missing."""
+    if not is_pg_service_responsive():
+        ensure_pg_service_started()
     target_db = dbname or PG_DBNAME
     try:
         conn = psycopg2.connect(
@@ -91,10 +171,12 @@ def get_pg_pool(dbname: str = None) -> ThreadedConnectionPool:
             return _POOLS[target_db]
 
         if not is_pg_service_responsive():
-            raise RuntimeError(
-                f"PostgreSQL service is not responding on {PG_HOST}:{PG_PORT}. "
-                f"Please ensure PostgreSQL server is running and listening on port {PG_PORT}."
-            )
+            ensure_pg_service_started()
+            if not is_pg_service_responsive():
+                raise RuntimeError(
+                    f"PostgreSQL service is not responding on {PG_HOST}:{PG_PORT}. "
+                    f"Please ensure PostgreSQL server is running and listening on port {PG_PORT}."
+                )
 
         try:
             pool = ThreadedConnectionPool(
@@ -471,13 +553,27 @@ def init_db(dbname: str = None):
                 conn.execute("""
                 CREATE OR REPLACE FUNCTION strftime(fmt text, ts timestamp) RETURNS text AS $$
                 BEGIN
-                    IF fmt = '%H' THEN
+                    IF fmt IN ('%H', '%%H') OR fmt LIKE '%H' THEN
                         RETURN to_char(ts, 'HH24');
-                    ELSIF fmt = '%Y-%m-%d' THEN
+                    ELSIF fmt IN ('%Y-%m-%d', '%%Y-%%m-%%d') OR fmt LIKE '%Y-%m-%d' THEN
                         RETURN to_char(ts, 'YYYY-MM-DD');
+                    ELSIF fmt IN ('%d', '%%d') OR fmt LIKE '%d' THEN
+                        RETURN to_char(ts, 'DD');
+                    ELSIF fmt IN ('%m', '%%m') OR fmt LIKE '%m' THEN
+                        RETURN to_char(ts, 'MM');
+                    ELSIF fmt IN ('%Y', '%%Y') OR fmt LIKE '%Y' THEN
+                        RETURN to_char(ts, 'YYYY');
                     ELSE
                         RETURN to_char(ts, 'YYYY-MM-DD HH24:MI:SS');
                     END IF;
+                END;
+                $$ LANGUAGE plpgsql IMMUTABLE;
+
+                CREATE OR REPLACE FUNCTION strftime(fmt text, ts text) RETURNS text AS $$
+                BEGIN
+                    RETURN strftime(fmt, ts::timestamp);
+                EXCEPTION WHEN OTHERS THEN
+                    RETURN ts;
                 END;
                 $$ LANGUAGE plpgsql IMMUTABLE;
                 """)
