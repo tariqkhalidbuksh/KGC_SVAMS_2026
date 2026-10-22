@@ -125,7 +125,18 @@ def rfid_tcp_client_worker(direction: str, ip_setting_key: str, gate_name: str =
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.settimeout(5.0)
             sock.connect((target_ip, 49152))
-            sock.settimeout(None)
+
+            # Enable TCP keepalive to detect silent hardware/switch disconnects
+            sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+            try:
+                if hasattr(socket, "SIO_KEEPALIVE_VALS"):
+                    sock.ioctl(socket.SIO_KEEPALIVE_VALS, (1, 5000, 2000))
+            except Exception:
+                pass
+
+            # Use 6.0s receive timeout so the thread never freezes indefinitely on dead sockets
+            sock.settimeout(6.0)
+            config.READER_SOCKETS[r_key] = sock
 
             config.READER_STATUS[r_key] = "CONNECTED"
             if direction in ("Entry", "Exit") and ("Gate01" in r_key or r_key == direction):
@@ -133,9 +144,21 @@ def rfid_tcp_client_worker(direction: str, ip_setting_key: str, gate_name: str =
 
             buffer = b""
             while True:
-                data = sock.recv(1024)
-                if not data:
+                try:
+                    data = sock.recv(1024)
+                    if not data:
+                        break
+                except socket.timeout:
+                    # Normal heartbeat idle window (no cars currently in antenna field)
+                    continue
+                except (ConnectionResetError, ConnectionAbortedError, BrokenPipeError, OSError):
                     break
+
+                if r_key in config.READER_TELEMETRY:
+                    config.READER_TELEMETRY[r_key]["bytes_total"] += len(data)
+                    config.READER_TELEMETRY[r_key]["last_packet_time"] = time.time()
+                    config.READER_TELEMETRY[r_key]["last_raw_hex"] = data[:32].hex().upper()
+
                 buffer += data
                 hex_stream = buffer.hex().upper()
 
@@ -223,12 +246,31 @@ def rfid_tcp_client_worker(direction: str, ip_setting_key: str, gate_name: str =
             config.READER_STATUS[r_key] = "DISCONNECTED"
             if direction in ("Entry", "Exit") and ("Gate01" in r_key or r_key == direction):
                 config.READER_STATUS[direction] = "DISCONNECTED"
-            time.sleep(3)
+            if r_key in config.READER_TELEMETRY:
+                config.READER_TELEMETRY[r_key]["reconnects"] += 1
+            time.sleep(2)
         finally:
+            config.READER_SOCKETS.pop(r_key, None)
             try:
                 sock.close()
             except Exception:
                 pass
+
+
+def reconnect_reader(reader_id: str) -> bool:
+    """Forces immediate clean disconnect and reconnect cycle for a specific hardware reader."""
+    sock = config.READER_SOCKETS.get(reader_id)
+    if sock:
+        try:
+            sock.shutdown(socket.SHUT_RDWR)
+        except Exception:
+            pass
+        try:
+            sock.close()
+        except Exception:
+            pass
+        return True
+    return False
 
 
 def buffer_cleaner_worker():

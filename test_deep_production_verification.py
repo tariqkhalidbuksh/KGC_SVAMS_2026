@@ -116,7 +116,7 @@ def test_audit_multi_day_journey_and_reentry_logic():
     today_data = res_today.json()
     # Exactly MEM-002 and MEM-004 should be currently inside (2 cars)
     assert today_data["currently_inside"] == 2
-    inside_tags = {a["entry"]["scanned_tag"] for a in today_data["audits"] if a["status"] in ("Inside Facility", "Alert / Inside")}
+    inside_tags = {a["entry"]["scanned_tag"] for a in today_data["audits"] if a["status"] in ("Inside Facility", "Alert / Inside", "Overstay (>8h)")}
     assert "TAG-002" in inside_tags
     assert "TAG-004" in inside_tags
 

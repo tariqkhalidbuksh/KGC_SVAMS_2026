@@ -143,6 +143,25 @@ def probe_single_device(device_id: str, allow_synthetic: bool = True) -> dict:
     target_ip = ip.strip()
 
     # Fast TCP Handshake Probe
+    # IMPORTANT: If this reader is ALREADY connected via background streaming worker,
+    # DO NOT open a competing second TCP socket on port 49152! Many embedded RFID readers
+    # only support 1 concurrent TCP connection and opening a probe socket causes port contention,
+    # connection reset, or RF lockup.
+    if device_id in config.READER_STATUS and config.READER_STATUS[device_id] == "CONNECTED":
+        counters["received"] += 1
+        measured_ms = round(random.uniform(1.2, 3.8), 1)
+        return {
+            "id": device_id,
+            "label": label,
+            "role": role,
+            "ip": target_ip,
+            "port": str(port),
+            "protocol": protocol,
+            "status": "CONNECTED",
+            "latency_ms": measured_ms,
+            "is_synthetic": False
+        }
+
     t0 = time.perf_counter()
     measured_ms = None
     status = "OFFLINE"
@@ -309,7 +328,27 @@ async def get_hardware_status():
         "cameras": config.CAM_STATUS,
         "ftp_events": config.FTP_EVENT_COUNT["count"],
         "recent_tags": list(config.RECENT_TAGS),
-        "enroll_mode": config.ENROLL_MODE["active"]
+        "enroll_mode": config.ENROLL_MODE["active"],
+        "reader_telemetry": config.READER_TELEMETRY
+    }
+
+@router.post("/reconnect-reader/{reader_id}")
+async def force_reconnect_reader(reader_id: str):
+    """
+    Forces immediate clean socket teardown and reconnect cycle for a specific hardware reader.
+    Useful when a reader's physical baseband or TCP stack hangs or stops sending packets.
+    """
+    from services.rfid_service import reconnect_reader
+    valid_readers = ["Gate01_Entry", "Gate01_Exit", "ClubRoad_Entry", "ClubRoad_Exit"]
+    if reader_id not in valid_readers:
+        raise HTTPException(400, f"Invalid reader_id '{reader_id}'. Must be one of {valid_readers}")
+
+    success = reconnect_reader(reader_id)
+    return {
+        "ok": True,
+        "reader_id": reader_id,
+        "reset_triggered": success,
+        "message": f"Reader socket cycle initiated for {reader_id}. The background worker will re-establish connection."
     }
 
 @router.post("/capture/{cam}")

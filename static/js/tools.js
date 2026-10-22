@@ -663,13 +663,21 @@ function renderDeviceCards(devices) {
                 </div>
             </div>
 
-            <!-- Single Node Ping Action Button -->
+            <!-- Single Node Ping Action Button & Socket Re-sync -->
             <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
                 <span id="pingResult_${key}" class="text-[10px] font-mono text-slate-400">Ready for probe</span>
-                <button type="button" onclick="pingDevice('${key}', this)"
-                        class="text-[11px] font-bold px-3 py-1.5 rounded-lg border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700 transition flex items-center gap-1.5 shadow-2xs">
-                    <span>Ping Node</span>
-                </button>
+                <div class="flex items-center gap-1.5">
+                    ${key.includes('Gate') || key.includes('ClubRoad') ? `
+                    <button type="button" onclick="reconnectReaderSocket('${key}', this)" title="Cycle TCP Socket & Reconnect"
+                            class="text-[11px] font-bold px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 transition flex items-center gap-1 shadow-2xs">
+                        <span>Re-sync</span>
+                    </button>
+                    ` : ''}
+                    <button type="button" onclick="pingDevice('${key}', this)"
+                            class="text-[11px] font-bold px-3 py-1.5 rounded-lg border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700 transition flex items-center gap-1.5 shadow-2xs">
+                        <span>Ping Node</span>
+                    </button>
+                </div>
             </div>
         </div>`;
     }).join('');
@@ -759,6 +767,44 @@ async function pingDevice(deviceId, btn) {
         }
     } catch (e) {
         if (resEl) resEl.innerText = 'Probe network error';
+    } finally {
+        if (btn) {
+            btn.innerHTML = origText;
+            btn.disabled = false;
+        }
+    }
+}
+
+async function reconnectReaderSocket(readerId, btn) {
+    const origText = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.innerHTML = 'Cycling...';
+        btn.disabled = true;
+    }
+    const resEl = document.getElementById(`pingResult_${readerId}`);
+    if (resEl) {
+        resEl.innerText = 'Resetting TCP socket...';
+        resEl.className = 'text-[10px] font-mono font-bold text-amber-600';
+    }
+
+    try {
+        const res = await fetch(`/api/tools/reconnect-reader/${readerId}`, { method: 'POST' });
+        const data = await res.json();
+        if (resEl) {
+            resEl.innerText = data.reset_triggered ? 'Socket cycled - reconnecting' : 'Reconnecting worker...';
+            resEl.className = 'text-[10px] font-mono font-bold text-blue-700';
+            setTimeout(() => {
+                if (resEl) {
+                    resEl.innerText = 'Ready for probe';
+                    resEl.className = 'text-[10px] font-mono text-slate-400';
+                }
+            }, 3500);
+        }
+    } catch (e) {
+        if (resEl) {
+            resEl.innerText = 'Reset failed';
+            resEl.className = 'text-[10px] font-mono font-bold text-rose-600';
+        }
     } finally {
         if (btn) {
             btn.innerHTML = origText;
