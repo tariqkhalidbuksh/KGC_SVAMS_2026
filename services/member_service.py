@@ -271,11 +271,22 @@ def get_member_directory_lookup(conn=None) -> dict:
                 if clean_car not in by_plate:
                     by_plate[clean_car] = d
 
+        by_unreg = {}
+        try:
+            unreg_rows = conn.execute("SELECT tag, Current_Location FROM unregistered_tags").fetchall()
+            for ur in unreg_rows:
+                utag = (ur.get('tag') or '').strip().upper()
+                if utag:
+                    by_unreg[utag] = ur.get('Current_Location') or 'Outside'
+        except Exception:
+            pass
+
         with config.CACHE_LOCK:
             config.MEMBERS_DIRECTORY_CACHE = {
                 "etag": by_etag,
                 "mem_id": by_mem,
                 "plate": by_plate,
+                "unreg": by_unreg,
                 "timestamp": now_epoch,
                 "db_file": getattr(config, 'DB_FILE', 'gate_access.db')
             }

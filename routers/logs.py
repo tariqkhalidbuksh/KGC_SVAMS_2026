@@ -48,9 +48,14 @@ def enrich_daily_log_with_members(log_row_dict: dict, mem_lookup: dict) -> dict:
             res['vehicle_number'] = mem['Car_number']
         res['make_model'] = mem.get('Make_Model') or res.get('make_model') or ''
         res['profile_pic'] = mem.get('Profile_pic') or res.get('profile_pic') or ''
+        res['current_location'] = mem.get('Current_Location') or res.get('current_location') or ''
     else:
         res.setdefault('make_model', '')
         res.setdefault('profile_pic', '')
+        if tag and isinstance(mem_lookup, dict) and tag in mem_lookup.get('unreg', {}):
+            res['current_location'] = mem_lookup['unreg'][tag]
+        else:
+            res.setdefault('current_location', '')
     return res
 
 AUDIT_LOGS_BASE_QUERY = """SELECT d.id, 
@@ -319,15 +324,46 @@ def _find_matching_exit_indexed(entry_event, by_ref, by_tag, by_plate, by_mem, m
                 continue
             return c
 
-    # 5. Fallback for clock skew (same tag or same plate)
+    # 5. Fallback for minor clock skew (within 300s before entry) OR same-day reversed directions for unregistered visitors
     if e_tag and e_tag in by_tag:
         for c in by_tag[e_tag]:
             if c['id'] not in matched_exit_ids:
-                return c
+                try:
+                    c_dt = datetime.strptime(str(c.get('timestamp'))[:19], "%Y-%m-%d %H:%M:%S")
+                    e_dt = datetime.strptime(e_ts[:19], "%Y-%m-%d %H:%M:%S")
+                    diff_s = (e_dt - c_dt).total_seconds()
+                    if 0 <= diff_s <= 300:
+                        return c
+                    # If on the same calendar day and unregistered / reversed direction:
+                    if str(c.get('timestamp'))[:10] == e_ts[:10] and (
+                        'Unknown' in (entry_event.get('access_type') or '') or
+                        'No RFID' in (entry_event.get('access_type') or '') or
+                        'Unregistered' in (entry_event.get('name') or '') or
+                        'Unknown' in (c.get('access_type') or '') or
+                        'Unregistered' in (c.get('name') or '')
+                    ):
+                        return c
+                except Exception:
+                    pass
     if e_plate and e_plate in by_plate:
         for c in by_plate[e_plate]:
             if c['id'] not in matched_exit_ids:
-                return c
+                try:
+                    c_dt = datetime.strptime(str(c.get('timestamp'))[:19], "%Y-%m-%d %H:%M:%S")
+                    e_dt = datetime.strptime(e_ts[:19], "%Y-%m-%d %H:%M:%S")
+                    diff_s = (e_dt - c_dt).total_seconds()
+                    if 0 <= diff_s <= 300:
+                        return c
+                    if str(c.get('timestamp'))[:10] == e_ts[:10] and (
+                        'Unknown' in (entry_event.get('access_type') or '') or
+                        'No RFID' in (entry_event.get('access_type') or '') or
+                        'Unregistered' in (entry_event.get('name') or '') or
+                        'Unknown' in (c.get('access_type') or '') or
+                        'Unregistered' in (c.get('name') or '')
+                    ):
+                        return c
+                except Exception:
+                    pass
 
     return None
 
@@ -536,15 +572,15 @@ def _fetch_audit_logs_with_lookback(conn, mode: str, s_date: str, e_date: str, l
     mem_lookup = get_member_directory_lookup(conn)
 
     if mode == "all":
-        rows = conn.execute(RAW_DAILY_LOGS_SELECT + " ORDER BY d.id ASC").fetchall()
+        rows = conn.execute(RAW_DAILY_LOGS_SELECT + " ORDER BY d.timestamp ASC, d.id ASC").fetchall()
     elif mode == "range":
         rows = conn.execute(
-            RAW_DAILY_LOGS_SELECT + " WHERE date(d.timestamp) >= ? AND date(d.timestamp) <= ? ORDER BY d.id ASC",
+            RAW_DAILY_LOGS_SELECT + " WHERE date(d.timestamp) >= ? AND date(d.timestamp) <= ? ORDER BY d.timestamp ASC, d.id ASC",
             (s_date, e_date)
         ).fetchall()
     else:
         rows = conn.execute(
-            RAW_DAILY_LOGS_SELECT + " WHERE date(d.timestamp) = ? ORDER BY d.id ASC",
+            RAW_DAILY_LOGS_SELECT + " WHERE date(d.timestamp) = ? ORDER BY d.timestamp ASC, d.id ASC",
             (s_date,)
         ).fetchall()
 
@@ -567,7 +603,7 @@ def _fetch_audit_logs_with_lookback(conn, mode: str, s_date: str, e_date: str, l
             min_ts = (datetime.now() - timedelta(days=lookback_days)).strftime("%Y-%m-%d 00:00:00")
 
         prior_rows = conn.execute(
-            RAW_DAILY_LOGS_SELECT + " WHERE d.direction = 'Entry' AND d.timestamp >= ? AND d.timestamp < ? ORDER BY d.timestamp DESC",
+            RAW_DAILY_LOGS_SELECT + " WHERE d.direction = 'Entry' AND d.timestamp >= ? AND d.timestamp < ? ORDER BY d.timestamp DESC, d.id DESC",
             (min_ts, s_date + " 00:00:00")
         ).fetchall()
         prior_entries = [enrich_daily_log_with_members(dict(r), mem_lookup) for r in prior_rows]
@@ -654,10 +690,10 @@ def _fetch_audit_logs_with_lookback(conn, mode: str, s_date: str, e_date: str, l
                 max_ts = (datetime.now() + timedelta(days=lookback_days + 1)).strftime("%Y-%m-%d 23:59:59")
 
             next_rows = conn.execute(
-                RAW_DAILY_LOGS_SELECT + " WHERE d.direction = 'Exit' AND d.timestamp > ? AND d.timestamp <= ? ORDER BY d.timestamp ASC",
+                RAW_DAILY_LOGS_SELECT + " WHERE d.timestamp > ? AND d.timestamp <= ? ORDER BY d.timestamp ASC, d.id ASC",
                 (e_date + " 23:59:59", max_ts)
             ).fetchall()
-            next_exits = [enrich_daily_log_with_members(dict(r), mem_lookup) for r in next_rows]
+            next_events = [enrich_daily_log_with_members(dict(r), mem_lookup) for r in next_rows]
 
             lookahead_exits = []
             seen_exit_ids = {l['id'] for l in logs}
@@ -665,13 +701,24 @@ def _fetch_audit_logs_with_lookback(conn, mode: str, s_date: str, e_date: str, l
             f_by_tag = {}
             f_by_plate = {}
             f_by_mem = {}
-            for cand in next_exits:
+            sub_by_tag = {}
+            sub_by_plate = {}
+            sub_by_mem = {}
+
+            for cand in next_events:
+                c_dir = cand.get('direction')
                 c_tag = _clean_tag(cand.get('scanned_tag'))
-                if c_tag: f_by_tag.setdefault(c_tag, []).append(cand)
                 c_plate = _clean_plate(cand.get('vehicle_number'))
-                if c_plate: f_by_plate.setdefault(c_plate, []).append(cand)
                 c_mem = _clean_mem(cand.get('mem_id'))
-                if c_mem: f_by_mem.setdefault(c_mem, []).append(cand)
+
+                if c_dir == 'Exit':
+                    if c_tag: f_by_tag.setdefault(c_tag, []).append(cand)
+                    if c_plate: f_by_plate.setdefault(c_plate, []).append(cand)
+                    if c_mem: f_by_mem.setdefault(c_mem, []).append(cand)
+                elif c_dir == 'Entry':
+                    if c_tag and c_tag not in ('UNREGISTERED', 'NO_TAG', 'NONE'): sub_by_tag.setdefault(c_tag, []).append(cand)
+                    if c_plate and c_plate not in ('UNREGISTERED', 'NO_TAG', 'NONE'): sub_by_plate.setdefault(c_plate, []).append(cand)
+                    if c_mem and c_mem not in ('UNREGISTERED', 'NO_TAG', 'NONE'): sub_by_mem.setdefault(c_mem, []).append(cand)
 
             for en in unmatched_entries:
                 en_ts = str(en.get('timestamp') or '')
@@ -714,6 +761,20 @@ def _fetch_audit_logs_with_lookback(conn, mode: str, s_date: str, e_date: str, l
                     matched_future['_is_lookahead'] = True
                     lookahead_exits.append(matched_future)
                     seen_exit_ids.add(matched_future['id'])
+                else:
+                    # Check if vehicle has a subsequent Entry in future
+                    has_sub = False
+                    if en_tag and en_tag in sub_by_tag:
+                        if any(str(c.get('timestamp') or '') > en_ts for c in sub_by_tag[en_tag]):
+                            has_sub = True
+                    if not has_sub and en_plate and en_plate in sub_by_plate:
+                        if any(str(c.get('timestamp') or '') > en_ts for c in sub_by_plate[en_plate]):
+                            has_sub = True
+                    if not has_sub and en_mem and en_mem in sub_by_mem:
+                        if any(str(c.get('timestamp') or '') > en_ts for c in sub_by_mem[en_mem]):
+                            has_sub = True
+                    if has_sub:
+                        en['_has_subsequent_entry'] = True
 
             if lookahead_exits:
                 logs = logs + lookahead_exits
@@ -885,13 +946,32 @@ async def get_audit(
     }
 
 def _build_paired_audits(logs):
-    entries = [l for l in logs if l['direction'] == 'Entry']
-    exits = [l for l in logs if l['direction'] == 'Exit']
+    # Sort all logs strictly chronologically
+    logs = sorted(logs, key=lambda x: (str(x.get('timestamp') or ''), x.get('id') or 0))
+
+    entries = [l for l in logs if l.get('direction') == 'Entry']
+    exits = [l for l in logs if l.get('direction') == 'Exit']
     matched_exit_ids = set()
     paired_audits = []
 
+    # Identify which entries within logs have a subsequent entry (meaning prior journey ended)
+    has_subsequent_entry_ids = set()
+    last_seen_entry = {}
+    for en in entries:
+        en_id = en.get('id')
+        e_tag = _clean_tag(en.get('scanned_tag'))
+        e_plate = _clean_plate(en.get('vehicle_number'))
+        e_mem = _clean_mem(en.get('mem_id'))
+        for k in (e_tag, e_plate, e_mem):
+            if k and k not in ('UNREGISTERED', 'NO_TAG', 'NONE'):
+                if k in last_seen_entry:
+                    has_subsequent_entry_ids.add(last_seen_entry[k])
+                last_seen_entry[k] = en_id
+
     # Build O(1) hash maps once for all exits in this batch
     by_ref, by_tag, by_plate, by_mem = _build_exit_lookup_index(exits, set())
+
+    pkt_today = config.get_pkt_today()
 
     for entry_event in entries:
         exit_event = _find_matching_exit_indexed(entry_event, by_ref, by_tag, by_plate, by_mem, matched_exit_ids)
@@ -899,7 +979,6 @@ def _build_paired_audits(logs):
             matched_exit_ids.add(exit_event['id'])
 
         # If no exclusive exit was found, check if a subsequent exit exists for this vehicle
-        # (e.g. multiple tag reads at barrier during entrance sequence prior to vehicle exit)
         subsequent_exit = exit_event
         if not subsequent_exit:
             e_tag = _clean_tag(entry_event.get('scanned_tag'))
@@ -940,8 +1019,21 @@ def _build_paired_audits(logs):
             )
         )
 
+        en_id = actual_entry.get('id')
+        en_loc = actual_entry.get('current_location') or ''
+        en_date = str(actual_entry.get('timestamp') or '')[:10]
+        has_subsequent = (en_id in has_subsequent_entry_ids) or bool(actual_entry.get('_has_subsequent_entry'))
+        is_outside = (str(en_loc).strip().lower() == 'outside')
+        is_past_day = (en_date < pkt_today)
+
         is_overstay = False
-        if not actual_exit and actual_entry:
+        if actual_exit:
+            audit_status = "Exited"
+        elif has_subsequent:
+            audit_status = "Exited"
+        elif is_past_day and (is_outside or is_unregistered):
+            audit_status = "Exited"
+        else:
             try:
                 t_entry = datetime.strptime(str(actual_entry['timestamp'])[:19], "%Y-%m-%d %H:%M:%S")
                 diff_h = (datetime.now() - t_entry).total_seconds() / 3600.0
@@ -950,12 +1042,12 @@ def _build_paired_audits(logs):
             except Exception:
                 pass
 
-        audit_status = "Exited" if actual_exit else ("Overstay (>8h)" if is_overstay else "Inside Facility")
-        if is_unregistered and not actual_exit:
-            audit_status = "Alert / Inside"
+            audit_status = "Alert / Inside" if is_unregistered else ("Overstay (>8h)" if is_overstay else "Inside Facility")
 
         if actual_exit:
             duration = _fmt_duration(actual_entry['timestamp'], actual_exit['timestamp'])
+        elif audit_status == "Exited":
+            duration = "--"
         elif actual_entry:
             duration = _fmt_active_duration(actual_entry['timestamp'])
         else:
