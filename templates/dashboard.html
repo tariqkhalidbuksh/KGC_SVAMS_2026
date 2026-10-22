@@ -1041,20 +1041,57 @@
                     </div>
 
                     <div class="overflow-x-auto min-h-[380px]">
-                        <table class="w-full text-left text-sm">
-                            <thead class="text-[10px] uppercase font-extrabold tracking-wider text-slate-500 bg-slate-50 border-b border-slate-200">
-                                <tr>
-                                    <th class="py-3 px-4 pl-5">Vehicle &amp; Plate</th>
-                                    <th class="py-3 px-4">Member / Driver</th>
-                                    <th class="py-3 px-4">Access Type</th>
-                                    <th class="py-3 px-4">Entry</th>
-                                    <th class="py-3 px-4">Exit</th>
-                                    <th class="py-3 px-4">Duration</th>
-                                    <th class="py-3 px-4">Status</th>
-                                    <th class="py-3 px-4 text-right pr-5">Actions</th>
+                        <table class="w-full text-left text-sm border-separate border-spacing-0">
+                            <thead>
+                                <tr class="bg-gradient-to-r from-slate-50 via-slate-50/90 to-slate-100/70 text-slate-500 text-[11px] font-extrabold uppercase tracking-wider">
+                                    <th class="py-3.5 px-4 pl-6 border-b border-slate-200 whitespace-nowrap">
+                                        <div class="flex items-center gap-1.5">
+                                            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"/></svg>
+                                            <span>Vehicle &amp; License Plate</span>
+                                        </div>
+                                    </th>
+                                    <th class="py-3.5 px-4 border-b border-slate-200 whitespace-nowrap">
+                                        <div class="flex items-center gap-1.5">
+                                            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                            <span>Driver &amp; Member ID</span>
+                                        </div>
+                                    </th>
+                                    <th class="py-3.5 px-4 border-b border-slate-200 whitespace-nowrap">
+                                        <div class="flex items-center gap-1.5">
+                                            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                                            <span>Access Type &amp; RFID</span>
+                                        </div>
+                                    </th>
+                                    <th class="py-3.5 px-4 border-b border-slate-200 whitespace-nowrap">
+                                        <div class="flex items-center gap-1.5">
+                                            <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
+                                            <span>Entry Movement</span>
+                                        </div>
+                                    </th>
+                                    <th class="py-3.5 px-4 border-b border-slate-200 whitespace-nowrap">
+                                        <div class="flex items-center gap-1.5">
+                                            <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
+                                            <span>Exit Movement</span>
+                                        </div>
+                                    </th>
+                                    <th class="py-3.5 px-4 border-b border-slate-200 whitespace-nowrap">
+                                        <div class="flex items-center gap-1.5">
+                                            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                            <span>Duration</span>
+                                        </div>
+                                    </th>
+                                    <th class="py-3.5 px-4 border-b border-slate-200 whitespace-nowrap">
+                                        <div class="flex items-center gap-1.5">
+                                            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                                            <span>Facility State</span>
+                                        </div>
+                                    </th>
+                                    <th class="py-3.5 px-4 pr-6 border-b border-slate-200 text-right whitespace-nowrap">
+                                        <span>Actions</span>
+                                    </th>
                                 </tr>
                             </thead>
-                            <tbody id="auditBody" class="divide-y divide-slate-100"></tbody>
+                            <tbody id="auditBody" class="divide-y divide-slate-100/90 bg-white"></tbody>
                         </table>
                     </div>
 
@@ -2596,6 +2633,6 @@
         </div>
     </div>
 
-    <script src="/static/js/dashboard.js?v=20261022_adoption_v3"></script>
+    <script src="/static/js/dashboard.js?v=20261022_modern_v4"></script>
 </body>
 </html>

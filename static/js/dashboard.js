@@ -1836,6 +1836,7 @@ async function loadAudit(page = currentAuditPage, isSilent = false) {
             const initial = isUnreg ? 'U' : (thumb.name || '?').charAt(0).toUpperCase();
 
             let rowDur = a.duration;
+            let isDurationActive = false;
             if (!rowDur || rowDur === '--') {
                 if (e && x && e.timestamp && x.timestamp) {
                     const t1 = new Date(e.timestamp.replace(' ', 'T')).getTime();
@@ -1852,24 +1853,28 @@ async function loadAudit(page = currentAuditPage, isSilent = false) {
                         const diffMin = Math.round(Math.max(0, Date.now() - t1) / 60000);
                         const hrs = Math.floor(diffMin / 60);
                         const mins = diffMin % 60;
-                        rowDur = `${hrs > 0 ? `${hrs}h ${String(mins).padStart(2, '0')}m` : `${mins}m`} (Active)`;
+                        rowDur = `${hrs > 0 ? `${hrs}h ${String(mins).padStart(2, '0')}m` : `${mins}m`}`;
+                        isDurationActive = true;
                     }
                 }
+            } else if (rowDur.includes('(Active)')) {
+                rowDur = rowDur.replace('(Active)', '').trim();
+                isDurationActive = true;
             }
 
             let statusPill = '';
             if (a.is_overstay) {
-                statusPill = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black bg-amber-100 text-amber-900 border border-amber-300 shadow-2xs">
-                    <span class="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse"></span>INSIDE &bull; OVERSTAY (>8h)</span>`;
+                statusPill = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black bg-rose-50 text-rose-800 border border-rose-200 shadow-2xs">
+                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping"></span>OVERSTAY (>8h)</span>`;
             } else if (a.status === 'Inside Facility' || a.status === 'Alert / Inside' || (!x && e)) {
-                statusPill = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>INSIDE CLUB</span>`;
+                statusPill = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-800 border border-emerald-200/90 shadow-2xs">
+                    <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span>INSIDE FACILITY</span>`;
             } else if (a.status === 'Exited') {
-                statusPill = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black bg-slate-100 text-slate-700 border border-slate-200">
-                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>OUTSIDE CLUB</span>`;
+                statusPill = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200/80">
+                    <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>COMPLETED</span>`;
             } else {
-                statusPill = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black bg-slate-100 text-slate-700 border border-slate-200">
-                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>OUTSIDE (Exit Only)</span>`;
+                statusPill = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200/80">
+                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>EXIT ONLY</span>`;
             }
 
             let methodPill = '';
@@ -1877,25 +1882,25 @@ async function loadAudit(page = currentAuditPage, isSilent = false) {
             const cleanTag = String(thumb.scanned_tag || '').toUpperCase();
             if (isMember) {
                 if (accType.includes('VIP')) {
-                    methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300">VIP Committee</span>`;
+                    methodPill = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-amber-50 text-amber-900 border border-amber-300 shadow-2xs">⭐ VIP Member</span>`;
                 } else {
-                    methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/70">Verified Member</span>`;
+                    methodPill = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-800 border border-emerald-200/90 shadow-2xs"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Verified Member</span>`;
                 }
             } else {
                 if (accType.includes('Security Alert')) {
-                    methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-rose-100 text-rose-800 border border-rose-300">Security Alert</span>`;
+                    methodPill = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-rose-50 text-rose-800 border border-rose-300 shadow-2xs"><span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>Security Alert</span>`;
                 } else if (accType.includes('NHA') || accType.includes('M-Tag') || cleanTag.startsWith('E2801105') || cleanTag.startsWith('E2801114')) {
-                    methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200/90 shadow-2xs">🚗 NHA M-Tag</span>`;
+                    methodPill = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-teal-50 text-teal-800 border border-teal-200/90 shadow-2xs">🛣️ NHA M-Tag</span>`;
                 } else if (accType.includes('Society') || accType.includes('Resident') || cleanTag.startsWith('E2803821') || cleanTag.startsWith('E2003412')) {
-                    methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200/90 shadow-2xs">🏢 Society Tag</span>`;
+                    methodPill = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-purple-50 text-purple-800 border border-purple-200/90 shadow-2xs">🏢 Society Tag</span>`;
                 } else if (accType.includes('Commercial') || accType.includes('Fleet') || cleanTag.startsWith('E280F336')) {
-                    methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-300 shadow-2xs">🚚 Commercial Tag</span>`;
+                    methodPill = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-slate-100 text-slate-700 border border-slate-300 shadow-2xs">🚚 Commercial Tag</span>`;
                 } else if (accType.includes('Club Tag') || accType.includes('Spare') || accType.includes('Unassigned') || cleanTag.startsWith('E28068940') || cleanTag.startsWith('E28068900')) {
-                    methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200/90 shadow-2xs">🎫 Spare Club Tag</span>`;
+                    methodPill = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-blue-50 text-blue-700 border border-blue-200/90 shadow-2xs">🎫 Spare Tag</span>`;
                 } else if (isUnreg) {
-                    methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200/70">⚠️ Unknown RFID</span>`;
+                    methodPill = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-rose-50 text-rose-700 border border-rose-200/80 shadow-2xs">⚠️ Unregistered</span>`;
                 } else {
-                    methodPill = `<span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200/70">Optical Capture</span>`;
+                    methodPill = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs">Optical Capture</span>`;
                 }
             }
 
@@ -1904,78 +1909,105 @@ async function loadAudit(page = currentAuditPage, isSilent = false) {
             const displayVehicleNumber = isUnreg ? (isPlateEpc ? 'UNREGISTERED' : (thumb.vehicle_number || 'UNREGISTERED')) : (thumb.vehicle_number || 'UNKNOWN');
 
             return `
-            <tr class="hover:bg-blue-50/30 transition-colors cursor-pointer border-b border-slate-100 last:border-0" onclick='openAudit(${JSON.stringify(a).replace(/'/g, "&#39;")})'>
-                <td class="py-3 px-4 pl-5">
+            <tr class="group hover:bg-slate-50/90 transition-colors duration-150 cursor-pointer border-b border-slate-100 last:border-0" onclick='openAudit(${JSON.stringify(a).replace(/'/g, "&#39;")})'>
+                <td class="py-3.5 px-4 pl-6">
                     <div class="flex items-center gap-3">
-                        ${imgPath
-                            ? `<img src="/${imgPath}" class="w-12 h-9 rounded-lg object-cover border border-slate-200 shadow-sm flex-shrink-0">`
-                            : `<div class="w-12 h-9 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-[9px] font-bold text-slate-400 flex-shrink-0">NO IMG</div>`
-                        }
+                        <div class="relative flex-shrink-0">
+                            ${imgPath
+                                ? `<img src="/${imgPath}" class="w-14 h-10 rounded-xl object-cover border border-slate-200 shadow-2xs group-hover:scale-105 group-hover:shadow-sm transition duration-200">`
+                                : `<div class="w-14 h-10 rounded-xl bg-slate-100 border border-slate-200 flex flex-col items-center justify-center text-[9px] font-bold text-slate-400 gap-0.5">
+                                    <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/></svg>
+                                    <span>NO IMG</span>
+                                   </div>`
+                            }
+                        </div>
                         <div class="min-w-0">
-                            <p class="font-black font-mono text-slate-900 text-xs tracking-wider">${displayVehicleNumber}</p>
-                            ${thumb.make_model ? `<p class="text-[10px] text-slate-400 font-medium mt-0.5 truncate max-w-[110px]">${thumb.make_model}</p>` : ''}
+                            <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md ${isUnreg ? 'bg-amber-50 border border-amber-200 text-amber-900' : 'bg-slate-900 border border-slate-800 text-white'} font-mono font-black text-xs tracking-wider shadow-2xs">
+                                <span class="text-[9px] ${isUnreg ? 'text-amber-600' : 'text-emerald-400'} font-sans font-bold">PK</span>
+                                <span class="truncate max-w-[110px]">${displayVehicleNumber}</span>
+                            </div>
+                            ${thumb.make_model ? `<p class="text-[11px] text-slate-400 font-medium mt-1 truncate max-w-[130px] flex items-center gap-1">
+                                <span class="w-1 h-1 rounded-full bg-slate-300"></span>${thumb.make_model}
+                            </p>` : ''}
                         </div>
                     </div>
                 </td>
-                <td class="py-3 px-4">
-                    <div class="flex items-center gap-2">
-                        ${pfp
-                            ? `<img src="/${pfp}" class="w-7 h-7 rounded-full object-cover border border-slate-200 flex-shrink-0">`
-                            : `<div class="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-xs ${isUnreg ? 'bg-rose-100 text-rose-600' : 'bg-indigo-50 text-indigo-600'}">${initial}</div>`
-                        }
+                <td class="py-3.5 px-4">
+                    <div class="flex items-center gap-2.5">
+                        <div class="relative flex-shrink-0">
+                            ${pfp
+                                ? `<img src="/${pfp}" class="w-8 h-8 rounded-full object-cover ring-2 ring-white shadow-xs">`
+                                : `<div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center font-black text-xs ${isUnreg ? 'bg-slate-100 text-slate-500 ring-2 ring-slate-100' : 'bg-indigo-600 text-white ring-2 ring-indigo-100'}">${initial}</div>`
+                            }
+                        </div>
                         <div class="min-w-0">
-                            <p class="font-bold text-slate-800 text-xs truncate max-w-[120px] ${isUnreg ? 'text-rose-600 font-black' : ''}">${isUnreg ? 'Unregistered Vehicle' : (thumb.name || 'Member')}</p>
-                            <p class="text-[10px] text-slate-400 font-mono">${isUnreg ? 'Non-Member' : (thumb.mem_id || '—')}</p>
+                            <p class="font-bold text-slate-900 text-xs truncate max-w-[130px] group-hover:text-indigo-600 transition">
+                                ${isUnreg ? 'Unregistered Vehicle' : (thumb.name || 'Member')}
+                            </p>
+                            <div class="mt-0.5">
+                                ${isUnreg
+                                    ? `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-500">Non-Member</span>`
+                                    : `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-indigo-50 text-indigo-700 border border-indigo-100/80">${thumb.mem_id || '—'}</span>`
+                                }
+                            </div>
                         </div>
                     </div>
                 </td>
-                <td class="py-3 px-4">${methodPill}</td>
-                <td class="py-3 px-4">
+                <td class="py-3.5 px-4">
+                    <div class="flex flex-col items-start gap-1">
+                        ${methodPill}
+                        ${cleanTag && cleanTag !== 'NO_TAG' ? `
+                            <span class="inline-flex items-center gap-1 text-[9px] font-mono text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-100" title="${cleanTag}">
+                                <span class="font-bold text-slate-400">EPC:</span>${cleanTag.substring(0, 10)}…
+                            </span>` : ''}
+                    </div>
+                </td>
+                <td class="py-3.5 px-4">
                     ${e ? `<div>
-                        <p class="font-mono font-bold text-slate-800 text-xs tabular-nums">
-                            ${(x && e.timestamp && x.timestamp && String(e.timestamp).substring(0, 10) !== String(x.timestamp).substring(0, 10)) ? `<span class="text-[9px] block text-indigo-600 font-semibold tracking-tight">${String(e.timestamp).substring(0, 10)}</span>` : ''}
+                        <p class="font-mono font-black text-slate-800 text-xs tabular-nums">
+                            ${(x && e.timestamp && x.timestamp && String(e.timestamp).substring(0, 10) !== String(x.timestamp).substring(0, 10)) ? `<span class="text-[9px] block text-indigo-600 font-bold tracking-tight">${String(e.timestamp).substring(0, 10)}</span>` : ''}
                             ${String(e.timestamp).split(' ')[1] || e.timestamp}
                         </p>
-                        <p class="text-[10px] text-emerald-700 font-bold mt-0.5 flex items-center gap-1">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>Entry
-                            <span class="text-[9px] text-slate-400 font-mono font-normal">${e.gate_no || 'Gate-01'}</span>
-                        </p>
+                        <span class="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50/90 px-2 py-0.5 rounded-md border border-emerald-200/60 mt-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>${e.gate_no || 'Gate 01'}
+                        </span>
                     </div>` : '<span class="text-slate-300 text-xs font-mono">—</span>'}
                 </td>
-                <td class="py-3 px-4">
+                <td class="py-3.5 px-4">
                     ${x ? (() => {
                         const xTime = String(x.timestamp).split(' ')[1] || x.timestamp;
-                        const xGate = x.gate_no || 'Gate-01';
+                        const xGate = x.gate_no || 'Gate 01';
                         const isManual = (x.access_type || '').includes('Manual') || xGate.includes('Manual') || xGate.includes('Bulk');
                         return `<div>
-                            <p class="font-mono font-bold text-slate-800 text-xs tabular-nums">${xTime}</p>
-                            <p class="text-[10px] font-bold mt-0.5 flex items-center gap-1 ${isManual ? 'text-amber-700' : 'text-indigo-600'}">
-                                <span class="w-1.5 h-1.5 rounded-full inline-block ${isManual ? 'bg-amber-500' : 'bg-indigo-500'}"></span>${isManual ? 'Manual Exit' : 'Exit'}
-                                <span class="text-[9px] text-slate-400 font-mono font-normal">${xGate}</span>
-                            </p>
+                            <p class="font-mono font-black text-slate-800 text-xs tabular-nums">${xTime}</p>
+                            <span class="inline-flex items-center gap-1 text-[10px] font-bold ${isManual ? 'text-amber-800 bg-amber-50 border-amber-200/80' : 'text-slate-700 bg-slate-100 border-slate-200'} px-2 py-0.5 rounded-md border mt-1">
+                                <span class="w-1.5 h-1.5 rounded-full ${isManual ? 'bg-amber-500' : 'bg-slate-500'}"></span>${isManual ? 'Manual Exit' : xGate}
+                            </span>
                         </div>`;
-                    })() : `<span class="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping inline-block"></span>Still Inside
-                    </span>`}
+                    })() : `<div class="inline-flex items-center gap-1.5 text-[10px] font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2.5 py-1 rounded-full shadow-2xs">
+                        <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span>Still Inside
+                    </div>`}
                 </td>
-                <td class="py-3 px-4">
-                    ${rowDur
-                        ? `<span class="font-bold text-xs font-mono text-slate-700 tabular-nums">${rowDur}</span>`
-                        : '<span class="text-slate-300 text-xs">—</span>'
-                    }
+                <td class="py-3.5 px-4">
+                    ${rowDur ? `
+                        <div class="inline-flex items-center gap-1.5 font-mono font-bold text-xs ${isDurationActive ? 'text-indigo-600 bg-indigo-50/80 border border-indigo-100' : 'text-slate-700 bg-slate-50 border border-slate-200/70'} px-2.5 py-1 rounded-lg">
+                            <svg class="w-3 h-3 ${isDurationActive ? 'text-indigo-500' : 'text-slate-400'}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <span>${rowDur}</span>
+                        </div>` : '<span class="text-slate-300 text-xs font-mono">—</span>'}
                 </td>
-                <td class="py-3 px-4">${statusPill}</td>
-                <td class="py-3 px-4 text-right pr-5" onclick="event.stopPropagation()">
+                <td class="py-3.5 px-4">${statusPill}</td>
+                <td class="py-3.5 px-4 text-right pr-6" onclick="event.stopPropagation()">
                     <div class="inline-flex items-center justify-end gap-1.5">
                         ${(a.status === 'Inside Facility' || a.status === 'Alert / Inside' || a.is_overstay || (!x && e)) ? `
                         <button type="button" onclick='event.stopPropagation(); triggerRowManualExit(${JSON.stringify(a).replace(/'/g, "&#39;")})'
-                            class="inline-flex items-center gap-1 text-[11px] font-bold text-amber-800 hover:text-white border border-amber-300 hover:bg-amber-500 rounded-lg px-2.5 py-1.5 bg-amber-50 shadow-sm transition"
+                            class="inline-flex items-center gap-1 text-[11px] font-bold text-amber-800 hover:text-white border border-amber-300 hover:bg-amber-600 rounded-lg px-2.5 py-1.5 bg-amber-50 shadow-2xs transition"
                             title="Record manual departure">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7"/></svg>
                             Exit
                         </button>` : ''}
                         <button type="button" onclick='openAudit(${JSON.stringify(a).replace(/'/g, "&#39;")})'
-                            class="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-700 hover:text-indigo-900 border border-indigo-200 rounded-lg px-2.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 shadow-sm transition">
+                            class="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-700 hover:text-white border border-indigo-200 rounded-lg px-2.5 py-1.5 bg-indigo-50 hover:bg-indigo-600 shadow-2xs transition"
+                            title="Inspect complete audit trail">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             Report
                         </button>
@@ -4091,49 +4123,109 @@ async function loadCameraAudit(page = currentCamAuditPage) {
             const rawPath = (item.image_path || '').replace(/^\/+/, '');
             const thumbSrc = rawPath ? `/api/thumbnail?path=${encodeURIComponent(rawPath)}&w=440&q=65` : '/static/img/no-car.svg';
             const origSrc = rawPath ? '/' + rawPath : '';
+
+            // Clean parsed Date and Time with explicit labels
+            const rawTs = String(item.timestamp || '').trim();
+            let dateVal = '--';
+            let timeVal = '--';
+            if (rawTs) {
+                const parts = rawTs.replace('T', ' ').split(' ');
+                dateVal = parts[0] || '--';
+                timeVal = (parts[1] || '').substring(0, 8) || '--';
+            }
+
+            // Direction badge with modern live dot and pill
             const dirBadge = item.direction === 'Entry' ?
-                '<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-200">ENTRY</span>' :
+                '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-500 text-white shadow-md backdrop-blur-md"><span class="w-1.5 h-1.5 rounded-full bg-white"></span>ENTRY</span>' :
                 item.direction === 'Exit' ?
-                '<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-blue-100 text-blue-800 border border-blue-200">EXIT</span>' :
-                '<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-slate-100 text-slate-700 border border-slate-200">LINE CROSS</span>';
+                '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-blue-600 text-white shadow-md backdrop-blur-md"><span class="w-1.5 h-1.5 rounded-full bg-white"></span>EXIT</span>' :
+                '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-slate-900/90 text-white shadow-md backdrop-blur-md"><span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>LINE CROSS</span>';
 
             const cleanFileName = rawPath ? rawPath.split('/').pop() : '';
-
             const hasDahua = Boolean(item.plate_image_path);
             const inspectLabel = hasDahua ? 'Inspect Dual HD' : 'Inspect Full HD';
 
             return `
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md hover:border-slate-300 transition duration-200 flex flex-col group">
-                <div class="relative bg-slate-900 aspect-video overflow-hidden cursor-pointer" onclick="openCamProofModalById(${item.id})">
-                    <img src="${thumbSrc}" alt="Vehicle Proof" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.onerror=null; this.src='${origSrc || '/static/img/no-car.svg'}';">
-                    <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                        <span class="bg-white/90 text-slate-900 px-3 py-1.5 rounded-xl text-xs font-bold shadow-lg">${inspectLabel}</span>
+            <div class="bg-white rounded-3xl border border-slate-200/90 shadow-xs hover:shadow-xl hover:border-indigo-300 transition-all duration-300 flex flex-col group overflow-hidden">
+                <!-- Image Snapshot Container -->
+                <div class="relative bg-slate-950 aspect-video overflow-hidden cursor-pointer" onclick="openCamProofModalById(${item.id})">
+                    <img src="${thumbSrc}" alt="Vehicle Proof" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null; this.src='${origSrc || '/static/img/no-car.svg'}';">
+                    
+                    <!-- Hover Inspect Backdrop -->
+                    <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-2xs">
+                        <span class="inline-flex items-center gap-1.5 bg-white text-slate-900 px-3.5 py-2 rounded-xl text-xs font-bold shadow-xl transform translate-y-1 group-hover:translate-y-0 transition-transform">
+                            <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+                            ${inspectLabel}
+                        </span>
                     </div>
-                    <div class="absolute top-2.5 left-2.5">
+
+                    <!-- Top Left: Movement Direction Badge -->
+                    <div class="absolute top-3 left-3">
                         ${dirBadge}
                     </div>
-                    <div class="absolute bottom-2.5 right-2.5 flex items-center gap-1">
-                        <span class="bg-slate-900/80 backdrop-blur-sm text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-md text-[10px] font-mono font-bold">
-                            HIKVISION
+
+                    <!-- Top Right: Event Type Badge -->
+                    <div class="absolute top-3 right-3">
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-950/70 text-slate-200 backdrop-blur-md border border-white/10 shadow-sm">
+                            ${item.event_type || 'Line Crossing'}
+                        </span>
+                    </div>
+
+                    <!-- Bottom Badges: Camera Hardware Telemetry -->
+                    <div class="absolute bottom-3 right-3 flex items-center gap-1.5">
+                        <span class="bg-slate-950/80 backdrop-blur-md text-emerald-400 border border-emerald-500/30 px-2.5 py-0.5 rounded-lg text-[10px] font-mono font-bold tracking-tight shadow-sm">
+                            📸 HIKVISION
                         </span>
                         ${hasDahua ? `
-                        <span class="bg-slate-900/80 backdrop-blur-sm text-cyan-300 border border-cyan-500/30 px-2 py-0.5 rounded-md text-[10px] font-mono font-bold">
-                            + DAHUA
+                        <span class="bg-slate-950/80 backdrop-blur-md text-cyan-300 border border-cyan-500/30 px-2.5 py-0.5 rounded-lg text-[10px] font-mono font-bold tracking-tight shadow-sm">
+                            + DAHUA HD
                         </span>` : ''}
                     </div>
                 </div>
+
+                <!-- Card Content -->
                 <div class="p-4 flex-1 flex flex-col justify-between">
                     <div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-slate-800">${item.timestamp}</span>
-                            <span class="text-[10px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-200/60 px-2 py-0.5 rounded-md">${item.event_type || 'Line Crossing'}</span>
+                        <!-- Labeled & Separated Date & Time Grid -->
+                        <div class="grid grid-cols-2 gap-2 mb-3">
+                            <div class="bg-slate-50 border border-slate-200/70 rounded-2xl p-2.5">
+                                <span class="text-[9px] uppercase font-extrabold tracking-wider text-slate-400 flex items-center gap-1 mb-1">
+                                    <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                    DATE
+                                </span>
+                                <span class="text-xs font-mono font-black text-slate-800 tracking-tight block">${dateVal}</span>
+                            </div>
+                            <div class="bg-indigo-50/50 border border-indigo-100 rounded-2xl p-2.5">
+                                <span class="text-[9px] uppercase font-extrabold tracking-wider text-indigo-500 flex items-center gap-1 mb-1">
+                                    <svg class="w-3 h-3 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    TIME
+                                </span>
+                                <span class="text-xs font-mono font-black text-indigo-700 tracking-tight block">${timeVal}</span>
+                            </div>
                         </div>
-                        <p class="text-[11px] text-slate-400 font-mono mt-2 truncate" title="${cleanFileName}">${cleanFileName}</p>
+
+                        ${item.detected_plate ? `
+                        <div class="mb-2.5 flex items-center justify-between bg-slate-50 border border-slate-200/80 rounded-xl px-2.5 py-1.5">
+                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Plate Detected:</span>
+                            <span class="font-mono font-black text-xs px-2 py-0.5 rounded bg-slate-900 text-white tracking-wider">${item.detected_plate}</span>
+                        </div>` : ''}
+
+                        <!-- Filename indicator -->
+                        <div class="flex items-center gap-1.5 text-slate-400 text-[10px] font-mono truncate px-0.5" title="${cleanFileName}">
+                            <svg class="w-3 h-3 text-slate-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            <span class="truncate">${cleanFileName}</span>
+                        </div>
                     </div>
-                    <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
-                        <span class="text-[11px] font-bold text-slate-500">${hasDahua ? 'Dual-Camera Aligned' : 'Camera Audit Proof'}</span>
-                        <button type="button" onclick="openCamProofModalById(${item.id})" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition">
-                            ${inspectLabel} &rarr;
+
+                    <!-- Footer Action Bar -->
+                    <div class="mt-3.5 pt-3 border-t border-slate-100 flex items-center justify-between">
+                        <span class="text-[11px] font-bold text-slate-500 flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full ${hasDahua ? 'bg-cyan-500' : 'bg-emerald-500'}"></span>
+                            ${hasDahua ? 'Dual-Cam Aligned' : 'Camera Audit Proof'}
+                        </span>
+                        <button type="button" onclick="openCamProofModalById(${item.id})" class="inline-flex items-center gap-1 text-xs font-bold text-indigo-600 hover:text-indigo-800 transition">
+                            <span>${inspectLabel}</span>
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
                         </button>
                     </div>
                 </div>
