@@ -1,8 +1,8 @@
 let currentGate = 'gate01'; // 'gate01' (Rear Gate) or 'clubroad' (Main Gate)
 let lastEntryLogId = 0;
 let idleResetTimer = null;
-let recentEntriesReqSeq = 0;
-let pollLogsReqSeq = 0;
+let isUpdatingRecentEntries = false;
+let isPollingEntryLogs = false;
 
 function initGateSelection() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -229,14 +229,14 @@ function renderLicensePlate(carNum) {
 }
 
 async function updateRecentEntries() {
-    const reqSeq = ++recentEntriesReqSeq;
+    if (isUpdatingRecentEntries) return;
     const reqGate = currentGate;
+    isUpdatingRecentEntries = true;
     try {
         const res = await fetch(`/api/recent-entries?limit=4&gate=${encodeURIComponent(reqGate)}`);
         if (!res.ok) return;
         let entries = await res.json();
-        // Discard stale responses from older gate requests
-        if (reqSeq !== recentEntriesReqSeq || reqGate !== currentGate) return;
+        if (reqGate !== currentGate) return;
 
         const container = document.getElementById('recentCardsContainer');
         if (!container) return;
@@ -251,6 +251,8 @@ async function updateRecentEntries() {
             });
         }
 
+        window.currentRecentEntries = entries || [];
+
         if (!entries || entries.length === 0) {
             const gateNameText = currentGate === 'clubroad' ? 'Club Road Gate' : 'Gate 01 (Rear Gate)';
             container.innerHTML = `
@@ -261,7 +263,7 @@ async function updateRecentEntries() {
             return;
         }
 
-        container.innerHTML = entries.map(entry => {
+        container.innerHTML = entries.map((entry, idx) => {
             const acc = entry.access_type || '';
             const memId = String(entry.mem_id || '').trim();
             const tag = (entry.scanned_tag || '').toUpperCase();
@@ -317,7 +319,7 @@ async function updateRecentEntries() {
             }
 
             return `
-                <div class="kiosk-card p-3.5 rounded-2xl border border-slate-200 hover:border-slate-300 transition-all flex flex-col justify-between shadow-sm">
+                <div onclick="selectRecentCard(${idx})" class="kiosk-card p-3.5 rounded-2xl border border-slate-200 hover:border-indigo-400 hover:shadow-md cursor-pointer transition-all flex flex-col justify-between shadow-sm active:scale-[0.98]" title="Click to view details on main display">
                     <div>
                         <div class="flex items-center justify-between mb-1.5">
                             <span class="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border ${badgeClass}">
@@ -337,6 +339,14 @@ async function updateRecentEntries() {
         }).join('');
     } catch (err) {
         console.error('Error fetching recent entry cards:', err);
+    } finally {
+        isUpdatingRecentEntries = false;
+    }
+}
+
+function selectRecentCard(idx) {
+    if (window.currentRecentEntries && window.currentRecentEntries[idx]) {
+        displayEntry(window.currentRecentEntries[idx]);
     }
 }
 
@@ -476,22 +486,25 @@ function displayEntry(log) {
     idleResetTimer = setTimeout(() => {
         viewActive.classList.add('hidden');
         viewIdle.classList.remove('hidden');
-    }, 8000);
+    }, 15000);
 }
 
 async function pollEntryLogs() {
-    const reqSeq = ++pollLogsReqSeq;
+    if (isPollingEntryLogs) return;
     const reqGate = currentGate;
+    isPollingEntryLogs = true;
     try {
         const res = await fetch(`/api/latest-log?gate=${encodeURIComponent(reqGate)}`);
         if (!res.ok) return;
         const latest = await res.json();
-        // Discard stale responses from older gate requests
-        if (reqSeq !== pollLogsReqSeq || reqGate !== currentGate) return;
+        // If gate was switched while request was in-flight, ignore
+        if (reqGate !== currentGate) return;
         if (!latest || !latest.id) return;
 
+        // On first load or gate switch: display the latest passage event immediately!
         if (lastEntryLogId === 0) {
             lastEntryLogId = latest.id;
+            displayEntry(latest);
             return;
         }
 
@@ -502,6 +515,8 @@ async function pollEntryLogs() {
         }
     } catch (err) {
         console.error('Error polling entry logs:', err);
+    } finally {
+        isPollingEntryLogs = false;
     }
 }
 
@@ -514,4 +529,5 @@ pollEntryLogs();
 
 // 3. Register repeating background intervals
 setInterval(updateRecentEntries, 3000);
-setInterval(pollEntryLogs, 400);
+setInterval(pollEntryLogs, 750);
+
