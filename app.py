@@ -73,16 +73,24 @@ async def direct_camera_trigger(request: Request):
     from routers.tools import receive_camera_trigger
     return await receive_camera_trigger(request)
 
-_TEMPLATE_CACHE: dict[str, str] = {}
+_TEMPLATE_CACHE: dict[str, tuple[float, str]] = {}
 
 def render_template(template_name: str) -> str:
-    if template_name in _TEMPLATE_CACHE:
-        return _TEMPLATE_CACHE[template_name]
     path = os.path.join("templates", template_name)
-    with open(path, "r", encoding="utf-8") as f:
-        content = f.read()
-        _TEMPLATE_CACHE[template_name] = content
-        return content
+    if not os.path.exists(path):
+        return ""
+    try:
+        mtime = os.path.getmtime(path)
+        cached = _TEMPLATE_CACHE.get(template_name)
+        if cached and cached[0] == mtime:
+            return cached[1]
+        with open(path, "r", encoding="utf-8") as f:
+            content = f.read()
+            _TEMPLATE_CACHE[template_name] = (mtime, content)
+            return content
+    except Exception:
+        with open(path, "r", encoding="utf-8") as f:
+            return f.read()
 
 @app.get("/login", response_class=HTMLResponse)
 async def login_view(request: Request):
