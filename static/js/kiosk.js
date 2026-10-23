@@ -319,20 +319,24 @@ async function updateRecentEntries() {
             }
 
             return `
-                <div onclick="selectRecentCard(${idx})" class="kiosk-card p-3.5 rounded-2xl border border-slate-200 hover:border-indigo-400 hover:shadow-md cursor-pointer transition-all flex flex-col justify-between shadow-sm active:scale-[0.98]" title="Click to view details on main display">
+                <div onclick="selectRecentCard(${idx})" class="kiosk-card p-3.5 rounded-2xl border border-slate-200/90 hover:border-indigo-400 hover:shadow-lg cursor-pointer transition-all flex flex-col justify-between shadow-sm active:scale-[0.98] group relative overflow-hidden bg-white/90" title="Click to view full details on main terminal">
+                    <div class="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-indigo-50/50 to-transparent rounded-bl-3xl pointer-events-none"></div>
                     <div>
                         <div class="flex items-center justify-between mb-1.5">
                             <span class="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border ${badgeClass}">
                                 ${isUnreg ? badgeLabel : dir.toUpperCase()}
                             </span>
-                            <span class="text-[11px] font-mono font-bold text-slate-400">${timeStr}</span>
+                            <span class="text-[11px] font-mono font-bold text-slate-400 group-hover:text-indigo-600 transition-colors">${timeStr}</span>
                         </div>
-                        <h5 class="text-sm font-extrabold text-slate-900 truncate mb-0.5">${displayName}</h5>
+                        <h5 class="text-sm font-extrabold text-slate-900 truncate mb-0.5 group-hover:text-indigo-950 transition-colors">${displayName}</h5>
                         ${isUnreg && tagSignature ? `<span class="text-[10px] font-bold text-slate-500">${tagSignature}</span>` : ''}
                     </div>
                     <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between">
-                        <span class="text-xs font-mono font-bold text-indigo-600 tracking-wider truncate max-w-[130px]">${plate}</span>
-                        <span class="text-[10px] text-slate-400 font-bold uppercase truncate max-w-[110px]" title="${gateLabel}">${gateLabel}</span>
+                        <span class="text-xs font-mono font-black text-slate-800 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200/80 tracking-wider truncate max-w-[130px] shadow-2xs">${plate}</span>
+                        <div class="flex items-center gap-1 text-[10px] text-slate-400 group-hover:text-indigo-600 font-bold uppercase truncate max-w-[110px]" title="${gateLabel}">
+                            <span>${gateLabel}</span>
+                            <span class="opacity-0 group-hover:opacity-100 transition-opacity font-black">↗</span>
+                        </div>
                     </div>
                 </div>
             `;
@@ -473,13 +477,13 @@ function displayEntry(log) {
             if (accentBar) accentBar.className = 'absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-600';
         } else {
             if (statusBadge) {
-                statusBadge.className = 'inline-flex items-center gap-2.5 px-5 py-2 rounded-2xl text-xs font-black uppercase tracking-widest bg-blue-50 text-blue-900 border-2 border-blue-400 shadow-sm';
+                statusBadge.className = 'inline-flex items-center gap-2.5 px-5 py-2 rounded-2xl text-xs font-black uppercase tracking-widest bg-emerald-50 text-emerald-800 border-2 border-emerald-300 shadow-sm';
             }
             if (badgeIcon) {
-                badgeIcon.className = 'w-3 h-3 rounded-full bg-blue-600 animate-ping';
+                badgeIcon.className = 'w-3 h-3 rounded-full bg-emerald-500 animate-ping';
             }
             if (badgeText) badgeText.innerText = 'CLEARANCE GRANTED • ENTRY';
-            if (accentBar) accentBar.className = 'absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700';
+            if (accentBar) accentBar.className = 'absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-emerald-500 via-teal-400 to-indigo-500';
         }
     }
 

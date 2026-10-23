@@ -5,140 +5,214 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gate Access Terminal - Karachi Gymkhana</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
-        body { background: #F8FAFC; color: #0F172A; overflow-x: hidden; }
-        .kiosk-panel {
-            background: rgba(255, 255, 255, 0.96);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid #E2E8F0;
-            box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+        .font-display { font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif; }
+        
+        /* Pro Light Theme Base */
+        body { 
+            background-color: #F8FAFC; 
+            background-image: 
+                radial-gradient(rgba(148, 163, 184, 0.28) 1.2px, transparent 1.2px),
+                linear-gradient(180deg, #FFFFFF 0%, #F1F5F9 100%);
+            background-size: 28px 28px, 100% 100%;
+            background-attachment: fixed;
+            color: #0F172A; 
+            overflow-x: hidden; 
         }
+
+        /* Luxury Glassmorphism Surface Tokens */
+        .kiosk-panel {
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(28px) saturate(180%);
+            -webkit-backdrop-filter: blur(28px) saturate(180%);
+            border: 1px solid rgba(226, 232, 240, 0.95);
+            box-shadow: 
+                0 20px 50px -12px rgba(15, 23, 42, 0.08),
+                0 4px 16px -2px rgba(15, 23, 42, 0.03),
+                inset 0 1px 0 rgba(255, 255, 255, 0.95);
+        }
+
         .kiosk-card {
             background: #FFFFFF;
-            border: 1px solid #E2E8F0;
-            box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.05);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            box-shadow: 0 4px 14px -2px rgba(15, 23, 42, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
+
+        .kiosk-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -4px rgba(15, 23, 42, 0.09), 0 0 0 1.5px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Ambient Dynamic Color Lights */
         .ambient-glow {
             position: absolute;
-            width: 700px;
-            height: 700px;
             border-radius: 50%;
             filter: blur(140px);
-            opacity: 0.15;
+            opacity: 0.18;
             pointer-events: none;
-            transition: all 1s ease;
+            transition: all 1.2s ease-in-out;
         }
-        .pulse-badge {
-            box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4);
-            animation: pulse-blue 2s infinite;
-        }
-        @keyframes pulse-blue {
-            0% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.5); }
-            70% { transform: scale(1); box-shadow: 0 0 0 12px rgba(37, 99, 235, 0); }
-            100% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
-        }
-        /* Radar Scanning Animations for Idle View */
+
+        /* Holographic Radar Animations */
         @keyframes radar-spin {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
-        @keyframes pulse-ring {
-            0% { transform: scale(0.85); opacity: 0.7; }
-            50% { transform: scale(1.18); opacity: 0.25; }
-            100% { transform: scale(0.85); opacity: 0.7; }
+        @keyframes radar-spin-reverse {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
         }
-        .radar-sweep {
-            animation: radar-spin 4s linear infinite;
+        @keyframes pulse-ring-glow {
+            0% { transform: scale(0.88); opacity: 0.8; }
+            50% { transform: scale(1.15); opacity: 0.25; }
+            100% { transform: scale(0.88); opacity: 0.8; }
         }
-        .pulse-ring-1 {
-            animation: pulse-ring 3.2s ease-in-out infinite;
+        @keyframes beacon-ping {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.6); }
+            70% { transform: scale(1); box-shadow: 0 0 0 16px rgba(59, 130, 246, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
         }
-        .pulse-ring-2 {
-            animation: pulse-ring 3.2s ease-in-out infinite 1s;
+
+        .radar-sweep-fast {
+            animation: radar-spin 3.5s linear infinite;
         }
-        .pulse-ring-3 {
-            animation: pulse-ring 3.2s ease-in-out infinite 2s;
+        .radar-ring-reverse {
+            animation: radar-spin-reverse 12s linear infinite;
         }
+        .pulse-ring-1 { animation: pulse-ring-glow 3s ease-in-out infinite; }
+        .pulse-ring-2 { animation: pulse-ring-glow 3s ease-in-out infinite 0.9s; }
+        .pulse-ring-3 { animation: pulse-ring-glow 3s ease-in-out infinite 1.8s; }
+        .beacon-badge { animation: beacon-ping 2.2s infinite; }
+
         /* Authentic Sindh License Plate Styling */
         .sindh-license-plate {
             background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
             border: 3.5px solid #0F172A;
-            border-radius: 16px;
-            box-shadow: inset 0 0 0 2px #CBD5E1, 0 8px 24px -4px rgba(15, 23, 42, 0.16);
+            border-radius: 18px;
+            box-shadow: 
+                inset 0 0 0 2px #CBD5E1, 
+                0 10px 25px -4px rgba(15, 23, 42, 0.14),
+                inset 0 1px 0 rgba(255, 255, 255, 1);
             position: relative;
             overflow: hidden;
             user-select: none;
         }
         .plate-emboss-text {
             color: #020617;
-            text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.95), -1px -1px 0px rgba(0, 0, 0, 0.3);
+            text-shadow: 
+                1px 1px 0px rgba(255, 255, 255, 0.98), 
+                -1px -1px 0px rgba(0, 0, 0, 0.35),
+                0 2px 4px rgba(0, 0, 0, 0.15);
             font-family: 'JetBrains Mono', monospace;
             font-weight: 800;
         }
         .ajrak-banner-svg {
             background-color: #7A0000;
-            background-image: radial-gradient(#FFFFFF 18%, transparent 19%), radial-gradient(#000000 18%, transparent 19%);
+            background-image: 
+                radial-gradient(#FFFFFF 18%, transparent 19%), 
+                radial-gradient(#000000 18%, transparent 19%);
             background-size: 10px 10px;
             background-position: 0 0, 5px 5px;
             border-bottom: 2px solid #0F172A;
         }
+
+        /* Micro-shine sheen */
+        .sheen-layer {
+            position: relative;
+            overflow: hidden;
+        }
+        .sheen-layer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transform: skewX(-20deg);
+            pointer-events: none;
+        }
+        .kiosk-card:hover .sheen-layer::after {
+            left: 150%;
+            transition: left 0.8s ease-in-out;
+        }
     </style>
 </head>
-<body class="h-screen w-screen flex flex-col justify-between p-5 lg:p-7 select-none relative overflow-hidden">
-    <!-- Subtle Minimal Opacity Club Architectural Backdrop -->
+<body class="h-screen w-screen flex flex-col justify-between p-4 lg:p-6 select-none relative overflow-hidden">
+    <!-- Subtle Ambient Club Architectural Backdrop -->
     <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <img src="/static/kiosk_bg.png" alt="Karachi Gymkhana Club" class="w-full h-full object-cover object-center opacity-[0.07] grayscale contrast-125 scale-105">
-        <div class="absolute inset-0 bg-gradient-to-b from-[#F8FAFC]/50 via-transparent to-[#F8FAFC]/70"></div>
+        <img src="/static/kiosk_bg.png" alt="Karachi Gymkhana Club" class="w-full h-full object-cover object-center opacity-[0.06] grayscale contrast-125 scale-105">
+        <div class="absolute inset-0 bg-gradient-to-b from-[#F8FAFC]/60 via-transparent to-[#F8FAFC]/80"></div>
     </div>
 
-    <div class="ambient-glow bg-emerald-400 -top-40 -left-40 z-0"></div>
-    <div class="ambient-glow bg-indigo-400 bottom-0 right-0 z-0"></div>
+    <!-- Soft Ambient Lights -->
+    <div class="ambient-glow bg-emerald-400 w-[650px] h-[650px] -top-40 -left-40 z-0"></div>
+    <div class="ambient-glow bg-indigo-500 w-[600px] h-[600px] bottom-0 right-0 z-0"></div>
+    <div class="ambient-glow bg-blue-400 w-[450px] h-[450px] top-1/3 left-1/2 -translate-x-1/2 z-0"></div>
 
-    <!-- Header -->
+    <!-- Top Executive Header -->
     <header class="flex justify-between items-center z-10 w-full mb-2">
+        <!-- Club Brand & Gate Identity -->
         <div class="flex items-center gap-4">
-            <div class="bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm">
-                <img src="/api/logo" alt="Club Logo" class="h-12 w-12 object-contain" onerror="this.style.display='none'">
+            <div class="bg-white p-2.5 rounded-2xl border border-slate-200/90 shadow-sm flex items-center justify-center relative">
+                <img src="/api/logo" alt="Club Logo" class="h-11 w-11 object-contain" onerror="this.style.display='none'">
+                <span class="absolute -top-1 -right-1 flex h-3 w-3">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                </span>
             </div>
             <div>
-                <h1 id="clubTitle" class="text-2xl lg:text-3xl font-black tracking-tight text-slate-900 uppercase">KARACHI GYMKHANA</h1>
-                <div class="flex items-center gap-2.5 mt-0.5">
+                <div class="flex items-center gap-2">
+                    <h1 id="clubTitle" class="text-2xl lg:text-3xl font-display font-black tracking-tight text-slate-900 uppercase">KARACHI GYMKHANA</h1>
+                    <span class="px-2 py-0.5 rounded-md bg-indigo-50 border border-indigo-200 text-indigo-700 text-[9px] font-black tracking-wider uppercase">EST. 1886</span>
+                </div>
+                <div class="flex items-center gap-2 mt-0.5">
                     <span id="gatePulseDot" class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <p id="gateSubtitle" class="text-[11px] font-bold uppercase tracking-widest text-slate-500">RFID Smart Access Terminal &bull; Gate 01 (Rear Gate)</p>
+                    <p id="gateSubtitle" class="text-[11px] font-bold uppercase tracking-wider text-slate-500">RFID Smart Access Terminal &bull; Gate 01 (Rear Gate)</p>
                 </div>
             </div>
         </div>
 
-        <!-- Multi-Gate Display Switcher -->
+        <!-- Center / Right Controls Cluster -->
         <div class="flex items-center gap-3">
-            <div class="bg-white/95 p-1 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-1">
-                <button id="btnGate01" type="button" onclick="setKioskGate('gate01')" class="px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2 bg-emerald-600 text-white shadow-md">
+            <!-- Modern Dual-Gate Segmented Switcher -->
+            <div class="bg-slate-200/60 p-1 rounded-2xl border border-slate-200 flex items-center gap-1 shadow-inner backdrop-blur-md">
+                <button id="btnGate01" type="button" onclick="setKioskGate('gate01')" class="px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2 bg-emerald-600 text-white shadow-md active:scale-95">
                     <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
                     <span>Gate 01 (Rear Gate)</span>
                 </button>
-                <button id="btnClubRoad" type="button" onclick="setKioskGate('clubroad')" class="px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+                <button id="btnClubRoad" type="button" onclick="setKioskGate('clubroad')" class="px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2 text-slate-600 hover:text-slate-900 hover:bg-white/80 active:scale-95">
                     <span class="w-2 h-2 rounded-full bg-slate-400"></span>
                     <span>Club Road Gate</span>
                 </button>
             </div>
 
-            <button type="button" onclick="toggleFullScreen()" title="Toggle Fullscreen" class="p-2.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl text-slate-500 hover:text-slate-800 shadow-sm transition">
+            <!-- Fullscreen Action Button -->
+            <button type="button" onclick="toggleFullScreen()" title="Toggle Fullscreen" class="p-2.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl text-slate-500 hover:text-slate-800 shadow-sm transition active:scale-95">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
             </button>
 
-            <div class="kiosk-panel px-5 py-2.5 rounded-2xl flex items-center gap-5">
+            <!-- Real-Time Facility Telemetry: Parking & Clock -->
+            <div class="kiosk-panel px-5 py-2 rounded-2xl flex items-center gap-5">
+                <!-- Facility Occupancy -->
                 <div>
-                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block">Club Parking</span>
+                    <div class="flex items-center justify-between mb-0.5">
+                        <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block">Club Parking</span>
+                        <span class="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">OPEN</span>
+                    </div>
                     <div class="flex items-baseline gap-1.5">
                         <span id="slotsCount" class="text-xl font-black font-mono text-emerald-600">--</span>
-                        <span class="text-xs text-slate-400 font-bold">/ <span id="totalSlots">--</span></span>
+                        <span class="text-xs text-slate-400 font-bold">/ <span id="totalSlots">--</span> Slots</span>
                     </div>
                 </div>
+
                 <div class="w-px h-8 bg-slate-200"></div>
+
+                <!-- Live Atomic Clock -->
                 <div class="text-right">
                     <div class="flex items-baseline gap-1.5 justify-end">
                         <span id="kioskClock" class="text-2xl font-black font-mono tracking-tight text-slate-900">00:00:00</span>
@@ -150,48 +224,46 @@
         </div>
     </header>
 
-    <!-- Main Viewport -->
+    <!-- Main Viewport: The Central Executive Stage -->
     <main class="flex-1 flex items-center justify-center w-full z-10 my-1 relative">
-        <!-- CREATIVE PROFESSIONAL IDLE MODE -->
+        <!-- 1. CREATIVE PROFESSIONAL IDLE MODE (Aviation / Smart Lane Gate HUD) -->
         <div id="viewIdle" class="w-full max-w-5xl kiosk-panel rounded-3xl p-8 lg:p-10 text-center relative overflow-hidden transition-all duration-500">
-            <!-- Animated Radar / Scanner Area -->
-            <div class="relative w-44 h-44 mx-auto mb-6 flex items-center justify-center">
-                <!-- Concentric Pulsing Rings -->
-                <div class="absolute inset-0 rounded-full border-2 border-blue-500/25 pulse-ring-1"></div>
-                <div class="absolute inset-3 rounded-full border-2 border-blue-600/35 pulse-ring-2"></div>
-                <div class="absolute inset-6 rounded-full border-2 border-indigo-500/30 pulse-ring-3"></div>
+            <!-- Animated Smart Portal Area -->
+            <div class="relative w-48 h-48 mx-auto mb-6 flex items-center justify-center">
+                <!-- Outer Concentric Holographic Rings -->
+                <div class="absolute inset-0 rounded-full border-2 border-blue-400/25 pulse-ring-1"></div>
+                <div class="absolute inset-3 rounded-full border-2 border-indigo-400/30 pulse-ring-2"></div>
+                <div class="absolute inset-6 rounded-full border border-dashed border-slate-300 radar-ring-reverse"></div>
+                <div class="absolute inset-8 rounded-full border-2 border-blue-600/35 pulse-ring-3"></div>
                 
-                <!-- Rotating Radar Beam -->
-                <div class="absolute inset-2 rounded-full overflow-hidden pointer-events-none">
-                    <div class="w-full h-full radar-sweep" style="background: conic-gradient(from 0deg at 50% 50%, rgba(37, 99, 235, 0.28) 0deg, rgba(37, 99, 235, 0) 65deg);"></div>
+                <!-- Rotating Radar Scanner Beam -->
+                <div class="absolute inset-3 rounded-full overflow-hidden pointer-events-none">
+                    <div class="w-full h-full radar-sweep-fast" style="background: conic-gradient(from 0deg at 50% 50%, rgba(37, 99, 235, 0.30) 0deg, rgba(37, 99, 235, 0) 70deg);"></div>
                 </div>
 
-                <!-- Central RFID Transponder Core -->
-                <div class="relative z-10 w-20 h-20 rounded-2xl bg-white border-2 border-blue-200 shadow-xl shadow-blue-100/60 flex items-center justify-center text-blue-600">
-                    <svg class="w-10 h-10 animate-pulse text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <!-- RFID Smart Transponder Card -->
+                <!-- Central Smart Transponder Core Card -->
+                <div class="relative z-10 w-22 h-22 p-4 rounded-3xl bg-white border-2 border-blue-200 shadow-xl shadow-blue-100/70 flex items-center justify-center text-blue-600">
+                    <svg class="w-11 h-11 animate-pulse text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <rect x="2.5" y="4.5" width="13" height="15" rx="2.5" stroke-width="2"/>
-                        <!-- Integrated Circuit Chip -->
                         <rect x="5.5" y="7.5" width="4.5" height="4" rx="1" stroke-width="1.5"/>
                         <path d="M5.5 15h6m-6 2h3.5" stroke-width="1.5" stroke-linecap="round"/>
-                        <!-- Contactless RFID Signal Waves -->
                         <path d="M18 8a4.5 4.5 0 010 8" stroke-width="2" stroke-linecap="round"/>
                         <path d="M20.5 5.5a8 8 0 010 13" stroke-width="2" stroke-linecap="round"/>
                     </svg>
                 </div>
             </div>
 
-            <!-- Idle Headings -->
+            <!-- Idle Headlines & Approach Instruction -->
             <div class="max-w-2xl mx-auto space-y-3">
-                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-800 text-xs font-black uppercase tracking-widest pulse-badge">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-800 text-xs font-black uppercase tracking-widest beacon-badge">
                     <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
                     <span>UHF RFID SENSOR ONLINE &bull; READY FOR APPROACH</span>
                 </div>
-                <h2 id="kioskWelcome" class="text-3xl lg:text-4xl font-black text-slate-900 tracking-tight uppercase">Approach Barrier For Clearance</h2>
-                <p class="text-sm lg:text-base text-slate-500 font-medium">Fast-track contactless RFID access lane armed. Please slow down to 5 km/h for instant barrier clearance.</p>
+                <h2 id="kioskWelcome" class="text-3xl lg:text-4xl font-display font-black text-slate-900 tracking-tight uppercase">Approach Barrier For Clearance</h2>
+                <p id="kioskDescription" class="text-sm lg:text-base text-slate-500 font-medium max-w-xl mx-auto">Fast-track contactless RFID access lane armed. Please slow down to 5 km/h for instant barrier clearance.</p>
             </div>
 
-            <!-- 3 High-Tech Telemetry Cards -->
+            <!-- 3 High-Tech Live Telemetry Widgets -->
             <div class="grid grid-cols-3 gap-4 max-w-3xl mx-auto mt-8 pt-6 border-t border-slate-100">
                 <div class="kiosk-card p-4 rounded-2xl text-left border border-slate-200/90 shadow-sm">
                     <div class="flex items-center gap-2 mb-1.5">
@@ -220,14 +292,15 @@
             </div>
         </div>
 
-        <!-- RE-DESIGNED ACTIVE VIEW (LUXURY, MODERN, NO CLUTTERED MESSAGE PART) -->
-        <div id="viewActive" class="hidden w-full max-w-6xl kiosk-panel rounded-3xl p-6 lg:p-8 border border-slate-200 shadow-2xl relative overflow-hidden transition-all duration-500">
-            <div id="accentBar" class="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-600"></div>
+        <!-- 2. RE-DESIGNED ACTIVE VIEW (LUXURY, MODERN, EXECUTIVE CLEARANCE PRESENTATION) -->
+        <div id="viewActive" class="hidden w-full max-w-6xl kiosk-panel rounded-3xl p-6 lg:p-7 border border-slate-200/90 shadow-2xl relative overflow-hidden transition-all duration-500">
+            <!-- Dynamic Top Gradient Status Accent Bar -->
+            <div id="accentBar" class="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-emerald-500 via-teal-400 to-indigo-500"></div>
 
             <!-- Top Status Bar: Direction & Verification Status -->
-            <div class="flex items-center justify-between pb-5 mb-5 border-b border-slate-200/90">
+            <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-200/90">
                 <div class="flex items-center gap-3">
-                    <!-- Prominently Highlighted Entry or Exit Badge -->
+                    <!-- Prominently Highlighted Clearance Badge -->
                     <div id="statusBadge" class="inline-flex items-center gap-2.5 px-5 py-2 rounded-2xl text-xs font-black uppercase tracking-widest bg-emerald-50 text-emerald-800 border-2 border-emerald-300 shadow-sm">
                         <span id="badgeIcon" class="w-3 h-3 rounded-full bg-emerald-500 animate-ping"></span>
                         <span id="badgeText">CLEARANCE GRANTED &bull; ENTRY</span>
@@ -245,16 +318,16 @@
                 </div>
             </div>
 
-            <!-- CASE 1: REGISTERED MEMBER DISPLAY (LUXURY, BOLD DETAILS, SINDH NUMBER PLATE) -->
-            <div id="memberDisplayContainer" class="space-y-6">
-                <!-- Member VIP Profile Card -->
-                <div class="kiosk-card p-6 lg:p-7 rounded-3xl border border-slate-200/90 shadow-lg bg-gradient-to-br from-white via-slate-50/60 to-slate-100/70 relative overflow-hidden">
+            <!-- CASE 1: REGISTERED MEMBER VIP DISPLAY -->
+            <div id="memberDisplayContainer" class="space-y-5">
+                <!-- Member Showcase Card -->
+                <div class="kiosk-card p-6 lg:p-7 rounded-3xl border border-slate-200/90 shadow-lg bg-gradient-to-br from-white via-slate-50/70 to-slate-100/80 relative overflow-hidden">
                     <div class="flex items-center justify-between gap-6">
                         <!-- Left & Center: Photo + Member Details -->
                         <div class="flex items-center gap-6 min-w-0 flex-1">
-                            <!-- BIG LUXURY MEMBER PHOTO (144x144px) -->
+                            <!-- Big Luxury Member Photo (144x144px) -->
                             <div class="relative flex-shrink-0">
-                                <div class="p-1 rounded-3xl bg-gradient-to-tr from-emerald-500 via-teal-400 to-indigo-500 shadow-md">
+                                <div class="p-1.5 rounded-3xl bg-gradient-to-tr from-emerald-500 via-teal-400 to-indigo-500 shadow-md">
                                     <img id="driverPhoto" src="" alt="Driver" class="w-32 h-32 lg:w-36 lg:h-36 rounded-[22px] object-cover border-2 border-white shadow-inner hidden transition-all duration-300">
                                     <div id="driverAvatar" class="w-32 h-32 lg:w-36 lg:h-36 rounded-[22px] bg-gradient-to-br from-indigo-50 to-slate-100 border-2 border-white flex items-center justify-center font-black text-4xl text-indigo-700 shadow-inner">
                                         KG
@@ -265,7 +338,7 @@
                                 </span>
                             </div>
 
-                            <!-- BOLD MEMBER DETAILS -->
+                            <!-- Bold Member Typography & Privileges -->
                             <div class="min-w-0 flex-1 space-y-2">
                                 <div class="flex items-center gap-2.5 flex-wrap">
                                     <span id="memberRoleTag" class="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-lg bg-emerald-100 text-emerald-800 border border-emerald-300">
@@ -276,17 +349,17 @@
                                     </span>
                                 </div>
 
-                                <!-- BOLDER FULL MEMBER NAME (NO TRUNCATION) -->
-                                <h3 id="driverName" class="text-2xl lg:text-3xl font-black text-slate-900 tracking-tight leading-tight break-words">--</h3>
+                                <!-- Driver Full Name -->
+                                <h3 id="driverName" class="text-2xl lg:text-3xl font-display font-black text-slate-900 tracking-tight leading-tight break-words">--</h3>
 
                                 <div class="flex items-center gap-2 text-xs font-bold text-slate-400">
                                     <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                    <span>Karachi Gymkhana Club Member</span>
+                                    <span>Karachi Gymkhana Club Member &bull; Fast-Track Clearance</span>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Right Side Area: BOLD & VISIBLE CAR BRAND / MODEL -->
+                        <!-- Right Automotive Showcase: CAR BRAND & MODEL -->
                         <div class="flex-shrink-0 w-72 lg:w-80 kiosk-card p-4 lg:p-5 rounded-2xl border-2 border-indigo-100 bg-gradient-to-br from-white via-indigo-50/40 to-slate-50 shadow-md flex flex-col justify-center">
                             <div class="flex items-center justify-between mb-1.5">
                                 <span class="text-[10px] font-black uppercase tracking-widest text-indigo-600 flex items-center gap-1.5">
@@ -297,12 +370,11 @@
                                 </span>
                                 <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
                             </div>
-                            <!-- CAR MODEL BOLD & VERY VISIBLE -->
-                            <p id="vehicleMake" class="text-2xl lg:text-3xl font-black tracking-tight text-slate-900 uppercase leading-snug break-words">--</p>
+                            <p id="vehicleMake" class="text-2xl lg:text-3xl font-display font-black tracking-tight text-slate-900 uppercase leading-snug break-words">--</p>
                             <div class="mt-2 pt-2 border-t border-indigo-100/90 flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                                <span>Registry Verified</span>
+                                <span>Registry Match</span>
                                 <span class="text-emerald-600 font-bold flex items-center gap-1">
-                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                                     </svg>
                                     AUTHENTIC
@@ -312,14 +384,14 @@
                     </div>
                 </div>
 
-                <!-- Lower Row: Sindh License Plate & RFID Telemetry -->
+                <!-- Lower Row: Photorealistic Sindh Plate & RFID Telemetry -->
                 <div class="grid grid-cols-12 gap-5 items-stretch">
-                    <!-- SINDH LICENSE PLATE DESIGN (Col 7) -->
+                    <!-- Photorealistic Sindh License Plate (Col 7) -->
                     <div class="col-span-7">
                         <div class="sindh-license-plate h-32 flex flex-col justify-between shadow-lg">
                             <!-- Top Ajrak Pattern Bar -->
                             <div class="h-6 w-full ajrak-banner-svg relative flex items-center justify-center">
-                                <svg class="w-full h-full opacity-65" viewBox="0 0 300 24" preserveAspectRatio="none">
+                                <svg class="w-full h-full opacity-70" viewBox="0 0 300 24" preserveAspectRatio="none">
                                     <pattern id="ajrakPatternSvg" width="16" height="16" patternUnits="userSpaceOnUse">
                                         <rect width="16" height="16" fill="#6B0000"/>
                                         <polygon points="8,0 16,8 8,16 0,8" fill="#990000" stroke="#FFFFFF" stroke-width="0.7"/>
@@ -353,28 +425,34 @@
                         </div>
                     </div>
 
-                    <!-- RFID Sensor & Telemetry Card (Col 5) -->
+                    <!-- RFID Sensor & Barrier Telemetry (Col 5) -->
                     <div class="col-span-5 kiosk-card p-4 rounded-2xl flex flex-col justify-between border border-slate-200 shadow-sm bg-gradient-to-b from-white to-slate-50">
                         <div>
                             <div class="flex items-center justify-between mb-2">
-                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">RFID EPC Telemetry</span>
-                                <span class="text-[10px] font-black text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">VERIFIED</span>
+                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                    RFID EPC TELEMETRY
+                                </span>
+                                <span class="text-[10px] font-black text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md flex items-center gap-1">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                    VERIFIED
+                                </span>
                             </div>
                             <span id="epcTag" class="text-xs font-mono font-bold text-slate-800 bg-white border border-slate-200 p-2.5 rounded-xl block truncate shadow-inner">--</span>
                         </div>
                         <div class="pt-2 border-t border-slate-200/80 flex items-center justify-between text-xs">
-                            <span class="text-slate-400 font-bold uppercase text-[10px]">Barrier Status:</span>
+                            <span class="text-slate-400 font-bold uppercase text-[10px]">Servo Barrier:</span>
                             <span class="font-extrabold text-emerald-600 flex items-center gap-1.5">
-                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                                RAISED / PASS
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                RAISED / PASSAGE OPEN
                             </span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- CASE 2: UNREGISTERED / UNKNOWN TAG DISPLAY (NO NUMBER PLATE DESIGN, SHOW HIGHLIGHTED TAG ID & DIRECTION) -->
-            <div id="unregisteredDisplayContainer" class="hidden space-y-6">
+            <!-- CASE 2: UNREGISTERED / UNKNOWN TAG DISPLAY -->
+            <div id="unregisteredDisplayContainer" class="hidden space-y-5">
                 <div class="kiosk-card p-8 rounded-3xl border-2 border-rose-200 bg-gradient-to-br from-rose-50/40 via-white to-amber-50/30 text-center relative overflow-hidden shadow-lg">
                     <!-- Warning Icon Header -->
                     <div class="w-20 h-20 mx-auto rounded-3xl bg-rose-100 border-2 border-rose-300 text-rose-600 flex items-center justify-center shadow-md mb-4">
@@ -388,10 +466,10 @@
                         <span id="unregDirectionBadge">UNREGISTERED VEHICLE &bull; ENTRY ATTEMPT</span>
                     </div>
 
-                    <h3 class="text-3xl font-black text-slate-900 tracking-tight uppercase">Unregistered Vehicle Detected</h3>
+                    <h3 class="text-3xl font-display font-black text-slate-900 tracking-tight uppercase">Unregistered Vehicle Detected</h3>
                     <p class="text-sm font-semibold text-slate-500 mt-1 max-w-xl mx-auto">This RFID tag was read by the gate antennas but is not registered in the Karachi Gymkhana Member Directory.</p>
 
-                    <!-- STRONGLY HIGHLIGHTED TAG ID CARD -->
+                    <!-- Strongly Highlighted Tag ID Card -->
                     <div class="my-6 max-w-xl mx-auto p-5 rounded-2xl bg-white border-2 border-rose-300 shadow-md">
                         <span class="text-[11px] font-black text-rose-600 uppercase tracking-widest block mb-2">DETECTED RFID TAG EPC ID</span>
                         <div id="unregisteredTagId" class="text-2xl lg:text-3xl font-black font-mono tracking-wider text-rose-700 bg-rose-50/80 border border-rose-200 py-3.5 px-6 rounded-xl shadow-inner select-all">
@@ -409,7 +487,7 @@
         </div>
     </main>
 
-    <!-- Footer: Recent Gate Activity -->
+    <!-- Footer: Recent Gate Activity With Interactive Click-to-Inspect -->
     <footer class="w-full z-10 mt-1">
         <div class="flex items-center justify-between mb-2 px-1">
             <div class="flex items-center gap-2">
@@ -417,10 +495,15 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <h4 id="recentFooterTitle" class="text-xs font-extrabold uppercase tracking-widest text-slate-700">Recent RFID Gate Activity</h4>
+                <span class="text-[10px] text-slate-400 font-bold hidden sm:inline-block">&bull; Click any card to inspect on main terminal</span>
             </div>
-            <span class="text-[10px] font-mono text-slate-400 uppercase tracking-wider font-bold">Live Synchronized</span>
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-[10px] font-mono text-slate-500 uppercase tracking-wider font-extrabold">LIVE SYNCHRONIZED</span>
+            </div>
         </div>
 
+        <!-- 4 Interactive Recent Passage Cards -->
         <div class="grid grid-cols-4 gap-4" id="recentCardsContainer">
             <div class="kiosk-card p-3.5 rounded-2xl border border-slate-200 animate-pulse">
                 <div class="h-4 bg-slate-100 rounded w-2/3 mb-2"></div>
