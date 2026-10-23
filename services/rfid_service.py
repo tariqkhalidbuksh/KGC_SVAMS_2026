@@ -366,6 +366,9 @@ def midnight_auto_exit_worker():
 
                         with config.CACHE_LOCK:
                             config.LATEST_LOG_CACHE = None
+                            if hasattr(config, 'LATEST_GATE_LOG_CACHE') and config.LATEST_GATE_LOG_CACHE:
+                                config.LATEST_GATE_LOG_CACHE["gate01"] = None
+                                config.LATEST_GATE_LOG_CACHE["clubroad"] = None
                             if hasattr(config, 'AUDIT_LOGS_CACHE') and config.AUDIT_LOGS_CACHE:
                                 config.AUDIT_LOGS_CACHE.clear()
                     finally:

@@ -220,9 +220,19 @@ async function updateRecentEntries() {
     try {
         const res = await fetch(`/api/recent-entries?limit=4&gate=${encodeURIComponent(currentGate)}`);
         if (!res.ok) return;
-        const entries = await res.json();
+        let entries = await res.json();
         const container = document.getElementById('recentCardsContainer');
         if (!container) return;
+
+        // Strictly filter out any system clearance or auto midnight records
+        if (Array.isArray(entries)) {
+            entries = entries.filter(e => {
+                const acc = (e.access_type || '').toLowerCase();
+                const gate = (e.gate_no || '').toLowerCase();
+                return !acc.includes('midnight') && !acc.includes('clearance') && !acc.includes('bulk') &&
+                       !gate.includes('system') && !gate.includes('clearance') && !gate.includes('bulk');
+            });
+        }
 
         if (!entries || entries.length === 0) {
             const gateNameText = currentGate === 'clubroad' ? 'Club Road Gate' : 'Gate 01 (Rear Gate)';

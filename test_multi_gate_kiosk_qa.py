@@ -153,3 +153,87 @@ def test_dashboard_gate_kiosks_integration():
     # Mini widget toggle buttons
     assert "btnMiniGate01" in html
     assert "btnMiniClubRoad" in html
+
+
+def test_kiosk_excludes_system_auto_clearance_and_midnight_records():
+    """
+    Verify that neither /api/latest-log nor /api/recent-entries EVER returns
+    System Auto-Clearance, 11:59 PM Auto Midnight Exits, Bulk Exits, or Manual Exits.
+    """
+    with config.CACHE_LOCK:
+        config.LATEST_LOG_CACHE = None
+        if hasattr(config, "LATEST_GATE_LOG_CACHE"):
+            config.LATEST_GATE_LOG_CACHE["gate01"] = None
+            config.LATEST_GATE_LOG_CACHE["clubroad"] = None
+
+    with config.DB_LOCK:
+        with get_db_connection() as conn:
+            with conn:
+                # Insert midnight auto-clearance and bulk exit records
+                conn.execute("""
+                    INSERT INTO daily_logs (mem_id, name, vehicle_number, access_type, direction, gate_no, scanned_tag, timestamp)
+                    VALUES ('UNREGISTERED', 'Unregistered Visitor', 'UNREGISTERED', 'Auto Midnight Exit (11:59 PM Cutoff)', 'Exit', 'System Auto-Clearance', 'TEST_KIOSK_MIDNIGHT_TAG', '2026-10-22 23:59:00')
+                """)
+                conn.execute("""
+                    INSERT INTO daily_logs (mem_id, name, vehicle_number, access_type, direction, gate_no, scanned_tag, timestamp)
+                    VALUES ('MEM-KIOSK-BULK', 'Bulk Member', 'ABC-999', 'Bulk Facility Clearance', 'Exit', 'Gate-01-Out (Bulk Exit)', 'TEST_KIOSK_BULK_TAG', '2026-10-23 00:00:00')
+                """)
+
+    # 1. Check latest-log does not return auto clearance
+    res_g01 = client.get("/api/latest-log?gate=gate01")
+    assert res_g01.status_code == 200
+    d_g01 = res_g01.json()
+    assert d_g01.get("scanned_tag") != "TEST_KIOSK_MIDNIGHT_TAG"
+    assert d_g01.get("scanned_tag") != "TEST_KIOSK_BULK_TAG"
+    assert "System" not in (d_g01.get("gate_no") or "")
+
+    res_club = client.get("/api/latest-log?gate=clubroad")
+    assert res_club.status_code == 200
+    d_club = res_club.json()
+    assert d_club.get("scanned_tag") != "TEST_KIOSK_MIDNIGHT_TAG"
+    assert d_club.get("scanned_tag") != "TEST_KIOSK_BULK_TAG"
+    assert "System" not in (d_club.get("gate_no") or "")
+
+    # 2. Check recent-entries does not contain auto clearance
+    for gate_param in ["gate01", "clubroad"]:
+        res_rec = client.get(f"/api/recent-entries?limit=10&gate={gate_param}")
+        assert res_rec.status_code == 200
+        for entry in res_rec.json():
+            assert entry.get("scanned_tag") != "TEST_KIOSK_MIDNIGHT_TAG"
+            assert entry.get("scanned_tag") != "TEST_KIOSK_BULK_TAG"
+            assert "System" not in (entry.get("gate_no") or "")
+            assert "Midnight" not in (entry.get("access_type") or "")
+            assert "Bulk" not in (entry.get("access_type") or "")
+
+
+def test_kiosk_case_insensitive_production_gate_names():
+    """
+    Verify that all-uppercase production gate names like 'CLUB GATE ( ENTRY )'
+    and 'REAR GATE ( ENTRY )' are accurately routed without case-sensitivity bugs.
+    """
+    with config.CACHE_LOCK:
+        config.LATEST_LOG_CACHE = None
+        if hasattr(config, "LATEST_GATE_LOG_CACHE"):
+            config.LATEST_GATE_LOG_CACHE["gate01"] = None
+            config.LATEST_GATE_LOG_CACHE["clubroad"] = None
+
+    tag_club_upper = "TEST_KIOSK_UPPER_CLUB"
+    tag_rear_upper = "TEST_KIOSK_UPPER_REAR"
+
+    execute_access_decision(tag=tag_club_upper, direction="Entry", gate_name="CLUB GATE ( ENTRY )", bypass_cooldown=True)
+    execute_access_decision(tag=tag_rear_upper, direction="Entry", gate_name="REAR GATE ( ENTRY )", bypass_cooldown=True)
+
+    # Gate 01 recent entries MUST contain REAR GATE and MUST NOT contain CLUB GATE
+    res_g01 = client.get("/api/recent-entries?limit=5&gate=gate01")
+    assert res_g01.status_code == 200
+    tags_g01 = [e["scanned_tag"] for e in res_g01.json()]
+    assert tag_rear_upper in tags_g01
+    assert tag_club_upper not in tags_g01
+
+    # Club Road recent entries MUST contain CLUB GATE and MUST NOT contain REAR GATE
+    res_club = client.get("/api/recent-entries?limit=5&gate=clubroad")
+    assert res_club.status_code == 200
+    tags_club = [e["scanned_tag"] for e in res_club.json()]
+    assert tag_club_upper in tags_club
+    assert tag_rear_upper not in tags_club
+

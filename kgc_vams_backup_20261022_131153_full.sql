@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict zC3dDd5exQCZ80CcChCRTsZM1fD4r9LoFCQJhgzuTda8NOu3lIcfx3wsYOHiDJf
+\restrict R0ecGesngKaLSwQ8L4pt9MRglfTdwydfE5RoVGqtT1zNLvjyunmcL1olOW3Z6Mx
 
 -- Dumped from database version 18.6
 -- Dumped by pg_dump version 18.6
@@ -8989,6 +8989,904 @@ COPY public.camera_audit_logs (id, image_path, plate_image_path, detected_plate,
 16032	static/camera_audits/hikvision_full_1792656603269.jpg	static/camera_audits/dahua_anpr_1792656603269.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:10:03	2026-10-22	13:00
 16033	static/camera_audits/hikvision_full_1792656607516.jpg	static/camera_audits/dahua_anpr_1792656607516.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:10:08	2026-10-22	13:00
 16034	static/camera_audits/hikvision_full_1792656651794.jpg	static/camera_audits/dahua_anpr_1792656651794.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:10:52	2026-10-22	13:00
+16035	static/camera_audits/hikvision_full_1792656718068.jpg	static/camera_audits/dahua_anpr_1792656718068.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:11:58	2026-10-22	13:00
+16036	static/camera_audits/hikvision_full_1792656758864.jpg	static/camera_audits/dahua_anpr_1792656758864.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:12:39	2026-10-22	13:00
+16037	static/camera_audits/hikvision_full_1792656801390.jpg	static/camera_audits/dahua_anpr_1792656801390.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:13:21	2026-10-22	13:00
+16038	static/camera_audits/hikvision_full_1792656809946.jpg	static/camera_audits/dahua_anpr_1792656809946.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:13:30	2026-10-22	13:00
+16039	static/camera_audits/hikvision_full_1792656933213.jpg	static/camera_audits/dahua_anpr_1792656933213.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:15:33	2026-10-22	13:00
+16040	static/camera_audits/hikvision_full_1792656969541.jpg	static/camera_audits/dahua_anpr_1792656969541.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:16:10	2026-10-22	13:00
+16041	static/camera_audits/hikvision_full_1792657039428.jpg	static/camera_audits/dahua_anpr_1792657039428.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:17:19	2026-10-22	13:00
+16042	static/camera_audits/hikvision_full_1792657053798.jpg	static/camera_audits/dahua_anpr_1792657053798.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:17:34	2026-10-22	13:00
+16043	static/camera_audits/hikvision_full_1792657181240.jpg	static/camera_audits/dahua_anpr_1792657181240.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:19:41	2026-10-22	13:00
+16044	static/camera_audits/hikvision_full_1792657201814.jpg	static/camera_audits/dahua_anpr_1792657201814.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:20:02	2026-10-22	13:00
+16045	static/camera_audits/hikvision_full_1792657220976.jpg	static/camera_audits/dahua_anpr_1792657220976.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:20:21	2026-10-22	13:00
+16046	static/camera_audits/hikvision_full_1792657275389.jpg	static/camera_audits/dahua_anpr_1792657275389.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:21:15	2026-10-22	13:00
+16047	static/camera_audits/hikvision_full_1792657317832.jpg	static/camera_audits/dahua_anpr_1792657317832.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:21:58	2026-10-22	13:00
+16048	static/camera_audits/hikvision_full_1792657320846.jpg	static/camera_audits/dahua_anpr_1792657320846.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:22:01	2026-10-22	13:00
+16049	static/camera_audits/hikvision_full_1792657352165.jpg	static/camera_audits/dahua_anpr_1792657352165.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:22:32	2026-10-22	13:00
+16050	static/camera_audits/hikvision_full_1792657501979.jpg	static/camera_audits/dahua_anpr_1792657501979.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:25:02	2026-10-22	13:00
+16051	static/camera_audits/hikvision_full_1792657578665.jpg	static/camera_audits/dahua_anpr_1792657578665.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:26:18	2026-10-22	13:00
+16052	static/camera_audits/hikvision_full_1792657654986.jpg	static/camera_audits/dahua_anpr_1792657654986.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:27:35	2026-10-22	13:00
+16053	static/camera_audits/hikvision_full_1792657742839.jpg	static/camera_audits/dahua_anpr_1792657742839.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:29:03	2026-10-22	13:00
+16054	static/camera_audits/hikvision_full_1792657773367.jpg	static/camera_audits/dahua_anpr_1792657773367.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:29:33	2026-10-22	13:00
+16055	static/camera_audits/hikvision_full_1792657782428.jpg	static/camera_audits/dahua_anpr_1792657782428.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:29:42	2026-10-22	13:00
+16056	static/camera_audits/hikvision_full_1792657903452.jpg	static/camera_audits/dahua_anpr_1792657903452.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:31:44	2026-10-22	13:00
+16057	static/camera_audits/hikvision_full_1792657932175.jpg	static/camera_audits/dahua_anpr_1792657932175.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:32:12	2026-10-22	13:00
+16058	static/camera_audits/hikvision_full_1792658036837.jpg	static/camera_audits/dahua_anpr_1792658036837.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:33:57	2026-10-22	13:00
+16059	static/camera_audits/hikvision_full_1792658343262.jpg	static/camera_audits/dahua_anpr_1792658343262.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:39:03	2026-10-22	13:00
+16060	static/camera_audits/hikvision_full_1792658348569.jpg	static/camera_audits/dahua_anpr_1792658348569.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:39:08	2026-10-22	13:00
+16061	static/camera_audits/hikvision_full_1792658383347.jpg	static/camera_audits/dahua_anpr_1792658383347.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:39:43	2026-10-22	13:00
+16062	static/camera_audits/hikvision_full_1792658462020.jpg	static/camera_audits/dahua_anpr_1792658462020.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:41:02	2026-10-22	13:00
+16063	static/camera_audits/hikvision_full_1792658475613.jpg	static/camera_audits/dahua_anpr_1792658475613.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:41:16	2026-10-22	13:00
+16064	static/camera_audits/hikvision_full_1792658480176.jpg	static/camera_audits/dahua_anpr_1792658480176.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:41:20	2026-10-22	13:00
+16065	static/camera_audits/hikvision_full_1792658509370.jpg	static/camera_audits/dahua_anpr_1792658509370.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:41:49	2026-10-22	13:00
+16066	static/camera_audits/hikvision_full_1792658604234.jpg	static/camera_audits/dahua_anpr_1792658604234.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:43:24	2026-10-22	13:00
+16067	static/camera_audits/hikvision_full_1792658665890.jpg	static/camera_audits/dahua_anpr_1792658665890.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:44:26	2026-10-22	13:00
+16068	static/camera_audits/hikvision_full_1792658669975.jpg	static/camera_audits/dahua_anpr_1792658669975.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:44:30	2026-10-22	13:00
+16069	static/camera_audits/hikvision_full_1792658715704.jpg	static/camera_audits/dahua_anpr_1792658715704.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:45:16	2026-10-22	13:00
+16070	static/camera_audits/hikvision_full_1792659048407.jpg	static/camera_audits/dahua_anpr_1792659048407.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:50:48	2026-10-22	13:00
+16071	static/camera_audits/hikvision_full_1792659317449.jpg	static/camera_audits/dahua_anpr_1792659317449.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:55:17	2026-10-22	13:00
+16072	static/camera_audits/hikvision_full_1792659547056.jpg	static/camera_audits/dahua_anpr_1792659547056.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 13:59:07	2026-10-22	13:00
+16073	static/camera_audits/hikvision_full_1792659602796.jpg	static/camera_audits/dahua_anpr_1792659602796.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:00:03	2026-10-22	14:00
+16074	static/camera_audits/hikvision_full_1792659668493.jpg	static/camera_audits/dahua_anpr_1792659668493.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:01:08	2026-10-22	14:00
+16075	static/camera_audits/hikvision_full_1792659825245.jpg	static/camera_audits/dahua_anpr_1792659825245.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:03:45	2026-10-22	14:00
+16076	static/camera_audits/hikvision_full_1792659982301.jpg	static/camera_audits/dahua_anpr_1792659982301.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:06:22	2026-10-22	14:00
+16077	static/camera_audits/hikvision_full_1792660004399.jpg	static/camera_audits/dahua_anpr_1792660004399.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:06:44	2026-10-22	14:00
+16078	static/camera_audits/hikvision_full_1792660167786.jpg	static/camera_audits/dahua_anpr_1792660167786.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:09:28	2026-10-22	14:00
+16079	static/camera_audits/hikvision_full_1792660401295.jpg	static/camera_audits/dahua_anpr_1792660401295.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:13:21	2026-10-22	14:00
+16080	static/camera_audits/hikvision_full_1792660411497.jpg	static/camera_audits/dahua_anpr_1792660411497.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:13:31	2026-10-22	14:00
+16081	static/camera_audits/hikvision_full_1792660455268.jpg	static/camera_audits/dahua_anpr_1792660455268.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:14:15	2026-10-22	14:00
+16082	static/camera_audits/hikvision_full_1792660732056.jpg	static/camera_audits/dahua_anpr_1792660732056.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:18:52	2026-10-22	14:00
+16083	static/camera_audits/hikvision_full_1792660740379.jpg	static/camera_audits/dahua_anpr_1792660740379.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:19:00	2026-10-22	14:00
+16084	static/camera_audits/hikvision_full_1792660829455.jpg	static/camera_audits/dahua_anpr_1792660829455.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:20:29	2026-10-22	14:00
+16085	static/camera_audits/hikvision_full_1792660933712.jpg	static/camera_audits/dahua_anpr_1792660933712.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:22:14	2026-10-22	14:00
+16086	static/camera_audits/hikvision_full_1792661077504.jpg	static/camera_audits/dahua_anpr_1792661077504.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:24:37	2026-10-22	14:00
+16087	static/camera_audits/hikvision_full_1792661141816.jpg	static/camera_audits/dahua_anpr_1792661141816.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:25:42	2026-10-22	14:00
+16088	static/camera_audits/hikvision_full_1792661162591.jpg	static/camera_audits/dahua_anpr_1792661162591.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:26:02	2026-10-22	14:00
+16089	static/camera_audits/hikvision_full_1792661314552.jpg	static/camera_audits/dahua_anpr_1792661314552.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:28:34	2026-10-22	14:00
+16090	static/camera_audits/hikvision_full_1792661453368.jpg	static/camera_audits/dahua_anpr_1792661453368.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:30:53	2026-10-22	14:00
+16091	static/camera_audits/hikvision_full_1792661511720.jpg	static/camera_audits/dahua_anpr_1792661511720.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:31:52	2026-10-22	14:00
+16092	static/camera_audits/hikvision_full_1792661567589.jpg	static/camera_audits/dahua_anpr_1792661567589.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:32:48	2026-10-22	14:00
+16093	static/camera_audits/hikvision_full_1792661573631.jpg	static/camera_audits/dahua_anpr_1792661573631.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:32:54	2026-10-22	14:00
+16094	static/camera_audits/hikvision_full_1792661576823.jpg	static/camera_audits/dahua_anpr_1792661576823.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:32:57	2026-10-22	14:00
+16095	static/camera_audits/hikvision_full_1792661582217.jpg	static/camera_audits/dahua_anpr_1792661582217.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:33:02	2026-10-22	14:00
+16096	static/camera_audits/hikvision_full_1792661688707.jpg	static/camera_audits/dahua_anpr_1792661688707.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:34:49	2026-10-22	14:00
+16097	static/camera_audits/hikvision_full_1792661786155.jpg	static/camera_audits/dahua_anpr_1792661786155.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:36:26	2026-10-22	14:00
+16098	static/camera_audits/hikvision_full_1792661819245.jpg	static/camera_audits/dahua_anpr_1792661819245.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:36:59	2026-10-22	14:00
+16099	static/camera_audits/hikvision_full_1792661872933.jpg	static/camera_audits/dahua_anpr_1792661872933.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:37:53	2026-10-22	14:00
+16100	static/camera_audits/hikvision_full_1792661896734.jpg	static/camera_audits/dahua_anpr_1792661896734.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:38:17	2026-10-22	14:00
+16101	static/camera_audits/hikvision_full_1792661901736.jpg	static/camera_audits/dahua_anpr_1792661901736.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:38:22	2026-10-22	14:00
+16102	static/camera_audits/hikvision_full_1792661952445.jpg	static/camera_audits/dahua_anpr_1792661952445.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:39:12	2026-10-22	14:00
+16103	static/camera_audits/hikvision_full_1792661977251.jpg	static/camera_audits/dahua_anpr_1792661977251.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:39:37	2026-10-22	14:00
+16104	static/camera_audits/hikvision_full_1792662021002.jpg	static/camera_audits/dahua_anpr_1792662021002.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:40:21	2026-10-22	14:00
+16105	static/camera_audits/hikvision_full_1792662037183.jpg	static/camera_audits/dahua_anpr_1792662037183.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:40:37	2026-10-22	14:00
+16106	static/camera_audits/hikvision_full_1792662090052.jpg	static/camera_audits/dahua_anpr_1792662090052.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:41:30	2026-10-22	14:00
+16107	static/camera_audits/hikvision_full_1792662219720.jpg	static/camera_audits/dahua_anpr_1792662219720.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:43:40	2026-10-22	14:00
+16108	static/camera_audits/hikvision_full_1792662241309.jpg	static/camera_audits/dahua_anpr_1792662241309.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:44:01	2026-10-22	14:00
+16109	static/camera_audits/hikvision_full_1792662259476.jpg	static/camera_audits/dahua_anpr_1792662259476.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:44:19	2026-10-22	14:00
+16110	static/camera_audits/hikvision_full_1792662296762.jpg	static/camera_audits/dahua_anpr_1792662296762.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:44:57	2026-10-22	14:00
+16111	static/camera_audits/hikvision_full_1792662310791.jpg	static/camera_audits/dahua_anpr_1792662310791.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:45:11	2026-10-22	14:00
+16112	static/camera_audits/hikvision_full_1792662589399.jpg	static/camera_audits/dahua_anpr_1792662589399.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:49:49	2026-10-22	14:00
+16113	static/camera_audits/hikvision_full_1792662653283.jpg	static/camera_audits/dahua_anpr_1792662653283.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:50:53	2026-10-22	14:00
+16114	static/camera_audits/hikvision_full_1792662660497.jpg	static/camera_audits/dahua_anpr_1792662660497.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:51:00	2026-10-22	14:00
+16115	static/camera_audits/hikvision_full_1792663097233.jpg	static/camera_audits/dahua_anpr_1792663097233.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:58:17	2026-10-22	14:00
+16116	static/camera_audits/hikvision_full_1792663163426.jpg	static/camera_audits/dahua_anpr_1792663163426.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 14:59:23	2026-10-22	14:00
+16117	static/camera_audits/hikvision_full_1792663461191.jpg	static/camera_audits/dahua_anpr_1792663461191.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:04:21	2026-10-22	15:00
+16118	static/camera_audits/hikvision_full_1792663476321.jpg	static/camera_audits/dahua_anpr_1792663476321.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:04:36	2026-10-22	15:00
+16119	static/camera_audits/hikvision_full_1792663519446.jpg	static/camera_audits/dahua_anpr_1792663519446.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:05:20	2026-10-22	15:00
+16120	static/camera_audits/hikvision_full_1792663568216.jpg	static/camera_audits/dahua_anpr_1792663568216.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:06:08	2026-10-22	15:00
+16121	static/camera_audits/hikvision_full_1792663628272.jpg	static/camera_audits/dahua_anpr_1792663628272.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:07:08	2026-10-22	15:00
+16122	static/camera_audits/hikvision_full_1792663645256.jpg	static/camera_audits/dahua_anpr_1792663645256.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:07:25	2026-10-22	15:00
+16123	static/camera_audits/hikvision_full_1792663687599.jpg	static/camera_audits/dahua_anpr_1792663687599.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:08:07	2026-10-22	15:00
+16124	static/camera_audits/hikvision_full_1792663794642.jpg	static/camera_audits/dahua_anpr_1792663794642.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:09:55	2026-10-22	15:00
+16125	static/camera_audits/hikvision_full_1792663820596.jpg	static/camera_audits/dahua_anpr_1792663820596.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:10:20	2026-10-22	15:00
+16126	static/camera_audits/hikvision_full_1792663827412.jpg	static/camera_audits/dahua_anpr_1792663827412.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:10:27	2026-10-22	15:00
+16127	static/camera_audits/hikvision_full_1792663911533.jpg	static/camera_audits/dahua_anpr_1792663911533.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:11:51	2026-10-22	15:00
+16128	static/camera_audits/hikvision_full_1792664082420.jpg	static/camera_audits/dahua_anpr_1792664082420.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:14:42	2026-10-22	15:00
+16129	static/camera_audits/hikvision_full_1792664249601.jpg	static/camera_audits/dahua_anpr_1792664249601.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:17:30	2026-10-22	15:00
+16130	static/camera_audits/hikvision_full_1792664383824.jpg	static/camera_audits/dahua_anpr_1792664383824.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:19:44	2026-10-22	15:00
+16131	static/camera_audits/hikvision_full_1792664470460.jpg	static/camera_audits/dahua_anpr_1792664470460.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:21:10	2026-10-22	15:00
+16132	static/camera_audits/hikvision_full_1792664568922.jpg	static/camera_audits/dahua_anpr_1792664568922.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:22:49	2026-10-22	15:00
+16133	static/camera_audits/hikvision_full_1792664592732.jpg	static/camera_audits/dahua_anpr_1792664592732.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:23:13	2026-10-22	15:00
+16134	static/camera_audits/hikvision_full_1792664748748.jpg	static/camera_audits/dahua_anpr_1792664748748.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:25:49	2026-10-22	15:00
+16135	static/camera_audits/hikvision_full_1792665035867.jpg	static/camera_audits/dahua_anpr_1792665035867.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:30:36	2026-10-22	15:00
+16136	static/camera_audits/hikvision_full_1792665095426.jpg	static/camera_audits/dahua_anpr_1792665095426.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:31:35	2026-10-22	15:00
+16137	static/camera_audits/hikvision_full_1792665149329.jpg	static/camera_audits/dahua_anpr_1792665149329.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:32:29	2026-10-22	15:00
+16138	static/camera_audits/hikvision_full_1792665221642.jpg	static/camera_audits/dahua_anpr_1792665221642.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:33:42	2026-10-22	15:00
+16139	static/camera_audits/hikvision_full_1792665254810.jpg	static/camera_audits/dahua_anpr_1792665254810.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:34:15	2026-10-22	15:00
+16140	static/camera_audits/hikvision_full_1792665306885.jpg	static/camera_audits/dahua_anpr_1792665306885.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:35:07	2026-10-22	15:00
+16141	static/camera_audits/hikvision_full_1792665488699.jpg	static/camera_audits/dahua_anpr_1792665488699.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:38:09	2026-10-22	15:00
+16142	static/camera_audits/hikvision_full_1792665768224.jpg	static/camera_audits/dahua_anpr_1792665768224.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:42:48	2026-10-22	15:00
+16143	static/camera_audits/hikvision_full_1792665925200.jpg	static/camera_audits/dahua_anpr_1792665925200.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:45:25	2026-10-22	15:00
+16144	static/camera_audits/hikvision_full_1792665976338.jpg	static/camera_audits/dahua_anpr_1792665976338.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:46:16	2026-10-22	15:00
+16145	static/camera_audits/hikvision_full_1792666106769.jpg	static/camera_audits/dahua_anpr_1792666106769.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:48:27	2026-10-22	15:00
+16146	static/camera_audits/hikvision_full_1792666182883.jpg	static/camera_audits/dahua_anpr_1792666182883.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:49:43	2026-10-22	15:00
+16147	static/camera_audits/hikvision_full_1792666461466.jpg	static/camera_audits/dahua_anpr_1792666461466.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:54:21	2026-10-22	15:00
+16148	static/camera_audits/hikvision_full_1792666560738.jpg	static/camera_audits/dahua_anpr_1792666560738.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:56:01	2026-10-22	15:00
+16149	static/camera_audits/hikvision_full_1792666695128.jpg	static/camera_audits/dahua_anpr_1792666695128.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:58:15	2026-10-22	15:00
+16150	static/camera_audits/hikvision_full_1792666765642.jpg	static/camera_audits/dahua_anpr_1792666765642.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:59:26	2026-10-22	15:00
+16151	static/camera_audits/hikvision_full_1792666793800.jpg	static/camera_audits/dahua_anpr_1792666793800.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 15:59:54	2026-10-22	15:00
+16152	static/camera_audits/hikvision_full_1792666999493.jpg	static/camera_audits/dahua_anpr_1792666999493.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:03:19	2026-10-22	16:00
+16153	static/camera_audits/hikvision_full_1792667100405.jpg	static/camera_audits/dahua_anpr_1792667100405.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:05:00	2026-10-22	16:00
+16154	static/camera_audits/hikvision_full_1792667104562.jpg	static/camera_audits/dahua_anpr_1792667104562.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:05:05	2026-10-22	16:00
+16155	static/camera_audits/hikvision_full_1792667418898.jpg	static/camera_audits/dahua_anpr_1792667418898.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:10:19	2026-10-22	16:00
+16156	static/camera_audits/hikvision_full_1792667453660.jpg	static/camera_audits/dahua_anpr_1792667453660.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:10:54	2026-10-22	16:00
+16157	static/camera_audits/hikvision_full_1792667459983.jpg	static/camera_audits/dahua_anpr_1792667459983.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:11:00	2026-10-22	16:00
+16158	static/camera_audits/hikvision_full_1792667520524.jpg	static/camera_audits/dahua_anpr_1792667520524.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:12:00	2026-10-22	16:00
+16159	static/camera_audits/hikvision_full_1792667549292.jpg	static/camera_audits/dahua_anpr_1792667549292.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:12:29	2026-10-22	16:00
+16160	static/camera_audits/hikvision_full_1792667569265.jpg	static/camera_audits/dahua_anpr_1792667569265.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:12:49	2026-10-22	16:00
+16161	static/camera_audits/hikvision_full_1792667632189.jpg	static/camera_audits/dahua_anpr_1792667632189.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:13:52	2026-10-22	16:00
+16162	static/camera_audits/hikvision_full_1792667687367.jpg	static/camera_audits/dahua_anpr_1792667687367.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:14:47	2026-10-22	16:00
+16163	static/camera_audits/hikvision_full_1792667908176.jpg	static/camera_audits/dahua_anpr_1792667908176.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:18:28	2026-10-22	16:00
+16164	static/camera_audits/hikvision_full_1792667977485.jpg	static/camera_audits/dahua_anpr_1792667977485.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:19:37	2026-10-22	16:00
+16165	static/camera_audits/hikvision_full_1792668002079.jpg	static/camera_audits/dahua_anpr_1792668002079.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:20:02	2026-10-22	16:00
+16166	static/camera_audits/hikvision_full_1792668182756.jpg	static/camera_audits/dahua_anpr_1792668182756.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:23:03	2026-10-22	16:00
+16167	static/camera_audits/hikvision_full_1792668310602.jpg	static/camera_audits/dahua_anpr_1792668310602.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:25:11	2026-10-22	16:00
+16168	static/camera_audits/hikvision_full_1792668561239.jpg	static/camera_audits/dahua_anpr_1792668561239.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:29:21	2026-10-22	16:00
+16169	static/camera_audits/hikvision_full_1792668729884.jpg	static/camera_audits/dahua_anpr_1792668729884.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:32:10	2026-10-22	16:00
+16170	static/camera_audits/hikvision_full_1792668817849.jpg	static/camera_audits/dahua_anpr_1792668817849.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:33:38	2026-10-22	16:00
+16171	static/camera_audits/hikvision_full_1792668863248.jpg	static/camera_audits/dahua_anpr_1792668863248.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:34:23	2026-10-22	16:00
+16172	static/camera_audits/hikvision_full_1792668902604.jpg	static/camera_audits/dahua_anpr_1792668902604.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:35:03	2026-10-22	16:00
+16173	static/camera_audits/hikvision_full_1792668916456.jpg	static/camera_audits/dahua_anpr_1792668916456.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:35:16	2026-10-22	16:00
+16174	static/camera_audits/hikvision_full_1792668925597.jpg	static/camera_audits/dahua_anpr_1792668925597.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:35:25	2026-10-22	16:00
+16175	static/camera_audits/hikvision_full_1792668931570.jpg	static/camera_audits/dahua_anpr_1792668931570.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:35:31	2026-10-22	16:00
+16176	static/camera_audits/hikvision_full_1792668986615.jpg	static/camera_audits/dahua_anpr_1792668986615.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:36:27	2026-10-22	16:00
+16177	static/camera_audits/hikvision_full_1792669269465.jpg	static/camera_audits/dahua_anpr_1792669269465.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:41:09	2026-10-22	16:00
+16178	static/camera_audits/hikvision_full_1792669355917.jpg	static/camera_audits/dahua_anpr_1792669355917.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:42:36	2026-10-22	16:00
+16179	static/camera_audits/hikvision_full_1792669387519.jpg	static/camera_audits/dahua_anpr_1792669387519.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:43:08	2026-10-22	16:00
+16180	static/camera_audits/hikvision_full_1792669469033.jpg	static/camera_audits/dahua_anpr_1792669469033.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:44:29	2026-10-22	16:00
+16181	static/camera_audits/hikvision_full_1792669474398.jpg	static/camera_audits/dahua_anpr_1792669474398.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:44:34	2026-10-22	16:00
+16182	static/camera_audits/hikvision_full_1792669479730.jpg	static/camera_audits/dahua_anpr_1792669479730.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:44:40	2026-10-22	16:00
+16183	static/camera_audits/hikvision_full_1792669496561.jpg	static/camera_audits/dahua_anpr_1792669496561.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:44:57	2026-10-22	16:00
+16184	static/camera_audits/hikvision_full_1792669631632.jpg	static/camera_audits/dahua_anpr_1792669631632.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:47:12	2026-10-22	16:00
+16185	static/camera_audits/hikvision_full_1792669743963.jpg	static/camera_audits/dahua_anpr_1792669743963.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:49:04	2026-10-22	16:00
+16186	static/camera_audits/hikvision_full_1792669784323.jpg	static/camera_audits/dahua_anpr_1792669784323.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:49:44	2026-10-22	16:00
+16187	static/camera_audits/hikvision_full_1792669788105.jpg	static/camera_audits/dahua_anpr_1792669788105.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:49:48	2026-10-22	16:00
+16188	static/camera_audits/hikvision_full_1792669823445.jpg	static/camera_audits/dahua_anpr_1792669823445.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:50:23	2026-10-22	16:00
+16189	static/camera_audits/hikvision_full_1792669867631.jpg	static/camera_audits/dahua_anpr_1792669867631.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:51:08	2026-10-22	16:00
+16190	static/camera_audits/hikvision_full_1792669916972.jpg	static/camera_audits/dahua_anpr_1792669916972.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:51:57	2026-10-22	16:00
+16191	static/camera_audits/hikvision_full_1792669921780.jpg	static/camera_audits/dahua_anpr_1792669921780.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:52:02	2026-10-22	16:00
+16192	static/camera_audits/hikvision_full_1792669947265.jpg	static/camera_audits/dahua_anpr_1792669947265.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:52:27	2026-10-22	16:00
+16193	static/camera_audits/hikvision_full_1792669969235.jpg	static/camera_audits/dahua_anpr_1792669969235.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:52:49	2026-10-22	16:00
+16194	static/camera_audits/hikvision_full_1792670030195.jpg	static/camera_audits/dahua_anpr_1792670030195.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:53:50	2026-10-22	16:00
+16195	static/camera_audits/hikvision_full_1792670089284.jpg	static/camera_audits/dahua_anpr_1792670089284.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:54:49	2026-10-22	16:00
+16196	static/camera_audits/hikvision_full_1792670115027.jpg	static/camera_audits/dahua_anpr_1792670115027.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:55:15	2026-10-22	16:00
+16197	static/camera_audits/hikvision_full_1792670140199.jpg	static/camera_audits/dahua_anpr_1792670140199.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:55:40	2026-10-22	16:00
+16198	static/camera_audits/hikvision_full_1792670188541.jpg	static/camera_audits/dahua_anpr_1792670188541.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:56:29	2026-10-22	16:00
+16199	static/camera_audits/hikvision_full_1792670231715.jpg	static/camera_audits/dahua_anpr_1792670231715.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:57:12	2026-10-22	16:00
+16200	static/camera_audits/hikvision_full_1792670312765.jpg	static/camera_audits/dahua_anpr_1792670312765.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:58:33	2026-10-22	16:00
+16201	static/camera_audits/hikvision_full_1792670350954.jpg	static/camera_audits/dahua_anpr_1792670350954.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:59:11	2026-10-22	16:00
+16202	static/camera_audits/hikvision_full_1792670365542.jpg	static/camera_audits/dahua_anpr_1792670365542.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 16:59:25	2026-10-22	16:00
+16203	static/camera_audits/hikvision_full_1792670401823.jpg	static/camera_audits/dahua_anpr_1792670401823.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:00:02	2026-10-22	17:00
+16204	static/camera_audits/hikvision_full_1792670696028.jpg	static/camera_audits/dahua_anpr_1792670696028.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:04:57	2026-10-22	17:00
+16205	static/camera_audits/hikvision_full_1792670700566.jpg	static/camera_audits/dahua_anpr_1792670700566.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:05:01	2026-10-22	17:00
+16206	static/camera_audits/hikvision_full_1792670723687.jpg	static/camera_audits/dahua_anpr_1792670723687.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:05:24	2026-10-22	17:00
+16207	static/camera_audits/hikvision_full_1792670746867.jpg	static/camera_audits/dahua_anpr_1792670746867.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:05:47	2026-10-22	17:00
+16208	static/camera_audits/hikvision_full_1792670853551.jpg	static/camera_audits/dahua_anpr_1792670853551.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:07:34	2026-10-22	17:00
+16209	static/camera_audits/hikvision_full_1792670876455.jpg	static/camera_audits/dahua_anpr_1792670876455.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:07:57	2026-10-22	17:00
+16210	static/camera_audits/hikvision_full_1792671102654.jpg	static/camera_audits/dahua_anpr_1792671102654.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:11:43	2026-10-22	17:00
+16211	static/camera_audits/hikvision_full_1792671107396.jpg	static/camera_audits/dahua_anpr_1792671107396.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:11:48	2026-10-22	17:00
+16212	static/camera_audits/hikvision_full_1792671127972.jpg	static/camera_audits/dahua_anpr_1792671127972.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:12:08	2026-10-22	17:00
+16213	static/camera_audits/hikvision_full_1792671175737.jpg	static/camera_audits/dahua_anpr_1792671175737.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:12:56	2026-10-22	17:00
+16214	static/camera_audits/hikvision_full_1792671335328.jpg	static/camera_audits/dahua_anpr_1792671335328.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:15:35	2026-10-22	17:00
+16215	static/camera_audits/hikvision_full_1792671415883.jpg	static/camera_audits/dahua_anpr_1792671415883.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:16:56	2026-10-22	17:00
+16216	static/camera_audits/hikvision_full_1792671435181.jpg	static/camera_audits/dahua_anpr_1792671435181.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:17:15	2026-10-22	17:00
+16217	static/camera_audits/hikvision_full_1792671463536.jpg	static/camera_audits/dahua_anpr_1792671463536.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:17:44	2026-10-22	17:00
+16218	static/camera_audits/hikvision_full_1792671507668.jpg	static/camera_audits/dahua_anpr_1792671507668.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:18:28	2026-10-22	17:00
+16219	static/camera_audits/hikvision_full_1792671531883.jpg	static/camera_audits/dahua_anpr_1792671531883.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:18:52	2026-10-22	17:00
+16220	static/camera_audits/hikvision_full_1792671604944.jpg	static/camera_audits/dahua_anpr_1792671604944.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:20:05	2026-10-22	17:00
+16221	static/camera_audits/hikvision_full_1792671632863.jpg	static/camera_audits/dahua_anpr_1792671632863.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:20:33	2026-10-22	17:00
+16222	static/camera_audits/hikvision_full_1792671724143.jpg	static/camera_audits/dahua_anpr_1792671724143.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:22:04	2026-10-22	17:00
+16223	static/camera_audits/hikvision_full_1792671727536.jpg	static/camera_audits/dahua_anpr_1792671727536.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:22:07	2026-10-22	17:00
+16224	static/camera_audits/hikvision_full_1792671732700.jpg	static/camera_audits/dahua_anpr_1792671732700.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:22:13	2026-10-22	17:00
+16225	static/camera_audits/hikvision_full_1792671801511.jpg	static/camera_audits/dahua_anpr_1792671801511.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:23:22	2026-10-22	17:00
+16226	static/camera_audits/hikvision_full_1792671822764.jpg	static/camera_audits/dahua_anpr_1792671822764.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:23:43	2026-10-22	17:00
+16227	static/camera_audits/hikvision_full_1792671829071.jpg	static/camera_audits/dahua_anpr_1792671829071.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:23:49	2026-10-22	17:00
+16228	static/camera_audits/hikvision_full_1792671839451.jpg	static/camera_audits/dahua_anpr_1792671839451.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:24:00	2026-10-22	17:00
+16229	static/camera_audits/hikvision_full_1792671916732.jpg	static/camera_audits/dahua_anpr_1792671916732.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:25:17	2026-10-22	17:00
+16230	static/camera_audits/hikvision_full_1792671945112.jpg	static/camera_audits/dahua_anpr_1792671945112.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:25:45	2026-10-22	17:00
+16231	static/camera_audits/hikvision_full_1792672084496.jpg	static/camera_audits/dahua_anpr_1792672084496.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:28:04	2026-10-22	17:00
+16232	static/camera_audits/hikvision_full_1792672171106.jpg	static/camera_audits/dahua_anpr_1792672171106.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:29:31	2026-10-22	17:00
+16233	static/camera_audits/hikvision_full_1792672184740.jpg	static/camera_audits/dahua_anpr_1792672184740.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:29:45	2026-10-22	17:00
+16234	static/camera_audits/hikvision_full_1792672466729.jpg	static/camera_audits/dahua_anpr_1792672466729.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:34:27	2026-10-22	17:00
+16235	static/camera_audits/hikvision_full_1792672613278.jpg	static/camera_audits/dahua_anpr_1792672613278.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:36:54	2026-10-22	17:00
+16236	static/camera_audits/hikvision_full_1792672637891.jpg	static/camera_audits/dahua_anpr_1792672637891.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:37:18	2026-10-22	17:00
+16237	static/camera_audits/hikvision_full_1792672642261.jpg	static/camera_audits/dahua_anpr_1792672642261.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:37:22	2026-10-22	17:00
+16238	static/camera_audits/hikvision_full_1792672654886.jpg	static/camera_audits/dahua_anpr_1792672654886.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:37:35	2026-10-22	17:00
+16239	static/camera_audits/hikvision_full_1792672807428.jpg	static/camera_audits/dahua_anpr_1792672807428.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:40:08	2026-10-22	17:00
+16240	static/camera_audits/hikvision_full_1792672825220.jpg	static/camera_audits/dahua_anpr_1792672825220.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:40:25	2026-10-22	17:00
+16241	static/camera_audits/hikvision_full_1792672858118.jpg	static/camera_audits/dahua_anpr_1792672858118.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:40:58	2026-10-22	17:00
+16242	static/camera_audits/hikvision_full_1792672971618.jpg	static/camera_audits/dahua_anpr_1792672971618.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:42:52	2026-10-22	17:00
+16243	static/camera_audits/hikvision_full_1792672975251.jpg	static/camera_audits/dahua_anpr_1792672975251.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:42:55	2026-10-22	17:00
+16244	static/camera_audits/hikvision_full_1792672993731.jpg	static/camera_audits/dahua_anpr_1792672993731.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:43:14	2026-10-22	17:00
+16245	static/camera_audits/hikvision_full_1792673220023.jpg	static/camera_audits/dahua_anpr_1792673220023.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:47:00	2026-10-22	17:00
+16246	static/camera_audits/hikvision_full_1792673245629.jpg	static/camera_audits/dahua_anpr_1792673245629.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:47:26	2026-10-22	17:00
+16247	static/camera_audits/hikvision_full_1792673278454.jpg	static/camera_audits/dahua_anpr_1792673278454.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:47:59	2026-10-22	17:00
+16248	static/camera_audits/hikvision_full_1792673394215.jpg	static/camera_audits/dahua_anpr_1792673394215.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:49:54	2026-10-22	17:00
+16249	static/camera_audits/hikvision_full_1792673400145.jpg	static/camera_audits/dahua_anpr_1792673400145.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:50:00	2026-10-22	17:00
+16250	static/camera_audits/hikvision_full_1792673440739.jpg	static/camera_audits/dahua_anpr_1792673440739.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:50:41	2026-10-22	17:00
+16251	static/camera_audits/hikvision_full_1792673445140.jpg	static/camera_audits/dahua_anpr_1792673445140.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:50:45	2026-10-22	17:00
+16252	static/camera_audits/hikvision_full_1792673467450.jpg	static/camera_audits/dahua_anpr_1792673467450.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:51:07	2026-10-22	17:00
+16253	static/camera_audits/hikvision_full_1792673487414.jpg	static/camera_audits/dahua_anpr_1792673487414.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:51:27	2026-10-22	17:00
+16254	static/camera_audits/hikvision_full_1792673492050.jpg	static/camera_audits/dahua_anpr_1792673492050.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:51:32	2026-10-22	17:00
+16255	static/camera_audits/hikvision_full_1792673566520.jpg	static/camera_audits/dahua_anpr_1792673566520.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:52:46	2026-10-22	17:00
+16256	static/camera_audits/hikvision_full_1792673583263.jpg	static/camera_audits/dahua_anpr_1792673583263.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:53:03	2026-10-22	17:00
+16257	static/camera_audits/hikvision_full_1792673623869.jpg	static/camera_audits/dahua_anpr_1792673623869.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:53:44	2026-10-22	17:00
+16258	static/camera_audits/hikvision_full_1792673627877.jpg	static/camera_audits/dahua_anpr_1792673627877.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:53:48	2026-10-22	17:00
+16259	static/camera_audits/hikvision_full_1792673655783.jpg	static/camera_audits/dahua_anpr_1792673655783.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:54:16	2026-10-22	17:00
+16260	static/camera_audits/hikvision_full_1792673659576.jpg	static/camera_audits/dahua_anpr_1792673659576.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:54:19	2026-10-22	17:00
+16261	static/camera_audits/hikvision_full_1792673699558.jpg	static/camera_audits/dahua_anpr_1792673699558.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:55:00	2026-10-22	17:00
+16262	static/camera_audits/hikvision_full_1792673704872.jpg	static/camera_audits/dahua_anpr_1792673704872.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:55:05	2026-10-22	17:00
+16263	static/camera_audits/hikvision_full_1792673735515.jpg	static/camera_audits/dahua_anpr_1792673735515.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:55:36	2026-10-22	17:00
+16264	static/camera_audits/hikvision_full_1792673873936.jpg	static/camera_audits/dahua_anpr_1792673873936.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:57:54	2026-10-22	17:00
+16265	static/camera_audits/hikvision_full_1792673942430.jpg	static/camera_audits/dahua_anpr_1792673942430.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:59:02	2026-10-22	17:00
+16266	static/camera_audits/hikvision_full_1792673975787.jpg	static/camera_audits/dahua_anpr_1792673975787.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:59:36	2026-10-22	17:00
+16267	static/camera_audits/hikvision_full_1792673981167.jpg	static/camera_audits/dahua_anpr_1792673981167.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:59:41	2026-10-22	17:00
+16268	static/camera_audits/hikvision_full_1792673986183.jpg	static/camera_audits/dahua_anpr_1792673986183.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 17:59:46	2026-10-22	17:00
+16269	static/camera_audits/hikvision_full_1792674024931.jpg	static/camera_audits/dahua_anpr_1792674024931.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:00:25	2026-10-22	18:00
+16270	static/camera_audits/hikvision_full_1792674043269.jpg	static/camera_audits/dahua_anpr_1792674043269.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:00:43	2026-10-22	18:00
+16271	static/camera_audits/hikvision_full_1792674085383.jpg	static/camera_audits/dahua_anpr_1792674085383.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:01:25	2026-10-22	18:00
+16272	static/camera_audits/hikvision_full_1792674129987.jpg	static/camera_audits/dahua_anpr_1792674129987.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:02:10	2026-10-22	18:00
+16273	static/camera_audits/hikvision_full_1792674202596.jpg	static/camera_audits/dahua_anpr_1792674202596.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:03:22	2026-10-22	18:00
+16274	static/camera_audits/hikvision_full_1792674247423.jpg	static/camera_audits/dahua_anpr_1792674247423.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:04:07	2026-10-22	18:00
+16275	static/camera_audits/hikvision_full_1792674265115.jpg	static/camera_audits/dahua_anpr_1792674265115.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:04:25	2026-10-22	18:00
+16276	static/camera_audits/hikvision_full_1792674270707.jpg	static/camera_audits/dahua_anpr_1792674270707.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:04:31	2026-10-22	18:00
+16277	static/camera_audits/hikvision_full_1792674327628.jpg	static/camera_audits/dahua_anpr_1792674327628.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:05:28	2026-10-22	18:00
+16278	static/camera_audits/hikvision_full_1792674359942.jpg	static/camera_audits/dahua_anpr_1792674359942.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:06:00	2026-10-22	18:00
+16279	static/camera_audits/hikvision_full_1792674468887.jpg	static/camera_audits/dahua_anpr_1792674468887.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:07:49	2026-10-22	18:00
+16280	static/camera_audits/hikvision_full_1792674505576.jpg	static/camera_audits/dahua_anpr_1792674505576.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:08:25	2026-10-22	18:00
+16281	static/camera_audits/hikvision_full_1792674561087.jpg	static/camera_audits/dahua_anpr_1792674561087.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:09:21	2026-10-22	18:00
+16282	static/camera_audits/hikvision_full_1792674633390.jpg	static/camera_audits/dahua_anpr_1792674633390.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:10:33	2026-10-22	18:00
+16283	static/camera_audits/hikvision_full_1792674656944.jpg	static/camera_audits/dahua_anpr_1792674656944.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:10:57	2026-10-22	18:00
+16284	static/camera_audits/hikvision_full_1792674673360.jpg	static/camera_audits/dahua_anpr_1792674673360.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:11:13	2026-10-22	18:00
+16285	static/camera_audits/hikvision_full_1792674745028.jpg	static/camera_audits/dahua_anpr_1792674745028.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:12:25	2026-10-22	18:00
+16286	static/camera_audits/hikvision_full_1792674807312.jpg	static/camera_audits/dahua_anpr_1792674807312.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:13:27	2026-10-22	18:00
+16287	static/camera_audits/hikvision_full_1792674823374.jpg	static/camera_audits/dahua_anpr_1792674823374.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:13:43	2026-10-22	18:00
+16288	static/camera_audits/hikvision_full_1792674897624.jpg	static/camera_audits/dahua_anpr_1792674897624.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:14:58	2026-10-22	18:00
+16289	static/camera_audits/hikvision_full_1792674950551.jpg	static/camera_audits/dahua_anpr_1792674950551.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:15:51	2026-10-22	18:00
+16290	static/camera_audits/hikvision_full_1792675049459.jpg	static/camera_audits/dahua_anpr_1792675049459.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:17:29	2026-10-22	18:00
+16291	static/camera_audits/hikvision_full_1792675097800.jpg	static/camera_audits/dahua_anpr_1792675097800.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:18:18	2026-10-22	18:00
+16292	static/camera_audits/hikvision_full_1792675124865.jpg	static/camera_audits/dahua_anpr_1792675124865.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:18:45	2026-10-22	18:00
+16293	static/camera_audits/hikvision_full_1792675178408.jpg	static/camera_audits/dahua_anpr_1792675178408.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:19:38	2026-10-22	18:00
+16294	static/camera_audits/hikvision_full_1792675199563.jpg	static/camera_audits/dahua_anpr_1792675199563.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:20:00	2026-10-22	18:00
+16295	static/camera_audits/hikvision_full_1792675262659.jpg	static/camera_audits/dahua_anpr_1792675262659.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:21:02	2026-10-22	18:00
+16296	static/camera_audits/hikvision_full_1792675304431.jpg	static/camera_audits/dahua_anpr_1792675304431.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:21:44	2026-10-22	18:00
+16297	static/camera_audits/hikvision_full_1792675344225.jpg	static/camera_audits/dahua_anpr_1792675344225.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:22:24	2026-10-22	18:00
+16298	static/camera_audits/hikvision_full_1792675406284.jpg	static/camera_audits/dahua_anpr_1792675406284.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:23:26	2026-10-22	18:00
+16299	static/camera_audits/hikvision_full_1792675415734.jpg	static/camera_audits/dahua_anpr_1792675415734.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:23:36	2026-10-22	18:00
+16300	static/camera_audits/hikvision_full_1792675478385.jpg	static/camera_audits/dahua_anpr_1792675478385.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:24:38	2026-10-22	18:00
+16301	static/camera_audits/hikvision_full_1792675522892.jpg	static/camera_audits/dahua_anpr_1792675522892.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:25:23	2026-10-22	18:00
+16302	static/camera_audits/hikvision_full_1792675606796.jpg	static/camera_audits/dahua_anpr_1792675606796.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:26:47	2026-10-22	18:00
+16303	static/camera_audits/hikvision_full_1792675635369.jpg	static/camera_audits/dahua_anpr_1792675635369.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:27:15	2026-10-22	18:00
+16304	static/camera_audits/hikvision_full_1792675639149.jpg	static/camera_audits/dahua_anpr_1792675639149.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:27:19	2026-10-22	18:00
+16305	static/camera_audits/hikvision_full_1792675704515.jpg	static/camera_audits/dahua_anpr_1792675704515.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:28:24	2026-10-22	18:00
+16306	static/camera_audits/hikvision_full_1792675732287.jpg	static/camera_audits/dahua_anpr_1792675732287.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:28:52	2026-10-22	18:00
+16307	static/camera_audits/hikvision_full_1792675781735.jpg	static/camera_audits/dahua_anpr_1792675781735.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:29:42	2026-10-22	18:00
+16308	static/camera_audits/hikvision_full_1792675805730.jpg	static/camera_audits/dahua_anpr_1792675805730.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:30:06	2026-10-22	18:00
+16309	static/camera_audits/hikvision_full_1792675831480.jpg	static/camera_audits/dahua_anpr_1792675831480.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:30:31	2026-10-22	18:00
+16310	static/camera_audits/hikvision_full_1792675856103.jpg	static/camera_audits/dahua_anpr_1792675856103.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:30:56	2026-10-22	18:00
+16311	static/camera_audits/hikvision_full_1792675907754.jpg	static/camera_audits/dahua_anpr_1792675907754.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:31:48	2026-10-22	18:00
+16312	static/camera_audits/hikvision_full_1792675912999.jpg	static/camera_audits/dahua_anpr_1792675912999.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:31:53	2026-10-22	18:00
+16313	static/camera_audits/hikvision_full_1792675977659.jpg	static/camera_audits/dahua_anpr_1792675977659.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:32:57	2026-10-22	18:00
+16314	static/camera_audits/hikvision_full_1792676062963.jpg	static/camera_audits/dahua_anpr_1792676062963.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:34:23	2026-10-22	18:00
+16315	static/camera_audits/hikvision_full_1792676097497.jpg	static/camera_audits/dahua_anpr_1792676097497.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:34:57	2026-10-22	18:00
+16316	static/camera_audits/hikvision_full_1792676125858.jpg	static/camera_audits/dahua_anpr_1792676125858.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:35:26	2026-10-22	18:00
+16317	static/camera_audits/hikvision_full_1792676225490.jpg	static/camera_audits/dahua_anpr_1792676225490.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:37:05	2026-10-22	18:00
+16318	static/camera_audits/hikvision_full_1792676347158.jpg	static/camera_audits/dahua_anpr_1792676347158.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:39:07	2026-10-22	18:00
+16319	static/camera_audits/hikvision_full_1792676375163.jpg	static/camera_audits/dahua_anpr_1792676375163.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:39:35	2026-10-22	18:00
+16320	static/camera_audits/hikvision_full_1792676449605.jpg	static/camera_audits/dahua_anpr_1792676449605.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:40:49	2026-10-22	18:00
+16321	static/camera_audits/hikvision_full_1792676458800.jpg	static/camera_audits/dahua_anpr_1792676458800.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:40:59	2026-10-22	18:00
+16322	static/camera_audits/hikvision_full_1792676480838.jpg	static/camera_audits/dahua_anpr_1792676480838.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:41:21	2026-10-22	18:00
+16323	static/camera_audits/hikvision_full_1792676531931.jpg	static/camera_audits/dahua_anpr_1792676531931.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:42:12	2026-10-22	18:00
+16324	static/camera_audits/hikvision_full_1792676585649.jpg	static/camera_audits/dahua_anpr_1792676585649.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:43:06	2026-10-22	18:00
+16325	static/camera_audits/hikvision_full_1792676651755.jpg	static/camera_audits/dahua_anpr_1792676651755.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:44:12	2026-10-22	18:00
+16326	static/camera_audits/hikvision_full_1792676709247.jpg	static/camera_audits/dahua_anpr_1792676709247.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:45:09	2026-10-22	18:00
+16327	static/camera_audits/hikvision_full_1792676814480.jpg	static/camera_audits/dahua_anpr_1792676814480.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:46:55	2026-10-22	18:00
+16328	static/camera_audits/hikvision_full_1792676818866.jpg	static/camera_audits/dahua_anpr_1792676818866.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:46:59	2026-10-22	18:00
+16329	static/camera_audits/hikvision_full_1792676843283.jpg	static/camera_audits/dahua_anpr_1792676843283.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:47:23	2026-10-22	18:00
+16330	static/camera_audits/hikvision_full_1792676974086.jpg	static/camera_audits/dahua_anpr_1792676974086.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:49:34	2026-10-22	18:00
+16331	static/camera_audits/hikvision_full_1792677049747.jpg	static/camera_audits/dahua_anpr_1792677049747.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:50:50	2026-10-22	18:00
+16332	static/camera_audits/hikvision_full_1792677053155.jpg	static/camera_audits/dahua_anpr_1792677053155.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:50:53	2026-10-22	18:00
+16333	static/camera_audits/hikvision_full_1792677112114.jpg	static/camera_audits/dahua_anpr_1792677112114.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:51:52	2026-10-22	18:00
+16334	static/camera_audits/hikvision_full_1792677137275.jpg	static/camera_audits/dahua_anpr_1792677137275.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:52:17	2026-10-22	18:00
+16335	static/camera_audits/hikvision_full_1792677188350.jpg	static/camera_audits/dahua_anpr_1792677188350.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:53:08	2026-10-22	18:00
+16336	static/camera_audits/hikvision_full_1792677225341.jpg	static/camera_audits/dahua_anpr_1792677225341.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:53:45	2026-10-22	18:00
+16337	static/camera_audits/hikvision_full_1792677273819.jpg	static/camera_audits/dahua_anpr_1792677273819.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:54:34	2026-10-22	18:00
+16338	static/camera_audits/hikvision_full_1792677279458.jpg	static/camera_audits/dahua_anpr_1792677279458.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:54:39	2026-10-22	18:00
+16339	static/camera_audits/hikvision_full_1792677323992.jpg	static/camera_audits/dahua_anpr_1792677323992.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:55:24	2026-10-22	18:00
+16340	static/camera_audits/hikvision_full_1792677340100.jpg	static/camera_audits/dahua_anpr_1792677340100.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:55:40	2026-10-22	18:00
+16341	static/camera_audits/hikvision_full_1792677389421.jpg	static/camera_audits/dahua_anpr_1792677389421.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:56:29	2026-10-22	18:00
+16342	static/camera_audits/hikvision_full_1792677426871.jpg	static/camera_audits/dahua_anpr_1792677426871.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:57:07	2026-10-22	18:00
+16343	static/camera_audits/hikvision_full_1792677461528.jpg	static/camera_audits/dahua_anpr_1792677461528.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:57:41	2026-10-22	18:00
+16344	static/camera_audits/hikvision_full_1792677475135.jpg	static/camera_audits/dahua_anpr_1792677475135.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:57:55	2026-10-22	18:00
+16345	static/camera_audits/hikvision_full_1792677513522.jpg	static/camera_audits/dahua_anpr_1792677513522.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:58:34	2026-10-22	18:00
+16346	static/camera_audits/hikvision_full_1792677516941.jpg	static/camera_audits/dahua_anpr_1792677516941.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:58:37	2026-10-22	18:00
+16347	static/camera_audits/hikvision_full_1792677576591.jpg	static/camera_audits/dahua_anpr_1792677576591.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 18:59:36	2026-10-22	18:00
+16348	static/camera_audits/hikvision_full_1792677603174.jpg	static/camera_audits/dahua_anpr_1792677603174.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:00:03	2026-10-22	19:00
+16349	static/camera_audits/hikvision_full_1792677656934.jpg	static/camera_audits/dahua_anpr_1792677656934.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:00:57	2026-10-22	19:00
+16350	static/camera_audits/hikvision_full_1792677684034.jpg	static/camera_audits/dahua_anpr_1792677684034.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:01:24	2026-10-22	19:00
+16351	static/camera_audits/hikvision_full_1792677716574.jpg	static/camera_audits/dahua_anpr_1792677716574.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:01:56	2026-10-22	19:00
+16352	static/camera_audits/hikvision_full_1792677743358.jpg	static/camera_audits/dahua_anpr_1792677743358.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:02:23	2026-10-22	19:00
+16353	static/camera_audits/hikvision_full_1792677852964.jpg	static/camera_audits/dahua_anpr_1792677852964.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:04:13	2026-10-22	19:00
+16354	static/camera_audits/hikvision_full_1792677872232.jpg	static/camera_audits/dahua_anpr_1792677872232.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:04:32	2026-10-22	19:00
+16355	static/camera_audits/hikvision_full_1792677877150.jpg	static/camera_audits/dahua_anpr_1792677877150.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:04:37	2026-10-22	19:00
+16356	static/camera_audits/hikvision_full_1792677901545.jpg	static/camera_audits/dahua_anpr_1792677901545.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:05:02	2026-10-22	19:00
+16357	static/camera_audits/hikvision_full_1792678019827.jpg	static/camera_audits/dahua_anpr_1792678019827.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:07:00	2026-10-22	19:00
+16358	static/camera_audits/hikvision_full_1792678096825.jpg	static/camera_audits/dahua_anpr_1792678096825.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:08:17	2026-10-22	19:00
+16359	static/camera_audits/hikvision_full_1792678152768.jpg	static/camera_audits/dahua_anpr_1792678152768.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:09:13	2026-10-22	19:00
+16360	static/camera_audits/hikvision_full_1792678184307.jpg	static/camera_audits/dahua_anpr_1792678184307.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:09:44	2026-10-22	19:00
+16361	static/camera_audits/hikvision_full_1792678216883.jpg	static/camera_audits/dahua_anpr_1792678216883.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:10:17	2026-10-22	19:00
+16362	static/camera_audits/hikvision_full_1792678313175.jpg	static/camera_audits/dahua_anpr_1792678313175.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:11:53	2026-10-22	19:00
+16363	static/camera_audits/hikvision_full_1792678330120.jpg	static/camera_audits/dahua_anpr_1792678330120.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:12:10	2026-10-22	19:00
+16364	static/camera_audits/hikvision_full_1792678359678.jpg	static/camera_audits/dahua_anpr_1792678359678.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:12:40	2026-10-22	19:00
+16365	static/camera_audits/hikvision_full_1792678395071.jpg	static/camera_audits/dahua_anpr_1792678395071.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:13:15	2026-10-22	19:00
+16366	static/camera_audits/hikvision_full_1792678476350.jpg	static/camera_audits/dahua_anpr_1792678476350.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:14:36	2026-10-22	19:00
+16367	static/camera_audits/hikvision_full_1792678538221.jpg	static/camera_audits/dahua_anpr_1792678538221.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:15:38	2026-10-22	19:00
+16368	static/camera_audits/hikvision_full_1792678560192.jpg	static/camera_audits/dahua_anpr_1792678560192.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:16:00	2026-10-22	19:00
+16369	static/camera_audits/hikvision_full_1792678567044.jpg	static/camera_audits/dahua_anpr_1792678567044.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:16:07	2026-10-22	19:00
+16370	static/camera_audits/hikvision_full_1792678595156.jpg	static/camera_audits/dahua_anpr_1792678595156.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:16:35	2026-10-22	19:00
+16371	static/camera_audits/hikvision_full_1792678647269.jpg	static/camera_audits/dahua_anpr_1792678647269.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:17:27	2026-10-22	19:00
+16372	static/camera_audits/hikvision_full_1792678684634.jpg	static/camera_audits/dahua_anpr_1792678684634.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:18:04	2026-10-22	19:00
+16373	static/camera_audits/hikvision_full_1792678758691.jpg	static/camera_audits/dahua_anpr_1792678758691.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:19:19	2026-10-22	19:00
+16374	static/camera_audits/hikvision_full_1792678812803.jpg	static/camera_audits/dahua_anpr_1792678812803.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:20:13	2026-10-22	19:00
+16375	static/camera_audits/hikvision_full_1792678816412.jpg	static/camera_audits/dahua_anpr_1792678816412.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:20:16	2026-10-22	19:00
+16376	static/camera_audits/hikvision_full_1792678855333.jpg	static/camera_audits/dahua_anpr_1792678855333.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:20:55	2026-10-22	19:00
+16377	static/camera_audits/hikvision_full_1792678922520.jpg	static/camera_audits/dahua_anpr_1792678922520.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:22:02	2026-10-22	19:00
+16378	static/camera_audits/hikvision_full_1792678945849.jpg	static/camera_audits/dahua_anpr_1792678945849.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:22:26	2026-10-22	19:00
+16379	static/camera_audits/hikvision_full_1792679028769.jpg	static/camera_audits/dahua_anpr_1792679028769.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:23:49	2026-10-22	19:00
+16380	static/camera_audits/hikvision_full_1792679111817.jpg	static/camera_audits/dahua_anpr_1792679111817.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:25:12	2026-10-22	19:00
+16381	static/camera_audits/hikvision_full_1792679115598.jpg	static/camera_audits/dahua_anpr_1792679115598.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:25:15	2026-10-22	19:00
+16382	static/camera_audits/hikvision_full_1792679122047.jpg	static/camera_audits/dahua_anpr_1792679122047.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:25:22	2026-10-22	19:00
+16383	static/camera_audits/hikvision_full_1792679201090.jpg	static/camera_audits/dahua_anpr_1792679201090.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:26:41	2026-10-22	19:00
+16384	static/camera_audits/hikvision_full_1792679238465.jpg	static/camera_audits/dahua_anpr_1792679238465.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:27:18	2026-10-22	19:00
+16385	static/camera_audits/hikvision_full_1792679332572.jpg	static/camera_audits/dahua_anpr_1792679332572.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:28:52	2026-10-22	19:00
+16386	static/camera_audits/hikvision_full_1792679342272.jpg	static/camera_audits/dahua_anpr_1792679342272.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:29:02	2026-10-22	19:00
+16387	static/camera_audits/hikvision_full_1792679386425.jpg	static/camera_audits/dahua_anpr_1792679386425.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:29:46	2026-10-22	19:00
+16388	static/camera_audits/hikvision_full_1792679401008.jpg	static/camera_audits/dahua_anpr_1792679401008.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:30:01	2026-10-22	19:00
+16389	static/camera_audits/hikvision_full_1792679594514.jpg	static/camera_audits/dahua_anpr_1792679594514.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:33:14	2026-10-22	19:00
+16390	static/camera_audits/hikvision_full_1792679642474.jpg	static/camera_audits/dahua_anpr_1792679642474.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:34:02	2026-10-22	19:00
+16391	static/camera_audits/hikvision_full_1792679646436.jpg	static/camera_audits/dahua_anpr_1792679646436.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:34:06	2026-10-22	19:00
+16392	static/camera_audits/hikvision_full_1792679689190.jpg	static/camera_audits/dahua_anpr_1792679689190.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:34:49	2026-10-22	19:00
+16393	static/camera_audits/hikvision_full_1792679724961.jpg	static/camera_audits/dahua_anpr_1792679724961.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:35:25	2026-10-22	19:00
+16394	static/camera_audits/hikvision_full_1792679732518.jpg	static/camera_audits/dahua_anpr_1792679732518.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:35:32	2026-10-22	19:00
+16395	static/camera_audits/hikvision_full_1792679735715.jpg	static/camera_audits/dahua_anpr_1792679735715.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:35:36	2026-10-22	19:00
+16396	static/camera_audits/hikvision_full_1792679795042.jpg	static/camera_audits/dahua_anpr_1792679795042.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:36:35	2026-10-22	19:00
+16397	static/camera_audits/hikvision_full_1792679897734.jpg	static/camera_audits/dahua_anpr_1792679897734.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:38:18	2026-10-22	19:00
+16398	static/camera_audits/hikvision_full_1792679963377.jpg	static/camera_audits/dahua_anpr_1792679963377.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:39:23	2026-10-22	19:00
+16399	static/camera_audits/hikvision_full_1792680072811.jpg	static/camera_audits/dahua_anpr_1792680072811.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:41:13	2026-10-22	19:00
+16400	static/camera_audits/hikvision_full_1792680110181.jpg	static/camera_audits/dahua_anpr_1792680110181.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:41:50	2026-10-22	19:00
+16401	static/camera_audits/hikvision_full_1792680166137.jpg	static/camera_audits/dahua_anpr_1792680166137.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:42:46	2026-10-22	19:00
+16402	static/camera_audits/hikvision_full_1792680261208.jpg	static/camera_audits/dahua_anpr_1792680261208.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:44:21	2026-10-22	19:00
+16403	static/camera_audits/hikvision_full_1792680265578.jpg	static/camera_audits/dahua_anpr_1792680265578.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:44:25	2026-10-22	19:00
+16404	static/camera_audits/hikvision_full_1792680346720.jpg	static/camera_audits/dahua_anpr_1792680346720.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:45:47	2026-10-22	19:00
+16405	static/camera_audits/hikvision_full_1792680371616.jpg	static/camera_audits/dahua_anpr_1792680371616.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:46:12	2026-10-22	19:00
+16406	static/camera_audits/hikvision_full_1792680414525.jpg	static/camera_audits/dahua_anpr_1792680414525.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:46:55	2026-10-22	19:00
+16407	static/camera_audits/hikvision_full_1792680535172.jpg	static/camera_audits/dahua_anpr_1792680535172.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:48:55	2026-10-22	19:00
+16408	static/camera_audits/hikvision_full_1792680559538.jpg	static/camera_audits/dahua_anpr_1792680559538.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:49:20	2026-10-22	19:00
+16409	static/camera_audits/hikvision_full_1792680581100.jpg	static/camera_audits/dahua_anpr_1792680581100.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:49:41	2026-10-22	19:00
+16410	static/camera_audits/hikvision_full_1792680652199.jpg	static/camera_audits/dahua_anpr_1792680652199.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:50:52	2026-10-22	19:00
+16411	static/camera_audits/hikvision_full_1792680679814.jpg	static/camera_audits/dahua_anpr_1792680679814.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:51:20	2026-10-22	19:00
+16412	static/camera_audits/hikvision_full_1792680870754.jpg	static/camera_audits/dahua_anpr_1792680870754.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:54:31	2026-10-22	19:00
+16413	static/camera_audits/hikvision_full_1792680971406.jpg	static/camera_audits/dahua_anpr_1792680971406.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:56:11	2026-10-22	19:00
+16414	static/camera_audits/hikvision_full_1792681046299.jpg	static/camera_audits/dahua_anpr_1792681046299.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:57:26	2026-10-22	19:00
+16415	static/camera_audits/hikvision_full_1792681194405.jpg	static/camera_audits/dahua_anpr_1792681194405.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 19:59:54	2026-10-22	19:00
+16416	static/camera_audits/hikvision_full_1792681311942.jpg	static/camera_audits/dahua_anpr_1792681311942.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:01:52	2026-10-22	20:00
+16417	static/camera_audits/hikvision_full_1792681339223.jpg	static/camera_audits/dahua_anpr_1792681339223.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:02:19	2026-10-22	20:00
+16418	static/camera_audits/hikvision_full_1792681357461.jpg	static/camera_audits/dahua_anpr_1792681357461.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:02:38	2026-10-22	20:00
+16419	static/camera_audits/hikvision_full_1792681457471.jpg	static/camera_audits/dahua_anpr_1792681457471.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:04:17	2026-10-22	20:00
+16420	static/camera_audits/hikvision_full_1792681571595.jpg	static/camera_audits/dahua_anpr_1792681571595.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:06:12	2026-10-22	20:00
+16421	static/camera_audits/hikvision_full_1792681662549.jpg	static/camera_audits/dahua_anpr_1792681662549.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:07:43	2026-10-22	20:00
+16422	static/camera_audits/hikvision_full_1792681759029.jpg	static/camera_audits/dahua_anpr_1792681759029.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:09:19	2026-10-22	20:00
+16423	static/camera_audits/hikvision_full_1792681843109.jpg	static/camera_audits/dahua_anpr_1792681843109.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:10:43	2026-10-22	20:00
+16424	static/camera_audits/hikvision_full_1792681928795.jpg	static/camera_audits/dahua_anpr_1792681928795.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:12:09	2026-10-22	20:00
+16425	static/camera_audits/hikvision_full_1792681938012.jpg	static/camera_audits/dahua_anpr_1792681938012.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:12:18	2026-10-22	20:00
+16426	static/camera_audits/hikvision_full_1792681942630.jpg	static/camera_audits/dahua_anpr_1792681942630.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:12:22	2026-10-22	20:00
+16427	static/camera_audits/hikvision_full_1792682108930.jpg	static/camera_audits/dahua_anpr_1792682108930.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:15:09	2026-10-22	20:00
+16428	static/camera_audits/hikvision_full_1792682199204.jpg	static/camera_audits/dahua_anpr_1792682199204.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:16:39	2026-10-22	20:00
+16429	static/camera_audits/hikvision_full_1792682208156.jpg	static/camera_audits/dahua_anpr_1792682208156.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:16:48	2026-10-22	20:00
+16430	static/camera_audits/hikvision_full_1792682313090.jpg	static/camera_audits/dahua_anpr_1792682313090.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:18:33	2026-10-22	20:00
+16431	static/camera_audits/hikvision_full_1792682340204.jpg	static/camera_audits/dahua_anpr_1792682340204.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:19:00	2026-10-22	20:00
+16432	static/camera_audits/hikvision_full_1792682358820.jpg	static/camera_audits/dahua_anpr_1792682358820.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:19:19	2026-10-22	20:00
+16433	static/camera_audits/hikvision_full_1792682399721.jpg	static/camera_audits/dahua_anpr_1792682399721.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:20:00	2026-10-22	20:00
+16434	static/camera_audits/hikvision_full_1792682423929.jpg	static/camera_audits/dahua_anpr_1792682423929.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:20:24	2026-10-22	20:00
+16435	static/camera_audits/hikvision_full_1792682474218.jpg	static/camera_audits/dahua_anpr_1792682474218.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:21:14	2026-10-22	20:00
+16436	static/camera_audits/hikvision_full_1792682673093.jpg	static/camera_audits/dahua_anpr_1792682673093.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:24:33	2026-10-22	20:00
+16437	static/camera_audits/hikvision_full_1792682684316.jpg	static/camera_audits/dahua_anpr_1792682684316.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:24:44	2026-10-22	20:00
+16438	static/camera_audits/hikvision_full_1792682708056.jpg	static/camera_audits/dahua_anpr_1792682708056.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:25:08	2026-10-22	20:00
+16439	static/camera_audits/hikvision_full_1792682753215.jpg	static/camera_audits/dahua_anpr_1792682753215.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:25:53	2026-10-22	20:00
+16440	static/camera_audits/hikvision_full_1792682813367.jpg	static/camera_audits/dahua_anpr_1792682813367.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:26:53	2026-10-22	20:00
+16441	static/camera_audits/hikvision_full_1792682907861.jpg	static/camera_audits/dahua_anpr_1792682907861.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:28:28	2026-10-22	20:00
+16442	static/camera_audits/hikvision_full_1792683069370.jpg	static/camera_audits/dahua_anpr_1792683069370.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:31:09	2026-10-22	20:00
+16443	static/camera_audits/hikvision_full_1792683129894.jpg	static/camera_audits/dahua_anpr_1792683129894.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:32:10	2026-10-22	20:00
+16444	static/camera_audits/hikvision_full_1792683176632.jpg	static/camera_audits/dahua_anpr_1792683176632.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:32:57	2026-10-22	20:00
+16445	static/camera_audits/hikvision_full_1792683189774.jpg	static/camera_audits/dahua_anpr_1792683189774.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:33:10	2026-10-22	20:00
+16446	static/camera_audits/hikvision_full_1792683225567.jpg	static/camera_audits/dahua_anpr_1792683225567.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:33:46	2026-10-22	20:00
+16447	static/camera_audits/hikvision_full_1792683230532.jpg	static/camera_audits/dahua_anpr_1792683230532.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:33:51	2026-10-22	20:00
+16448	static/camera_audits/hikvision_full_1792683280479.jpg	static/camera_audits/dahua_anpr_1792683280479.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:34:40	2026-10-22	20:00
+16449	static/camera_audits/hikvision_full_1792683295423.jpg	static/camera_audits/dahua_anpr_1792683295423.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:34:55	2026-10-22	20:00
+16450	static/camera_audits/hikvision_full_1792683356153.jpg	static/camera_audits/dahua_anpr_1792683356153.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:35:56	2026-10-22	20:00
+16451	static/camera_audits/hikvision_full_1792683434460.jpg	static/camera_audits/dahua_anpr_1792683434460.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:37:14	2026-10-22	20:00
+16452	static/camera_audits/hikvision_full_1792683485195.jpg	static/camera_audits/dahua_anpr_1792683485195.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:38:05	2026-10-22	20:00
+16453	static/camera_audits/hikvision_full_1792683567327.jpg	static/camera_audits/dahua_anpr_1792683567327.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:39:27	2026-10-22	20:00
+16454	static/camera_audits/hikvision_full_1792683580006.jpg	static/camera_audits/dahua_anpr_1792683580006.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:39:40	2026-10-22	20:00
+16455	static/camera_audits/hikvision_full_1792683597603.jpg	static/camera_audits/dahua_anpr_1792683597603.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:39:57	2026-10-22	20:00
+16456	static/camera_audits/hikvision_full_1792683627164.jpg	static/camera_audits/dahua_anpr_1792683627164.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:40:27	2026-10-22	20:00
+16457	static/camera_audits/hikvision_full_1792683648946.jpg	static/camera_audits/dahua_anpr_1792683648946.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:40:49	2026-10-22	20:00
+16458	static/camera_audits/hikvision_full_1792683675141.jpg	static/camera_audits/dahua_anpr_1792683675141.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:41:15	2026-10-22	20:00
+16459	static/camera_audits/hikvision_full_1792683695039.jpg	static/camera_audits/dahua_anpr_1792683695039.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:41:35	2026-10-22	20:00
+16460	static/camera_audits/hikvision_full_1792683751710.jpg	static/camera_audits/dahua_anpr_1792683751710.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:42:32	2026-10-22	20:00
+16461	static/camera_audits/hikvision_full_1792683763602.jpg	static/camera_audits/dahua_anpr_1792683763602.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:42:44	2026-10-22	20:00
+16462	static/camera_audits/hikvision_full_1792683788603.jpg	static/camera_audits/dahua_anpr_1792683788603.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:43:09	2026-10-22	20:00
+16463	static/camera_audits/hikvision_full_1792683954914.jpg	static/camera_audits/dahua_anpr_1792683954914.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:45:55	2026-10-22	20:00
+16464	static/camera_audits/hikvision_full_1792684007065.jpg	static/camera_audits/dahua_anpr_1792684007065.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:46:47	2026-10-22	20:00
+16465	static/camera_audits/hikvision_full_1792684042162.jpg	static/camera_audits/dahua_anpr_1792684042162.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:47:22	2026-10-22	20:00
+16466	static/camera_audits/hikvision_full_1792684089307.jpg	static/camera_audits/dahua_anpr_1792684089307.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:48:09	2026-10-22	20:00
+16467	static/camera_audits/hikvision_full_1792684174038.jpg	static/camera_audits/dahua_anpr_1792684174038.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:49:34	2026-10-22	20:00
+16468	static/camera_audits/hikvision_full_1792684218550.jpg	static/camera_audits/dahua_anpr_1792684218550.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:50:19	2026-10-22	20:00
+16469	static/camera_audits/hikvision_full_1792684279654.jpg	static/camera_audits/dahua_anpr_1792684279654.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:51:20	2026-10-22	20:00
+16470	static/camera_audits/hikvision_full_1792684288070.jpg	static/camera_audits/dahua_anpr_1792684288070.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:51:28	2026-10-22	20:00
+16471	static/camera_audits/hikvision_full_1792684323188.jpg	static/camera_audits/dahua_anpr_1792684323188.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:52:03	2026-10-22	20:00
+16472	static/camera_audits/hikvision_full_1792684490120.jpg	static/camera_audits/dahua_anpr_1792684490120.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:54:50	2026-10-22	20:00
+16473	static/camera_audits/hikvision_full_1792684504965.jpg	static/camera_audits/dahua_anpr_1792684504965.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:55:05	2026-10-22	20:00
+16474	static/camera_audits/hikvision_full_1792684560713.jpg	static/camera_audits/dahua_anpr_1792684560713.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:56:01	2026-10-22	20:00
+16475	static/camera_audits/hikvision_full_1792684565847.jpg	static/camera_audits/dahua_anpr_1792684565847.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:56:06	2026-10-22	20:00
+16476	static/camera_audits/hikvision_full_1792684622579.jpg	static/camera_audits/dahua_anpr_1792684622579.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:57:03	2026-10-22	20:00
+16477	static/camera_audits/hikvision_full_1792684628145.jpg	static/camera_audits/dahua_anpr_1792684628145.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:57:08	2026-10-22	20:00
+16478	static/camera_audits/hikvision_full_1792684647091.jpg	static/camera_audits/dahua_anpr_1792684647091.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:57:27	2026-10-22	20:00
+16479	static/camera_audits/hikvision_full_1792684704037.jpg	static/camera_audits/dahua_anpr_1792684704037.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:58:24	2026-10-22	20:00
+16480	static/camera_audits/hikvision_full_1792684716798.jpg	static/camera_audits/dahua_anpr_1792684716798.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:58:37	2026-10-22	20:00
+16481	static/camera_audits/hikvision_full_1792684721205.jpg	static/camera_audits/dahua_anpr_1792684721205.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 20:58:41	2026-10-22	20:00
+16482	static/camera_audits/hikvision_full_1792684980287.jpg	static/camera_audits/dahua_anpr_1792684980287.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:03:00	2026-10-22	21:00
+16483	static/camera_audits/hikvision_full_1792685002824.jpg	static/camera_audits/dahua_anpr_1792685002824.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:03:23	2026-10-22	21:00
+16484	static/camera_audits/hikvision_full_1792685009575.jpg	static/camera_audits/dahua_anpr_1792685009575.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:03:30	2026-10-22	21:00
+16485	static/camera_audits/hikvision_full_1792685161650.jpg	static/camera_audits/dahua_anpr_1792685161650.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:06:02	2026-10-22	21:00
+16486	static/camera_audits/hikvision_full_1792685193753.jpg	static/camera_audits/dahua_anpr_1792685193753.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:06:34	2026-10-22	21:00
+16487	static/camera_audits/hikvision_full_1792685198925.jpg	static/camera_audits/dahua_anpr_1792685198925.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:06:39	2026-10-22	21:00
+16488	static/camera_audits/hikvision_full_1792685218900.jpg	static/camera_audits/dahua_anpr_1792685218900.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:06:59	2026-10-22	21:00
+16489	static/camera_audits/hikvision_full_1792685288841.jpg	static/camera_audits/dahua_anpr_1792685288841.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:08:09	2026-10-22	21:00
+16490	static/camera_audits/hikvision_full_1792685367528.jpg	static/camera_audits/dahua_anpr_1792685367528.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:09:27	2026-10-22	21:00
+16491	static/camera_audits/hikvision_full_1792685378688.jpg	static/camera_audits/dahua_anpr_1792685378688.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:09:39	2026-10-22	21:00
+16492	static/camera_audits/hikvision_full_1792685434243.jpg	static/camera_audits/dahua_anpr_1792685434243.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:10:34	2026-10-22	21:00
+16493	static/camera_audits/hikvision_full_1792685516290.jpg	static/camera_audits/dahua_anpr_1792685516290.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:11:56	2026-10-22	21:00
+16494	static/camera_audits/hikvision_full_1792685528312.jpg	static/camera_audits/dahua_anpr_1792685528312.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:12:08	2026-10-22	21:00
+16495	static/camera_audits/hikvision_full_1792685554021.jpg	static/camera_audits/dahua_anpr_1792685554021.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:12:34	2026-10-22	21:00
+16496	static/camera_audits/hikvision_full_1792685564655.jpg	static/camera_audits/dahua_anpr_1792685564655.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:12:44	2026-10-22	21:00
+16497	static/camera_audits/hikvision_full_1792685601164.jpg	static/camera_audits/dahua_anpr_1792685601164.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:13:21	2026-10-22	21:00
+16498	static/camera_audits/hikvision_full_1792685660325.jpg	static/camera_audits/dahua_anpr_1792685660325.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:14:20	2026-10-22	21:00
+16499	static/camera_audits/hikvision_full_1792685792479.jpg	static/camera_audits/dahua_anpr_1792685792479.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:16:32	2026-10-22	21:00
+16500	static/camera_audits/hikvision_full_1792685918709.jpg	static/camera_audits/dahua_anpr_1792685918709.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:18:39	2026-10-22	21:00
+16501	static/camera_audits/hikvision_full_1792686005372.jpg	static/camera_audits/dahua_anpr_1792686005372.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:20:05	2026-10-22	21:00
+16502	static/camera_audits/hikvision_full_1792686100839.jpg	static/camera_audits/dahua_anpr_1792686100839.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:21:41	2026-10-22	21:00
+16503	static/camera_audits/hikvision_full_1792686121255.jpg	static/camera_audits/dahua_anpr_1792686121255.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:22:01	2026-10-22	21:00
+16504	static/camera_audits/hikvision_full_1792686177398.jpg	static/camera_audits/dahua_anpr_1792686177398.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:22:57	2026-10-22	21:00
+16505	static/camera_audits/hikvision_full_1792686228459.jpg	static/camera_audits/dahua_anpr_1792686228459.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:23:48	2026-10-22	21:00
+16506	static/camera_audits/hikvision_full_1792686332870.jpg	static/camera_audits/dahua_anpr_1792686332870.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:25:33	2026-10-22	21:00
+16507	static/camera_audits/hikvision_full_1792686405641.jpg	static/camera_audits/dahua_anpr_1792686405641.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:26:46	2026-10-22	21:00
+16508	static/camera_audits/hikvision_full_1792686412995.jpg	static/camera_audits/dahua_anpr_1792686412995.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:26:53	2026-10-22	21:00
+16509	static/camera_audits/hikvision_full_1792686416002.jpg	static/camera_audits/dahua_anpr_1792686416002.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:26:56	2026-10-22	21:00
+16510	static/camera_audits/hikvision_full_1792686439385.jpg	static/camera_audits/dahua_anpr_1792686439385.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:27:19	2026-10-22	21:00
+16511	static/camera_audits/hikvision_full_1792686483336.jpg	static/camera_audits/dahua_anpr_1792686483336.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:28:03	2026-10-22	21:00
+16512	static/camera_audits/hikvision_full_1792686486340.jpg	static/camera_audits/dahua_anpr_1792686486340.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:28:06	2026-10-22	21:00
+16513	static/camera_audits/hikvision_full_1792686506448.jpg	static/camera_audits/dahua_anpr_1792686506448.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:28:26	2026-10-22	21:00
+16514	static/camera_audits/hikvision_full_1792686584749.jpg	static/camera_audits/dahua_anpr_1792686584749.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:29:45	2026-10-22	21:00
+16515	static/camera_audits/hikvision_full_1792686717026.jpg	static/camera_audits/dahua_anpr_1792686717026.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:31:57	2026-10-22	21:00
+16516	static/camera_audits/hikvision_full_1792686737155.jpg	static/camera_audits/dahua_anpr_1792686737155.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:32:17	2026-10-22	21:00
+16517	static/camera_audits/hikvision_full_1792686830629.jpg	static/camera_audits/dahua_anpr_1792686830629.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:33:50	2026-10-22	21:00
+16518	static/camera_audits/hikvision_full_1792686849174.jpg	static/camera_audits/dahua_anpr_1792686849174.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:34:09	2026-10-22	21:00
+16519	static/camera_audits/hikvision_full_1792686855359.jpg	static/camera_audits/dahua_anpr_1792686855359.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:34:15	2026-10-22	21:00
+16520	static/camera_audits/hikvision_full_1792686861556.jpg	static/camera_audits/dahua_anpr_1792686861556.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:34:21	2026-10-22	21:00
+16521	static/camera_audits/hikvision_full_1792686884743.jpg	static/camera_audits/dahua_anpr_1792686884743.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:34:45	2026-10-22	21:00
+16522	static/camera_audits/hikvision_full_1792686888699.jpg	static/camera_audits/dahua_anpr_1792686888699.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:34:49	2026-10-22	21:00
+16523	static/camera_audits/hikvision_full_1792686959993.jpg	static/camera_audits/dahua_anpr_1792686959993.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:36:00	2026-10-22	21:00
+16524	static/camera_audits/hikvision_full_1792687058501.jpg	static/camera_audits/dahua_anpr_1792687058501.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:37:38	2026-10-22	21:00
+16525	static/camera_audits/hikvision_full_1792687104426.jpg	static/camera_audits/dahua_anpr_1792687104426.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:38:24	2026-10-22	21:00
+16526	static/camera_audits/hikvision_full_1792687212858.jpg	static/camera_audits/dahua_anpr_1792687212858.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:40:13	2026-10-22	21:00
+16527	static/camera_audits/hikvision_full_1792687344276.jpg	static/camera_audits/dahua_anpr_1792687344276.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:42:24	2026-10-22	21:00
+16528	static/camera_audits/hikvision_full_1792687351662.jpg	static/camera_audits/dahua_anpr_1792687351662.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:42:32	2026-10-22	21:00
+16529	static/camera_audits/hikvision_full_1792687488262.jpg	static/camera_audits/dahua_anpr_1792687488262.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:44:48	2026-10-22	21:00
+16530	static/camera_audits/hikvision_full_1792687583333.jpg	static/camera_audits/dahua_anpr_1792687583333.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:46:23	2026-10-22	21:00
+16531	static/camera_audits/hikvision_full_1792687588317.jpg	static/camera_audits/dahua_anpr_1792687588317.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:46:28	2026-10-22	21:00
+16532	static/camera_audits/hikvision_full_1792687610254.jpg	static/camera_audits/dahua_anpr_1792687610254.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:46:50	2026-10-22	21:00
+16533	static/camera_audits/hikvision_full_1792687656600.jpg	static/camera_audits/dahua_anpr_1792687656600.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:47:37	2026-10-22	21:00
+16534	static/camera_audits/hikvision_full_1792687676196.jpg	static/camera_audits/dahua_anpr_1792687676196.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:47:56	2026-10-22	21:00
+16535	static/camera_audits/hikvision_full_1792687728111.jpg	static/camera_audits/dahua_anpr_1792687728111.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:48:48	2026-10-22	21:00
+16536	static/camera_audits/hikvision_full_1792687775266.jpg	static/camera_audits/dahua_anpr_1792687775266.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:49:35	2026-10-22	21:00
+16537	static/camera_audits/hikvision_full_1792687865579.jpg	static/camera_audits/dahua_anpr_1792687865579.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:51:05	2026-10-22	21:00
+16538	static/camera_audits/hikvision_full_1792687933624.jpg	static/camera_audits/dahua_anpr_1792687933624.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:52:14	2026-10-22	21:00
+16539	static/camera_audits/hikvision_full_1792687938606.jpg	static/camera_audits/dahua_anpr_1792687938606.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:52:18	2026-10-22	21:00
+16540	static/camera_audits/hikvision_full_1792687995155.jpg	static/camera_audits/dahua_anpr_1792687995155.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:53:15	2026-10-22	21:00
+16541	static/camera_audits/hikvision_full_1792688073426.jpg	static/camera_audits/dahua_anpr_1792688073426.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:54:33	2026-10-22	21:00
+16542	static/camera_audits/hikvision_full_1792688144525.jpg	static/camera_audits/dahua_anpr_1792688144525.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:55:44	2026-10-22	21:00
+16543	static/camera_audits/hikvision_full_1792688168945.jpg	static/camera_audits/dahua_anpr_1792688168945.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 21:56:09	2026-10-22	21:00
+16544	static/camera_audits/hikvision_full_1792688403164.jpg	static/camera_audits/dahua_anpr_1792688403164.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:00:03	2026-10-22	22:00
+16545	static/camera_audits/hikvision_full_1792688446858.jpg	static/camera_audits/dahua_anpr_1792688446858.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:00:47	2026-10-22	22:00
+16546	static/camera_audits/hikvision_full_1792688507482.jpg	static/camera_audits/dahua_anpr_1792688507482.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:01:47	2026-10-22	22:00
+16547	static/camera_audits/hikvision_full_1792688587750.jpg	static/camera_audits/dahua_anpr_1792688587750.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:03:08	2026-10-22	22:00
+16548	static/camera_audits/hikvision_full_1792688657741.jpg	static/camera_audits/dahua_anpr_1792688657741.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:04:18	2026-10-22	22:00
+16549	static/camera_audits/hikvision_full_1792688661831.jpg	static/camera_audits/dahua_anpr_1792688661831.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:04:22	2026-10-22	22:00
+16550	static/camera_audits/hikvision_full_1792688687134.jpg	static/camera_audits/dahua_anpr_1792688687134.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:04:47	2026-10-22	22:00
+16551	static/camera_audits/hikvision_full_1792688694919.jpg	static/camera_audits/dahua_anpr_1792688694919.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:04:55	2026-10-22	22:00
+16552	static/camera_audits/hikvision_full_1792688779616.jpg	static/camera_audits/dahua_anpr_1792688779616.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:06:19	2026-10-22	22:00
+16553	static/camera_audits/hikvision_full_1792688789231.jpg	static/camera_audits/dahua_anpr_1792688789231.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:06:29	2026-10-22	22:00
+16554	static/camera_audits/hikvision_full_1792688832285.jpg	static/camera_audits/dahua_anpr_1792688832285.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:07:12	2026-10-22	22:00
+16555	static/camera_audits/hikvision_full_1792688906243.jpg	static/camera_audits/dahua_anpr_1792688906243.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:08:26	2026-10-22	22:00
+16556	static/camera_audits/hikvision_full_1792689029469.jpg	static/camera_audits/dahua_anpr_1792689029469.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:10:29	2026-10-22	22:00
+16557	static/camera_audits/hikvision_full_1792689232978.jpg	static/camera_audits/dahua_anpr_1792689232978.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:13:53	2026-10-22	22:00
+16558	static/camera_audits/hikvision_full_1792689349210.jpg	static/camera_audits/dahua_anpr_1792689349210.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:15:49	2026-10-22	22:00
+16559	static/camera_audits/hikvision_full_1792689404751.jpg	static/camera_audits/dahua_anpr_1792689404751.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:16:45	2026-10-22	22:00
+16560	static/camera_audits/hikvision_full_1792689481422.jpg	static/camera_audits/dahua_anpr_1792689481422.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:18:01	2026-10-22	22:00
+16561	static/camera_audits/hikvision_full_1792689632431.jpg	static/camera_audits/dahua_anpr_1792689632431.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:20:32	2026-10-22	22:00
+16562	static/camera_audits/hikvision_full_1792689675721.jpg	static/camera_audits/dahua_anpr_1792689675721.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:21:16	2026-10-22	22:00
+16563	static/camera_audits/hikvision_full_1792689687461.jpg	static/camera_audits/dahua_anpr_1792689687461.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:21:27	2026-10-22	22:00
+16564	static/camera_audits/hikvision_full_1792689909596.jpg	static/camera_audits/dahua_anpr_1792689909596.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:25:10	2026-10-22	22:00
+16565	static/camera_audits/hikvision_full_1792689930361.jpg	static/camera_audits/dahua_anpr_1792689930361.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:25:30	2026-10-22	22:00
+16566	static/camera_audits/hikvision_full_1792689976726.jpg	static/camera_audits/dahua_anpr_1792689976726.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:26:17	2026-10-22	22:00
+16567	static/camera_audits/hikvision_full_1792690263914.jpg	static/camera_audits/dahua_anpr_1792690263914.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:31:04	2026-10-22	22:00
+16568	static/camera_audits/hikvision_full_1792690271311.jpg	static/camera_audits/dahua_anpr_1792690271311.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:31:11	2026-10-22	22:00
+16569	static/camera_audits/hikvision_full_1792690301052.jpg	static/camera_audits/dahua_anpr_1792690301052.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:31:41	2026-10-22	22:00
+16570	static/camera_audits/hikvision_full_1792690404142.jpg	static/camera_audits/dahua_anpr_1792690404142.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:33:24	2026-10-22	22:00
+16571	static/camera_audits/hikvision_full_1792690786179.jpg	static/camera_audits/dahua_anpr_1792690786179.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:39:46	2026-10-22	22:00
+16572	static/camera_audits/hikvision_full_1792690809562.jpg	static/camera_audits/dahua_anpr_1792690809562.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:40:09	2026-10-22	22:00
+16573	static/camera_audits/hikvision_full_1792690932163.jpg	static/camera_audits/dahua_anpr_1792690932163.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:42:12	2026-10-22	22:00
+16574	static/camera_audits/hikvision_full_1792690939310.jpg	static/camera_audits/dahua_anpr_1792690939310.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:42:19	2026-10-22	22:00
+16575	static/camera_audits/hikvision_full_1792690944092.jpg	static/camera_audits/dahua_anpr_1792690944092.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:42:24	2026-10-22	22:00
+16576	static/camera_audits/hikvision_full_1792690947743.jpg	static/camera_audits/dahua_anpr_1792690947743.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:42:28	2026-10-22	22:00
+16577	static/camera_audits/hikvision_full_1792690959770.jpg	static/camera_audits/dahua_anpr_1792690959770.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:42:40	2026-10-22	22:00
+16578	static/camera_audits/hikvision_full_1792691095720.jpg	static/camera_audits/dahua_anpr_1792691095720.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:44:56	2026-10-22	22:00
+16579	static/camera_audits/hikvision_full_1792691193774.jpg	static/camera_audits/dahua_anpr_1792691193774.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:46:34	2026-10-22	22:00
+16580	static/camera_audits/hikvision_full_1792691204587.jpg	static/camera_audits/dahua_anpr_1792691204587.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:46:45	2026-10-22	22:00
+16581	static/camera_audits/hikvision_full_1792691344756.jpg	static/camera_audits/dahua_anpr_1792691344756.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:49:05	2026-10-22	22:00
+16582	static/camera_audits/hikvision_full_1792691376681.jpg	static/camera_audits/dahua_anpr_1792691376681.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:49:37	2026-10-22	22:00
+16583	static/camera_audits/hikvision_full_1792691648550.jpg	static/camera_audits/dahua_anpr_1792691648550.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:54:09	2026-10-22	22:00
+16584	static/camera_audits/hikvision_full_1792691662696.jpg	static/camera_audits/dahua_anpr_1792691662696.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 22:54:23	2026-10-22	22:00
+16585	static/camera_audits/hikvision_full_1792692252669.jpg	static/camera_audits/dahua_anpr_1792692252669.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 23:04:13	2026-10-22	23:00
+16586	static/camera_audits/hikvision_full_1792692330003.jpg	static/camera_audits/dahua_anpr_1792692330003.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 23:05:30	2026-10-22	23:00
+16587	static/camera_audits/hikvision_full_1792692380747.jpg	static/camera_audits/dahua_anpr_1792692380747.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 23:06:21	2026-10-22	23:00
+16588	static/camera_audits/hikvision_full_1792692413508.jpg	static/camera_audits/dahua_anpr_1792692413508.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 23:06:53	2026-10-22	23:00
+16589	static/camera_audits/hikvision_full_1792692432626.jpg	static/camera_audits/dahua_anpr_1792692432626.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 23:07:13	2026-10-22	23:00
+16590	static/camera_audits/hikvision_full_1792692507723.jpg	static/camera_audits/dahua_anpr_1792692507723.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 23:08:28	2026-10-22	23:00
+16591	static/camera_audits/hikvision_full_1792692525161.jpg	static/camera_audits/dahua_anpr_1792692525161.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 23:08:45	2026-10-22	23:00
+16592	static/camera_audits/hikvision_full_1792692787119.jpg	static/camera_audits/dahua_anpr_1792692787119.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 23:13:07	2026-10-22	23:00
+16593	static/camera_audits/hikvision_full_1792692896140.jpg	static/camera_audits/dahua_anpr_1792692896140.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 23:14:56	2026-10-22	23:00
+16594	static/camera_audits/hikvision_full_1792692964834.jpg	static/camera_audits/dahua_anpr_1792692964834.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 23:16:05	2026-10-22	23:00
+16595	static/camera_audits/hikvision_full_1792693262855.jpg	static/camera_audits/dahua_anpr_1792693262855.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 23:21:03	2026-10-22	23:00
+16596	static/camera_audits/hikvision_full_1792693414455.jpg	static/camera_audits/dahua_anpr_1792693414455.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 23:23:34	2026-10-22	23:00
+16597	static/camera_audits/hikvision_full_1792693999175.jpg	static/camera_audits/dahua_anpr_1792693999175.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 23:33:19	2026-10-22	23:00
+16598	static/camera_audits/hikvision_full_1792694516480.jpg	static/camera_audits/dahua_anpr_1792694516480.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 23:41:56	2026-10-22	23:00
+16599	static/camera_audits/hikvision_full_1792694760340.jpg	static/camera_audits/dahua_anpr_1792694760340.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 23:46:00	2026-10-22	23:00
+16600	static/camera_audits/hikvision_full_1792694804285.jpg	static/camera_audits/dahua_anpr_1792694804285.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 23:46:44	2026-10-22	23:00
+16601	static/camera_audits/hikvision_full_1792694908861.jpg	static/camera_audits/dahua_anpr_1792694908861.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 23:48:29	2026-10-22	23:00
+16602	static/camera_audits/hikvision_full_1792695058879.jpg	static/camera_audits/dahua_anpr_1792695058879.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 23:50:59	2026-10-22	23:00
+16603	static/camera_audits/hikvision_full_1792695280971.jpg	static/camera_audits/dahua_anpr_1792695280971.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 23:54:41	2026-10-22	23:00
+16604	static/camera_audits/hikvision_full_1792695291195.jpg	static/camera_audits/dahua_anpr_1792695291195.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 23:54:51	2026-10-22	23:00
+16605	static/camera_audits/hikvision_full_1792695296374.jpg	static/camera_audits/dahua_anpr_1792695296374.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-22 23:54:56	2026-10-22	23:00
+16606	static/camera_audits/hikvision_full_1792718471076.jpg	static/camera_audits/dahua_anpr_1792718471076.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 06:21:11	2026-10-23	06:00
+16607	static/camera_audits/hikvision_full_1792718517430.jpg	static/camera_audits/dahua_anpr_1792718517430.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 06:21:57	2026-10-23	06:00
+16608	static/camera_audits/hikvision_full_1792718551767.jpg	static/camera_audits/dahua_anpr_1792718551767.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 06:22:32	2026-10-23	06:00
+16609	static/camera_audits/hikvision_full_1792718734921.jpg	static/camera_audits/dahua_anpr_1792718734921.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 06:25:35	2026-10-23	06:00
+16610	static/camera_audits/hikvision_full_1792718926840.jpg	static/camera_audits/dahua_anpr_1792718926840.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 06:28:47	2026-10-23	06:00
+16611	static/camera_audits/hikvision_full_1792718984773.jpg	static/camera_audits/dahua_anpr_1792718984773.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 06:29:45	2026-10-23	06:00
+16612	static/camera_audits/hikvision_full_1792719382261.jpg	static/camera_audits/dahua_anpr_1792719382261.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 06:36:22	2026-10-23	06:00
+16613	static/camera_audits/hikvision_full_1792719488286.jpg	static/camera_audits/dahua_anpr_1792719488286.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 06:38:08	2026-10-23	06:00
+16614	static/camera_audits/hikvision_full_1792719587529.jpg	static/camera_audits/dahua_anpr_1792719587529.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 06:39:47	2026-10-23	06:00
+16615	static/camera_audits/hikvision_full_1792719779876.jpg	static/camera_audits/dahua_anpr_1792719779876.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 06:43:00	2026-10-23	06:00
+16616	static/camera_audits/hikvision_full_1792719984920.jpg	static/camera_audits/dahua_anpr_1792719984920.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 06:46:25	2026-10-23	06:00
+16617	static/camera_audits/hikvision_full_1792720251335.jpg	static/camera_audits/dahua_anpr_1792720251335.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 06:50:51	2026-10-23	06:00
+16618	static/camera_audits/hikvision_full_1792720362878.jpg	static/camera_audits/dahua_anpr_1792720362878.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 06:52:43	2026-10-23	06:00
+16619	static/camera_audits/hikvision_full_1792720639807.jpg	static/camera_audits/dahua_anpr_1792720639807.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 06:57:20	2026-10-23	06:00
+16620	static/camera_audits/hikvision_full_1792720782651.jpg	static/camera_audits/dahua_anpr_1792720782651.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 06:59:43	2026-10-23	06:00
+16621	static/camera_audits/hikvision_full_1792720812199.jpg	static/camera_audits/dahua_anpr_1792720812199.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:00:12	2026-10-23	07:00
+16622	static/camera_audits/hikvision_full_1792720852312.jpg	static/camera_audits/dahua_anpr_1792720852312.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:00:52	2026-10-23	07:00
+16623	static/camera_audits/hikvision_full_1792720862284.jpg	static/camera_audits/dahua_anpr_1792720862284.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:01:02	2026-10-23	07:00
+16624	static/camera_audits/hikvision_full_1792721068022.jpg	static/camera_audits/dahua_anpr_1792721068022.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:04:28	2026-10-23	07:00
+16625	static/camera_audits/hikvision_full_1792721149475.jpg	static/camera_audits/dahua_anpr_1792721149475.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:05:49	2026-10-23	07:00
+16626	static/camera_audits/hikvision_full_1792721246146.jpg	static/camera_audits/dahua_anpr_1792721246146.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:07:26	2026-10-23	07:00
+16627	static/camera_audits/hikvision_full_1792721429118.jpg	static/camera_audits/dahua_anpr_1792721429118.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:10:29	2026-10-23	07:00
+16628	static/camera_audits/hikvision_full_1792721448700.jpg	static/camera_audits/dahua_anpr_1792721448700.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:10:49	2026-10-23	07:00
+16629	static/camera_audits/hikvision_full_1792721492417.jpg	static/camera_audits/dahua_anpr_1792721492417.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:11:32	2026-10-23	07:00
+16630	static/camera_audits/hikvision_full_1792721605235.jpg	static/camera_audits/dahua_anpr_1792721605235.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:13:25	2026-10-23	07:00
+16631	static/camera_audits/hikvision_full_1792721900200.jpg	static/camera_audits/dahua_anpr_1792721900200.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:18:20	2026-10-23	07:00
+16632	static/camera_audits/hikvision_full_1792721941152.jpg	static/camera_audits/dahua_anpr_1792721941152.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:19:01	2026-10-23	07:00
+16633	static/camera_audits/hikvision_full_1792721998484.jpg	static/camera_audits/dahua_anpr_1792721998484.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:19:58	2026-10-23	07:00
+16634	static/camera_audits/hikvision_full_1792722015497.jpg	static/camera_audits/dahua_anpr_1792722015497.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:20:16	2026-10-23	07:00
+16635	static/camera_audits/hikvision_full_1792722035443.jpg	static/camera_audits/dahua_anpr_1792722035443.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:20:35	2026-10-23	07:00
+16636	static/camera_audits/hikvision_full_1792722122736.jpg	static/camera_audits/dahua_anpr_1792722122736.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:22:03	2026-10-23	07:00
+16637	static/camera_audits/hikvision_full_1792722139087.jpg	static/camera_audits/dahua_anpr_1792722139087.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:22:19	2026-10-23	07:00
+16638	static/camera_audits/hikvision_full_1792722173620.jpg	static/camera_audits/dahua_anpr_1792722173620.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:22:54	2026-10-23	07:00
+16639	static/camera_audits/hikvision_full_1792722197813.jpg	static/camera_audits/dahua_anpr_1792722197813.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:23:18	2026-10-23	07:00
+16640	static/camera_audits/hikvision_full_1792722342400.jpg	static/camera_audits/dahua_anpr_1792722342400.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:25:42	2026-10-23	07:00
+16641	static/camera_audits/hikvision_full_1792722390504.jpg	static/camera_audits/dahua_anpr_1792722390504.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:26:30	2026-10-23	07:00
+16642	static/camera_audits/hikvision_full_1792722403488.jpg	static/camera_audits/dahua_anpr_1792722403488.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:26:43	2026-10-23	07:00
+16643	static/camera_audits/hikvision_full_1792722467831.jpg	static/camera_audits/dahua_anpr_1792722467831.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:27:48	2026-10-23	07:00
+16644	static/camera_audits/hikvision_full_1792722493975.jpg	static/camera_audits/dahua_anpr_1792722493975.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:28:14	2026-10-23	07:00
+16645	static/camera_audits/hikvision_full_1792722593228.jpg	static/camera_audits/dahua_anpr_1792722593228.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:29:53	2026-10-23	07:00
+16646	static/camera_audits/hikvision_full_1792722601806.jpg	static/camera_audits/dahua_anpr_1792722601806.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:30:02	2026-10-23	07:00
+16647	static/camera_audits/hikvision_full_1792722622183.jpg	static/camera_audits/dahua_anpr_1792722622183.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:30:22	2026-10-23	07:00
+16648	static/camera_audits/hikvision_full_1792722680786.jpg	static/camera_audits/dahua_anpr_1792722680786.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:31:21	2026-10-23	07:00
+16649	static/camera_audits/hikvision_full_1792722743820.jpg	static/camera_audits/dahua_anpr_1792722743820.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:32:24	2026-10-23	07:00
+16650	static/camera_audits/hikvision_full_1792722764583.jpg	static/camera_audits/dahua_anpr_1792722764583.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:32:44	2026-10-23	07:00
+16651	static/camera_audits/hikvision_full_1792722912246.jpg	static/camera_audits/dahua_anpr_1792722912246.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:35:12	2026-10-23	07:00
+16652	static/camera_audits/hikvision_full_1792722934151.jpg	static/camera_audits/dahua_anpr_1792722934151.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:35:34	2026-10-23	07:00
+16653	static/camera_audits/hikvision_full_1792722961801.jpg	static/camera_audits/dahua_anpr_1792722961801.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:36:02	2026-10-23	07:00
+16654	static/camera_audits/hikvision_full_1792722967889.jpg	static/camera_audits/dahua_anpr_1792722967889.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:36:08	2026-10-23	07:00
+16655	static/camera_audits/hikvision_full_1792722974649.jpg	static/camera_audits/dahua_anpr_1792722974649.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:36:15	2026-10-23	07:00
+16656	static/camera_audits/hikvision_full_1792723002088.jpg	static/camera_audits/dahua_anpr_1792723002088.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:36:42	2026-10-23	07:00
+16657	static/camera_audits/hikvision_full_1792723019111.jpg	static/camera_audits/dahua_anpr_1792723019111.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:36:59	2026-10-23	07:00
+16658	static/camera_audits/hikvision_full_1792723081367.jpg	static/camera_audits/dahua_anpr_1792723081367.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:38:01	2026-10-23	07:00
+16659	static/camera_audits/hikvision_full_1792723097148.jpg	static/camera_audits/dahua_anpr_1792723097148.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:38:17	2026-10-23	07:00
+16660	static/camera_audits/hikvision_full_1792723160253.jpg	static/camera_audits/dahua_anpr_1792723160253.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:39:20	2026-10-23	07:00
+16661	static/camera_audits/hikvision_full_1792723169864.jpg	static/camera_audits/dahua_anpr_1792723169864.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:39:30	2026-10-23	07:00
+16662	static/camera_audits/hikvision_full_1792723182233.jpg	static/camera_audits/dahua_anpr_1792723182233.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:39:42	2026-10-23	07:00
+16663	static/camera_audits/hikvision_full_1792723224122.jpg	static/camera_audits/dahua_anpr_1792723224122.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:40:24	2026-10-23	07:00
+16664	static/camera_audits/hikvision_full_1792723412426.jpg	static/camera_audits/dahua_anpr_1792723412426.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:43:32	2026-10-23	07:00
+16665	static/camera_audits/hikvision_full_1792723417647.jpg	static/camera_audits/dahua_anpr_1792723417647.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:43:38	2026-10-23	07:00
+16666	static/camera_audits/hikvision_full_1792723431449.jpg	static/camera_audits/dahua_anpr_1792723431449.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:43:51	2026-10-23	07:00
+16667	static/camera_audits/hikvision_full_1792723472774.jpg	static/camera_audits/dahua_anpr_1792723472774.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:44:33	2026-10-23	07:00
+16668	static/camera_audits/hikvision_full_1792723490145.jpg	static/camera_audits/dahua_anpr_1792723490145.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:44:50	2026-10-23	07:00
+16669	static/camera_audits/hikvision_full_1792723544324.jpg	static/camera_audits/dahua_anpr_1792723544324.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:45:44	2026-10-23	07:00
+16670	static/camera_audits/hikvision_full_1792723667073.jpg	static/camera_audits/dahua_anpr_1792723667073.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:47:47	2026-10-23	07:00
+16671	static/camera_audits/hikvision_full_1792723694488.jpg	static/camera_audits/dahua_anpr_1792723694488.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:48:14	2026-10-23	07:00
+16672	static/camera_audits/hikvision_full_1792723722105.jpg	static/camera_audits/dahua_anpr_1792723722105.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:48:42	2026-10-23	07:00
+16673	static/camera_audits/hikvision_full_1792724010612.jpg	static/camera_audits/dahua_anpr_1792724010612.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:53:31	2026-10-23	07:00
+16674	static/camera_audits/hikvision_full_1792724076949.jpg	static/camera_audits/dahua_anpr_1792724076949.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:54:37	2026-10-23	07:00
+16675	static/camera_audits/hikvision_full_1792724148207.jpg	static/camera_audits/dahua_anpr_1792724148207.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:55:48	2026-10-23	07:00
+16676	static/camera_audits/hikvision_full_1792724262041.jpg	static/camera_audits/dahua_anpr_1792724262041.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:57:42	2026-10-23	07:00
+16677	static/camera_audits/hikvision_full_1792724290192.jpg	static/camera_audits/dahua_anpr_1792724290192.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:58:10	2026-10-23	07:00
+16678	static/camera_audits/hikvision_full_1792724320602.jpg	static/camera_audits/dahua_anpr_1792724320602.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:58:40	2026-10-23	07:00
+16679	static/camera_audits/hikvision_full_1792724359704.jpg	static/camera_audits/dahua_anpr_1792724359704.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:59:20	2026-10-23	07:00
+16680	static/camera_audits/hikvision_full_1792724393656.jpg	static/camera_audits/dahua_anpr_1792724393656.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 07:59:53	2026-10-23	07:00
+16681	static/camera_audits/hikvision_full_1792724414236.jpg	static/camera_audits/dahua_anpr_1792724414236.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:00:14	2026-10-23	08:00
+16682	static/camera_audits/hikvision_full_1792724521136.jpg	static/camera_audits/dahua_anpr_1792724521136.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:02:01	2026-10-23	08:00
+16683	static/camera_audits/hikvision_full_1792724586844.jpg	static/camera_audits/dahua_anpr_1792724586844.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:03:07	2026-10-23	08:00
+16684	static/camera_audits/hikvision_full_1792724630776.jpg	static/camera_audits/dahua_anpr_1792724630776.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:03:51	2026-10-23	08:00
+16685	static/camera_audits/hikvision_full_1792724677200.jpg	static/camera_audits/dahua_anpr_1792724677200.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:04:37	2026-10-23	08:00
+16686	static/camera_audits/hikvision_full_1792724695672.jpg	static/camera_audits/dahua_anpr_1792724695672.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:04:55	2026-10-23	08:00
+16687	static/camera_audits/hikvision_full_1792724747755.jpg	static/camera_audits/dahua_anpr_1792724747755.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:05:48	2026-10-23	08:00
+16688	static/camera_audits/hikvision_full_1792724863630.jpg	static/camera_audits/dahua_anpr_1792724863630.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:07:44	2026-10-23	08:00
+16689	static/camera_audits/hikvision_full_1792724993025.jpg	static/camera_audits/dahua_anpr_1792724993025.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:09:53	2026-10-23	08:00
+16690	static/camera_audits/hikvision_full_1792725009209.jpg	static/camera_audits/dahua_anpr_1792725009209.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:10:09	2026-10-23	08:00
+16691	static/camera_audits/hikvision_full_1792725036540.jpg	static/camera_audits/dahua_anpr_1792725036540.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:10:37	2026-10-23	08:00
+16692	static/camera_audits/hikvision_full_1792725049554.jpg	static/camera_audits/dahua_anpr_1792725049554.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:10:50	2026-10-23	08:00
+16693	static/camera_audits/hikvision_full_1792725126019.jpg	static/camera_audits/dahua_anpr_1792725126019.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:12:06	2026-10-23	08:00
+16694	static/camera_audits/hikvision_full_1792725137817.jpg	static/camera_audits/dahua_anpr_1792725137817.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:12:18	2026-10-23	08:00
+16695	static/camera_audits/hikvision_full_1792725205935.jpg	static/camera_audits/dahua_anpr_1792725205935.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:13:26	2026-10-23	08:00
+16696	static/camera_audits/hikvision_full_1792725232301.jpg	static/camera_audits/dahua_anpr_1792725232301.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:13:52	2026-10-23	08:00
+16697	static/camera_audits/hikvision_full_1792725351291.jpg	static/camera_audits/dahua_anpr_1792725351291.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:15:51	2026-10-23	08:00
+16698	static/camera_audits/hikvision_full_1792725446628.jpg	static/camera_audits/dahua_anpr_1792725446628.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:17:26	2026-10-23	08:00
+16699	static/camera_audits/hikvision_full_1792725610060.jpg	static/camera_audits/dahua_anpr_1792725610060.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:20:10	2026-10-23	08:00
+16700	static/camera_audits/hikvision_full_1792725647889.jpg	static/camera_audits/dahua_anpr_1792725647889.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:20:48	2026-10-23	08:00
+16701	static/camera_audits/hikvision_full_1792725698764.jpg	static/camera_audits/dahua_anpr_1792725698764.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:21:39	2026-10-23	08:00
+16702	static/camera_audits/hikvision_full_1792725709379.jpg	static/camera_audits/dahua_anpr_1792725709379.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:21:49	2026-10-23	08:00
+16703	static/camera_audits/hikvision_full_1792725721562.jpg	static/camera_audits/dahua_anpr_1792725721562.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:22:02	2026-10-23	08:00
+16704	static/camera_audits/hikvision_full_1792725740547.jpg	static/camera_audits/dahua_anpr_1792725740547.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:22:20	2026-10-23	08:00
+16705	static/camera_audits/hikvision_full_1792725788318.jpg	static/camera_audits/dahua_anpr_1792725788318.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:23:08	2026-10-23	08:00
+16706	static/camera_audits/hikvision_full_1792725947037.jpg	static/camera_audits/dahua_anpr_1792725947037.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:25:47	2026-10-23	08:00
+16707	static/camera_audits/hikvision_full_1792725956230.jpg	static/camera_audits/dahua_anpr_1792725956230.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:25:56	2026-10-23	08:00
+16708	static/camera_audits/hikvision_full_1792725959737.jpg	static/camera_audits/dahua_anpr_1792725959737.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:26:00	2026-10-23	08:00
+16709	static/camera_audits/hikvision_full_1792725975601.jpg	static/camera_audits/dahua_anpr_1792725975601.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:26:16	2026-10-23	08:00
+16710	static/camera_audits/hikvision_full_1792725998050.jpg	static/camera_audits/dahua_anpr_1792725998050.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:26:38	2026-10-23	08:00
+16711	static/camera_audits/hikvision_full_1792726030523.jpg	static/camera_audits/dahua_anpr_1792726030523.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:27:10	2026-10-23	08:00
+16712	static/camera_audits/hikvision_full_1792726140773.jpg	static/camera_audits/dahua_anpr_1792726140773.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:29:01	2026-10-23	08:00
+16713	static/camera_audits/hikvision_full_1792726172526.jpg	static/camera_audits/dahua_anpr_1792726172526.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:29:32	2026-10-23	08:00
+16714	static/camera_audits/hikvision_full_1792726242761.jpg	static/camera_audits/dahua_anpr_1792726242761.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:30:43	2026-10-23	08:00
+16715	static/camera_audits/hikvision_full_1792726286963.jpg	static/camera_audits/dahua_anpr_1792726286963.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:31:27	2026-10-23	08:00
+16716	static/camera_audits/hikvision_full_1792726369289.jpg	static/camera_audits/dahua_anpr_1792726369289.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:32:49	2026-10-23	08:00
+16717	static/camera_audits/hikvision_full_1792726477337.jpg	static/camera_audits/dahua_anpr_1792726477337.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:34:37	2026-10-23	08:00
+16718	static/camera_audits/hikvision_full_1792726581411.jpg	static/camera_audits/dahua_anpr_1792726581411.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:36:21	2026-10-23	08:00
+16719	static/camera_audits/hikvision_full_1792726639101.jpg	static/camera_audits/dahua_anpr_1792726639101.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:37:19	2026-10-23	08:00
+16720	static/camera_audits/hikvision_full_1792726685030.jpg	static/camera_audits/dahua_anpr_1792726685030.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:38:05	2026-10-23	08:00
+16721	static/camera_audits/hikvision_full_1792726902547.jpg	static/camera_audits/dahua_anpr_1792726902547.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:41:43	2026-10-23	08:00
+16722	static/camera_audits/hikvision_full_1792726958473.jpg	static/camera_audits/dahua_anpr_1792726958473.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:42:38	2026-10-23	08:00
+16723	static/camera_audits/hikvision_full_1792726975997.jpg	static/camera_audits/dahua_anpr_1792726975997.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:42:56	2026-10-23	08:00
+16724	static/camera_audits/hikvision_full_1792727067067.jpg	static/camera_audits/dahua_anpr_1792727067067.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:44:27	2026-10-23	08:00
+16725	static/camera_audits/hikvision_full_1792727079622.jpg	static/camera_audits/dahua_anpr_1792727079622.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:44:39	2026-10-23	08:00
+16726	static/camera_audits/hikvision_full_1792727226054.jpg	static/camera_audits/dahua_anpr_1792727226054.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:47:06	2026-10-23	08:00
+16727	static/camera_audits/hikvision_full_1792727289185.jpg	static/camera_audits/dahua_anpr_1792727289185.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:48:09	2026-10-23	08:00
+16728	static/camera_audits/hikvision_full_1792727328902.jpg	static/camera_audits/dahua_anpr_1792727328902.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:48:49	2026-10-23	08:00
+16729	static/camera_audits/hikvision_full_1792727390596.jpg	static/camera_audits/dahua_anpr_1792727390596.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:49:51	2026-10-23	08:00
+16730	static/camera_audits/hikvision_full_1792727429998.jpg	static/camera_audits/dahua_anpr_1792727429998.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:50:30	2026-10-23	08:00
+16731	static/camera_audits/hikvision_full_1792727464112.jpg	static/camera_audits/dahua_anpr_1792727464112.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:51:04	2026-10-23	08:00
+16732	static/camera_audits/hikvision_full_1792727537425.jpg	static/camera_audits/dahua_anpr_1792727537425.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:52:17	2026-10-23	08:00
+16733	static/camera_audits/hikvision_full_1792727552365.jpg	static/camera_audits/dahua_anpr_1792727552365.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:52:32	2026-10-23	08:00
+16734	static/camera_audits/hikvision_full_1792727629466.jpg	static/camera_audits/dahua_anpr_1792727629466.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:53:49	2026-10-23	08:00
+16735	static/camera_audits/hikvision_full_1792727635007.jpg	static/camera_audits/dahua_anpr_1792727635007.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:53:55	2026-10-23	08:00
+16736	static/camera_audits/hikvision_full_1792727645242.jpg	static/camera_audits/dahua_anpr_1792727645242.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:54:05	2026-10-23	08:00
+16737	static/camera_audits/hikvision_full_1792727648816.jpg	static/camera_audits/dahua_anpr_1792727648816.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:54:09	2026-10-23	08:00
+16738	static/camera_audits/hikvision_full_1792727655058.jpg	static/camera_audits/dahua_anpr_1792727655058.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:54:15	2026-10-23	08:00
+16739	static/camera_audits/hikvision_full_1792727683794.jpg	static/camera_audits/dahua_anpr_1792727683794.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:54:44	2026-10-23	08:00
+16740	static/camera_audits/hikvision_full_1792727722111.jpg	static/camera_audits/dahua_anpr_1792727722111.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:55:22	2026-10-23	08:00
+16741	static/camera_audits/hikvision_full_1792727800616.jpg	static/camera_audits/dahua_anpr_1792727800616.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 08:56:40	2026-10-23	08:00
+16742	static/camera_audits/hikvision_full_1792728038264.jpg	static/camera_audits/dahua_anpr_1792728038264.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:00:38	2026-10-23	09:00
+16743	static/camera_audits/hikvision_full_1792728121593.jpg	static/camera_audits/dahua_anpr_1792728121593.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:02:01	2026-10-23	09:00
+16744	static/camera_audits/hikvision_full_1792728174134.jpg	static/camera_audits/dahua_anpr_1792728174134.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:02:54	2026-10-23	09:00
+16745	static/camera_audits/hikvision_full_1792728409940.jpg	static/camera_audits/dahua_anpr_1792728409940.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:06:50	2026-10-23	09:00
+16746	static/camera_audits/hikvision_full_1792728443542.jpg	static/camera_audits/dahua_anpr_1792728443542.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:07:23	2026-10-23	09:00
+16747	static/camera_audits/hikvision_full_1792728474269.jpg	static/camera_audits/dahua_anpr_1792728474269.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:07:54	2026-10-23	09:00
+16748	static/camera_audits/hikvision_full_1792728780269.jpg	static/camera_audits/dahua_anpr_1792728780269.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:13:00	2026-10-23	09:00
+16749	static/camera_audits/hikvision_full_1792728797974.jpg	static/camera_audits/dahua_anpr_1792728797974.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:13:18	2026-10-23	09:00
+16750	static/camera_audits/hikvision_full_1792728808369.jpg	static/camera_audits/dahua_anpr_1792728808369.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:13:28	2026-10-23	09:00
+16751	static/camera_audits/hikvision_full_1792728813542.jpg	static/camera_audits/dahua_anpr_1792728813542.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:13:34	2026-10-23	09:00
+16752	static/camera_audits/hikvision_full_1792728824838.jpg	static/camera_audits/dahua_anpr_1792728824838.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:13:45	2026-10-23	09:00
+16753	static/camera_audits/hikvision_full_1792728843109.jpg	static/camera_audits/dahua_anpr_1792728843109.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:14:03	2026-10-23	09:00
+16754	static/camera_audits/hikvision_full_1792728857149.jpg	static/camera_audits/dahua_anpr_1792728857149.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:14:17	2026-10-23	09:00
+16755	static/camera_audits/hikvision_full_1792728862977.jpg	static/camera_audits/dahua_anpr_1792728862977.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:14:23	2026-10-23	09:00
+16756	static/camera_audits/hikvision_full_1792728879858.jpg	static/camera_audits/dahua_anpr_1792728879858.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:14:40	2026-10-23	09:00
+16757	static/camera_audits/hikvision_full_1792728909673.jpg	static/camera_audits/dahua_anpr_1792728909673.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:15:09	2026-10-23	09:00
+16758	static/camera_audits/hikvision_full_1792728917075.jpg	static/camera_audits/dahua_anpr_1792728917075.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:15:17	2026-10-23	09:00
+16759	static/camera_audits/hikvision_full_1792728993296.jpg	static/camera_audits/dahua_anpr_1792728993296.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:16:33	2026-10-23	09:00
+16760	static/camera_audits/hikvision_full_1792729007189.jpg	static/camera_audits/dahua_anpr_1792729007189.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:16:47	2026-10-23	09:00
+16761	static/camera_audits/hikvision_full_1792729048478.jpg	static/camera_audits/dahua_anpr_1792729048478.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:17:28	2026-10-23	09:00
+16762	static/camera_audits/hikvision_full_1792729057602.jpg	static/camera_audits/dahua_anpr_1792729057602.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:17:38	2026-10-23	09:00
+16763	static/camera_audits/hikvision_full_1792729066210.jpg	static/camera_audits/dahua_anpr_1792729066210.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:17:46	2026-10-23	09:00
+16764	static/camera_audits/hikvision_full_1792729135128.jpg	static/camera_audits/dahua_anpr_1792729135128.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:18:55	2026-10-23	09:00
+16765	static/camera_audits/hikvision_full_1792729194243.jpg	static/camera_audits/dahua_anpr_1792729194243.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:19:54	2026-10-23	09:00
+16766	static/camera_audits/hikvision_full_1792729236399.jpg	static/camera_audits/dahua_anpr_1792729236399.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:20:36	2026-10-23	09:00
+16767	static/camera_audits/hikvision_full_1792729270689.jpg	static/camera_audits/dahua_anpr_1792729270689.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:21:11	2026-10-23	09:00
+16768	static/camera_audits/hikvision_full_1792729308814.jpg	static/camera_audits/dahua_anpr_1792729308814.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:21:49	2026-10-23	09:00
+16769	static/camera_audits/hikvision_full_1792729512734.jpg	static/camera_audits/dahua_anpr_1792729512734.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:25:13	2026-10-23	09:00
+16770	static/camera_audits/hikvision_full_1792729551269.jpg	static/camera_audits/dahua_anpr_1792729551269.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:25:51	2026-10-23	09:00
+16771	static/camera_audits/hikvision_full_1792729564178.jpg	static/camera_audits/dahua_anpr_1792729564178.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:26:04	2026-10-23	09:00
+16772	static/camera_audits/hikvision_full_1792729602673.jpg	static/camera_audits/dahua_anpr_1792729602673.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:26:43	2026-10-23	09:00
+16773	static/camera_audits/hikvision_full_1792729608633.jpg	static/camera_audits/dahua_anpr_1792729608633.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:26:49	2026-10-23	09:00
+16774	static/camera_audits/hikvision_full_1792729615657.jpg	static/camera_audits/dahua_anpr_1792729615657.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:26:56	2026-10-23	09:00
+16775	static/camera_audits/hikvision_full_1792729627209.jpg	static/camera_audits/dahua_anpr_1792729627209.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:27:07	2026-10-23	09:00
+16776	static/camera_audits/hikvision_full_1792729632239.jpg	static/camera_audits/dahua_anpr_1792729632239.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:27:12	2026-10-23	09:00
+16777	static/camera_audits/hikvision_full_1792729672845.jpg	static/camera_audits/dahua_anpr_1792729672845.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:27:53	2026-10-23	09:00
+16778	static/camera_audits/hikvision_full_1792729689316.jpg	static/camera_audits/dahua_anpr_1792729689316.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:28:09	2026-10-23	09:00
+16779	static/camera_audits/hikvision_full_1792729769067.jpg	static/camera_audits/dahua_anpr_1792729769067.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:29:29	2026-10-23	09:00
+16780	static/camera_audits/hikvision_full_1792729779229.jpg	static/camera_audits/dahua_anpr_1792729779229.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:29:39	2026-10-23	09:00
+16781	static/camera_audits/hikvision_full_1792729867706.jpg	static/camera_audits/dahua_anpr_1792729867706.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:31:08	2026-10-23	09:00
+16782	static/camera_audits/hikvision_full_1792730022103.jpg	static/camera_audits/dahua_anpr_1792730022103.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:33:42	2026-10-23	09:00
+16783	static/camera_audits/hikvision_full_1792730046204.jpg	static/camera_audits/dahua_anpr_1792730046204.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:34:06	2026-10-23	09:00
+16784	static/camera_audits/hikvision_full_1792730068979.jpg	static/camera_audits/dahua_anpr_1792730068979.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:34:29	2026-10-23	09:00
+16785	static/camera_audits/hikvision_full_1792730092327.jpg	static/camera_audits/dahua_anpr_1792730092327.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:34:52	2026-10-23	09:00
+16786	static/camera_audits/hikvision_full_1792730128474.jpg	static/camera_audits/dahua_anpr_1792730128474.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:35:28	2026-10-23	09:00
+16787	static/camera_audits/hikvision_full_1792730173834.jpg	static/camera_audits/dahua_anpr_1792730173834.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:36:14	2026-10-23	09:00
+16788	static/camera_audits/hikvision_full_1792730230791.jpg	static/camera_audits/dahua_anpr_1792730230791.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:37:11	2026-10-23	09:00
+16789	static/camera_audits/hikvision_full_1792730238200.jpg	static/camera_audits/dahua_anpr_1792730238200.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:37:18	2026-10-23	09:00
+16790	static/camera_audits/hikvision_full_1792730241791.jpg	static/camera_audits/dahua_anpr_1792730241791.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:37:22	2026-10-23	09:00
+16791	static/camera_audits/hikvision_full_1792730255509.jpg	static/camera_audits/dahua_anpr_1792730255509.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:37:35	2026-10-23	09:00
+16792	static/camera_audits/hikvision_full_1792730269961.jpg	static/camera_audits/dahua_anpr_1792730269961.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:37:50	2026-10-23	09:00
+16793	static/camera_audits/hikvision_full_1792730370341.jpg	static/camera_audits/dahua_anpr_1792730370341.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:39:30	2026-10-23	09:00
+16794	static/camera_audits/hikvision_full_1792730404504.jpg	static/camera_audits/dahua_anpr_1792730404504.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:40:04	2026-10-23	09:00
+16795	static/camera_audits/hikvision_full_1792730484973.jpg	static/camera_audits/dahua_anpr_1792730484973.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:41:25	2026-10-23	09:00
+16796	static/camera_audits/hikvision_full_1792730583118.jpg	static/camera_audits/dahua_anpr_1792730583118.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:43:03	2026-10-23	09:00
+16797	static/camera_audits/hikvision_full_1792730691054.jpg	static/camera_audits/dahua_anpr_1792730691054.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:44:51	2026-10-23	09:00
+16798	static/camera_audits/hikvision_full_1792730875618.jpg	static/camera_audits/dahua_anpr_1792730875618.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:47:56	2026-10-23	09:00
+16799	static/camera_audits/hikvision_full_1792730946775.jpg	static/camera_audits/dahua_anpr_1792730946775.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:49:07	2026-10-23	09:00
+16800	static/camera_audits/hikvision_full_1792730990762.jpg	static/camera_audits/dahua_anpr_1792730990762.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:49:51	2026-10-23	09:00
+16801	static/camera_audits/hikvision_full_1792731016430.jpg	static/camera_audits/dahua_anpr_1792731016430.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:50:16	2026-10-23	09:00
+16802	static/camera_audits/hikvision_full_1792731049365.jpg	static/camera_audits/dahua_anpr_1792731049365.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:50:49	2026-10-23	09:00
+16803	static/camera_audits/hikvision_full_1792731247478.jpg	static/camera_audits/dahua_anpr_1792731247478.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:54:07	2026-10-23	09:00
+16804	static/camera_audits/hikvision_full_1792731250724.jpg	static/camera_audits/dahua_anpr_1792731250724.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:54:11	2026-10-23	09:00
+16805	static/camera_audits/hikvision_full_1792731262465.jpg	static/camera_audits/dahua_anpr_1792731262465.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:54:22	2026-10-23	09:00
+16806	static/camera_audits/hikvision_full_1792731402080.jpg	static/camera_audits/dahua_anpr_1792731402080.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:56:42	2026-10-23	09:00
+16807	static/camera_audits/hikvision_full_1792731427874.jpg	static/camera_audits/dahua_anpr_1792731427874.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:57:08	2026-10-23	09:00
+16808	static/camera_audits/hikvision_full_1792731459057.jpg	static/camera_audits/dahua_anpr_1792731459057.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:57:39	2026-10-23	09:00
+16809	static/camera_audits/hikvision_full_1792731470372.jpg	static/camera_audits/dahua_anpr_1792731470372.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:57:50	2026-10-23	09:00
+16810	static/camera_audits/hikvision_full_1792731524896.jpg	static/camera_audits/dahua_anpr_1792731524896.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:58:45	2026-10-23	09:00
+16811	static/camera_audits/hikvision_full_1792731583381.jpg	static/camera_audits/dahua_anpr_1792731583381.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 09:59:43	2026-10-23	09:00
+16812	static/camera_audits/hikvision_full_1792731645383.jpg	static/camera_audits/dahua_anpr_1792731645383.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:00:45	2026-10-23	10:00
+16813	static/camera_audits/hikvision_full_1792731862026.jpg	static/camera_audits/dahua_anpr_1792731862026.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:04:22	2026-10-23	10:00
+16814	static/camera_audits/hikvision_full_1792731891184.jpg	static/camera_audits/dahua_anpr_1792731891184.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:04:51	2026-10-23	10:00
+16815	static/camera_audits/hikvision_full_1792731900332.jpg	static/camera_audits/dahua_anpr_1792731900332.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:05:00	2026-10-23	10:00
+16816	static/camera_audits/hikvision_full_1792731970027.jpg	static/camera_audits/dahua_anpr_1792731970027.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:06:10	2026-10-23	10:00
+16817	static/camera_audits/hikvision_full_1792731994280.jpg	static/camera_audits/dahua_anpr_1792731994280.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:06:34	2026-10-23	10:00
+16818	static/camera_audits/hikvision_full_1792731998053.jpg	static/camera_audits/dahua_anpr_1792731998053.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:06:38	2026-10-23	10:00
+16819	static/camera_audits/hikvision_full_1792732034567.jpg	static/camera_audits/dahua_anpr_1792732034567.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:07:15	2026-10-23	10:00
+16820	static/camera_audits/hikvision_full_1792732046750.jpg	static/camera_audits/dahua_anpr_1792732046750.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:07:27	2026-10-23	10:00
+16821	static/camera_audits/hikvision_full_1792732087884.jpg	static/camera_audits/dahua_anpr_1792732087884.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:08:08	2026-10-23	10:00
+16822	static/camera_audits/hikvision_full_1792732101866.jpg	static/camera_audits/dahua_anpr_1792732101866.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:08:22	2026-10-23	10:00
+16823	static/camera_audits/hikvision_full_1792732115021.jpg	static/camera_audits/dahua_anpr_1792732115021.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:08:35	2026-10-23	10:00
+16824	static/camera_audits/hikvision_full_1792732352521.jpg	static/camera_audits/dahua_anpr_1792732352521.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:12:33	2026-10-23	10:00
+16825	static/camera_audits/hikvision_full_1792732393227.jpg	static/camera_audits/dahua_anpr_1792732393227.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:13:13	2026-10-23	10:00
+16826	static/camera_audits/hikvision_full_1792732404047.jpg	static/camera_audits/dahua_anpr_1792732404047.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:13:24	2026-10-23	10:00
+16827	static/camera_audits/hikvision_full_1792732479527.jpg	static/camera_audits/dahua_anpr_1792732479527.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:14:39	2026-10-23	10:00
+16828	static/camera_audits/hikvision_full_1792732507771.jpg	static/camera_audits/dahua_anpr_1792732507771.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:15:08	2026-10-23	10:00
+16829	static/camera_audits/hikvision_full_1792732545033.jpg	static/camera_audits/dahua_anpr_1792732545033.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:15:45	2026-10-23	10:00
+16830	static/camera_audits/hikvision_full_1792732710827.jpg	static/camera_audits/dahua_anpr_1792732710827.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:18:31	2026-10-23	10:00
+16831	static/camera_audits/hikvision_full_1792732725792.jpg	static/camera_audits/dahua_anpr_1792732725792.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:18:46	2026-10-23	10:00
+16832	static/camera_audits/hikvision_full_1792732799727.jpg	static/camera_audits/dahua_anpr_1792732799727.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:20:00	2026-10-23	10:00
+16833	static/camera_audits/hikvision_full_1792732988351.jpg	static/camera_audits/dahua_anpr_1792732988351.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:23:08	2026-10-23	10:00
+16834	static/camera_audits/hikvision_full_1792733028388.jpg	static/camera_audits/dahua_anpr_1792733028388.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:23:48	2026-10-23	10:00
+16835	static/camera_audits/hikvision_full_1792733235059.jpg	static/camera_audits/dahua_anpr_1792733235059.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:27:15	2026-10-23	10:00
+16836	static/camera_audits/hikvision_full_1792733276196.jpg	static/camera_audits/dahua_anpr_1792733276196.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:27:56	2026-10-23	10:00
+16837	static/camera_audits/hikvision_full_1792733411016.jpg	static/camera_audits/dahua_anpr_1792733411016.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:30:11	2026-10-23	10:00
+16838	static/camera_audits/hikvision_full_1792733488346.jpg	static/camera_audits/dahua_anpr_1792733488346.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:31:28	2026-10-23	10:00
+16839	static/camera_audits/hikvision_full_1792733705968.jpg	static/camera_audits/dahua_anpr_1792733705968.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:35:06	2026-10-23	10:00
+16840	static/camera_audits/hikvision_full_1792733719168.jpg	static/camera_audits/dahua_anpr_1792733719168.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:35:19	2026-10-23	10:00
+16841	static/camera_audits/hikvision_full_1792733762756.jpg	static/camera_audits/dahua_anpr_1792733762756.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:36:03	2026-10-23	10:00
+16842	static/camera_audits/hikvision_full_1792733768508.jpg	static/camera_audits/dahua_anpr_1792733768508.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:36:09	2026-10-23	10:00
+16843	static/camera_audits/hikvision_full_1792733777921.jpg	static/camera_audits/dahua_anpr_1792733777921.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:36:18	2026-10-23	10:00
+16844	static/camera_audits/hikvision_full_1792733841963.jpg	static/camera_audits/dahua_anpr_1792733841963.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:37:22	2026-10-23	10:00
+16845	static/camera_audits/hikvision_full_1792733863366.jpg	static/camera_audits/dahua_anpr_1792733863366.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:37:43	2026-10-23	10:00
+16846	static/camera_audits/hikvision_full_1792733909965.jpg	static/camera_audits/dahua_anpr_1792733909965.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:38:30	2026-10-23	10:00
+16847	static/camera_audits/hikvision_full_1792733918163.jpg	static/camera_audits/dahua_anpr_1792733918163.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:38:38	2026-10-23	10:00
+16848	static/camera_audits/hikvision_full_1792734066865.jpg	static/camera_audits/dahua_anpr_1792734066865.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:41:07	2026-10-23	10:00
+16849	static/camera_audits/hikvision_full_1792734150160.jpg	static/camera_audits/dahua_anpr_1792734150160.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:42:30	2026-10-23	10:00
+16850	static/camera_audits/hikvision_full_1792734313738.jpg	static/camera_audits/dahua_anpr_1792734313738.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:45:14	2026-10-23	10:00
+16851	static/camera_audits/hikvision_full_1792734368447.jpg	static/camera_audits/dahua_anpr_1792734368447.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:46:08	2026-10-23	10:00
+16852	static/camera_audits/hikvision_full_1792734406027.jpg	static/camera_audits/dahua_anpr_1792734406027.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:46:46	2026-10-23	10:00
+16853	static/camera_audits/hikvision_full_1792734515711.jpg	static/camera_audits/dahua_anpr_1792734515711.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:48:36	2026-10-23	10:00
+16854	static/camera_audits/hikvision_full_1792734700569.jpg	static/camera_audits/dahua_anpr_1792734700569.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:51:41	2026-10-23	10:00
+16855	static/camera_audits/hikvision_full_1792734715550.jpg	static/camera_audits/dahua_anpr_1792734715550.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:51:55	2026-10-23	10:00
+16856	static/camera_audits/hikvision_full_1792734727155.jpg	static/camera_audits/dahua_anpr_1792734727155.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:52:07	2026-10-23	10:00
+16857	static/camera_audits/hikvision_full_1792734837798.jpg	static/camera_audits/dahua_anpr_1792734837798.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:53:58	2026-10-23	10:00
+16858	static/camera_audits/hikvision_full_1792734911064.jpg	static/camera_audits/dahua_anpr_1792734911064.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:55:11	2026-10-23	10:00
+16859	static/camera_audits/hikvision_full_1792735020888.jpg	static/camera_audits/dahua_anpr_1792735020888.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 10:57:01	2026-10-23	10:00
+16860	static/camera_audits/hikvision_full_1792735285007.jpg	static/camera_audits/dahua_anpr_1792735285007.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:01:25	2026-10-23	11:00
+16861	static/camera_audits/hikvision_full_1792735379644.jpg	static/camera_audits/dahua_anpr_1792735379644.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:03:00	2026-10-23	11:00
+16862	static/camera_audits/hikvision_full_1792735596488.jpg	static/camera_audits/dahua_anpr_1792735596488.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:06:36	2026-10-23	11:00
+16863	static/camera_audits/hikvision_full_1792735640808.jpg	static/camera_audits/dahua_anpr_1792735640808.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:07:21	2026-10-23	11:00
+16864	static/camera_audits/hikvision_full_1792735806398.jpg	static/camera_audits/dahua_anpr_1792735806398.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:10:06	2026-10-23	11:00
+16865	static/camera_audits/hikvision_full_1792735856781.jpg	static/camera_audits/dahua_anpr_1792735856781.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:10:57	2026-10-23	11:00
+16866	static/camera_audits/hikvision_full_1792735965017.jpg	static/camera_audits/dahua_anpr_1792735965017.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:12:45	2026-10-23	11:00
+16867	static/camera_audits/hikvision_full_1792736074031.jpg	static/camera_audits/dahua_anpr_1792736074031.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:14:34	2026-10-23	11:00
+16868	static/camera_audits/hikvision_full_1792736196486.jpg	static/camera_audits/dahua_anpr_1792736196486.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:16:36	2026-10-23	11:00
+16869	static/camera_audits/hikvision_full_1792736264780.jpg	static/camera_audits/dahua_anpr_1792736264780.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:17:45	2026-10-23	11:00
+16870	static/camera_audits/hikvision_full_1792736377790.jpg	static/camera_audits/dahua_anpr_1792736377790.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:19:38	2026-10-23	11:00
+16871	static/camera_audits/hikvision_full_1792736393967.jpg	static/camera_audits/dahua_anpr_1792736393967.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:19:54	2026-10-23	11:00
+16872	static/camera_audits/hikvision_full_1792736689937.jpg	static/camera_audits/dahua_anpr_1792736689937.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:24:50	2026-10-23	11:00
+16873	static/camera_audits/hikvision_full_1792736991157.jpg	static/camera_audits/dahua_anpr_1792736991157.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:29:51	2026-10-23	11:00
+16874	static/camera_audits/hikvision_full_1792737080174.jpg	static/camera_audits/dahua_anpr_1792737080174.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:31:20	2026-10-23	11:00
+16875	static/camera_audits/hikvision_full_1792737142505.jpg	static/camera_audits/dahua_anpr_1792737142505.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:32:22	2026-10-23	11:00
+16876	static/camera_audits/hikvision_full_1792737222799.jpg	static/camera_audits/dahua_anpr_1792737222799.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:33:43	2026-10-23	11:00
+16877	static/camera_audits/hikvision_full_1792737279175.jpg	static/camera_audits/dahua_anpr_1792737279175.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:34:39	2026-10-23	11:00
+16878	static/camera_audits/hikvision_full_1792737282498.jpg	static/camera_audits/dahua_anpr_1792737282498.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:34:42	2026-10-23	11:00
+16879	static/camera_audits/hikvision_full_1792737292455.jpg	static/camera_audits/dahua_anpr_1792737292455.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:34:52	2026-10-23	11:00
+16880	static/camera_audits/hikvision_full_1792737318234.jpg	static/camera_audits/dahua_anpr_1792737318234.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:35:18	2026-10-23	11:00
+16881	static/camera_audits/hikvision_full_1792737333012.jpg	static/camera_audits/dahua_anpr_1792737333012.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:35:33	2026-10-23	11:00
+16882	static/camera_audits/hikvision_full_1792737430292.jpg	static/camera_audits/dahua_anpr_1792737430292.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:37:10	2026-10-23	11:00
+16883	static/camera_audits/hikvision_full_1792737434066.jpg	static/camera_audits/dahua_anpr_1792737434066.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:37:14	2026-10-23	11:00
+16884	static/camera_audits/hikvision_full_1792737537940.jpg	static/camera_audits/dahua_anpr_1792737537940.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:38:58	2026-10-23	11:00
+16885	static/camera_audits/hikvision_full_1792737585663.jpg	static/camera_audits/dahua_anpr_1792737585663.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:39:46	2026-10-23	11:00
+16886	static/camera_audits/hikvision_full_1792737673382.jpg	static/camera_audits/dahua_anpr_1792737673382.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:41:13	2026-10-23	11:00
+16887	static/camera_audits/hikvision_full_1792737685132.jpg	static/camera_audits/dahua_anpr_1792737685132.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:41:25	2026-10-23	11:00
+16888	static/camera_audits/hikvision_full_1792737744097.jpg	static/camera_audits/dahua_anpr_1792737744097.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:42:24	2026-10-23	11:00
+16889	static/camera_audits/hikvision_full_1792737870107.jpg	static/camera_audits/dahua_anpr_1792737870107.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:44:30	2026-10-23	11:00
+16890	static/camera_audits/hikvision_full_1792737952018.jpg	static/camera_audits/dahua_anpr_1792737952018.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:45:52	2026-10-23	11:00
+16891	static/camera_audits/hikvision_full_1792738172629.jpg	static/camera_audits/dahua_anpr_1792738172629.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:49:32	2026-10-23	11:00
+16892	static/camera_audits/hikvision_full_1792738214037.jpg	static/camera_audits/dahua_anpr_1792738214037.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:50:14	2026-10-23	11:00
+16893	static/camera_audits/hikvision_full_1792738263539.jpg	static/camera_audits/dahua_anpr_1792738263539.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:51:03	2026-10-23	11:00
+16894	static/camera_audits/hikvision_full_1792738303313.jpg	static/camera_audits/dahua_anpr_1792738303313.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:51:43	2026-10-23	11:00
+16895	static/camera_audits/hikvision_full_1792738390906.jpg	static/camera_audits/dahua_anpr_1792738390906.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:53:11	2026-10-23	11:00
+16896	static/camera_audits/hikvision_full_1792738501559.jpg	static/camera_audits/dahua_anpr_1792738501559.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:55:02	2026-10-23	11:00
+16897	static/camera_audits/hikvision_full_1792738530479.jpg	static/camera_audits/dahua_anpr_1792738530479.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:55:30	2026-10-23	11:00
+16898	static/camera_audits/hikvision_full_1792738563875.jpg	static/camera_audits/dahua_anpr_1792738563875.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 11:56:04	2026-10-23	11:00
+16899	static/camera_audits/hikvision_full_1792738899273.jpg	static/camera_audits/dahua_anpr_1792738899273.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 12:01:39	2026-10-23	12:00
+16900	static/camera_audits/hikvision_full_1792739054570.jpg	static/camera_audits/dahua_anpr_1792739054570.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 12:04:15	2026-10-23	12:00
+16901	static/camera_audits/hikvision_full_1792739124245.jpg	static/camera_audits/dahua_anpr_1792739124245.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 12:05:24	2026-10-23	12:00
+16902	static/camera_audits/hikvision_full_1792739129341.jpg	static/camera_audits/dahua_anpr_1792739129341.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 12:05:29	2026-10-23	12:00
+16903	static/camera_audits/hikvision_full_1792739271868.jpg	static/camera_audits/dahua_anpr_1792739271868.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 12:07:52	2026-10-23	12:00
+16904	static/camera_audits/hikvision_full_1792739312191.jpg	static/camera_audits/dahua_anpr_1792739312191.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 12:08:32	2026-10-23	12:00
+16905	static/camera_audits/hikvision_full_1792739344594.jpg	static/camera_audits/dahua_anpr_1792739344594.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 12:09:05	2026-10-23	12:00
+16906	static/camera_audits/hikvision_full_1792739523144.jpg	static/camera_audits/dahua_anpr_1792739523144.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 12:12:03	2026-10-23	12:00
+16907	static/camera_audits/hikvision_full_1792739765756.jpg	static/camera_audits/dahua_anpr_1792739765756.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 12:16:06	2026-10-23	12:00
+16908	static/camera_audits/hikvision_full_1792739774148.jpg	static/camera_audits/dahua_anpr_1792739774148.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 12:16:14	2026-10-23	12:00
+16909	static/camera_audits/hikvision_full_1792739872159.jpg	static/camera_audits/dahua_anpr_1792739872159.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 12:17:52	2026-10-23	12:00
+16910	static/camera_audits/hikvision_full_1792739912528.jpg	static/camera_audits/dahua_anpr_1792739912528.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 12:18:32	2026-10-23	12:00
+16911	static/camera_audits/hikvision_full_1792740114657.jpg	static/camera_audits/dahua_anpr_1792740114657.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 12:21:55	2026-10-23	12:00
+16912	static/camera_audits/hikvision_full_1792740196753.jpg	static/camera_audits/dahua_anpr_1792740196753.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 12:23:17	2026-10-23	12:00
+16913	static/camera_audits/hikvision_full_1792740308555.jpg	static/camera_audits/dahua_anpr_1792740308555.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 12:25:09	2026-10-23	12:00
+16914	static/camera_audits/hikvision_full_1792740546638.jpg	static/camera_audits/dahua_anpr_1792740546638.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 12:29:07	2026-10-23	12:00
+16915	static/camera_audits/hikvision_full_1792740666140.jpg	static/camera_audits/dahua_anpr_1792740666140.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 12:31:06	2026-10-23	12:00
+16916	static/camera_audits/hikvision_full_1792740812506.jpg	static/camera_audits/dahua_anpr_1792740812506.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 12:33:32	2026-10-23	12:00
+16917	static/camera_audits/hikvision_full_1792740873164.jpg	static/camera_audits/dahua_anpr_1792740873164.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 12:34:33	2026-10-23	12:00
+16918	static/camera_audits/hikvision_full_1792740896179.jpg	static/camera_audits/dahua_anpr_1792740896179.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 12:34:56	2026-10-23	12:00
+16919	static/camera_audits/hikvision_full_1792740933500.jpg	static/camera_audits/dahua_anpr_1792740933500.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 12:35:33	2026-10-23	12:00
+16920	static/camera_audits/hikvision_full_1792740982500.jpg	static/camera_audits/dahua_anpr_1792740982500.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 12:36:22	2026-10-23	12:00
+16921	static/camera_audits/hikvision_full_1792746111767.jpg	static/camera_audits/dahua_anpr_1792746111767.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 14:01:52	2026-10-23	14:00
+16922	static/camera_audits/hikvision_full_1792746157279.jpg	static/camera_audits/dahua_anpr_1792746157279.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 14:02:37	2026-10-23	14:00
+16923	static/camera_audits/hikvision_full_1792746232207.jpg	static/camera_audits/dahua_anpr_1792746232207.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 14:03:52	2026-10-23	14:00
+16924	static/camera_audits/hikvision_full_1792746300661.jpg	static/camera_audits/dahua_anpr_1792746300661.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 14:05:01	2026-10-23	14:00
+16925	static/camera_audits/hikvision_full_1792746366743.jpg	static/camera_audits/dahua_anpr_1792746366743.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 14:06:07	2026-10-23	14:00
+16926	static/camera_audits/hikvision_full_1792746585827.jpg	static/camera_audits/dahua_anpr_1792746585827.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 14:09:46	2026-10-23	14:00
+16927	static/camera_audits/hikvision_full_1792746788226.jpg	static/camera_audits/dahua_anpr_1792746788226.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 14:13:08	2026-10-23	14:00
+16928	static/camera_audits/hikvision_full_1792746830939.jpg	static/camera_audits/dahua_anpr_1792746830939.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 14:13:51	2026-10-23	14:00
+16929	static/camera_audits/hikvision_full_1792746888973.jpg	static/camera_audits/dahua_anpr_1792746888973.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 14:14:49	2026-10-23	14:00
+16930	static/camera_audits/hikvision_full_1792746897384.jpg	static/camera_audits/dahua_anpr_1792746897384.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 14:14:57	2026-10-23	14:00
+16931	static/camera_audits/hikvision_full_1792747113204.jpg	static/camera_audits/dahua_anpr_1792747113204.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 14:18:34	2026-10-23	14:00
+16932	static/camera_audits/hikvision_full_1792747168873.jpg	static/camera_audits/dahua_anpr_1792747168873.jpg	\N	Line Crossing	Hikvision Line Crossing	\N	\N	\N	\N	\N	2026-10-23 14:19:29	2026-10-23	14:00
 \.
 
 
@@ -13960,7 +14858,6 @@ COPY public.daily_logs (id, mem_id, name, vehicle_number, access_type, direction
 9527	115042	MR. SAJID HAROON	BS-1199	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E2806890000000025798F7CC	2026-10-20 23:59:00
 9528	0213517	MR. NAUMAN AHMED SHEIKH	BAZ-848	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E28068900000000257983065	2026-10-20 23:59:00
 9529	006055	MR. ASIM ADIL SHAH	CU-3763	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E280689000000002564442A8	2026-10-20 23:59:00
-9530	008269	MR. SAAD RIZWANI SHEIKH	BLF-685	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E2806890000000025644584C	2026-10-20 23:59:00
 9531	0213927	MR. AZEEM NAEEM ADAMJEE	BLX-253	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E2806894000050175DD700EF	2026-10-20 23:59:00
 9532	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E28068940000503153C528F4	2026-10-20 23:59:00
 9533	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E2806890000000025799D6AF	2026-10-21 23:59:00
@@ -14134,6 +15031,751 @@ COPY public.daily_logs (id, mem_id, name, vehicle_number, access_type, direction
 9702	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E280F33620003000000B6054	2026-10-22 13:08:36
 9703	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200471144D06422222E0108	2026-10-22 13:08:44
 9704	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20034120136F50004CB3A79	2026-10-22 13:09:25
+9705	0210774	MR. KARIM KURBAN ALI	BNQ-254	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047017090642279B7010F	2026-10-22 13:13:41
+9706	GUEST-LOG	Unregistered Visitor	E200F336200060000016A4F8	RFID Unknown	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200F336200060000016A4F8	2026-10-22 13:13:41
+9707	008223	MR. FAIZAN MANSOOR	BKH-216	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806890000000025799D116	2026-10-22 13:15:33
+9708	122972	MR. SHAHZAD ANWAR	BXN-630	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806890000000025799D7D1	2026-10-22 13:21:46
+9709	125401	MR. GHIASUDDIN AHMED SHAIKH	AZA-176	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2004701B51064227DFF0105	2026-10-22 13:22:26
+9710	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200471154D06422232E0107	2026-10-22 13:24:45
+9711	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E28038212000642202D509B7	2026-10-22 13:26:16
+9712	006819	MR. AHMED RAZA SHIRAZI	AAAK-058	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047016BF06422796D010E	2026-10-22 13:27:29
+9713	0412693	MISS. MYRA IMAN BILAL KHAN	BG-1018	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2004710DBD064221B9E0116	2026-10-22 13:27:49
+9714	115788	MR. MUHAMMAD SAUD ELAHI	BP-5499	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047113CD0642221AE0110	2026-10-22 13:29:02
+9715	0213701	MR. NADIR KHAN	CAG-923	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2806890000000025797E2D5	2026-10-22 13:29:52
+9716	221237	MRS. SUNYA AHMED	AAAN-232	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20047019B3064227C61010D	2026-10-22 13:31:35
+9717	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200471112E064221F0F0108	2026-10-22 13:35:14
+9718	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004711179064221F5A010B	2026-10-22 13:38:33
+9719	123727	MR. ZAKI PASHA	BJ-4694	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E28068900000000256448FB7	2026-10-22 13:39:09
+9720	0213315	MR. AHSAN MERCHANT	AAAQ-187	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004701876064227B24010A	2026-10-22 13:39:31
+9721	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047114A6064222287010F	2026-10-22 13:40:23
+9722	113431	MR. HUMAYUN QURESHI	AAHX-088	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047026150642288C30110	2026-10-22 13:44:34
+9723	0912043	MRS. ZAINAB ARIF SOORTY	AAFM-162	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2004701A19064227CC7010E	2026-10-22 13:45:15
+9724	124076	MR. SALIM HARIANAWALA	BXX-144	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2007DD2B1015FF0B3BA357F	2026-10-22 13:46:28
+9725	124709	MR.  SOHAIL ANWAR	BFY-203	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806894000050175DD8A8EE	2026-10-22 13:50:25
+9726	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200471567F06823FCA7010B	2026-10-22 13:58:05
+9727	123667	DR. IFTIKHAR AHMED KHWAJA	BJ-8377	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806890000000025797ECD2	2026-10-22 13:58:07
+9728	006560	MR. MUHAMMAD YOUNUS SHAIKH	AAHG-727	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20047012440642274F20109	2026-10-22 13:59:50
+9729	GUEST-LOG	Unregistered Visitor	E200F336200060000016AA1D	RFID Unknown	Entry	REAR GATE (ENTRY)	\N	\N	\N	E200F336200060000016AA1D	2026-10-22 14:01:05
+9730	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004710F91064221D72010E	2026-10-22 14:01:59
+9731	230111	MRS. KHURSHEED KOTWAL	BXS-745	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2004701A09064227CB70110	2026-10-22 14:03:43
+9732	015575	MR. YOUSUF AZAM	BNQ-030	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806890000000025797E74F	2026-10-22 14:04:50
+9733	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047115620642223430111	2026-10-22 14:07:53
+9734	114214	MR. WASEEM HAROON REHMANE	ASE-944	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806894000040175DD7C4EF	2026-10-22 14:11:12
+9735	GUEST-LOG	Unregistered Visitor	E2806995A05B220082C7A47C	RFID Unknown	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806995A05B220082C7A47C	2026-10-22 14:12:45
+9736	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20034120128F6000FE097FD	2026-10-22 14:13:27
+9737	082160	MRS. FARIDA MEMON	BUY-506	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E28068900000000256448322	2026-10-22 14:13:27
+9738	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200470985F06821503A0110	2026-10-22 14:15:31
+9739	006560	MR. MUHAMMAD YOUNUS SHAIKH	AAHG-727	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047012440642274F20109	2026-10-22 14:19:00
+9740	125150	MR. NAJMUL HUSSAIN DOSSA	BG-4967	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806894000040175DD304F0	2026-10-22 14:20:29
+9741	102421	MRS. FATIMA BILWANI	BM-0898	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E280689000000002564480F5	2026-10-22 14:25:09
+9742	221237	MRS. SUNYA AHMED	AAAN-232	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047019B3064227C61010D	2026-10-22 14:25:40
+9743	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047103CE0642211AF010D	2026-10-22 14:28:33
+9744	008186	MR. GHULAM AAMIR BALOCH	BYF-742	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E28068900000000256448928	2026-10-22 14:30:55
+9745	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047106510642214320108	2026-10-22 14:32:45
+9746	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E28038212000642601E2A3F6	2026-10-22 14:32:52
+9747	122524	MR. MUHAMMAD ASLAM SANJRANI	AACS-525	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004701879064227B270111	2026-10-22 14:33:22
+9748	0213971	MR. FAIZ AHMED	AAAK-466	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200470189E064227B4C010D	2026-10-22 14:37:59
+9749	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2003412012D010008A54C27	2026-10-22 14:38:11
+9750	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E20034120128F6000FE097FD	2026-10-22 14:38:15
+9751	082160	MRS. FARIDA MEMON	BUY-506	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E28068900000000256448322	2026-10-22 14:38:16
+9752	006343	MR.  ATHER ALI KHAN	AAHK-296	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047114720642222530113	2026-10-22 14:39:07
+9753	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2004710BA30642219840110	2026-10-22 14:39:32
+9754	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E20034120136F50004CB3A79	2026-10-22 14:40:19
+9755	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E2004710BA30642219840110	2026-10-22 14:40:35
+9756	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E280F33620003000000911C2	2026-10-22 14:43:58
+9757	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004710A5F064221840010B	2026-10-22 14:46:22
+9758	082296	MR. INTISAR ALI	GSC-818	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200470170A0642279B8010A	2026-10-22 14:50:12
+9759	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E28038212000642601E2A3F6	2026-10-22 14:50:51
+9760	GUEST-LOG	Unregistered Visitor	E200F336200060000016AA1D	RFID Unknown	Exit	REAR GATE (EXIT)	\N	\N	\N	E200F336200060000016AA1D	2026-10-22 14:50:57
+9761	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200471038E06422116F010F	2026-10-22 14:51:14
+9762	150042	MR. MIAN SHAHZAD AHMED	AAHC-637	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200471159A06422237B0111	2026-10-22 14:52:06
+9763	0310658	MR. NEJDET PASHA MOORAJ	BXD-100	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004701B65064227E13010E	2026-10-22 14:54:17
+9764	125173	MR. MUSTANSIR HUSSAIN	BHB-053	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806894000040175DD0A0EF	2026-10-22 14:54:35
+9765	006899	DR. OMER WALIULLAH JUNG	BK-1680	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806890000000025799DB4A	2026-10-22 14:59:10
+9766	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E280F336200060000068CE51	2026-10-22 14:59:16
+9767	220879	MRS. MARIAM MAQBOOL	BPK-673	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806890000000025799C4B9	2026-10-22 15:01:07
+9768	016380	MR. TARIQ  IQBAL MIAN	E-9888	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806890000000025798F30E	2026-10-22 15:04:17
+9769	0214887	MR. MUHAMMAD AYAN SAIGAL	BP-7595	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047010640642273120107	2026-10-22 15:07:39
+9770	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20047103BC06422119D0110	2026-10-22 15:07:57
+9771	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047103BC06422119D0110	2026-10-22 15:10:19
+9772	220237	MR. MOEENUDDIN FARUQI (H/O) MAHVASH(LATE)	BUV-772	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806894000050175DD574ED	2026-10-22 15:21:35
+9773	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E280F336200060000068CE51	2026-10-22 15:22:48
+9774	122288	MR. KAMRAN HAMEED	BPR-945	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806894000050175DD650ED	2026-10-22 15:35:06
+9775	015128	MR. MIR BABAR ALI	BZW-401	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004701E9D06422814B010B	2026-10-22 15:37:11
+9776	220243	MRS. SHARMEEN MAHMUD	BDF-369	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047017030642279B10109	2026-10-22 15:37:41
+9777	220879	MRS. MARIAM MAQBOOL	BPK-673	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2806890000000025799C4B9	2026-10-22 15:38:00
+9778	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200471112E064221F0F0108	2026-10-22 15:39:06
+9779	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2004710E76064221C570110	2026-10-22 15:42:41
+9780	006560	MR. MUHAMMAD YOUNUS SHAIKH	AAHG-727	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20047012440642274F20109	2026-10-22 15:43:27
+9781	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004703FE506823E60D010A	2026-10-22 15:44:39
+9782	150147	MRS. AZRA SULTANA(W/O) JAVED KHANANI(LATE)	AAJG-880	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2004701EBD06422816B010D	2026-10-22 15:44:44
+9783	101989	MRS. TANIA AHMED	AAHJ-797	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2004711581064222362010B	2026-10-22 15:45:00
+9784	123960	DR. MOHAMMAD TARIQ SIDDIQI	BEK-319	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20047113010642220E2010B	2026-10-22 15:45:11
+9785	123960	DR. MOHAMMAD TARIQ SIDDIQI	BEK-319	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047113010642220E2010B	2026-10-22 15:46:41
+9786	124042	MR. HAMZA AHMAD DADA	BM-7218	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2806890000000025798ECB7	2026-10-22 15:47:52
+9787	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E2004710E76064221C570110	2026-10-22 15:48:26
+9788	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2003412012D010008A54C27	2026-10-22 15:51:47
+9789	102494	MRS. GHAZAL BEG	AADD-852	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E200470121C0642274CA0111	2026-10-22 15:52:50
+9790	007261	MR. MUHAMMAD AHMED IQBAL BALOCH	BYY-782	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2806890000000025799CED8	2026-10-22 15:53:16
+9791	125401	MR. GHIASUDDIN AHMED SHAIKH	AZA-176	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2004701B51064227DFF0105	2026-10-22 15:54:20
+9792	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004710A860642218670110	2026-10-22 15:54:33
+9793	102494	MRS. GHAZAL BEG	AADD-852	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200470121C0642274CA0111	2026-10-22 15:55:30
+9794	122868	MR. MAJID SULTAN KHAWAJA	BL-0240	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806890000000025798F809	2026-10-22 15:57:05
+9795	GUEST-LOG	Unregistered Visitor	E2007DAF0CCB5030D0441D40	RFID Unknown	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2007DAF0CCB5030D0441D40	2026-10-22 15:58:15
+9796	0411580	MISS. SONIA PIRACHA	AAAZ-322	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E200470178A064227A38010E	2026-10-22 15:59:08
+9797	007134	MR. HASSAN MUNIR QURESHI	BDE-581	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E280689000000002579936EE	2026-10-22 15:59:26
+9798	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2004710F91064221D72010E	2026-10-22 16:00:04
+9799	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2803821200064260B10A9EF	2026-10-22 16:01:25
+9800	150042	MR. MIAN SHAHZAD AHMED	AAHC-637	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E200471159A06422237B0111	2026-10-22 16:02:29
+9801	GUEST-LOG	Unregistered Visitor	E2806995A05B220082C7A47C	RFID Unknown	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2806995A05B220082C7A47C	2026-10-22 16:03:06
+9802	220919	MS. QAMARUNNISA DADABHOY	BSD-916	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2806890000000025799DB87	2026-10-22 16:03:37
+9803	0214175	MR. BHAGWAN DAS	BSX-667	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2806890000000025799E81E	2026-10-22 16:04:52
+9804	082172	COL. JUNAID SALAH-UD-DIN SWATI	ICT-0485	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E28068900000000256448650	2026-10-22 16:04:58
+9805	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20047115620642223430111	2026-10-22 16:05:32
+9806	150196	MRS. KIRAN KHAN ALI	BK-1656	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806894000050175DD720ED	2026-10-22 16:06:24
+9807	082283	MR. ASHFAQ AHMED AWAN	BHQ-402	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20047013F70642276A50111	2026-10-22 16:08:34
+9808	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2003412013BF6000F733D50	2026-10-22 16:08:40
+9809	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E2003412013BF6000F739AEE	2026-10-22 16:10:17
+9810	0214175	MR. BHAGWAN DAS	BSX-667	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806890000000025799E81E	2026-10-22 16:10:18
+9811	007261	MR. MUHAMMAD AHMED IQBAL BALOCH	BYY-782	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806890000000025799CED8	2026-10-22 16:12:00
+9812	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E200471134906422212A010A	2026-10-22 16:13:55
+9813	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047104600642212410110	2026-10-22 16:14:42
+9814	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047115620642223430111	2026-10-22 16:14:49
+9815	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E280F33620003000000B01FF	2026-10-22 16:15:03
+9816	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2003412012D010008A54C27	2026-10-22 16:16:05
+9817	100659	MRS. TEHMINA NADEEM	BUY-464	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E28068900000000256448082	2026-10-22 16:16:52
+9818	220879	MRS. MARIAM MAQBOOL	BPK-673	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806890000000025799C4B9	2026-10-22 16:17:19
+9819	0213542	MR. MUHAMMAD SULEMAN SHISHMAHAL	AAAY-063	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20047015AB0642278590107	2026-10-22 16:19:23
+9820	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047112A5064222086010E	2026-10-22 16:20:01
+9821	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2004710AB20642218930114	2026-10-22 16:20:54
+9822	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E280F3362000600000660877	2026-10-22 16:21:05
+9823	0213542	MR. MUHAMMAD SULEMAN SHISHMAHAL	AAAY-063	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047015AB0642278590107	2026-10-22 16:21:05
+9824	007810	MR. MUSTAFA HUMAYUN SHEIKH	AACE-814	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20047016350642278E3010F	2026-10-22 16:21:37
+9825	GUEST-LOG	Unregistered Visitor	E2806995A05B220082C7A47C	RFID Unknown	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806995A05B220082C7A47C	2026-10-22 16:23:01
+9826	007810	MR. MUSTAFA HUMAYUN SHEIKH	AACE-814	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047016350642278E3010F	2026-10-22 16:23:48
+9827	123063	MR. MUHAMMAD YOUSUF ADIL	BH-3991	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806890000000025799246C	2026-10-22 16:25:11
+9828	0213873	MR. MOHAMMAD AMIR KHAN KHOSO	BUV-845	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200470149D06422774B0111	2026-10-22 16:25:21
+9829	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004710F91064221D72010E	2026-10-22 16:27:57
+9830	101989	MRS. TANIA AHMED	AAHJ-797	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004711581064222362010B	2026-10-22 16:29:25
+9831	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2004710B870642219680112	2026-10-22 16:33:34
+9832	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E2004710B870642219680112	2026-10-22 16:35:30
+9833	082283	MR. ASHFAQ AHMED AWAN	BHQ-402	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047013F70642276A50111	2026-10-22 16:38:31
+9834	GUEST-LOG	Unregistered Visitor	E2003098191902521440822B	RFID Unknown	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2003098191902521440822B	2026-10-22 16:44:25
+9835	005963	MR.SYED MOHSIN ALI RIZVI	BWW-014	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806890000000025798F51A	2026-10-22 16:44:27
+9836	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E28068940000403153D7048C	2026-10-22 16:45:37
+9837	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E280689000000002579820CF	2026-10-22 16:46:35
+9838	123960	DR. MOHAMMAD TARIQ SIDDIQI	BEK-319	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047113010642220E2010B	2026-10-22 16:47:33
+9839	GUEST-LOG	Unregistered Visitor	E2003098191902521440822B	RFID Unknown	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2003098191902521440822B	2026-10-22 16:48:08
+9840	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20047110B1064221E920116	2026-10-22 16:51:56
+9841	220919	MS. QAMARUNNISA DADABHOY	BSD-916	RFID Verified	Exit	REAR GATE (ENTRY)	\N	\N	\N	E2806890000000025799DB87	2026-10-22 16:58:35
+9842	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Exit	REAR GATE (ENTRY)	\N	\N	\N	E280F3362000600000660877	2026-10-22 17:00:03
+9843	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047110FE064221EDF010D	2026-10-22 17:00:33
+9844	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2004710661064221442010B	2026-10-22 17:02:25
+9845	GUEST-LOG	Unregistered Visitor	E2201F000000000000000000	RFID Unknown	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2201F000000000000000000	2026-10-22 17:04:50
+9846	007145	MR. SHAIKH DANISH JAVED	AAGZ-414	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2004701298064227546010B	2026-10-22 17:05:46
+9847	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20047106410642214220110	2026-10-22 17:07:29
+9848	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E280F33620003000000B01F4	2026-10-22 17:07:55
+9849	0912397	MRS. JAVIDA ZENUDDIN ANJARWALLA	BH-8142	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806894000040175DD5B4EF	2026-10-22 17:12:50
+9850	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200471568006823FCA8010C	2026-10-22 17:13:55
+9851	114682	MR. KHAWAJA TANVEER AHMED	BF-7944	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E28068900000000257982170	2026-10-22 17:14:05
+9852	0213542	MR. MUHAMMAD SULEMAN SHISHMAHAL	AAAY-063	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047015AB0642278590107	2026-10-22 17:15:56
+9853	006096	MR. ADNAN NASEEM KALIA	EAB-967	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20047015060642277B4010C	2026-10-22 17:17:10
+9854	006096	MR. ADNAN NASEEM KALIA	EAB-967	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047015060642277B4010C	2026-10-22 17:20:31
+9855	122740	MR. SHAIKH HAROON RASHID	AAKG-828	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047017F7064227AA50104	2026-10-22 17:20:47
+9856	007145	MR. SHAIKH DANISH JAVED	AAGZ-414	RFID Verified	Exit	CLUB GATE (ENTRY)	\N	\N	\N	E2004701298064227546010B	2026-10-22 17:21:30
+9857	150147	MRS. AZRA SULTANA(W/O) JAVED KHANANI(LATE)	AAJG-880	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004701EBD06422816B010D	2026-10-22 17:21:49
+9858	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047113DE0642221BF010D	2026-10-22 17:22:39
+9859	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200470256106422880F0110	2026-10-22 17:23:10
+9860	114141	MR. AIJAZ ALI NASSER	BBP-523	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2806890000000025798DCCD	2026-10-22 17:23:32
+9861	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20034120137F50004CBC66D	2026-10-22 17:23:53
+9862	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200471568006823FCA8010C	2026-10-22 17:24:16
+9863	123667	DR. IFTIKHAR AHMED KHWAJA	BLE-797	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E28068900000000256448574	2026-10-22 17:24:19
+9864	007250	MR. MOHAMMAD AMEEN MOON	BN-4154	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20047016450642278F30111	2026-10-22 17:25:08
+9865	007329	MR. SYED FAHAD HUMAYUN	BMH-968	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806894000050175DD620EF	2026-10-22 17:25:43
+9866	007751	MR. AHSAN AFTAB	BP-7999	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047020DD06422838B0111	2026-10-22 17:26:21
+9867	007813	MR. SALMAN WAHID BALAGAMWALA	BP-6574	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047014A3064227751010F	2026-10-22 17:26:40
+9868	059022	MRS. NUSRAT KHANAM	BJF-489	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E280689000000002564444B0	2026-10-22 17:27:43
+9869	007329	MR. SYED FAHAD HUMAYUN	BMH-968	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806894000050175DD620EF	2026-10-22 17:28:04
+9870	0214545	MR. WAHEED ALI BURKI	AAKU-977	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2004701D9006422803E010F	2026-10-22 17:29:36
+9871	082156	MR. SANAULLAH ABBASI	SPF-782	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E28068900000000257981EBF	2026-10-22 17:31:24
+9872	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20047101EC064220FCD0110	2026-10-22 17:37:10
+9873	007617	MR. HASAN ALAM	AAHK-568	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2004702595064228843010A	2026-10-22 17:38:53
+9874	150039	MR. KENNETH VINCENT MARSHALL	BT-2233	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047016AD06422795B010C	2026-10-22 17:39:47
+9875	220073	MRS. NOORAIN ASIF KARIM	BK-0943	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806894000040175DD190EE	2026-10-22 17:40:08
+9876	220293	MRS. UMAIMA KHUHRO	AAKY-957	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E200470224B0642284F90112	2026-10-22 17:41:07
+9877	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2004710D79064221B5A010B	2026-10-22 17:41:36
+9878	221185	MRS. FATIMA HAFEEZ SHAMSI	AAHF-089	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20047012E106422758F010F	2026-10-22 17:42:32
+9879	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E200470190E064227BBC010D	2026-10-22 17:42:37
+9880	122297	MR. ANWAR ALI M. RAMMAL	BN-0796	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20047011240642273D20112	2026-10-22 17:42:40
+9881	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20034120133010000D75E83	2026-10-22 17:42:49
+9882	007299	MR. ASKARI ASGHAR AGHA	AACT-050	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20047019DE064227C8C0113	2026-10-22 17:43:06
+9883	0214345	MR. MOHAMMAD MUJTABA	EAC-638	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20047014390642276E7010C	2026-10-22 17:43:22
+9884	190294	MRS. SADIA HUSSAIN	BCY-032	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2806894000040175DD400F0	2026-10-22 17:44:00
+9885	0713859	MR. JUSTICE SHAMSUDDIN ABBASI	HC-0366	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047016250642278D3010E	2026-10-22 17:45:13
+9886	005082	MR. IRFAN MOHSIN	AAJP-493	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20047025E106422888F010B	2026-10-22 17:45:28
+9887	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2806894000050286F12D142	2026-10-22 17:46:00
+9888	124089	MR. SHAKIL ASLAM	AAGE-503	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20047015290642277D70109	2026-10-22 17:47:41
+9889	113431	MR. HUMAYUN QURESHI	AAHX-088	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20047026150642288C30110	2026-10-22 17:49:27
+9890	007261	MR. MUHAMMAD AHMED IQBAL BALOCH	BYY-782	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2806890000000025799CED8	2026-10-22 17:49:51
+9891	121326	MR. A. SATTAR COCHINWALA	BEA-281	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2004701947064227BF5010D	2026-10-22 17:49:55
+9892	006969	MR. MUHAMMAD HASHIM MUMTAZ	AAHM-969	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20047012880642275360112	2026-10-22 17:50:15
+9893	221119	MRS. ERUM ESBHANI	BLD-070	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20047019C8064227C76010E	2026-10-22 17:50:35
+9894	150025	MR. PIR MUJEEBUL HAQ	SC-1777	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004701897064227B450113	2026-10-22 17:51:09
+9895	014556	MR. SAQIB NASEEM	BK-3532	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2806894000050175DD4BCEE	2026-10-22 17:51:33
+9896	113181	MR. HASAN MERCHANT	AAAZ-9585	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2004701812064227AC00106	2026-10-22 17:51:53
+9897	126139	MR. MOHAMMAD IQBAL QAMAR	BHH-619	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806894000040175DD7F4EF	2026-10-22 17:53:00
+9898	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E280F33620003000000B01FF	2026-10-22 17:53:42
+9899	124163	MR. ALI A. RAHIM	BM-5990	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2806890000000025799337E	2026-10-22 17:53:43
+9900	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E280F3362000600000663E65	2026-10-22 17:53:58
+9901	122297	MR. ANWAR ALI M. RAMMAL	BN-0796	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047011240642273D20112	2026-10-22 17:54:15
+9902	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004710D79064221B5A010B	2026-10-22 17:54:25
+9903	115042	MR. SAJID HAROON	BS-1199	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2806890000000025798F7CC	2026-10-22 17:54:43
+9904	121326	MR. A. SATTAR COCHINWALA	BEA-281	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2004701947064227BF5010D	2026-10-22 17:55:03
+9905	007515	MR. MINHAS ASHFAQ BANDUKDA	BL-5983	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20047112310642220120112	2026-10-22 17:55:15
+9906	082223	R/ADM RIZWAN AHMED KHAN SI(M)	AABG-273	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2004701AD7064227D85010C	2026-10-22 17:56:56
+9907	113431	MR. HUMAYUN QURESHI	AAHX-088	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047026150642288C30110	2026-10-22 17:57:49
+9908	124709	MR.  SOHAIL ANWAR	BFY-203	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2806894000050175DD8A8EE	2026-10-22 17:58:43
+9909	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E28068940000403153C06CF9	2026-10-22 17:59:30
+9910	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E280F33620003000000B3DAA	2026-10-22 17:59:35
+9911	114141	MR. AIJAZ ALI NASSER	BBP-523	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806890000000025798DCCD	2026-10-22 17:59:46
+9912	082223	R/ADM RIZWAN AHMED KHAN SI(M)	AABG-273	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2004701AD7064227D85010C	2026-10-22 18:00:24
+9913	007934	MR. MUHAMMAD AZEEM DADA	AJC-762	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2004701B56064227E040109	2026-10-22 18:00:57
+9914	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E200470351006823DB38010D	2026-10-22 18:01:20
+9915	124709	MR.  SOHAIL ANWAR	BFY-203	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806894000050175DD8A8EE	2026-10-22 18:02:09
+9916	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047101EC064220FCD0110	2026-10-22 18:04:25
+9917	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E28068940000403153C06CF9	2026-10-22 18:04:32
+9918	124172	MR. KAIZAR H. KHANDWALA	BYQ-410	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E280689000000002564446B5	2026-10-22 18:05:34
+9919	124709	MR.  SOHAIL ANWAR	BFY-203	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806894000050175DD8A8EE	2026-10-22 18:05:55
+9920	005161	MR. ABBAS FARID	ATM-148	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E28068900000000256448ABE	2026-10-22 18:06:31
+9921	006363	MR. MUHAMMAD NOMAN SAIGAL	BCY-010	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2806890000000025799367E	2026-10-22 18:06:54
+9922	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E280F3362000300000081A12	2026-10-22 18:07:58
+9923	082224	MR. MANZOOR ALI JOKHIO	AAKR-909	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200470179C064227A4A0110	2026-10-22 18:08:17
+9924	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2003412012BFD000E32AE53	2026-10-22 18:10:35
+9925	0214012	MR. GHULAM HUSSAIN AGHA	AAEM-558	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20047014F90642277A7010B	2026-10-22 18:10:51
+9926	0213491	DR. FAISAL FAIYAZ ZUBERI	BH-3998	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20047014C4064227772010D	2026-10-22 18:11:07
+9927	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20047115010642222E20107	2026-10-22 18:11:16
+9928	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2004701ACE064227D7C0110	2026-10-22 18:11:46
+9929	0214012	MR. GHULAM HUSSAIN AGHA	AAEM-558	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047014F90642277A7010B	2026-10-22 18:12:25
+9930	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2003412012BFD000E32AE53	2026-10-22 18:12:30
+9931	150202	MR. AMJED BAHADUR ALI	BPS-038	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806890000000025798236B	2026-10-22 18:13:30
+9932	0213491	DR. FAISAL FAIYAZ ZUBERI	BH-3998	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047014C4064227772010D	2026-10-22 18:13:41
+9933	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20047113DE0642221BF010D	2026-10-22 18:14:51
+9934	007329	MR. SYED FAHAD HUMAYUN	BMH-968	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2806894000050175DD620EF	2026-10-22 18:16:48
+9935	220921	MRS. SANA RAHIM	AABU-095	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2004701A47064227CF50109	2026-10-22 18:16:51
+9936	220501	MRS. SAMEEN MURTUZA	BPG-860	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E28068900000000257982DDF	2026-10-22 18:17:34
+9937	006560	MR. MUHAMMAD YOUNUS SHAIKH	AAHG-727	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047012440642274F20109	2026-10-22 18:18:17
+9938	007329	MR. SYED FAHAD HUMAYUN	BMH-968	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806894000050175DD620EF	2026-10-22 18:18:44
+9939	082131	MR. MUBIN AHMED	GS-9394	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2806894000040175DD250ED	2026-10-22 18:19:34
+9940	GUEST-LOG	Unregistered Visitor	E200F3362000600000178D49	RFID Unknown	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E200F3362000600000178D49	2026-10-22 18:20:03
+9941	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047113DE0642221BF010D	2026-10-22 18:20:09
+9942	124709	MR.  SOHAIL ANWAR	BFY-203	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806894000050175DD8A8EE	2026-10-22 18:20:16
+9943	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047101CB064220FAC0109	2026-10-22 18:20:23
+9944	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004704CE306823F30B010F	2026-10-22 18:20:41
+9945	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2003412013BF6000F733D50	2026-10-22 18:22:33
+9946	0214175	MR. BHAGWAN DAS	BSX-667	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2806890000000025799E81E	2026-10-22 18:23:25
+9947	082131	MR. MUBIN AHMED	GS-9394	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806894000040175DD250ED	2026-10-22 18:23:31
+9948	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2003412013BF6000F739AEE	2026-10-22 18:23:59
+9949	082223	R/ADM RIZWAN AHMED KHAN SI(M)	AABG-273	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2004701AD7064227D85010C	2026-10-22 18:25:27
+9950	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E280F3362000300000081A12	2026-10-22 18:25:34
+9951	GUEST-LOG	Unregistered Visitor	E200F3362000600000178D49	RFID Unknown	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200F3362000600000178D49	2026-10-22 18:25:44
+9952	0214985	MR. HAMAS ESBHANI	AAJY-528	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20047021110642283BF0107	2026-10-22 18:26:02
+9953	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E2003412013BF6000F739AEE	2026-10-22 18:27:18
+9954	0214175	MR. BHAGWAN DAS	BSX-667	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806890000000025799E81E	2026-10-22 18:27:18
+9955	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2004702265064228513010F	2026-10-22 18:27:45
+9956	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047106410642214220110	2026-10-22 18:28:51
+9957	0214390	MR. DANIYAL SHAH	BYN-302	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E28068900000000256448080	2026-10-22 18:29:03
+9958	GUEST-LOG	Unregistered Visitor	E2201F000000000000000000	RFID Unknown	Exit	REAR GATE (EXIT)	\N	\N	\N	E2201F000000000000000000	2026-10-22 18:29:40
+9959	082231	PROF. DR. SHAHID RASOOL	CDA-235	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E200470156006422780E0108	2026-10-22 18:30:52
+9960	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20047103B2064221193010C	2026-10-22 18:31:33
+9961	0411580	MISS. SONIA PIRACHA	AAAZ-322	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E200470178A064227A38010E	2026-10-22 18:32:57
+9962	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20047109BB06422179C010F	2026-10-22 18:33:07
+9963	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20047106510642214320108	2026-10-22 18:33:16
+9964	221209	MRS. FAIZA JADOON	BES-753	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200470155B0642278090110	2026-10-22 18:34:12
+9965	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047110B1064221E920116	2026-10-22 18:34:21
+9966	220243	MRS. SHARMEEN MAHMUD	BDF-369	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20047017030642279B10109	2026-10-22 18:34:33
+9967	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E280F33620003000000922FA	2026-10-22 18:34:38
+9968	220912	MRS. NOSHABA MYSOORWALA	BEU-060	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2004701B61064227E0F0111	2026-10-22 18:34:41
+9969	082231	PROF. DR. SHAHID RASOOL	CDA-235	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E200470156006422780E0108	2026-10-22 18:34:56
+9970	008223	MR. FAIZAN MANSOOR	BKH-216	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2806890000000025799D116	2026-10-22 18:35:37
+9971	014369	MR. MUSLIM RASHID HABIB	ATW-812	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E28068900000000257981EC9	2026-10-22 18:35:40
+9972	082320	MR. TARIQUE AZIZ	BGK-796	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20047021C70642284750109	2026-10-22 18:36:09
+9973	220049	MRS. SOBIA ABDUL WAHAB	BP-0704	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806894000050175DD388ED	2026-10-22 18:36:20
+9974	220270	MRS. SAMIA MAJEED	KZ-0357	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2806890000000025799C310	2026-10-22 18:37:24
+9975	124709	MR.  SOHAIL ANWAR	BFY-203	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2806894000050175DD8A8EE	2026-10-22 18:39:05
+9976	007810	MR. MUSTAFA HUMAYUN SHEIKH	AACE-814	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047016350642278E3010F	2026-10-22 18:39:23
+9977	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20034120139010008ACFF5D	2026-10-22 18:40:53
+9978	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E2004710D96064221B770111	2026-10-22 18:42:09
+9979	101126	MR. UMEED ALI (H/O) RIFAT OSTO (LATE)	BL-0695	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806890000000025797D984	2026-10-22 18:42:30
+9980	0214012	MR. GHULAM HUSSAIN AGHA	AAEM-558	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20047014F90642277A7010B	2026-10-22 18:43:41
+9981	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200471134906422212A010A	2026-10-22 18:43:54
+9982	006869	MR. ALI RAFIQ CHINOY	CAS-626	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2004701A67064227D15010A	2026-10-22 18:44:07
+9983	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2004710C120642219F30111	2026-10-22 18:44:56
+9984	126334	MR. MAHMOOD YOUSUF	ASC-080	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E28068900000000256448521	2026-10-22 18:45:16
+9985	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2004712946060220A8B010D	2026-10-22 18:45:41
+9986	0213941	MR. MUHAMMAD UMAIR AYUB KHAN	BF-1742	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20047015D2064227880010A	2026-10-22 18:45:43
+9987	007332	MR. SALMAN TAQI	BH-5651	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E200470143F0642276ED010B	2026-10-22 18:46:32
+9988	015512	MR. JAVED SULEMAN	BZF-160	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20047011380642273E6010C	2026-10-22 18:48:11
+9989	220912	MRS. NOSHABA MYSOORWALA	BN-8781	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E200470140D0642276BB010B	2026-10-22 18:48:20
+9990	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806890000000025797F0C1	2026-10-22 18:48:44
+9991	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2004710B9E06422197F010D	2026-10-22 18:49:29
+9992	014734	MR. SHABBIR AKBAR GULAMALI	AAJX-842	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2004710D89064221B6A0110	2026-10-22 18:49:32
+9993	0214012	MR. GHULAM HUSSAIN AGHA	AAEM-558	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047014F90642277A7010B	2026-10-22 18:50:50
+9994	007260	MR. MUHAMMAD HUSSAIN	BVW-205	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E200470100C0642272BA010F	2026-10-22 18:51:04
+9995	006869	MR. ALI RAFIQ CHINOY	CAS-626	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004701A67064227D15010A	2026-10-22 18:53:07
+9996	GUEST-LOG	Unregistered Visitor	E2003098911900900900C06A	RFID Unknown	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2003098911900900900C06A	2026-10-22 18:53:49
+9997	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E200471115A064221F3B010A	2026-10-22 18:53:54
+9998	123188	MR. MOHAMMADI DAUD	BXF-220	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806890000000025798ED94	2026-10-22 18:54:00
+9999	150042	MR. MIAN SHAHZAD AHMED	AAHC-637	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200471159A06422237B0111	2026-10-22 18:54:10
+10000	220540	MRS. FAIZA AURANGZEB	BCZ-581	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2806890000000025799D794	2026-10-22 18:54:35
+10001	220540	MRS. FAIZA AURANGZEB	BNC-916	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E28068900000000257992547	2026-10-22 18:54:35
+10002	082231	PROF. DR. SHAHID RASOOL	CDA-235	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E200470156006422780E0108	2026-10-22 18:54:53
+10003	126139	MR. MOHAMMAD IQBAL QAMAR	BHH-619	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2806894000040175DD7F4EF	2026-10-22 18:55:56
+10004	008223	MR. FAIZAN MANSOOR	BKH-216	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806890000000025799D116	2026-10-22 18:57:55
+10005	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E28068940000403153C06CF9	2026-10-22 18:58:14
+10006	126139	MR. MOHAMMAD IQBAL QAMAR	BHH-619	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806894000040175DD7F4EF	2026-10-22 18:58:15
+10007	014944	MR. FAROOQ ALI KHAN	BPR-612	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2004701054064227302010A	2026-10-22 18:58:18
+10008	115358	MR. OMAR BAWANY	AJE-777	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2806890000000025799D52D	2026-10-22 18:59:30
+10009	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047109BB06422179C010F	2026-10-22 18:59:39
+10010	220705	MRS. RASHIDA MOIEZ SHAIKHALI	CU-4998	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E28068900000000256448418	2026-10-22 18:59:55
+10011	0213730	MR. MUHAMMAD FAIZAN	BL-4898	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2806890000000025797D219	2026-10-22 18:59:59
+10012	014734	MR. SHABBIR AKBAR GULAMALI	AAJX-842	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2004710D89064221B6A0110	2026-10-22 19:00:50
+10013	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E28068940000403153C06CF9	2026-10-22 19:00:56
+10014	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004710AB20642218930114	2026-10-22 19:01:05
+10015	221185	MRS. FATIMA HAFEEZ SHAMSI	AAHF-089	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047012E106422758F010F	2026-10-22 19:01:23
+10016	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E280F3362000600000663E65	2026-10-22 19:02:31
+10017	016954	MR. MUHAMMAD AJAZ	BM-3615	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004701D37064227FE50109	2026-10-22 19:02:37
+10018	113431	MR. HUMAYUN QURESHI	AAHX-088	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20047026150642288C30110	2026-10-22 19:02:53
+10019	006191	MR. NAVED SALIM AHMED	BYZ-105	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20047014380642276E60111	2026-10-22 19:03:23
+10020	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2004714D4406820AA0E010A	2026-10-22 19:04:34
+10021	115506	MR.AUNDLIB ELIAS DADA	BKS-622	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2806890000000025797EA89	2026-10-22 19:04:41
+10022	113431	MR. HUMAYUN QURESHI	AAHX-088	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047026150642288C30110	2026-10-22 19:05:10
+10023	123063	MR. MUHAMMAD YOUSUF ADIL	BH-3991	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806890000000025799246C	2026-10-22 19:05:39
+10024	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2004701DD50642280830112	2026-10-22 19:05:53
+10025	006096	MR. ADNAN NASEEM KALIA	EAB-967	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20047015060642277B4010C	2026-10-22 19:06:27
+10026	124709	MR.  SOHAIL ANWAR	BFY-203	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806894000050175DD8A8EE	2026-10-22 19:07:51
+10027	006159	MR. JUNAID YOUSUF	BXL-924	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2806890000000025797EE48	2026-10-22 19:08:12
+10028	082223	R/ADM RIZWAN AHMED KHAN SI(M)	AABG-273	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004701AD7064227D85010C	2026-10-22 19:08:23
+10029	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E280F3362000600000684977	2026-10-22 19:09:05
+10030	006441	MR. LATIF AMIN BAWANY	AZD-798	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20047115190642222FA010D	2026-10-22 19:09:31
+10031	082312	MR. CAPT. AHMED SHABIEH-UL- KABEER	AXS-821	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047114760642222570113	2026-10-22 19:10:11
+10032	006096	MR. ADNAN NASEEM KALIA	EAB-967	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047015060642277B4010C	2026-10-22 19:10:14
+10033	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2003412012CFE0007B1E549	2026-10-22 19:10:45
+10034	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E280F3362000600000684977	2026-10-22 19:11:47
+10035	124042	MR. HAMZA AHMAD DADA	BM-7218	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806890000000025798ECB7	2026-10-22 19:12:24
+10036	220293	MRS. UMAIMA KHUHRO	AAKY-957	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200470224B0642284F90112	2026-10-22 19:13:06
+10037	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	CLUB GATE (ENTRY)	\N	\N	\N	E2003412012CFE0007B1E549	2026-10-22 19:14:13
+10038	082172	COL. JUNAID SALAH-UD-DIN SWATI	ICT-0485	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E28068900000000256448650	2026-10-22 19:14:36
+10039	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200471144D06422222E0108	2026-10-22 19:15:03
+10040	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20034120134FF00082B8703	2026-10-22 19:16:14
+10041	190294	MRS. SADIA HUSSAIN	BCY-032	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806894000040175DD400F0	2026-10-22 19:17:14
+10042	125123	DR. SHAHID HASAN SIDDIQUI	AAED-296	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20047114920642222730107	2026-10-22 19:17:44
+10043	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2004701DDB0642280890113	2026-10-22 19:18:41
+10044	082312	MR. CAPT. AHMED SHABIEH-UL- KABEER	AXS-821	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047114760642222570113	2026-10-22 19:18:55
+10045	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20034120139F50004CBBA46	2026-10-22 19:21:19
+10046	GUEST-LOG	Unregistered Visitor	E2002075641201710880BD48	RFID Unknown	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2002075641201710880BD48	2026-10-22 19:22:04
+10047	0213501	DR. SHAHAB IMAM	AAFV-919	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2004711565064222346010F	2026-10-22 19:23:01
+10048	0214638	MR. FAHAD WAHID MOTEN	AAAR-284	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2004701B55064227E03010F	2026-10-22 19:23:37
+10049	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20047103BC06422119D0110	2026-10-22 19:24:07
+10050	221206	MRS. ANAM HAMMAD MANDAVIA	BM-8646	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047017450642279F3010B	2026-10-22 19:26:39
+10051	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004710A5F064221840010B	2026-10-22 19:26:55
+10052	007881	MR. MUHAMMAD ASIM BILVANI	BL-6980	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2004700E740642271220109	2026-10-22 19:27:08
+10053	122524	MR. MUHAMMAD ASLAM SANJRANI	AACS-525	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004701879064227B270111	2026-10-22 19:27:27
+10054	007835	MR. SAEED HANNAN	LB-7828	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806890000000025798F8AC	2026-10-22 19:27:45
+10055	0912242	MRS. NUZHAT KHAN	BWL-223	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806894000050175DD6F0ED	2026-10-22 19:28:30
+10056	014944	MR. FAROOQ ALI KHAN	BPR-612	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004701054064227302010A	2026-10-22 19:28:36
+10057	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047115010642222E20107	2026-10-22 19:28:52
+10058	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20047105CA0642213AB010D	2026-10-22 19:29:14
+10059	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047106510642214320108	2026-10-22 19:29:37
+10060	014734	MR. SHABBIR AKBAR GULAMALI	AAGG-842	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20047013380642275E6010D	2026-10-22 19:29:47
+10061	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E200470351006823DB38010D	2026-10-22 19:29:59
+10062	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2803821200060260A99C57E	2026-10-22 19:30:21
+10063	0214545	MR. WAHEED ALI BURKI	AAKU-977	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004701D9006422803E010F	2026-10-22 19:30:58
+10064	0713437	MR. JUSTICE AFTAB AHMED GORAR	BYK-087	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E200470172E0642279DC0107	2026-10-22 19:31:06
+10065	014734	MR. SHABBIR AKBAR GULAMALI	AAGG-842	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047013380642275E6010D	2026-10-22 19:31:09
+10066	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20047112210642220020113	2026-10-22 19:31:58
+10067	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E2004701DD50642280830112	2026-10-22 19:34:06
+10068	221119	MRS. ERUM ESBHANI	BLD-070	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047019C8064227C76010E	2026-10-22 19:34:48
+10069	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E28068940000403153C090F9	2026-10-22 19:34:58
+10070	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047112210642220020113	2026-10-22 19:35:23
+10071	007145	MR. SHAIKH DANISH JAVED	AAGZ-414	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2004701298064227546010B	2026-10-22 19:35:32
+10072	0213491	DR. FAISAL FAIYAZ ZUBERI	BH-3998	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20047014C4064227772010D	2026-10-22 19:35:51
+10073	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E2004701DD50642280830112	2026-10-22 19:36:06
+10074	0214345	MR. MOHAMMAD MUJTABA	EAC-638	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047014390642276E7010C	2026-10-22 19:36:24
+10075	124172	MR. KAIZAR H. KHANDWALA	BYQ-410	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E280689000000002564446B5	2026-10-22 19:37:35
+10076	0213491	DR. FAISAL FAIYAZ ZUBERI	BH-3998	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047014C4064227772010D	2026-10-22 19:38:16
+10077	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E2004701DB70642280650113	2026-10-22 19:38:38
+10078	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047110FD064221EDE0109	2026-10-22 19:39:42
+10079	014734	MR. SHABBIR AKBAR GULAMALI	AAJX-842	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2004710D89064221B6A0110	2026-10-22 19:39:47
+10080	007299	MR. ASKARI ASGHAR AGHA	AACT-050	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047019DE064227C8C0113	2026-10-22 19:40:00
+10081	102281	MRS. RAFIA ZAIN	AAAU-562	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E200470159C06422784A010A	2026-10-22 19:41:23
+10082	015128	MR. MIR BABAR ALI	BZW-401	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2004701E9D06422814B010B	2026-10-22 19:41:46
+10083	007472	MR. MOHAMMAD RAHEEL	BJ-0311	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806890000000025797E34E	2026-10-22 19:44:21
+10084	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20034120129F6000FE06F26	2026-10-22 19:45:13
+10085	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E280F33620003000000B433D	2026-10-22 19:47:52
+10086	007515	MR. MINHAS ASHFAQ BANDUKDA	BL-5983	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047112310642220120112	2026-10-22 19:48:18
+10087	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E2004710661064221442010B	2026-10-22 19:49:40
+10088	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047103B2064221193010C	2026-10-22 19:52:13
+10089	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004710A1E0642217FF010C	2026-10-22 19:54:09
+10090	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E280F3362000600000554DF9	2026-10-22 19:55:43
+10091	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004710F85064221D66010D	2026-10-22 19:56:14
+10092	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E280F3362000600000661ACA	2026-10-22 19:56:45
+10093	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20034120133010000D75E83	2026-10-22 19:57:09
+10094	0214638	MR. FAHAD WAHID MOTEN	AAAR-284	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2004701B55064227E03010F	2026-10-22 19:57:25
+10095	007392	MR. MANSOOR ZAKARIA FAZIL	BMJ-113	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2004701A3C064227CEA0110	2026-10-22 19:57:50
+10096	124918	MR. ABDUL KALEEM BAAKZA	BF-7234	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806890000000025799CC04	2026-10-22 19:58:17
+10097	125415	MR. AMIR MUHAMMAD ALI DHANJEE	AABL-530	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047013F30642276A10112	2026-10-22 19:58:30
+10098	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806890000000025799D2C4	2026-10-22 19:59:54
+10099	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047115AF0642223900115	2026-10-22 20:00:32
+10100	124136	MR. MUHAMMED IQBAL KHAN	BEC-801	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806890000000025798F801	2026-10-22 20:01:40
+10101	007027	MR. ZAIN ANWAR	BNP-708	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2806890000000025798217F	2026-10-22 20:03:36
+10102	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2003412012CFE0007B1E549	2026-10-22 20:03:49
+10103	0213971	MR. FAIZ AHMED	AAAK-466	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E200470189E064227B4C010D	2026-10-22 20:06:43
+10104	0412748	MISS. ZAHRA SOHAIL MUKHI	AB-0217	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20047015A006422784E010D	2026-10-22 20:06:53
+10105	007250	MR. MOHAMMAD AMEEN MOON	BN-4154	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047016450642278F30111	2026-10-22 20:07:01
+10106	007354	MR. SAJJAD AHMED AIJAZI	BL-5480	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E28068900000000256447F84	2026-10-22 20:08:43
+10107	115959	MR. SHEZI NACKVI	BSC-396	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E28068900000000257992995	2026-10-22 20:09:06
+10108	113181	MR. HASAN MERCHANT	AAAZ-9585	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004701812064227AC00106	2026-10-22 20:10:07
+10109	0214985	MR. HAMAS ESBHANI	AAJY-528	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047021110642283BF0107	2026-10-22 20:10:32
+10110	125472	MR. RAIS JAHANGIR AHMED	BJ-4889	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E28068900000000257982126	2026-10-22 20:12:11
+10111	124089	MR. SHAKIL ASLAM	AAGE-503	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047015290642277D70109	2026-10-22 20:12:22
+10112	006969	MR. MUHAMMAD HASHIM MUMTAZ	AAHM-969	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047012880642275360112	2026-10-22 20:14:30
+10113	082320	MR. TARIQUE AZIZ	BGK-796	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047021C70642284750109	2026-10-22 20:17:17
+10114	220437	MRS. AMBER MALIK	BQF-173	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E28068900000000256448B79	2026-10-22 20:17:39
+10115	220217	MRS. SARA MOOSA	BDS-527	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2806890000000025798F9CC	2026-10-22 20:17:43
+10116	0215095	MR. MUHAMMAD SAAD BANDUKDA	BPE-150	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20047021D40642284820106	2026-10-22 20:18:03
+10117	004697	MR. OMER SAEED	BG-4059	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806894000050175DD248EF	2026-10-22 20:18:33
+10118	007261	MR. MUHAMMAD AHMED IQBAL BALOCH	BYY-782	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806890000000025799CED8	2026-10-22 20:19:03
+10119	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E280F3362000600000604A0F	2026-10-22 20:19:17
+10120	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E200471018D064220F6E010C	2026-10-22 20:19:33
+10121	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806894000050286F12D142	2026-10-22 20:19:41
+10122	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2004701A9A064227D480115	2026-10-22 20:20:57
+10123	GUEST-LOG	Unregistered Visitor	E21AC5000000000000000000	RFID Unknown	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E21AC5000000000000000000	2026-10-22 20:21:06
+10124	0214027	MR. OSAMA SHAMIM	BYT-950	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2806890000000025797EF3D	2026-10-22 20:24:27
+10125	125401	MR. GHIASUDDIN AHMED SHAIKH	AZA-176	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2004701B51064227DFF0105	2026-10-22 20:24:43
+10126	880102	MR. ASIF IQBAL MEMON	BEV-427	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047021E70642284950113	2026-10-22 20:25:52
+10127	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E200471115A064221F3B010A	2026-10-22 20:26:51
+10128	220035	MRS. HUNEZA FAROOQ	EAB-333	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806894000050175DD498EE	2026-10-22 20:27:58
+10129	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E280F33620003000000B60E7	2026-10-22 20:28:27
+10130	006159	MR. JUNAID YOUSUF	BXL-924	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806890000000025797EE48	2026-10-22 20:28:29
+10131	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20034120139F50004CBBE24	2026-10-22 20:29:37
+10132	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200470190E064227BBC010D	2026-10-22 20:29:52
+10133	220912	MRS. NOSHABA MYSOORWALA	BEU-060	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004701B61064227E0F0111	2026-10-22 20:30:30
+10134	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20047115250642223060111	2026-10-22 20:31:05
+10135	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E20034120139010008ACFF5D	2026-10-22 20:32:08
+10136	007696	MR. NADIR HASAN	BFB-040	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E28068900000000256445C4A	2026-10-22 20:33:17
+10137	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E2004712946060220A8B010D	2026-10-22 20:33:49
+10138	0213941	MR. MUHAMMAD UMAIR AYUB KHAN	BF-1742	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047015D2064227880010A	2026-10-22 20:33:50
+10139	0412693	MISS. MYRA IMAN BILAL KHAN	BG-1018	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2004710DBD064221B9E0116	2026-10-22 20:34:54
+10140	GUEST-LOG	Unregistered Visitor	E2002075641201710880BD48	RFID Unknown	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2002075641201710880BD48	2026-10-22 20:35:13
+10141	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200471138006823B9A8010D	2026-10-22 20:35:46
+10142	123720	MR. MUMTAZ AHMED	AADD-969	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004701A2A064227CD80109	2026-10-22 20:35:46
+10143	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E2004714D4406820AA0E010A	2026-10-22 20:35:54
+10144	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004702265064228513010F	2026-10-22 20:36:03
+10145	0713437	MR. JUSTICE AFTAB AHMED GORAR	BYK-087	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200470172E0642279DC0107	2026-10-22 20:36:32
+10146	0713437	MR. JUSTICE AFTAB AHMED GORAR	BYK-087	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E200470172E0642279DC0107	2026-10-22 20:38:58
+10147	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E280F3362000600000684977	2026-10-22 20:39:19
+10148	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E28068940000503153D6C88A	2026-10-22 20:40:20
+10149	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E280F3362000600000684977	2026-10-22 20:42:38
+10150	102048	MRS. BINISH UMAIR MOON	BCT-982	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E280689000000002579929A8	2026-10-22 20:42:43
+10151	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004710C120642219F30111	2026-10-22 20:43:15
+10152	006980	MR. M. IRFAN MOHAMMEDI	BM-5636	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E28068900000000257982F72	2026-10-22 20:43:23
+10153	0412693	MISS. MYRA IMAN BILAL KHAN	AAHP-101	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2004710CA9064221A8A0109	2026-10-22 20:46:12
+10154	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20047113160642220F70114	2026-10-22 20:46:38
+10155	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E280F33620003000000B433D	2026-10-22 20:47:21
+10156	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E2004710B9E06422197F010D	2026-10-22 20:49:32
+10157	007332	MR. SALMAN TAQI	BH-5651	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200470143F0642276ED010B	2026-10-22 20:50:21
+10158	082231	PROF. DR. SHAHID RASOOL	CDA-235	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E200470156006422780E0108	2026-10-22 20:52:02
+10159	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20034120132F6000F6F39EA	2026-10-22 20:52:14
+10160	0214156	MR. HASAN AHMAD	EAA-321	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2004700ED006422717E0110	2026-10-22 20:53:04
+10161	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20034120131F50004CBD83C	2026-10-22 20:55:01
+10162	115022	DR. MOHAMMAD  FEROZ GADIT	178-218	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806890000000025799D879	2026-10-22 20:55:25
+10163	0412693	MISS. MYRA IMAN BILAL KHAN	AAHP-101	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004710CA9064221A8A0109	2026-10-22 20:55:36
+10164	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E20034120137F50004CBC66D	2026-10-22 20:55:57
+9530	008269	MR. SAAD RIZWANI SHEIKH	BLF-685	RFID Verified (Post-Midnight Adjusted)	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806890000000025644584C	2026-10-22 20:56:01
+10165	220217	MRS. SARA MOOSA	BDS-527	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806890000000025798F9CC	2026-10-22 20:56:05
+10166	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2004710182064220F63010A	2026-10-22 20:56:15
+10167	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E2803821200060260A99C57E	2026-10-22 20:57:05
+10168	006207	MR. AKBAR IQBAL PURI	AP-9	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004701922064227BD00114	2026-10-22 20:58:06
+10169	102281	MRS. RAFIA ZAIN	AAAU-562	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200470159C06422784A010A	2026-10-22 20:59:13
+10170	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E28068940000403153C090F9	2026-10-22 21:01:26
+10171	015233	MR. CYRUS RUSTOM KHURSIGARA	BEE-503	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2004701B8F064227E3D0108	2026-10-22 21:04:09
+10172	007934	MR. MUHAMMAD AZEEM DADA	AJC-762	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004701B56064227E040109	2026-10-22 21:05:33
+10173	007934	MR. MUHAMMAD AZEEM DADA	AQV-879	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004701B46064227DF40107	2026-10-22 21:05:33
+10174	006441	MR. LATIF AMIN BAWANY	AZD-798	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047115190642222FA010D	2026-10-22 21:09:33
+10175	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E280F33620006000006079C9	2026-10-22 21:09:45
+10176	0412748	MISS. ZAHRA SOHAIL MUKHI	AB-0217	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047015A006422784E010D	2026-10-22 21:10:34
+10177	014369	MR. MUSLIM RASHID HABIB	ATW-812	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E28068900000000257981EC9	2026-10-22 21:11:13
+10178	0213971	MR. FAIZ AHMED	AAAK-466	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200470189E064227B4C010D	2026-10-22 21:12:26
+10179	008062	MR. SHAHBAZ MAZHAR SAHTO	BCH-928	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806890000000025799354F	2026-10-22 21:12:44
+10180	220501	MRS. SAMEEN MURTUZA	BPG-860	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E28068900000000257982DDF	2026-10-22 21:13:24
+10181	0213730	MR. MUHAMMAD FAIZAN	BL-4898	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806890000000025797D219	2026-10-22 21:14:19
+10182	123407	MR. PERVEZ  NABI OSTO	BSY-060	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2806890000000025797E025	2026-10-22 21:16:04
+10183	0215095	MR. MUHAMMAD SAAD BANDUKDA	BPE-150	RFID Verified	Exit	REAR GATE (ENTRY)	\N	\N	\N	E20047021D40642284820106	2026-10-22 21:18:40
+10184	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E200471155906422233A010F	2026-10-22 21:19:02
+10185	0213873	MR. MOHAMMAD AMIR KHAN KHOSO	BUV-845	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E200470149D06422774B0111	2026-10-22 21:21:08
+10186	124918	MR. ABDUL KALEEM BAAKZA	BF-7234	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806890000000025799CC04	2026-10-22 21:21:09
+10187	005082	MR. IRFAN MOHSIN	AAJP-493	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047025E106422888F010B	2026-10-22 21:21:50
+10188	GUEST-LOG	Unregistered Visitor	E2006B060000000000000000	RFID Unknown	Exit	REAR GATE (EXIT)	\N	\N	\N	E2006B060000000000000000	2026-10-22 21:22:57
+10189	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200471018D064220F6E010C	2026-10-22 21:24:35
+10190	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004710F41064221D220111	2026-10-22 21:25:22
+10191	126334	MR. MAHMOOD YOUSUF	ASC-080	RFID Verified	Exit	REAR GATE (ENTRY)	\N	\N	\N	E28068900000000256448521	2026-10-22 21:26:03
+10192	005439	MR. JAWED AKHTAR KAZI	HC-0317	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806890000000025799DD1E	2026-10-22 21:26:37
+10193	0213873	MR. MOHAMMAD AMIR KHAN KHOSO	BUV-845	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200470149D06422774B0111	2026-10-22 21:26:50
+10194	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E280F33620006000006684C5	2026-10-22 21:26:55
+10195	006402	MR. MURTAZA HABIB	BM-7065	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806890000000025797E712	2026-10-22 21:27:04
+10196	220921	MRS. SANA RAHIM	AABU-095	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2004701A47064227CF50109	2026-10-22 21:27:16
+10197	121326	MR. A. SATTAR COCHINWALA	BEA-281	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2004701947064227BF5010D	2026-10-22 21:29:25
+10198	007392	MR. MANSOOR ZAKARIA FAZIL	BMJ-113	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2004701A3C064227CEA0110	2026-10-22 21:29:31
+10199	123811	MR. SHAHIN IQBAL	BUP-743	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806894000050175DD074F0	2026-10-22 21:29:57
+10200	126139	MR. MOHAMMAD IQBAL QAMAR	BHH-619	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2806894000040175DD7F4EF	2026-10-22 21:30:03
+10201	115358	MR. OMAR BAWANY	AJE-777	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806890000000025799D52D	2026-10-22 21:30:19
+10202	115358	MR. OMAR BAWANY	BG-4079	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806890000000025799D468	2026-10-22 21:30:19
+10203	121326	MR. A. SATTAR COCHINWALA	BEA-281	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004701947064227BF5010D	2026-10-22 21:30:53
+10204	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047103BC06422119D0110	2026-10-22 21:31:20
+10205	126139	MR. MOHAMMAD IQBAL QAMAR	BHH-619	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806894000040175DD7F4EF	2026-10-22 21:32:24
+10206	0213501	DR. SHAHAB IMAM	AAFV-919	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004711565064222346010F	2026-10-22 21:32:59
+10207	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E280F3362000600000661ACA	2026-10-22 21:34:08
+10208	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	CLUB GATE (ENTRY)	\N	\N	\N	E20034120139F50004CBBA46	2026-10-22 21:35:12
+10209	014734	MR. SHABBIR AKBAR GULAMALI	AAJX-842	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2004710D89064221B6A0110	2026-10-22 21:35:58
+10210	GUEST-LOG	Unregistered Visitor	E200F336200060000016D86E	RFID Unknown	Exit	REAR GATE (EXIT)	\N	\N	\N	E200F336200060000016D86E	2026-10-22 21:37:37
+10211	006666	MR. SHAHID AHMED	ARJ-654	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806890000000025797DA33	2026-10-22 21:39:26
+10212	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20034120139F50004CBBA46	2026-10-22 21:40:07
+10213	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20047105A5064221386010F	2026-10-22 21:41:27
+10214	GUEST-LOG	Unregistered Visitor	E2003098911900900900C06A	RFID Unknown	Exit	REAR GATE (EXIT)	\N	\N	\N	E2003098911900900900C06A	2026-10-22 21:42:22
+10215	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20034120134FF00082B8703	2026-10-22 21:42:26
+10216	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E280F3362000600000554DF9	2026-10-22 21:42:39
+10217	015128	MR. MIR BABAR ALI	BZW-401	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004701E9D06422814B010B	2026-10-22 21:43:58
+10218	007027	MR. ZAIN ANWAR	BNP-708	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806890000000025798217F	2026-10-22 21:44:47
+10219	006191	MR. NAVED SALIM AHMED	BYZ-105	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047014380642276E60111	2026-10-22 21:46:22
+10220	006191	MR. NAVED SALIM AHMED	AJT-230	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2806894000040175DD1C4EF	2026-10-22 21:46:26
+10221	007617	MR. HASAN ALAM	AAHK-568	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004702595064228843010A	2026-10-22 21:47:12
+10222	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20047113EA0642221CB010A	2026-10-22 21:47:47
+10223	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E20034120129F6000FE06F26	2026-10-22 21:48:48
+10224	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2003412012F1700004715D2	2026-10-22 21:48:58
+10225	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047112210642220020113	2026-10-22 21:49:34
+10226	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E20034120137F6000F738C5B	2026-10-22 21:51:43
+10227	007881	MR. MUHAMMAD ASIM BILVANI	BL-6980	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2004700E740642271220109	2026-10-22 21:52:12
+10228	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E280F33620006000006079C9	2026-10-22 21:54:00
+10229	220185	MRS. SAMINA  IMTIAZ BANDAY	AUW-355	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806894000050175DD708ED	2026-10-22 21:54:10
+10230	015512	MR. JAVED SULEMAN	BZF-160	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047011380642273E6010C	2026-10-22 21:54:43
+10231	123604	MR. GUL HASSAN JAN	EAB-101	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E28068900000000256445A1E	2026-10-22 21:57:20
+10232	125123	DR. SHAHID HASAN SIDDIQUI	AAED-296	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047114920642222730107	2026-10-22 21:57:24
+10233	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004701DD50642280830112	2026-10-22 22:00:40
+10234	007260	MR. MUHAMMAD HUSSAIN	BVW-205	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E200470100C0642272BA010F	2026-10-22 22:00:46
+10235	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004700D31064226FDF010A	2026-10-22 22:01:35
+10236	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E20034120139F50004CBBE24	2026-10-22 22:03:06
+10237	006363	MR. MUHAMMAD NOMAN SAIGAL	BCY-010	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806890000000025799367E	2026-10-22 22:03:57
+10238	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2806894000050175DD6B0EF	2026-10-22 22:04:54
+10239	124582	MR. BASHIR ALI ABDULLA	AXW-898	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E28068900000000257981F92	2026-10-22 22:16:20
+10240	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E200471155906422233A010F	2026-10-22 22:16:44
+10241	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E2004710182064220F63010A	2026-10-22 22:17:34
+10242	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047105CA0642213AB010D	2026-10-22 22:18:00
+10243	015233	MR. CYRUS RUSTOM KHURSIGARA	BEE-503	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2004701B8F064227E3D0108	2026-10-22 22:21:28
+10244	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2003412012FF6000F739499	2026-10-22 22:22:36
+10245	0213415	MR. ABDUL GHAFFAR KHAN JAKHRANI	SC-2523	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E200470197F064227C2D010D	2026-10-22 22:23:13
+10246	0214027	MR. OSAMA SHAMIM	BYT-950	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806890000000025797EF3D	2026-10-22 22:25:30
+10247	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047115250642223060111	2026-10-22 22:31:39
+10248	082174	MR. MOHAMMAD YOUNIS	SPA-874	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806890000000025799282D	2026-10-22 22:33:23
+10249	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Entry	REAR GATE (ENTRY)	\N	\N	\N	E280F33620003000000B2123	2026-10-22 22:33:34
+10250	113802	MR. M. RAFIQ CHINOY	BKE-648	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20047017F3064227AA10109	2026-10-22 22:34:36
+10251	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E28068900000000257982AD7	2026-10-22 22:34:43
+10252	GUEST-LOG	Unregistered Visitor	E200F336200060000016D86E	RFID Unknown	Entry	REAR GATE (ENTRY)	\N	\N	\N	E200F336200060000016D86E	2026-10-22 22:37:51
+10253	123407	MR. PERVEZ  NABI OSTO	BSY-060	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806890000000025797E025	2026-10-22 22:38:16
+10254	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E20034120132F6000F6F39EA	2026-10-22 22:39:45
+10255	GUEST-LOG	Unregistered Visitor	E200F336200060000016D86E	RFID Unknown	Exit	REAR GATE (EXIT)	\N	\N	\N	E200F336200060000016D86E	2026-10-22 22:40:08
+10256	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E2004701ACE064227D7C0110	2026-10-22 22:42:11
+10257	220015	MRS. NAFEESA ABDUL SAMAD	BJ-2520	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806894000040175DD3DCEE	2026-10-22 22:42:19
+10258	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E28068940000503153D6C88A	2026-10-22 22:42:27
+10259	0214156	MR. HASAN AHMAD	EAA-321	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2004700ED006422717E0110	2026-10-22 22:44:54
+10260	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2004701A9A064227D480115	2026-10-22 22:48:06
+10261	124163	MR. ALI A. RAHIM	BM-5990	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806890000000025799337E	2026-10-22 22:49:36
+10262	220270	MRS. SAMIA MAJEED	KZ-0357	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806890000000025799C310	2026-10-22 22:50:17
+10263	0713437	MR. JUSTICE AFTAB AHMED GORAR	BYK-087	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E200470172E0642279DC0107	2026-10-22 22:57:12
+10264	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E20047105A5064221386010F	2026-10-22 22:59:03
+10265	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047113160642220F70114	2026-10-22 23:04:26
+10266	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E280F33620003000000B2123	2026-10-22 23:04:39
+10267	0213730	MR. MUHAMMAD FAIZAN	BL-4898	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E2806890000000025797D219	2026-10-22 23:04:55
+10268	0213730	MR. MUHAMMAD FAIZAN	BL-4898	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E2806890000000025797D219	2026-10-22 23:06:20
+10269	GUEST-LOG	Unregistered Visitor	E200F3362000600000169FC4	RFID Unknown	Entry	REAR GATE (ENTRY)	\N	\N	\N	E200F3362000600000169FC4	2026-10-22 23:06:25
+10270	014556	MR. SAQIB NASEEM	BK-3532	RFID Verified	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2806894000050175DD4BCEE	2026-10-22 23:07:49
+10271	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047113EA0642221CB010A	2026-10-22 23:08:25
+10272	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E280F33620006000005F1CF3	2026-10-22 23:14:53
+10273	GUEST-LOG	Unregistered Visitor	E280ECD540D4B76CC068CCFF	RFID Unknown	Entry	REAR GATE (ENTRY)	\N	\N	\N	E280ECD540D4B76CC068CCFF	2026-10-22 23:14:59
+10274	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	CLUB GATE (EXIT)	\N	\N	\N	E2003412012F1700004715D2	2026-10-22 23:16:04
+10275	0213415	MR. ABDUL GHAFFAR KHAN JAKHRANI	SC-2523	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E200470197F064227C2D010D	2026-10-22 23:23:33
+10276	113802	MR. M. RAFIQ CHINOY	BKE-648	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047017F3064227AA10109	2026-10-22 23:33:19
+10277	113802	MR. M. RAFIQ CHINOY	BKE-648	RFID Verified	Entry	REAR GATE (ENTRY)	\N	\N	\N	E20047017F3064227AA10109	2026-10-22 23:35:40
+10278	221175	MRS. MOMINA TALHA	BYZ-162	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2806890000000025797E9AC	2026-10-22 23:41:28
+10279	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	REAR GATE (EXIT)	\N	\N	\N	E20034120137F6000F738C5B	2026-10-22 23:41:55
+10280	113802	MR. M. RAFIQ CHINOY	BKE-648	RFID Verified	Exit	REAR GATE (EXIT)	\N	\N	\N	E20047017F3064227AA10109	2026-10-22 23:54:55
+10281	005493	MR. ASIM MANSOOR KHAN	BRK-120	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E280689000000002564489EC	2026-10-22 23:59:00
+10283	240061	DR. ISMAT ARA KHURSHID	BJL-081	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E2806894000040175DD46CEE	2026-10-22 23:59:00
+10284	0213701	MR. NADIR KHAN	CAG-923	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E2806890000000025797E2D5	2026-10-22 23:59:00
+10285	008186	MR. GHULAM AAMIR BALOCH	BYF-742	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E28068900000000256448928	2026-10-22 23:59:00
+10286	007134	MR. HASSAN MUNIR QURESHI	BDE-581	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E280689000000002579936EE	2026-10-22 23:59:00
+10287	220243	MRS. SHARMEEN MAHMUD	BDF-369	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E20047017030642279B10109	2026-10-22 23:59:00
+10288	115042	MR. SAJID HAROON	BS-1199	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E2806890000000025798F7CC	2026-10-22 23:59:00
+10289	006191	MR. NAVED SALIM AHMED	AJT-230	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E2806894000040175DD1C4EF	2026-10-22 23:59:00
+10290	115506	MR.AUNDLIB ELIAS DADA	BKS-622	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E2806890000000025797EA89	2026-10-22 23:59:00
+10291	220540	MRS. FAIZA AURANGZEB	BCZ-581	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E2806890000000025799D794	2026-10-22 23:59:00
+10292	220540	MRS. FAIZA AURANGZEB	BNC-916	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E28068900000000257992547	2026-10-22 23:59:00
+10293	220912	MRS. NOSHABA MYSOORWALA	BN-8781	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E200470140D0642276BB010B	2026-10-22 23:59:00
+10294	100659	MRS. TEHMINA NADEEM	BUY-464	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E28068900000000256448082	2026-10-22 23:59:00
+10295	221175	MRS. MOMINA TALHA	BYZ-162	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E2806890000000025797E9AC	2026-10-22 23:59:00
+10296	UNREGISTERED	Unregistered Visitor	UNREGISTERED	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E20034120131F50004CBD83C	2026-10-22 23:59:00
+10297	UNREGISTERED	Unregistered Visitor	UNREGISTERED	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E2003412012CF40005C48223	2026-10-22 23:59:00
+10298	UNREGISTERED	Unregistered Visitor	UNREGISTERED	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E2004711341064222122010D	2026-10-22 23:59:00
+10299	UNREGISTERED	Unregistered Visitor	UNREGISTERED	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E2004701DDB0642280890113	2026-10-22 23:59:00
+10300	UNREGISTERED	Unregistered Visitor	UNREGISTERED	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E2803821200064260B10A9EF	2026-10-22 23:59:00
+10301	UNREGISTERED	Unregistered Visitor	UNREGISTERED	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E280F33620003000000B3DAA	2026-10-22 23:59:00
+10302	UNREGISTERED	Unregistered Visitor	UNREGISTERED	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E2806894000050175DD6B0EF	2026-10-22 23:59:00
+10303	UNREGISTERED	Unregistered Visitor	UNREGISTERED	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E2003412012FF6000F739499	2026-10-22 23:59:00
+10304	UNREGISTERED	Unregistered Visitor	UNREGISTERED	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E200F3362000600000169FC4	2026-10-22 23:59:00
+10305	UNREGISTERED	Unregistered Visitor	UNREGISTERED	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E280ECD540D4B76CC068CCFF	2026-10-22 23:59:00
+10306	UNREGISTERED	Unregistered Visitor	UNREGISTERED	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E280F33620003000000922FA	2026-10-22 23:59:00
+10307	UNREGISTERED	Unregistered Visitor	UNREGISTERED	Auto Midnight Exit (11:59 PM Cutoff)	Exit	System Auto-Clearance	\N	\N	\N	E21AC5000000000000000000	2026-10-22 23:59:00
+10308	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2004710CE6064221AC7010F	2026-10-23 00:15:46
+10309	221175	MRS. MOMINA TALHA	BYZ-162	RFID Verified	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2806890000000025797E9AC	2026-10-23 00:22:15
+10310	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	CLUB GATE (ENTRY)	\N	\N	\N	E2003412012FF6000F739499	2026-10-23 00:31:55
+10311	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	CLUB GATE (ENTRY)	\N	\N	\N	E2003412012FF6000F739499	2026-10-23 00:37:32
+10312	189737	MISS ROMANA KHAN	BNL-824	Manual Exit [Ref #7314]	Exit	Gate-01-Out	\N	\N	\N	E2806890000000025798E319	2026-10-21 08:18:00
+10313	221167	DR. UROOJ  MUMTAZ KHAN	BH-7759	Manual Exit [Ref #6713]	Exit	Gate-01-Out	\N	\N	\N	E2806890000000025799E7D3	2026-10-20 11:00:00
+10314	015317	DR.  ASAD  JAVAID KHAN	AACE-277	RFID Verified	Entry	REAR GATE ( ENTRY )	\N	\N	\N	E20047018DA064227B88010A	2026-10-23 05:14:01
+10315	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE ( ENTRY )	\N	\N	\N	E200470221F0642284CD010A	2026-10-23 05:52:53
+10316	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE ( ENTRY )	\N	\N	\N	E20047110B1064221E920116	2026-10-23 05:55:50
+10317	008057	MR. MUHAMMAD TABISH ASHFAQ	BJU-950	RFID Verified	Entry	REAR GATE ( ENTRY )	\N	\N	\N	E2806894000050175DD3CCF0	2026-10-23 06:28:43
+10318	015317	DR.  ASAD  JAVAID KHAN	AACE-277	RFID Verified	Exit	REAR GATE ( EXIT )	\N	\N	\N	E20047018DA064227B88010A	2026-10-23 06:29:43
+10319	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE ( ENTRY )	\N	\N	\N	E2004710A920642218730113	2026-10-23 06:41:53
+10320	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE ( ENTRY )	\N	\N	\N	E2004701928064227BD6010B	2026-10-23 07:00:41
+10321	113937	MR. HUSNAIN LOTIA	BM-0589	RFID Verified	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E28068900000000257982A67	2026-10-23 07:09:01
+10282	240061	DR. ISMAT ARA KHURSHID	BJL-081	RFID Verified (Post-Midnight Adjusted)	Exit	REAR GATE ( EXIT )	\N	\N	\N	E28068900000000257993562	2026-10-23 07:20:15
+10322	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE ( EXIT )	\N	\N	\N	E2004710A920642218730113	2026-10-23 07:28:12
+10323	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	REAR GATE ( ENTRY )	\N	\N	\N	E20034120134F6000F7380FB	2026-10-23 07:29:50
+10324	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	REAR GATE ( EXIT )	\N	\N	\N	E20034120134F6000F7380FB	2026-10-23 07:32:23
+10325	007976	MR. SYED FARJAD SULTAN	CV-9182	RFID Verified	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2806890000000025797EDE1	2026-10-23 07:37:33
+10326	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE ( ENTRY )	\N	\N	\N	E20047103EF0642211D0010D	2026-10-23 07:37:58
+10327	189737	MISS ROMANA KHAN	BNL-824	RFID Verified	Entry	REAR GATE ( ENTRY )	\N	\N	\N	E2806890000000025798E319	2026-10-23 07:38:14
+10328	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE ( EXIT )	\N	\N	\N	E200470221F0642284CD010A	2026-10-23 07:41:38
+10329	006820	MR. NAVEED SULTAN CHAWLA	AAKH-493	RFID Verified	Entry	REAR GATE ( ENTRY )	\N	\N	\N	E2004701800064227AAE010E	2026-10-23 07:57:38
+10330	GUEST-LOG	Unregistered Visitor	E2000015690D01631190A11B	RFID Unknown	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2000015690D01631190A11B	2026-10-23 08:02:22
+10331	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE ( EXIT )	\N	\N	\N	E20047105C40642213A50108	2026-10-23 08:10:47
+10332	006571	MR. IMRAN LATIF	EAA-766	RFID Verified	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2004701973064227C210111	2026-10-23 08:16:43
+10333	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE ( EXIT )	\N	\N	\N	E20047021F106422849F0112	2026-10-23 08:21:48
+10334	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	REAR GATE ( ENTRY )	\N	\N	\N	E2803821200064260B101DA0	2026-10-23 08:25:43
+10335	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Exit	REAR GATE ( EXIT )	\N	\N	\N	E280F336200030000009FD54	2026-10-23 08:25:58
+10336	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	REAR GATE ( ENTRY )	\N	\N	\N	E2003412012FF6000F6F85AB	2026-10-23 08:26:12
+10337	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	REAR GATE ( EXIT )	\N	\N	\N	E2003412012FF6000F6F85AB	2026-10-23 08:32:47
+10338	150109	MR. AMIN GANNY	BJ-7710	RFID Verified	Exit	REAR GATE ( EXIT )	\N	\N	\N	E20047010300642272DE0103	2026-10-23 08:34:36
+10339	006748	MR. M. ALI CHOTTANI	AZH-131	RFID Verified	Entry	REAR GATE ( ENTRY )	\N	\N	\N	E2806890000000025798E405	2026-10-23 08:36:18
+10340	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE ( EXIT )	\N	\N	\N	E20047103EF0642211D0010D	2026-10-23 08:38:03
+10341	006560	MR. MUHAMMAD YOUNUS SHAIKH	AAHG-727	RFID Verified	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E20047012440642274F20109	2026-10-23 08:40:22
+10342	124076	MR. SALIM HARIANAWALA	BXX-144	RFID Verified	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2007DD2B1015FF0B3BA357F	2026-10-23 08:44:29
+10343	150039	MR. KENNETH VINCENT MARSHALL	BT-2233	RFID Verified	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E20047016AD06422795B010C	2026-10-23 08:45:51
+10344	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	REAR GATE ( ENTRY )	\N	\N	\N	E2803821200060260A9A754B	2026-10-23 08:47:00
+10345	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	REAR GATE ( ENTRY )	\N	\N	\N	E20034120136F50004CB3A79	2026-10-23 08:52:28
+10346	126139	MR. MOHAMMAD IQBAL QAMAR	BHH-619	RFID Verified	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2806894000040175DD7F4EF	2026-10-23 08:54:37
+10347	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE ( ENTRY )	\N	\N	\N	E200471147F0642222600114	2026-10-23 08:58:36
+10348	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Exit	REAR GATE ( EXIT )	\N	\N	\N	E280F336200060000067B399	2026-10-23 09:00:37
+10349	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2004710661064221442010B	2026-10-23 09:08:10
+10350	221209	MRS. FAIZA JADOON	BNW-367	RFID Verified	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E200470155F06422780D010A	2026-10-23 09:13:14
+10351	006278	MR. FOUAD YUSUF	CBY-240	RFID Verified	Exit	REAR GATE ( EXIT )	\N	\N	\N	E20047015360642277E40103	2026-10-23 09:14:15
+10352	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE ( EXIT )	\N	\N	\N	E20047106040642213E5010A	2026-10-23 09:16:46
+10353	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2004710FD1064221DB20110	2026-10-23 09:19:45
+10354	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2004710B97064221978010B	2026-10-23 09:22:29
+10355	008057	MR. MUHAMMAD TABISH ASHFAQ	BJU-950	RFID Verified	Exit	REAR GATE ( EXIT )	\N	\N	\N	E2806894000050175DD3CCF0	2026-10-23 09:26:54
+10356	101739	MRS. RABIA ZUBAIR	AAEY-370	RFID Verified	Exit	REAR GATE ( EXIT )	\N	\N	\N	E20047106C80642214A9010F	2026-10-23 09:29:27
+10357	082292	MR. FARAZ AHMED CHANDIO	GSC-458	RFID Verified	Exit	REAR GATE ( EXIT )	\N	\N	\N	E200470164F0642278FD010E	2026-10-23 09:31:05
+10358	126139	MR. MOHAMMAD IQBAL QAMAR	BHH-619	RFID Verified	Exit	CLUB GATE ( ENTRY )	\N	\N	\N	E2806894000040175DD7F4EF	2026-10-23 09:32:16
+10359	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2803821200064260B10285C	2026-10-23 09:33:30
+10360	116982	DR. ARSHAD QAMAR	CBT-741	RFID Verified	Exit	REAR GATE ( EXIT )	\N	\N	\N	E200470100F0642272BD0107	2026-10-23 09:35:26
+10361	102978	MRS. IQRA AZIZ	BHX-296	RFID Verified	Exit	REAR GATE ( EXIT )	\N	\N	\N	E2004701476064227724010B	2026-10-23 09:37:16
+10362	007638	MR. MUHAMMAD ANAS MAKHDOOM	AABC-316	RFID Verified	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E20047015200642277CE010D	2026-10-23 09:42:57
+10363	116982	DR. ARSHAD QAMAR	CBT-741	RFID Verified	Exit	REAR GATE ( EXIT )	\N	\N	\N	E200470100F0642272BD0107	2026-10-23 09:50:15
+10364	015128	MR. MIR BABAR ALI	BZW-401	RFID Verified	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2004701E9D06422814B010B	2026-10-23 09:52:11
+10365	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE ( EXIT )	\N	\N	\N	E200471147F0642222600114	2026-10-23 09:54:21
+10366	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE ( EXIT )	\N	\N	\N	E20047110B1064221E920116	2026-10-23 09:56:41
+10367	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE ( EXIT )	\N	\N	\N	E20047109EA0642217CB010F	2026-10-23 09:57:05
+10368	0213367	MR. MOHAMMED AMIR YUSUFZAI	AADU-866	RFID Verified	Exit	REAR GATE ( EXIT )	\N	\N	\N	E20047010A006422734E0111	2026-10-23 10:07:25
+10369	006748	MR. M. ALI CHOTTANI	AZH-131	RFID Verified	Exit	REAR GATE ( EXIT )	\N	\N	\N	E2806890000000025798E405	2026-10-23 10:15:08
+10370	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E20034120132F6000FE0DC6B	2026-10-23 10:20:47
+10371	221167	DR. UROOJ  MUMTAZ KHAN	BH-7759	RFID Verified	Exit	REAR GATE ( EXIT )	\N	\N	\N	E2806890000000025799E7D3	2026-10-23 10:22:33
+10372	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	REAR GATE ( EXIT )	\N	\N	\N	E2803821200064260B101DA0	2026-10-23 10:27:14
+10373	008223	MR. FAIZAN MANSOOR	BKH-216	RFID Verified	Entry	REAR GATE ( ENTRY )	\N	\N	\N	E2806890000000025799D116	2026-10-23 10:27:49
+10374	101739	MRS. RABIA ZUBAIR	AAEY-370	RFID Verified	Exit	REAR GATE ( EXIT )	\N	\N	\N	E20047106C80642214A9010F	2026-10-23 10:30:10
+10375	0213971	MR. FAIZ AHMED	AAAK-466	RFID Verified	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E200470189E064227B4C010D	2026-10-23 10:33:16
+10376	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2004710D61064221B42010C	2026-10-23 10:34:18
+10377	102381	MRS. SAMAR	BP-5189	RFID Verified	Exit	REAR GATE ( EXIT )	\N	\N	\N	E20047010A30642273510112	2026-10-23 10:37:20
+10378	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE ( EXIT )	\N	\N	\N	E20047105C40642213A50108	2026-10-23 10:38:36
+10379	007011	DR. SHAHRIYAR GHAZANFAR	AAFA-767	RFID Verified	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E200470108E06422733C0105	2026-10-23 10:41:21
+10380	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	CLUB GATE ( ENTRY )	\N	\N	\N	E2803821200064260B10285C	2026-10-23 10:45:50
+10381	121420	MR. ABBAS MOORAJ	BVV-889	RFID Verified	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2806894000040175DD77CEF	2026-10-23 10:47:48
+10382	008062	MR. SHAHBAZ MAZHAR SAHTO	BCH-928	RFID Verified	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2806890000000025799354F	2026-10-23 10:52:37
+10383	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE ( EXIT )	\N	\N	\N	E20047109EA0642217CB010F	2026-10-23 10:55:11
+10384	0213367	MR. MOHAMMED AMIR YUSUFZAI	AADU-866	RFID Verified	Exit	REAR GATE ( EXIT )	\N	\N	\N	E20047010A006422734E0111	2026-10-23 10:56:59
+10385	221175	MRS. MOMINA TALHA	BYZ-162	RFID Verified	Exit	CLUB GATE ( ENTRY )	\N	\N	\N	E2806890000000025797E9AC	2026-10-23 11:00:30
+10386	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E280F336200060000055701E	2026-10-23 11:03:09
+10387	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	REAR GATE ( EXIT )	\N	\N	\N	E20034120136F50004CB3A79	2026-10-23 11:06:35
+10388	GUEST-LOG	Unregistered Visitor	E21A3F000000000000000000	RFID Unknown	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E21A3F000000000000000000	2026-10-23 11:11:54
+10389	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE ( ENTRY )	\N	\N	\N	E2004704CE306823F30B010F	2026-10-23 11:12:41
+10390	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Manual Exit [Ref #10308]	Exit	Gate-01-Out	\N	\N	\N	E2004710CE6064221AC7010F	2026-10-23 00:45:00
+10391	0213659	MR. TAHIR IQBAL KHAN	FV-294	RFID Verified	Entry	REAR GATE ( ENTRY )	\N	\N	\N	E28068900000000257982868	2026-10-23 11:24:52
+10392	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E20047111DD064221FBE0108	2026-10-23 11:28:56
+10393	GUEST-LOG	Unregistered Visitor	E2203B000000000000000000	RFID Unknown	Entry	REAR GATE ( ENTRY )	\N	\N	\N	E2203B000000000000000000	2026-10-23 11:29:40
+10394	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	REAR GATE ( ENTRY )	\N	\N	\N	E20034120129F6000FE08F5F	2026-10-23 11:29:46
+10395	015201	MR. MOHAMMAD AKBER ALI KHAN	AWM-295	RFID Verified	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2004701D5C06422800A010E	2026-10-23 11:36:36
+10396	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2004701ACE064227D7C0110	2026-10-23 11:37:44
+10397	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E200471144D06422222E0108	2026-10-23 11:43:17
+10398	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2004701A9A064227D480115	2026-10-23 11:44:48
+10399	GUEST-LOG	Unregistered Visitor	E200F336200060000016AA1D	RFID Unknown	Entry	REAR GATE ( ENTRY )	\N	\N	\N	E200F336200060000016AA1D	2026-10-23 11:45:44
+10400	230111	MRS. KHURSHEED KOTWAL	BXS-745	RFID Verified	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2004701A09064227CB70110	2026-10-23 11:45:56
+10401	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2003412012FF6000FE067D6	2026-10-23 11:46:03
+10402	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	REAR GATE ( EXIT )	\N	\N	\N	E20034120129F6000FE08F5F	2026-10-23 11:53:09
+10403	0211424	MR. AHMED NABEEL MEMON	BH-3187	RFID Verified	Entry	REAR GATE ( ENTRY )	\N	\N	\N	E2806894000040175DD0ACEF	2026-10-23 12:05:24
+10404	0213315	MR. AHSAN MERCHANT	AAAQ-187	RFID Verified	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2004701876064227B24010A	2026-10-23 12:06:08
+10405	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	REAR GATE ( ENTRY )	\N	\N	\N	E20047103CE0642211AF010D	2026-10-23 12:08:28
+10406	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	REAR GATE ( EXIT )	\N	\N	\N	E2803821200060260A9A754B	2026-10-23 12:11:59
+10407	0211424	MR. AHMED NABEEL MEMON	BH-3187	RFID Verified	Exit	REAR GATE ( EXIT )	\N	\N	\N	E2806894000040175DD0ACEF	2026-10-23 12:16:06
+10408	014556	MR. SAQIB NASEEM	BK-3532	RFID Verified	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2806894000050175DD4BCEE	2026-10-23 12:20:20
+10409	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2003412012F1700004715D2	2026-10-23 12:22:13
+10410	007987	MR. KASHIF MERCHANT	BDR-658	RFID Verified	Entry	REAR GATE ( ENTRY )	\N	\N	\N	E2806894000050175DD1C4F0	2026-10-23 12:25:03
+10411	008223	MR. FAIZAN MANSOOR	BKH-216	RFID Verified	Exit	REAR GATE ( EXIT )	\N	\N	\N	E2806890000000025799D116	2026-10-23 12:25:13
+10412	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E20047110FD064221EDE0109	2026-10-23 12:32:40
+10413	007987	MR. KASHIF MERCHANT	BDR-658	RFID Verified	Exit	REAR GATE ( EXIT )	\N	\N	\N	E2806894000050175DD1C4F0	2026-10-23 12:34:55
+10414	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E200471112E064221F0F0108	2026-10-23 12:44:05
+10415	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2004711341064222122010D	2026-10-23 12:50:44
+10416	015128	MR. MIR BABAR ALI	BZW-401	RFID Verified	Exit	CLUB GATE ( ENTRY )	\N	\N	\N	E2004701E9D06422814B010B	2026-10-23 12:50:56
+10417	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E280F3362000600000660877	2026-10-23 12:53:11
+10418	113431	MR. HUMAYUN QURESHI	AAHX-088	RFID Verified	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E20047026150642288C30110	2026-10-23 12:55:08
+10419	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E280F3362000600000675013	2026-10-23 13:00:11
+10420	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E280F33620003000000B2211	2026-10-23 13:00:58
+10421	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2004710A5F064221840010B	2026-10-23 13:01:11
+10422	015317	DR.  ASAD  JAVAID KHAN	AACE-277	RFID Verified	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E20047018DA064227B88010A	2026-10-23 13:03:46
+10423	006207	MR. AKBAR IQBAL PURI	AP-9	RFID Verified	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2004701922064227BD00114	2026-10-23 13:05:12
+10424	0214887	MR. MUHAMMAD AYAN SAIGAL	BP-7595	RFID Verified	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E20047010640642273120107	2026-10-23 13:07:49
+10425	007059	MR. AHMAD JABRAN SIDDIQUI	SB-8795	RFID Verified	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E20047015D6064227884010E	2026-10-23 13:11:48
+10426	GUEST-LOG	Unregistered Visitor	E200001D750801791450A015	RFID Unknown	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E200001D750801791450A015	2026-10-23 13:16:12
+10427	230499	MRS. AFSHAN KHALID	BH-1013	RFID Verified	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2806894000040175DD3A4EE	2026-10-23 13:16:49
+10428	102605	MRS. MANAAL RAFI	AAHS-169	RFID Verified	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E20047017E8064227A96010E	2026-10-23 13:20:31
+10429	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2803821200064260B10FE7B	2026-10-23 13:22:33
+10430	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2803821200064260D05C21E	2026-10-23 13:23:19
+10431	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Commercial Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E280F3362000600000692CAA	2026-10-23 13:26:02
+10432	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E20047104180642211F9010A	2026-10-23 13:29:17
+10433	005748	MR. SYED MEHDI ALI RIZVI	SA-9296	RFID Verified	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2004710C22064221A030111	2026-10-23 13:30:05
+10434	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2004710A860642218670110	2026-10-23 13:32:36
+10435	007934	MR. MUHAMMAD AZEEM DADA	AJC-762	RFID Verified	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2004701B56064227E040109	2026-10-23 13:39:19
+10436	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E20034120130F6000E761442	2026-10-23 13:40:10
+10437	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E20047013310642275DF0113	2026-10-23 13:43:32
+10438	880102	MR. ASIF IQBAL MEMON	BEV-427	RFID Verified	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E20047021E70642284950113	2026-10-23 13:54:41
+10439	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2004710213064220FF4010B	2026-10-23 14:01:17
+10440	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2803821200064260B10285C	2026-10-23 14:01:30
+10441	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Exit	REAR GATE ( EXIT )	\N	\N	\N	E20047103CE0642211AF010D	2026-10-23 14:01:50
+10442	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2004710A4E06422182F010F	2026-10-23 14:03:15
+10443	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Spare Club Tag)	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E200471065F0642214400110	2026-10-23 14:03:20
+10444	082172	COL. JUNAID SALAH-UD-DIN SWATI	ICT-0485	RFID Verified	Entry	REAR GATE ( ENTRY )	\N	\N	\N	E28068900000000256448650	2026-10-23 14:03:44
+10445	GUEST-LOG	Unregistered Visitor	UNREGISTERED	Unregistered (Society Tag)	Exit	REAR GATE ( EXIT )	\N	\N	\N	E2803821200064260B10285C	2026-10-23 14:06:01
+10446	016227	MR. PERVEZ DAREDIA	BXE-866	RFID Verified	Entry	REAR GATE ( ENTRY )	\N	\N	\N	E2806894000050175DD33CEE	2026-10-23 14:14:59
+10447	122288	MR. KAMRAN HAMEED	BPR-945	RFID Verified	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2806894000050175DD650ED	2026-10-23 14:17:53
+10448	126139	MR. MOHAMMAD IQBAL QAMAR	BHH-619	RFID Verified	Entry	CLUB GATE ( ENTRY )	\N	\N	\N	E2806894000040175DD7F4EF	2026-10-23 14:18:13
 \.
 
 
@@ -14191,16 +15833,16 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 406	123154	MR. ISHTIAQ HUMAYUN	BLU-400	TOYOTA COROLLA	E2806894000050175DD2FCEF	Active		Outside	2026-10-21 09:33:43
 407	123154	MR. ISHTIAQ HUMAYUN	BK-1200	TOOYTA FORTUNER	E2806894000050175DD2B4EF	Active		Outside	2026-10-21 09:33:43
 421	125419	CAPT.  MUHAMMAD AKBAR KHAN	AXR-971	TOYOTA AXIO	E2806890000000025798279D	Active		Outside	2026-10-21 09:33:43
-10849	880102	MR. ASIF IQBAL MEMON	BEV-427	MIRA	E20047021E70642284950113	Active	static/profiles/c7abc608df09.jpeg	Outside	2026-10-22 03:52:07.659798
 443	122627	DR. MUSHTAQ AHMED (I)	BLV-456	HONDA CIVIC	E2806890000000025799E043	Active		Outside	2026-10-21 09:33:43
 450	121839	CAPT. ABDUL KARIM	CY-0696	SUZUKI EVERY	E2806894000040175DD62CEE	Active		Outside	2026-10-21 09:33:43
-485	122868	MR. MAJID SULTAN KHAWAJA	BL-0240	HONDA BRV	E2806890000000025798F809	Active		Outside	2026-10-21 09:33:43
 496	122160	MR. QAIZER E. COLMBOWALA	AAAJ-139	BYD ATTO 3	E20047016FB0642279A90109	Active		Outside	2026-10-21 09:33:43
 497	122160	MR. QAIZER E. COLMBOWALA	BSB-653	HONDA CIVIC	E2806890000000025799D34C	Active		Outside	2026-10-21 09:33:43
 498	122160	MR. QAIZER E. COLMBOWALA	BH-7353	HONDA BRV	E2806890000000025799E349	Active		Outside	2026-10-21 09:33:43
 499	122160	MR. QAIZER E. COLMBOWALA	BJ-8528	TOYOTA FORTUNER	E2806890000000025798F19B	Active		Outside	2026-10-21 09:33:43
 562	123335	MR. AHMAD WAQAR ALVI	BL-2118	HYUNDAI TUCSON	E28068900000000256448C14	Active		Outside	2026-10-21 09:33:43
 595	114902	MR. HARRIS  BASHEER AHMAD	ALQ-938	HONDA CITY	E2806894000040197496C0CA	Active		Outside	2026-10-21 09:33:43
+485	122868	MR. MAJID SULTAN KHAWAJA	BL-0240	HONDA BRV	E2806890000000025798F809	Active		Outside	2026-10-21 09:33:43
+10849	880102	MR. ASIF IQBAL MEMON	BEV-427	MIRA	E20047021E70642284950113	Active	static/profiles/c7abc608df09.jpeg	Inside	2026-10-22 03:52:07.659798
 596	114902	MR. HARRIS  BASHEER AHMAD	BMD-023	HONDA CIVIC	E2806890000000025799C8E9	Active		Outside	2026-10-21 09:33:43
 621	114909	MR. NAVEED AHMED BAQAI	BP-7992	KIA	E20047014580642277060115	Active		Outside	2026-10-21 09:33:43
 637	014674	MR. RAYOMAND TENGRA	ATE-337	SUZUKI SWIFT	E2806890000000025797ECA5	Active		Outside	2026-10-21 09:33:43
@@ -14307,8 +15949,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 1695	125088	MR. AZAM ZAHIR KHAN	KV-7911	HILUX REVO	E280689000000002579924B8	Active		Outside	2026-10-21 09:33:43
 1696	125088	MR. AZAM ZAHIR KHAN	KR-2121	TOYOTA HILUX	E280689000000002579828EF	Active		Outside	2026-10-21 09:33:43
 1729	007874	MR. MEHBOOB KARIM	BEC-807	TOYOTA COROLLA	E2806890000000025797E3CA	Active		Outside	2026-10-21 09:33:43
-1738	125401	MR. GHIASUDDIN AHMED SHAIKH	AZA-176	HONDA CITY	E2004701B51064227DFF0105	Active		Outside	2026-10-21 09:33:43
-1739	125401	MR. GHIASUDDIN AHMED SHAIKH	AZA-176	HONDA CITY	E2806890000000025798DC0C	Active		Outside	2026-10-21 09:33:43
 1740	125264	MR. YACOOB SHAKOOR TABANI	EAA-038	MG-ELECTRIC	E20047015190642277C70113	Active		Outside	2026-10-21 09:33:43
 1741	125264	MR. YACOOB SHAKOOR TABANI	AAFB-206	SAZGAR TANK	E200470157D06422782B0110	Active		Outside	2026-10-21 09:33:43
 1742	125264	MR. YACOOB SHAKOOR TABANI	EAA-038	MG-ELECTRIC	E2806894000050175DD3A4EF	Active		Outside	2026-10-21 09:33:43
@@ -14321,6 +15961,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 1851	0210431	MR. AUN MOHAMMAD HABIB	CCU-776	TOYOTA COROLLA	E20047015760642278240112	Active		Outside	2026-10-21 09:33:43
 1873	126190	MR. ANWAR MUMTAZ KIZILBASH	BDB-326	HONDA CIVIC	E2806890000000025799D38E	Active		Outside	2026-10-21 09:33:43
 1874	126190	MR. ANWAR MUMTAZ KIZILBASH	BPT-136	HONDA CIVIC	E2806890000000025799D65D	Active		Outside	2026-10-21 09:33:43
+1738	125401	MR. GHIASUDDIN AHMED SHAIKH	AZA-176	HONDA CITY	E2004701B51064227DFF0105	Active		Outside	2026-10-21 09:33:43
 1876	117701	MR. BAYAR MASOOD	BHC-536	TOYOTA COROLLA	E2806890000000025799CA2A	Active		Outside	2026-10-21 09:33:43
 1877	117701	MR. BAYAR MASOOD	BK-3414	KIA SPORTAGE	E2806890000000025798E5F9	Active		Outside	2026-10-21 09:33:43
 1936	124836	MR. SYED SABIR ALI	BZR-793	HYUNDAI	E28068900000000256448A63	Active		Outside	2026-10-21 09:33:43
@@ -14342,10 +15983,8 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 2044	127269	MR. SHAHID AHMED ALLAWALA	BGT-704	HONDA CIVIC	E280689000000002579732D3	Active		Outside	2026-10-21 09:33:43
 2045	127269	MR. SHAHID AHMED ALLAWALA	BWD-423	PROTON SAGA	E2806890000000025798F448	Active		Outside	2026-10-21 09:33:43
 2077	015554	MR. HAIDER  MOHAMMED TAMBAWALA	BN-7253	OSHAN	E2806894000050175DD074ED	Active		Outside	2026-10-21 09:33:43
-2078	115358	MR. OMAR BAWANY	AJE-777	MERCEDES BANZ	E2806890000000025799D52D	Active		Outside	2026-10-21 09:33:43
 2079	115358	MR. OMAR BAWANY	BRF-710	HONDA CIVIC	E2806890000000025799D3FD	Active		Outside	2026-10-21 09:33:43
 2080	115358	MR. OMAR BAWANY	BD-1398	TOYOTA LAND CRS	E2806890000000025799D936	Active		Outside	2026-10-21 09:33:43
-2081	115358	MR. OMAR BAWANY	BG-4079	BMW JEEP	E2806890000000025799D468	Active		Outside	2026-10-21 09:33:43
 2092	015967	MR. SHAIKH SALEEM RAFIQUE	BMJ-607	HONDA CIVIC	E28068900000000257983595	Active		Outside	2026-10-21 09:33:43
 2093	015967	MR. SHAIKH SALEEM RAFIQUE	AVA-017	TOYOTA COROLLA	E28068900000000257972AAD	Active		Outside	2026-10-21 09:33:43
 2142	059618	MRS. QAMAR BAAKZA	BCB-449	TOYOTA PRIUS	E28068900000000256448575	Active		Outside	2026-10-21 09:33:43
@@ -14356,7 +15995,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 2198	017424	MR. MUSHTAQ	BUK-955	TOYOTA COROLLA	E280689000000002564483A3	Active		Outside	2026-10-21 09:33:43
 2199	017424	MR. MUSHTAQ	BZS-171	TOYOTA COROLLA	E28068900000000257991D0E	Active		Outside	2026-10-21 09:33:43
 2200	017424	MR. MUSHTAQ	BPQ-028	TOYOTA COROLLA	E2806890000000025797EDC7	Active		Outside	2026-10-21 09:33:43
-2218	880102	MR. ASIF IQBAL	BEV-427	TOYOTA AQUA	E28068900000000257982269	Active		Outside	2026-10-21 09:33:43
 2219	880102	MR. ASIF IQBAL	ABC-123	AQUA	E28068900000000257981F4C	Active		Outside	2026-10-21 09:33:43
 2220	880102	MR. ASIF IQBAL	CBA-321	HONDA	E2004704C8206023592A010E	Active		Outside	2026-10-21 09:33:43
 2226	049978	MISS HUMA GAILANI	BQN-845	ALTO	E280689000000002579920E7	Active		Outside	2026-10-21 09:33:43
@@ -14371,7 +16009,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 2362	880207	MR. SYED MUHAMMAD TABRAIZ ALEEM	BBB-123	AUDI	E2004701F090642281B7010F	Active		Outside	2026-10-21 09:33:43
 2363	880207	MR. SYED MUHAMMAD TABRAIZ ALEEM	AAA-123	LAND CRU	E2004701824064227AD20107	Active		Outside	2026-10-21 09:33:43
 2364	880207	MR. SYED MUHAMMAD TABRAIZ ALEEM	DEF-123	TESTING	E28068900000000257992686	Active		Outside	2026-10-21 09:33:43
-2376	189737	MISS ROMANA KHAN	BNL-824	TOYOTA PRIUS	E2806890000000025798E319	Active		Outside	2026-10-21 09:33:43
 2384	121413	MR. LADAK HABIB	BN-1414	HONDA	E2007DD2B100EA30B3BA33A8	Active		Outside	2026-10-21 09:33:43
 2385	121413	MR. LADAK HABIB	BRU-040	SUZUKI ALTO	E280689000000002579936C3	Active		Outside	2026-10-21 09:33:43
 2389	100026	MRS. ADILLA MUNAWAR	BHG-920	HONDA CITY	E2806890000000025799DDDE	Active		Outside	2026-10-21 09:33:43
@@ -14381,6 +16018,10 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 2398	115924	MR. HASSAN IQBAL RIZVI	BE-0444	PAJERO	E2806890000000025798EA5F	Active		Outside	2026-10-21 09:33:43
 2399	115924	MR. HASSAN IQBAL RIZVI	BNF-725	TOYOTA COROLLA	E2806890000000025798E633	Active		Outside	2026-10-21 09:33:43
 2401	115924	MR. HASSAN IQBAL RIZVI	BNF-725	TOYOTA COROLLA	E2806890000000025799DDEC	Active		Outside	2026-10-21 09:33:43
+2078	115358	MR. OMAR BAWANY	AJE-777	MERCEDES BANZ	E2806890000000025799D52D	Active		Outside	2026-10-21 09:33:43
+2081	115358	MR. OMAR BAWANY	BG-4079	BMW JEEP	E2806890000000025799D468	Active		Outside	2026-10-21 09:33:43
+2218	880102	MR. ASIF IQBAL	BEV-427	TOYOTA AQUA	E28068900000000257982269	Active		Inside	2026-10-21 09:33:43
+2376	189737	MISS ROMANA KHAN	BNL-824	TOYOTA PRIUS	E2806890000000025798E319	Active		Inside	2026-10-21 09:33:43
 2406	029798	MR.SAHIBZADA AJAZ ANIS	BKX-753	HONDA CIVIC	E2806890000000025798EDD0	Active		Outside	2026-10-21 09:33:43
 2407	0910469	MRS. ATIQA USMAN	BQZ-596	SUZUKI WAGONR	E280689000000002579921E8	Active		Outside	2026-10-21 09:33:43
 2408	0910469	MRS. ATIQA USMAN	BGP-498	HONDA CITY	E28068900000000257991D31	Active		Outside	2026-10-21 09:33:43
@@ -14482,8 +16123,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 3627	230857	MRS. TAHIRA ARSHAD KAZI	BQF-974	HONDA CIVIC	E280689000000002579829CD	Active		Outside	2026-10-21 09:33:43
 3637	015233	MR. CYRUS RUSTOM KHURSIGARA	AACR-114	HONDA CIVIC	E20047012580642275060111	Active		Outside	2026-10-21 09:33:43
 3638	015233	MR. CYRUS RUSTOM KHURSIGARA	BGZ-521	HONDA CIVIC	E20047012640642275120109	Active		Outside	2026-10-21 09:33:43
-3639	015233	MR. CYRUS RUSTOM KHURSIGARA	BEE-503	HONDA CITY	E2004701B8F064227E3D0108	Active		Outside	2026-10-21 09:33:43
-3640	015233	MR. CYRUS RUSTOM KHURSIGARA	BEE-503	HONDA CITY	E2806890000000025797E1CF	Active		Outside	2026-10-21 09:33:43
 3641	015233	MR. CYRUS RUSTOM KHURSIGARA	BG-3839	TOYOTA FORTUNER	E2806890000000025797E58A	Active		Outside	2026-10-21 09:33:43
 3642	015233	MR. CYRUS RUSTOM KHURSIGARA	AYQ-179	HONDA CIVIC	E28068900000000257982D3C	Active		Outside	2026-10-21 09:33:43
 3643	114160	MR. HASNAIN NAZIM	AXC-941	TOYOTA COROLLA	E280689000000002579826B0	Active		Outside	2026-10-21 09:33:43
@@ -14525,9 +16164,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 4175	230407	MRS. NASHMIA  FARRUKH RAUF	BM-9394	HYUNDAI SONATA	E2007DD2B100B570B3BA32D5	Active		Outside	2026-10-21 09:33:43
 4176	230407	MRS. NASHMIA  FARRUKH RAUF	BJ-6327		E280689000000002579938F1	Active		Outside	2026-10-21 09:33:43
 4177	230407	MRS. NASHMIA  FARRUKH RAUF	BYN-878		E2806890000000025797D24A	Active		Outside	2026-10-21 09:33:43
-2280	015317	DR.  ASAD  JAVAID KHAN	AACE-277	TOYOTA 2026	E20047018DA064227B88010A	Active	static/member_profile_img/15317.JPG	Outside	2026-10-21 09:33:43
 4245	0212110	MR. HAROON HUMAYUN HAMID	BDY-943	SUZUKI SWIFT	E2806890000000025799C759	Active		Outside	2026-10-21 09:33:43
-3072	005493	MR. ASIM MANSOOR KHAN	BRK-120	TOYOTA COROLLA	E280689000000002564489EC	Active	static/member_profile_img/5493.JPG	Inside	2026-10-21 09:33:43
 4332	191477	MRS. ATIYA BAQYER KHAN	BJJ-312	SUZUKI WAGONR	E2806890000000025797E740	Active		Outside	2026-10-21 09:33:43
 4340	0910645	MRS. MEHARBANU MERCHANT	ATN-544	HONDA CITY	E28068900000000257982894	Active		Outside	2026-10-21 09:33:43
 4381	191481	MRS. SHABNAM SOHAIL KHAN	BNR-220	HONDA CITY	E28068900000000256448D65	Active		Outside	2026-10-21 09:33:43
@@ -14556,11 +16193,13 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 5002	0910466	MRS. KHAIRUNNISA BEGUM	AKL-908	HYUNDAI	E2806890000000025797DAE4	Active		Outside	2026-10-21 09:33:43
 5003	0910466	MRS. KHAIRUNNISA BEGUM	BKK-325	HONDA CITY	E280689000000002579834FE	Active		Outside	2026-10-21 09:33:43
 5018	0411025	MISS. MUSARAT FATIMA AYOUB	AHM-899	TOYOTA COROLLA	E2806890000000025799D187	Active		Outside	2026-10-21 09:33:43
+3072	005493	MR. ASIM MANSOOR KHAN	BRK-120	TOYOTA COROLLA	E280689000000002564489EC	Active	static/member_profile_img/5493.JPG	Outside	2026-10-21 09:33:43
 5082	116595	MR. SHAHZAD ALI RASHID	BNW-860	TOYOTA COROLLA	E2806890000000025798298F	Active		Outside	2026-10-21 09:33:43
 5083	116595	MR. SHAHZAD ALI RASHID	BPD-653	TOYOTA COROLLA	E28068900000000257992A7E	Active		Outside	2026-10-21 09:33:43
 5160	0212320	MR. ARIF HUSSAIN	BL-4110	KIA	E2806890000000025798F7A6	Active		Outside	2026-10-21 09:33:43
 5192	220866	MRS. AISHA KHAN	BFE-360	HONDA CITY	E28068900000000257972B2C	Active		Outside	2026-10-21 09:33:43
 5245	116927	MR. HAROON SAYEED	BXX-040	KIA PICANTO	E280689000000002579826CC	Active		Outside	2026-10-21 09:33:43
+2280	015317	DR.  ASAD  JAVAID KHAN	AACE-277	TOYOTA 2026	E20047018DA064227B88010A	Active	static/member_profile_img/15317.JPG	Inside	2026-10-21 09:33:43
 5246	116927	MR. HAROON SAYEED	BHR-040	TOYOTA FIELDER	E2806894000050175DD060EE	Active		Outside	2026-10-21 09:33:43
 5297	250165	MRS. ZUBEIDA CHANNAH	BH-5469	HONDA BRV	E280689000000002579937DE	Active		Outside	2026-10-21 09:33:43
 5358	0212664	MR. MIR ASIF ALI TALPUR	BSD-482	TOYOTA COROLLA	E2806890000000025797E9C6	Active		Outside	2026-10-21 09:33:43
@@ -14577,7 +16216,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 5509	017429	MR. SYED ALI AHMAD	AAR-899	HONDA ACCORD	E20047113350642221160112	Active		Outside	2026-10-21 09:33:43
 5510	017429	MR. SYED ALI AHMAD	AKA-899	HONDA ACCORD	E2806890000000025798ED8E	Active		Outside	2026-10-21 09:33:43
 5511	017429	MR. SYED ALI AHMAD	BRD-253	TOYOTA COROLLA	E2806894000040175DD834EF	Active		Outside	2026-10-21 09:33:43
-2979	240061	DR. ISMAT ARA KHURSHID	BJL-081	TOYOTA COROLLA	E28068900000000257993562	Active	static/member_profile_img/240061.jpg	Inside	2026-10-21 09:33:43
 5592	221187	MRS. JAZIBEH QURESHI	AJZ-647	SUZUKI CUTUS	E2806894000050175DD08CEF	Active		Outside	2026-10-21 09:33:43
 5593	221187	MRS. JAZIBEH QURESHI	AKX-554	HONDA CIVIC	E2806894000040175DD05CEF	Active		Outside	2026-10-21 09:33:43
 5594	221187	MRS. JAZIBEH QURESHI	BCC-459	TOYOTA	E2806894000040175DD120EF	Active		Outside	2026-10-21 09:33:43
@@ -14591,11 +16229,9 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 5688	190582	MRS. HAMEEDA JAVAID	BTR-238	ALSWIN	E2806890000000025799DE7E	Active		Outside	2026-10-21 09:33:43
 5689	220723	MISS. RUBEENA NOORDIN HOODBHOY	BM-4346	TOYOTA COROLLA	E28068900000000257981EE4	Active		Outside	2026-10-21 09:33:43
 5690	220723	MISS. RUBEENA NOORDIN HOODBHOY	BWX-186	SUZUKI SWIFT	E28068900000000257981EB5	Active		Outside	2026-10-21 09:33:43
-2981	240061	DR. ISMAT ARA KHURSHID	BJL-081	TOYOTA COROLLA	E2806894000040175DD46CEE	Active	static/member_profile_img/240061.jpg	Inside	2026-10-21 09:33:43
 5770	0910932	MRS. SAEEDA EFFENDI	BSL-279	TOYOTA COROLLA	E2806894000040175DD070EE	Active		Outside	2026-10-21 09:33:43
 5784	230600	MS. TABINDA JABEEN	BQT-142	SUZUKI ALTO	E2806890000000025799247B	Active		Outside	2026-10-21 09:33:43
 5785	230600	MS. TABINDA JABEEN	BJ-1452	KIA SPORTAGE	E2806890000000025799DDC4	Active		Outside	2026-10-21 09:33:43
-5791	116982	DR. ARSHAD QAMAR	CBT-741	TOYOTA ALTIS	E200470100F0642272BD0107	Active		Outside	2026-10-21 09:33:43
 5792	116982	DR. ARSHAD QAMAR	LB-6199	HILUX REVO	E28068900000000257991FCA	Active		Outside	2026-10-21 09:33:43
 5836	0910961	MRS. ATEKA JIVANJEE	BNF-102	TOYOTA	E28068900000000257992633	Active		Outside	2026-10-21 09:33:43
 5844	0411485	MISS. SAMAN BANO MALIK	SA-423	CHANGAN KARVAAN	E2806890000000025644486E	Active		Outside	2026-10-21 09:33:43
@@ -14620,6 +16256,8 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 6206	124113	MR. MANZAR QAYYUM PAUL	BEA-700	TOYOTA COROLLA	E2806890000000025798EF32	Active		Outside	2026-10-21 09:33:43
 6209	016937	MR. SHABBIR B. AFRICAWALA	LB-1700	ISUZU-D-MAX	E2806894000040175DD5D4EF	Active		Outside	2026-10-21 09:33:43
 6223	115295	MR. SHAIKH ABDUL WAHID	BGY-660	HONDA CIVIC	E2806890000000025799302F	Active		Outside	2026-10-21 09:33:43
+2979	240061	DR. ISMAT ARA KHURSHID	BJL-081	TOYOTA COROLLA	E28068900000000257993562	Active	static/member_profile_img/240061.jpg	Outside	2026-10-21 09:33:43
+5791	116982	DR. ARSHAD QAMAR	CBT-741	TOYOTA ALTIS	E200470100F0642272BD0107	Active		Outside	2026-10-21 09:33:43
 6291	005550	MR. MUHAMMAD JAMIL QASSIM	AAAU-992	TOYOTA REVO	E20047021FB0642284A9010F	Active		Outside	2026-10-21 09:33:43
 6292	005550	MR. MUHAMMAD JAMIL QASSIM	AUZ-834	AUDI	E20047021FF0642284AD010C	Active		Outside	2026-10-21 09:33:43
 6293	005550	MR. MUHAMMAD JAMIL QASSIM	BK-4516	KIA	E2806890000000025799C45E	Active		Outside	2026-10-21 09:33:43
@@ -14721,10 +16359,8 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 8983	126714	MR. TASHIR AHMED MUZAFFAR	AKL-790	SUZUKI CULTUS	E2806890000000025797EAAF	Active		Outside	2026-10-21 09:33:44
 9002	102643	MRS. IQRA IDREES PADELA	BWE-414	SUZUKI ALTO	E2806890000000025799E2C8	Active		Outside	2026-10-21 09:33:44
 9003	102643	MRS. IQRA IDREES PADELA	BJ-7044	KIA SPORTAGE	E28068900000000257982C3E	Active		Outside	2026-10-21 09:33:44
-8391	0213971	MR. FAIZ AHMED	AAAK-466	BYD-ATTO-3	E200470189E064227B4C010D	Active	static/member_profile_img/213971.JPG	Inside	2026-10-21 09:33:43
 9050	0912323	MRS. SABIHA AZIZ SADIK	BVC-037	MITSUBISHI	E2806894000040175DD070ED	Active		Outside	2026-10-21 09:33:44
 5331	221226	MRS. AYESHA IRFAN	BJ-6694	KIA SORENTO	E20047019DA064227C88010D	Active	static/member_profile_img/221226.JPG	Outside	2026-10-21 09:33:43
-2768	006278	MR. FOUAD YUSUF	CBY-240	TOYOTA ALTIS	E20047015360642277E40103	Active	static/member_profile_img/6278.jpg	Outside	2026-10-21 09:33:43
 9168	0412137	MISS MEDIHA KAMAL AFSAR	BBG-901	TOYOTA PREMIO	E2806890000000025798375C	Active		Outside	2026-10-21 09:33:44
 9169	0412137	MISS MEDIHA KAMAL AFSAR	APX-781	HONDA CIVIC	E28068900000000257993750	Active		Outside	2026-10-21 09:33:44
 9174	102437	MRS. SHEHREEN SHAH	BG-3489	TOYOTA FORTUNER	E28068900000000257983489	Active		Outside	2026-10-21 09:33:44
@@ -14736,6 +16372,8 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 9257	082111	MR. ABDUL SALAM	GAC-011	PRIUS	E2806894000050175DD494EE	Active		Outside	2026-10-21 09:33:44
 9258	082111	MR. ABDUL SALAM	SP-0377	GLI	E2806894000050175DD500EE	Active		Outside	2026-10-21 09:33:44
 9259	082111	MR. ABDUL SALAM	GP-3789	LAND CRUISER	E2806894000050175DD480EE	Active		Outside	2026-10-21 09:33:44
+2768	006278	MR. FOUAD YUSUF	CBY-240	TOYOTA ALTIS	E20047015360642277E40103	Active	static/member_profile_img/6278.jpg	Outside	2026-10-21 09:33:43
+8391	0213971	MR. FAIZ AHMED	AAAK-466	BYD-ATTO-3	E200470189E064227B4C010D	Active	static/member_profile_img/213971.JPG	Inside	2026-10-21 09:33:43
 9329	102659	MRS. TOOBA SHAH	BAZ-052	HONDA	E2806890000000025797DC1E	Active		Outside	2026-10-21 09:33:44
 9370	102670	MRS. AMAL ASHRAF	BK-7555	MG	E28068900000000256444675	Active		Outside	2026-10-21 09:33:44
 9371	102670	MRS. AMAL ASHRAF	BGT-702	TOYOTA VITZ	E2806890000000025797D9CD	Active		Outside	2026-10-21 09:33:44
@@ -14773,12 +16411,10 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 9849	127478	MR. SALMANALI NASSER	AXF-858	TOYOTA COROLLA	E2806890000000025799C6C3	Active		Outside	2026-10-21 09:33:44
 9861	015495	MR.SYED MAROOF GILANI	BVW-191	HONDA CIVIC	E2806890000000025799DDA4	Active		Outside	2026-10-21 09:33:44
 9876	016817	MR. ABBAS RAZA NAQVI	BVH-354	SUZUKI ALTO	E28068900000000256448C86	Active		Outside	2026-10-21 09:33:44
-9999	082131	MR. MUBIN AHMED	GS-9394	SUZUKI SWIFT	E2806894000040175DD250ED	Active		Outside	2026-10-21 09:33:44
 10000	082131	MR. MUBIN AHMED	BWZ-295	TOYOTA COROLLA	E2806894000050175DD0CCED	Active		Outside	2026-10-21 09:33:44
 10007	0214620	MR. ABDUL RAB SHAIKH	BJG-234	HONDA CIVIC	E2806890000000025797E5D7	Active		Outside	2026-10-21 09:33:44
 10008	0214620	MR. ABDUL RAB SHAIKH	BTC-934	KIA PICANTO	E2806890000000025799D4E0	Active		Outside	2026-10-21 09:33:44
 10049	0214467	MR. DANIYAL KHALIL BUKSH	BVQ-889	TOYOTA VITZ	E2806890000000025799C290	Active		Outside	2026-10-21 09:33:44
-10113	125173	MR. MUSTANSIR HUSSAIN	BHB-053	TOYOTA	E2806894000040175DD0A0EF	Active		Outside	2026-10-21 09:33:44
 10114	125173	MR. MUSTANSIR HUSSAIN	ANE-052	TOYOTA	E2806894000040175DD100F0	Active		Outside	2026-10-21 09:33:44
 10125	0214553	MR. SHAIKH MUHAMMAD ARSALAN AKHTAR	BF-2094	LAND CRUSER	E20047015220642277D0010A	Active		Outside	2026-10-21 09:33:44
 10347	126545	MR. SHABBIR HUSSAIN HASHMI	BLB-340	TOYOTA AQUA	E2806890000000025799D696	Active		Outside	2026-10-21 09:33:44
@@ -14786,15 +16422,16 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 10389	018173	MR. KHURRAM SADIQ	ANS-614	SUZUKI MEHRAN	E2806890000000025799D50C	Active		Outside	2026-10-21 09:33:44
 10451	016082	MR. AZIZ MERCHANT	BUU-648	TOYOTA COROLLA	E2806890000000025798E7C0	Active		Outside	2026-10-21 09:33:44
 10452	016082	MR. AZIZ MERCHANT	BXQ-244	SUZUKI CULTUS	E2806890000000025798E790	Active		Outside	2026-10-21 09:33:44
-10461	014944	MR. FAROOQ ALI KHAN	BPR-612	TOYOTA COROLLA	E2004701054064227302010A	Active		Outside	2026-10-21 09:33:44
 10462	014944	MR. FAROOQ ALI KHAN	LD-9090	TOYOTA REVO	E200470177D064227A2B010E	Active		Outside	2026-10-21 09:33:44
-10463	014944	MR. FAROOQ ALI KHAN	BPR-612	TOYOTA COROLLA	E28068900000000256448221	Active		Outside	2026-10-21 09:33:44
 10464	014944	MR. FAROOQ ALI KHAN	LD- 9090	TOYOTA REVO	E28068900000000256445DFB	Active		Outside	2026-10-21 09:33:44
 10491	0214805	MR. ARSALAN ALTAF MERCHANT	BQV-263	TOYOTA COROLLA	E200470141D0642276CB0114	Active		Outside	2026-10-21 09:33:44
 10502	0214848	MR. ABBAS ALI LOTIA	BP-4108	PEUJEOT	E2004700FFF0642272AD0105	Active		Outside	2026-10-21 09:33:44
 10615	240475	MRS. SAFINA ASHRAF NOORWALA	COD-484	HONDA CITY	E2004701AB7064227D65010E	Active		Outside	2026-10-21 09:33:44
+10113	125173	MR. MUSTANSIR HUSSAIN	BHB-053	TOYOTA	E2806894000040175DD0A0EF	Active		Outside	2026-10-21 09:33:44
 10677	125012	MR. SYED MAHMOOD HUSSAIN	BML-032	TOYOTA COROLLA	E2806894000050175DD1F4EE	Active		Outside	2026-10-21 09:33:44
 10678	125012	MR. SYED MAHMOOD HUSSAIN	BND-905	HOND CIVIC	E2806894000040175DD13CEE	Active		Outside	2026-10-21 09:33:44
+9999	082131	MR. MUBIN AHMED	GS-9394	SUZUKI SWIFT	E2806894000040175DD250ED	Active		Outside	2026-10-21 09:33:44
+10461	014944	MR. FAROOQ ALI KHAN	BPR-612	TOYOTA COROLLA	E2004701054064227302010A	Active		Outside	2026-10-21 09:33:44
 10682	059981	MRS. SHANAZ HATIM	BK-7944	PROTON X70	E2806890000000025797D7D6	Active		Outside	2026-10-21 09:33:44
 10687	015293	MR. MOHAMMAD FAZIL BHARUCHA	BDL-324	TYOYTA COROLLA	E2806894000050175DD060F0	Active		Outside	2026-10-21 09:33:44
 10688	015293	MR. MOHAMMAD FAZIL BHARUCHA	BDB-686	HONDA CIVIC	E2806894000050175DD058EF	Active		Outside	2026-10-21 09:33:44
@@ -14806,50 +16443,175 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 10820	0215083	MR. ZAIN KAMRAN	AAJR-550	DEEPAL SO5	E200470177C064227A2A010E	Active		Outside	2026-10-21 09:33:44
 10821	0215083	MR. ZAIN KAMRAN	AADZ-474	HAVAL TANK	E2004701810064227ABE0109	Active		Outside	2026-10-21 09:33:44
 7538	102156	MRS. ZAINAB JUZZER KUVAWALA	AADB-908	SUZUKI SWIFT	E2004701A56064227D040111	Active	static/member_profile_img/102156.jpg	Outside	2026-10-21 09:33:43
-836	113937	MR. HUSNAIN LOTIA	BM-0589	KIA STONIC	E28068900000000257982A67	Active	static/member_profile_img/113937.JPG	Outside	2026-10-21 09:33:43
-6494	150109	MR. AMIN GANNY	BJ-7710	KIA SPORTAGE	E20047010300642272DE0103	Active	static/member_profile_img/150109.jpg	Outside	2026-10-21 09:33:43
-6495	150109	MR. AMIN GANNY	BJ-7710	KIA SORENTO	E28068900000000256448DEC	Active	static/member_profile_img/150109.jpg	Outside	2026-10-21 09:33:43
-6496	150109	MR. AMIN GANNY	BJ-7710	KIA SORENTO	E28068900000000256445479	Active	static/member_profile_img/150109.jpg	Outside	2026-10-21 09:33:43
-8808	0214012	MR. GHULAM HUSSAIN AGHA	AAEM-558	SUZUKI FRONX	E20047014F90642277A7010B	Active	static/member_profile_img/214012.jpg	Outside	2026-10-21 09:33:44
-4979	150039	MR. KENNETH VINCENT MARSHALL	BT-2233	TOYOTA FORTUNER	E20047016AD06422795B010C	Active	static/member_profile_img/150039.jpg	Inside	2026-10-21 09:33:43
 4258	007827	MR. HARIS GAZDAR	BZA-504	SUZUKI ALTO	E2806890000000025798F6E7	Active	static/member_profile_img/7827.jpg	Outside	2026-10-21 09:33:43
-10699	102978	MRS. IQRA AZIZ	BHX-296	MIRA	E2004701476064227724010B	Active	static/member_profile_img/102978.jpg	Outside	2026-10-21 09:33:44
 4854	220330	MRS. SAIRA KHURRAM	AAJP-673	BYD ATTO-3	E20047021290642283D70109	Active	static/member_profile_img/220330.jpg	Outside	2026-10-21 09:33:43
-4385	007332	MR. SALMAN TAQI	BH-5651	KIA SPORTAGE	E200470143F0642276ED010B	Active	static/member_profile_img/7332.jpg	Outside	2026-10-21 09:33:43
 3012	015201	MR. MOHAMMAD AKBER ALI KHAN	BSC-666	TOYOTA COROLLA	E200470192C064227BDA0110	Active	static/member_profile_img/15201.jpg	Outside	2026-10-21 09:33:43
-5598	221209	MRS. FAIZA JADOON	BES-753	HONDA CITY	E200470155B0642278090110	Active	static/member_profile_img/221209.JPG	Outside	2026-10-21 09:33:43
 6343	102385	MRS. SHAJIA ALI	SB-0228	ISUZU	E200470158C06422783A010D	Active	static/member_profile_img/102385.JPG	Outside	2026-10-21 09:33:43
-1031	126139	MR. MOHAMMAD IQBAL QAMAR	BHH-619	HONDA CITY	E2806894000040175DD7F4EF	Active	static/member_profile_img/126139.jpg	Outside	2026-10-21 09:33:43
-1754	015128	MR. MIR BABAR ALI	BZW-401	HONDA BRV	E2004701E9D06422814B010B	Active	static/member_profile_img/15128.jpg	Inside	2026-10-21 09:33:43
 2365	880207	MR. SYED MUHAMMAD TABRAIZ ALEEM	ABC-123	TESTING	E28068900000000257981EF5	Active		Outside	2026-10-21 09:33:43
-10575	082292	MR. FARAZ AHMED CHANDIO	GSC-458	SUZUKIM SWIFT	E200470164F0642278FD010E	Active	static/member_profile_img/82292.jpg	Outside	2026-10-21 09:33:44
-7025	007617	MR. HASAN ALAM	AAHK-568	TOYOTA YARIS	E2004702595064228843010A	Active	static/member_profile_img/7617.jpg	Outside	2026-10-21 09:33:43
-6611	008223	MR. FAIZAN MANSOOR	BKH-216	HONDA FEERD	E2806890000000025799D116	Active	static/member_profile_img/8223.jpg	Inside	2026-10-21 09:33:43
 9038	102605	MRS. MANAAL RAFI	AAGA-768	BYD  SHARK	E200470151D0642277CB0112	Active	static/member_profile_img/102605.JPG	Outside	2026-10-21 09:33:44
 8029	0213652	MR. ABEZAR MUSTANSIR HUSSAIN	AABC-363	SUZUKI ALTO	E200470160E0642278BC0109	Active	static/member_profile_img/213652.jpg	Outside	2026-10-21 09:33:43
 10168	0214665	MR. M. SHAHRUKH FAROGH NASEEM	SA-0840	TOYOTA HILUX	E20047014FC0642277AA010C	Active	static/member_profile_img/214665.jpg	Outside	2026-10-21 09:33:44
 10604	082295	LT. COL. SIKANDAR HAQ TAREEN	GH-0044	TOYOTA COROLLA	E2004701815064227AC3010F	Active	static/member_profile_img/82295.JPG	Outside	2026-10-21 09:33:44
-6557	230111	MRS. KHURSHEED KOTWAL	BXS-745	HYUNDAI ELANTRA	E2004701A09064227CB70110	Active	static/member_profile_img/230111.JPG	Inside	2026-10-21 09:33:43
-6562	230111	MRS. KHURSHEED KOTWAL	BXS-745	HYUNDAI ELANTRA	E2806894000050175DD734ED	Active	static/member_profile_img/230111.JPG	Inside	2026-10-21 09:33:43
 1375	115195	MR. NADEER CONTRACTOR	AZT-411	HONDA CIVIC	E28068900000000257982879	Active	static/member_profile_img/115195.jpg	Outside	2026-10-21 09:33:43
-1611	115788	MR. MUHAMMAD SAUD ELAHI	BP-5499	HAVAL H6	E20047113CD0642221AE0110	Active	static/member_profile_img/115788.jpg	Inside	2026-10-21 09:33:43
 6436	007717	MR. HAFEEZ-UR- RAHMAN	BJ-6421	KIA SPORTAGE	E2004701A1C064227CCA0109	Active	static/member_profile_img/7717.JPG	Outside	2026-10-21 09:33:43
 9506	0912487	MRS. SHABNAM A. VAYANI	BC-2896	HONDA	E20047016ED06422799B0110	Active	static/member_profile_img/912487.JPG	Outside	2026-10-21 09:33:44
-10547	0214887	MR. MUHAMMAD AYAN SAIGAL	BP-7595	TOYOTA CROSS	E20047010640642273120107	Active	static/member_profile_img/214887.JPG	Inside	2026-10-21 09:33:44
-6806	008057	MR. MUHAMMAD TABISH ASHFAQ	BJU-950	TOYOTA CAROLLA	E2806894000050175DD3CCF0	Active	static/member_profile_img/8057.JPG	Outside	2026-10-21 09:33:43
+836	113937	MR. HUSNAIN LOTIA	BM-0589	KIA STONIC	E28068900000000257982A67	Active	static/member_profile_img/113937.JPG	Inside	2026-10-21 09:33:43
 6018	221089	MRS. SAMIA CHAUDHRY	BUG-779	TOYOTA COROLLA	E20047017F1064227A9F010B	Active	static/member_profile_img/221089.jpg	Outside	2026-10-21 09:33:43
 2024	014379	MR. NAUSHAD MERCHANT	BAR-156	TOYOTA COROLLA	E28068900000000257982866	Active	static/member_profile_img/14379.jpg	Outside	2026-10-21 09:33:43
 5659	016816	MR. SHAIKH MOHAMMED SAEED	C-9039	VOLKSWAGEN	E2806894000040175DD0D4EF	Active	static/member_profile_img/16816.JPG	Outside	2026-10-21 09:33:43
-4263	007011	DR. SHAHRIYAR GHAZANFAR	AAFA-767	MG	E200470108E06422733C0105	Active	static/member_profile_img/7011.jpg	Outside	2026-10-21 09:33:43
 506	123488	MR. SABIR A. BANATWALA	BPV-851	TOYOTA	E20047018A1064227B4F010E	Active	static/member_profile_img/123488.JPG	Outside	2026-10-21 09:33:43
-199	014734	MR. SHABBIR AKBAR GULAMALI	AAJX-842	KIA SPORTAGE	E2004710D89064221B6A0110	Active	static/member_profile_img/14734.jpg	Outside	2026-10-21 09:33:43
+1611	115788	MR. MUHAMMAD SAUD ELAHI	BP-5499	HAVAL H6	E20047113CD0642221AE0110	Active	static/member_profile_img/115788.jpg	Outside	2026-10-21 09:33:43
+5598	221209	MRS. FAIZA JADOON	BES-753	HONDA CITY	E200470155B0642278090110	Active	static/member_profile_img/221209.JPG	Outside	2026-10-21 09:33:43
+8808	0214012	MR. GHULAM HUSSAIN AGHA	AAEM-558	SUZUKI FRONX	E20047014F90642277A7010B	Active	static/member_profile_img/214012.jpg	Outside	2026-10-21 09:33:44
+4385	007332	MR. SALMAN TAQI	BH-5651	KIA SPORTAGE	E200470143F0642276ED010B	Active	static/member_profile_img/7332.jpg	Outside	2026-10-21 09:33:43
+7025	007617	MR. HASAN ALAM	AAHK-568	TOYOTA YARIS	E2004702595064228843010A	Active	static/member_profile_img/7617.jpg	Outside	2026-10-21 09:33:43
+6494	150109	MR. AMIN GANNY	BJ-7710	KIA SPORTAGE	E20047010300642272DE0103	Active	static/member_profile_img/150109.jpg	Outside	2026-10-21 09:33:43
+6495	150109	MR. AMIN GANNY	BJ-7710	KIA SORENTO	E28068900000000256448DEC	Active	static/member_profile_img/150109.jpg	Outside	2026-10-21 09:33:43
+4979	150039	MR. KENNETH VINCENT MARSHALL	BT-2233	TOYOTA FORTUNER	E20047016AD06422795B010C	Active	static/member_profile_img/150039.jpg	Inside	2026-10-21 09:33:43
+6806	008057	MR. MUHAMMAD TABISH ASHFAQ	BJU-950	TOYOTA CAROLLA	E2806894000050175DD3CCF0	Active	static/member_profile_img/8057.JPG	Outside	2026-10-21 09:33:43
+10575	082292	MR. FARAZ AHMED CHANDIO	GSC-458	SUZUKIM SWIFT	E200470164F0642278FD010E	Active	static/member_profile_img/82292.jpg	Outside	2026-10-21 09:33:44
+10699	102978	MRS. IQRA AZIZ	BHX-296	MIRA	E2004701476064227724010B	Active	static/member_profile_img/102978.jpg	Outside	2026-10-21 09:33:44
+4263	007011	DR. SHAHRIYAR GHAZANFAR	AAFA-767	MG	E200470108E06422733C0105	Active	static/member_profile_img/7011.jpg	Inside	2026-10-21 09:33:43
+6557	230111	MRS. KHURSHEED KOTWAL	BXS-745	HYUNDAI ELANTRA	E2004701A09064227CB70110	Active	static/member_profile_img/230111.JPG	Inside	2026-10-21 09:33:43
+6562	230111	MRS. KHURSHEED KOTWAL	BXS-745	HYUNDAI ELANTRA	E2806894000050175DD734ED	Active	static/member_profile_img/230111.JPG	Inside	2026-10-21 09:33:43
+6611	008223	MR. FAIZAN MANSOOR	BKH-216	HONDA FEERD	E2806890000000025799D116	Active	static/member_profile_img/8223.jpg	Outside	2026-10-21 09:33:43
+1754	015128	MR. MIR BABAR ALI	BZW-401	HONDA BRV	E2004701E9D06422814B010B	Active	static/member_profile_img/15128.jpg	Outside	2026-10-21 09:33:43
+10547	0214887	MR. MUHAMMAD AYAN SAIGAL	BP-7595	TOYOTA CROSS	E20047010640642273120107	Active	static/member_profile_img/214887.JPG	Inside	2026-10-21 09:33:44
+1031	126139	MR. MOHAMMAD IQBAL QAMAR	BHH-619	HONDA CITY	E2806894000040175DD7F4EF	Active	static/member_profile_img/126139.jpg	Inside	2026-10-21 09:33:43
 2547	016053	MR. MASOOD KAMIL	AKQ-649	SUZUKI ALTO	E2806890000000025799E6BE	Active	static/member_profile_img/16053.JPG	Outside	2026-10-21 09:33:43
 2548	016053	MR. MASOOD KAMIL	AKQ-649	SUZUKI ALTO	E2806894000040175DD340ED	Active	static/member_profile_img/16053.JPG	Outside	2026-10-21 09:33:43
-7678	0912043	MRS. ZAINAB ARIF SOORTY	AAFM-162	BYD	E2004701A19064227CC7010E	Active	static/member_profile_img/912043.jpg	Inside	2026-10-21 09:33:43
 1688	200188	MR. KHALID HAMEED H/O. NAIRA ISLAM (LATE)	BWX-750	HONDA CIVIC	E2806890000000025799D6DD	Active	static/member_profile_img/200188.JPG	Outside	2026-10-21 09:33:43
-614	006343	MR.  ATHER ALI KHAN	AAHK-296	SAZGAR HAVAL	E20047114720642222530113	Active	static/member_profile_img/6343.JPG	Inside	2026-10-21 09:33:43
 507	123488	MR. SABIR A. BANATWALA	BPV-851	TOYOTA COROLLA	E280689000000002579828E4	Active	static/member_profile_img/123488.JPG	Outside	2026-10-21 09:33:43
 2114	124163	MR. ALI A. RAHIM	BAQ-599	TOYOTA CORROLA	E28068900000000257982E3B	Active	static/member_profile_img/124163.jpg	Outside	2026-10-21 09:33:43
+7678	0912043	MRS. ZAINAB ARIF SOORTY	AAFM-162	BYD	E2004701A19064227CC7010E	Active	static/member_profile_img/912043.jpg	Outside	2026-10-21 09:33:43
+614	006343	MR.  ATHER ALI KHAN	AAHK-296	SAZGAR HAVAL	E20047114720642222530113	Active	static/member_profile_img/6343.JPG	Outside	2026-10-21 09:33:43
+199	014734	MR. SHABBIR AKBAR GULAMALI	AAJX-842	KIA SPORTAGE	E2004710D89064221B6A0110	Active	static/member_profile_img/14734.jpg	Outside	2026-10-21 09:33:43
+9878	006819	MR. AHMED RAZA SHIRAZI	AAAK-058	LAND CURSER	E2004701A7A064227D280111	Active	static/member_profile_img/6819.jpg	Outside	2026-10-21 09:33:44
+9879	006819	MR. AHMED RAZA SHIRAZI	AAAK-058	LAND CURSER	E20047016BF06422796D010E	Active	static/member_profile_img/6819.jpg	Outside	2026-10-21 09:33:44
+284	123727	MR. ZAKI PASHA	BJ-4694	MG/HS	E28068900000000256448FB7	Active	static/member_profile_img/123727.jpg	Outside	2026-10-21 09:33:43
+2062	123667	DR. IFTIKHAR AHMED KHWAJA	BJ-8377	TOYOTA FORTUNER	E2806890000000025797ECD2	Active	static/member_profile_img/123667.jpg	Outside	2026-10-21 09:33:43
+8331	221237	MRS. SUNYA AHMED	AAAN-232	TOYOTA CROSS	E20047019B3064227C61010D	Active	static/member_profile_img/221237.jpg	Outside	2026-10-21 09:33:43
+3527	124709	MR.  SOHAIL ANWAR	BFY-203	TOYOTA COROLLA	E2806894000050175DD8A8EE	Active	static/member_profile_img/124709.JPG	Outside	2026-10-21 09:33:43
+1739	125401	MR. GHIASUDDIN AHMED SHAIKH	AZA-176	HONDA CITY	E2806890000000025798DC0C	Active		Outside	2026-10-21 09:33:43
+10493	0412693	MISS. MYRA IMAN BILAL KHAN	BG-1018	TOYOTA	E2004710DBD064221B9E0116	Active	static/member_profile_img/412693.JPG	Outside	2026-10-21 09:33:44
+7688	0213701	MR. NADIR KHAN	CAG-923	TOYOTA COROLLA	E2806890000000025797E2D5	Active	static/member_profile_img/213701.JPG	Outside	2026-10-21 09:33:43
+4762	006560	MR. MUHAMMAD YOUNUS SHAIKH	AAHG-727	SUZUKI SWIFT	E20047012440642274F20109	Active	static/member_profile_img/6560.jpg	Inside	2026-10-21 09:33:43
+5694	124076	MR. SALIM HARIANAWALA	BXX-144	SUZUKI ALTO	E2007DD2B1015FF0B3BA357F	Active	static/member_profile_img/124076.jpg	Inside	2026-10-21 09:33:43
+9241	113431	MR. HUMAYUN QURESHI	AAHX-088	BYD ATTO-3	E20047026150642288C30110	Active	static/member_profile_img/113431.JPG	Inside	2026-10-21 09:33:44
+173	015575	MR. YOUSUF AZAM	BNQ-030	TOYOTA COROLLA	E2806890000000025797E74F	Active	static/member_profile_img/15575.JPG	Outside	2026-10-21 09:33:43
+2168	114214	MR. WASEEM HAROON REHMANE	ASE-944	HONDA CITY	E2806894000040175DD7C4EF	Active	static/member_profile_img/114214.jpg	Outside	2026-10-21 09:33:43
+3817	125150	MR. NAJMUL HUSSAIN DOSSA	BG-4967	HONDA BRV	E2806894000040175DD304F0	Active	static/member_profile_img/125150.jpg	Outside	2026-10-21 09:33:43
+8093	102421	MRS. FATIMA BILWANI	BM-0898	TOYOTA FORTUNER	E280689000000002564480F5	Active	static/member_profile_img/102421.JPG	Outside	2026-10-21 09:33:43
+8094	102421	MRS. FATIMA BILWANI	BM-0898	TOYOTA FORTUNER	E2806890000000025799D6BA	Active	static/member_profile_img/102421.JPG	Outside	2026-10-21 09:33:43
+10321	082160	MRS. FARIDA MEMON	BUY-506	HONDA CITY	E28068900000000256448322	Active	static/member_profile_img/82160.jpg	Outside	2026-10-21 09:33:44
+10763	0310658	MR. NEJDET PASHA MOORAJ	BXD-100	TOYOTA YARIS	E2004701B65064227E13010E	Active	static/member_profile_img/310658.JPG	Outside	2026-10-21 09:33:44
+4699	006899	DR. OMER WALIULLAH JUNG	BK-1680	KIA SPORTAGE	E2806890000000025799DB4A	Active	static/member_profile_img/6899.JPG	Outside	2026-10-21 09:33:43
+5772	220879	MRS. MARIAM MAQBOOL	BPK-673	TOYOTA COROLLA	E2806890000000025799C4B9	Active	static/member_profile_img/220879.jpg	Outside	2026-10-21 09:33:43
+1892	122524	MR. MUHAMMAD ASLAM SANJRANI	AACS-525	FORTUNER	E2004701879064227B270111	Active	static/member_profile_img/122524.JPG	Outside	2026-10-21 09:33:43
+4927	008186	MR. GHULAM AAMIR BALOCH	BYF-742	SUZUKI SWIFT	E28068900000000256448928	Active	static/member_profile_img/8186.jpg	Outside	2026-10-21 09:33:43
+3291	016380	MR. TARIQ  IQBAL MIAN	E-9888	MERCEDES BANZ	E2806890000000025798F30E	Active	static/member_profile_img/16380.jpg	Outside	2026-10-21 09:33:43
+5391	220237	MR. MOEENUDDIN FARUQI (H/O) MAHVASH(LATE)	BUV-772	TOYOTA COROLLA	E2806894000050175DD574ED	Active	static/member_profile_img/220237.JPG	Outside	2026-10-21 09:33:43
+8879	102494	MRS. GHAZAL BEG	AADD-852	HONDA	E200470121C0642274CA0111	Active	static/member_profile_img/102494.jpg	Outside	2026-10-21 09:33:44
+4202	150196	MRS. KIRAN KHAN ALI	BK-1656	KIA SPORTAGE	E2806894000050175DD720ED	Active	static/member_profile_img/150196.jpg	Outside	2026-10-21 09:33:43
+5022	101989	MRS. TANIA AHMED	AAHJ-797	BYD SHARK	E2004711581064222362010B	Active	static/member_profile_img/101989.JPG	Outside	2026-10-21 09:33:43
+6336	220919	MS. QAMARUNNISA DADABHOY	BSD-916	KIA PICANTO	E2806890000000025799DB87	Active	static/member_profile_img/220919.jpg	Outside	2026-10-21 09:33:43
+9214	0912397	MRS. JAVIDA ZENUDDIN ANJARWALLA	BH-8142	KIA SPORTAGE	E2806894000040175DD5B4EF	Active	static/member_profile_img/912397.jpg	Outside	2026-10-21 09:33:44
+5922	114682	MR. KHAWAJA TANVEER AHMED	BF-7944	TOYOTA PRADO	E28068900000000257982170	Active	static/member_profile_img/114682.jpg	Outside	2026-10-21 09:33:43
+5923	114682	MR. KHAWAJA TANVEER AHMED	BF-7944	TOYOTA PRADO	E2806890000000025797E184	Active	static/member_profile_img/114682.jpg	Outside	2026-10-21 09:33:43
+7625	0213542	MR. MUHAMMAD SULEMAN SHISHMAHAL	AAAY-063	BYD	E20047015AB0642278590107	Active	static/member_profile_img/213542.JPG	Outside	2026-10-21 09:33:43
+3191	007751	MR. AHSAN AFTAB	BP-7999	TOYOTA	E20047020DD06422838B0111	Active	static/member_profile_img/7751.JPG	Outside	2026-10-21 09:33:43
+3197	007751	MR. AHSAN AFTAB	BP-7999	PRADO 2017	E2806894000040175DD734EF	Active	static/member_profile_img/7751.JPG	Outside	2026-10-21 09:33:43
+4883	007813	MR. SALMAN WAHID BALAGAMWALA	BP-6574	TOYOTA LAND CRUSER	E20047014A3064227751010F	Active	static/member_profile_img/7813.jpg	Outside	2026-10-21 09:33:43
+1868	059022	MRS. NUSRAT KHANAM	BJF-489	TOYOTA COROLLA	E280689000000002564444B0	Active	static/member_profile_img/59022.jpg	Outside	2026-10-21 09:33:43
+9833	082156	MR. SANAULLAH ABBASI	SPF-782	TOYOTA COROLLA	E28068900000000257981EBF	Active	static/member_profile_img/82156.jpg	Outside	2026-10-21 09:33:44
+5947	007329	MR. SYED FAHAD HUMAYUN	BMH-968	SUZUKI SWIFT	E2806894000050175DD620EF	Active	static/member_profile_img/7329.jpg	Outside	2026-10-21 09:33:43
+8208	0214175	MR. BHAGWAN DAS	BSX-667	HONDA CIVIC	E2806890000000025798EDA5	Active	static/member_profile_img/214175.jpg	Outside	2026-10-21 09:33:43
+8211	0214175	MR. BHAGWAN DAS	BSX-667	HONDA CIVIC	E2806890000000025799E81E	Active	static/member_profile_img/214175.jpg	Outside	2026-10-21 09:33:43
+1086	123063	MR. MUHAMMAD YOUSUF ADIL	BH-3991	KIA SPORTAGE	E2806890000000025799246C	Active	static/member_profile_img/123063.jpg	Outside	2026-10-21 09:33:43
+4776	006096	MR. ADNAN NASEEM KALIA	EAB-967	KIA SROTAGE	E20047015060642277B4010C	Active	static/member_profile_img/6096.jpg	Outside	2026-10-21 09:33:43
+9667	124042	MR. HAMZA AHMAD DADA	BM-7218	TOYOTA CROSS	E2806890000000025798ECB7	Active	static/member_profile_img/124042.jpg	Outside	2026-10-21 09:33:44
+9960	0214545	MR. WAHEED ALI BURKI	AAKU-977	BYD SHARK	E2004701D9006422803E010F	Active	static/member_profile_img/214545.JPG	Outside	2026-10-21 09:33:44
+4316	007250	MR. MOHAMMAD AMEEN MOON	BN-4154	HAVAL H6	E20047016450642278F30111	Active	static/member_profile_img/7250.jpg	Outside	2026-10-21 09:33:43
+8948	0213873	MR. MOHAMMAD AMIR KHAN KHOSO	BUV-845	TOYOTA VITZ	E200470149D06422774B0111	Active	static/member_profile_img/213873.jpg	Outside	2026-10-21 09:33:44
+8954	0213873	MR. MOHAMMAD AMIR KHAN KHOSO	BUV-845	TOYOTA VITZ	E280689000000002564454A4	Active	static/member_profile_img/213873.jpg	Outside	2026-10-21 09:33:44
+10394	007134	MR. HASSAN MUNIR QURESHI	BDE-581	TOYOTA ALTIS	E280689000000002579936EE	Active	static/member_profile_img/7134.JPG	Outside	2026-10-21 09:33:44
+2911	220243	MRS. SHARMEEN MAHMUD	BDF-369	TOYOTA	E20047017030642279B10109	Active	static/member_profile_img/220243.JPG	Outside	2026-10-21 09:33:43
+9755	082172	COL. JUNAID SALAH-UD-DIN SWATI	ICT-0485	TOYOTA SURF	E28068900000000256448650	Active	static/member_profile_img/82172.JPG	Inside	2026-10-21 09:33:44
+161	122288	MR. KAMRAN HAMEED	BPR-945	TOYOTA COROLLA	E2806894000050175DD650ED	Active	static/member_profile_img/122288.jpg	Inside	2026-10-21 09:33:43
+679	0713859	MR. JUSTICE SHAMSUDDIN ABBASI	HC-0366	HONDA CIVIC	E20047016250642278D3010E	Active	static/member_profile_img/713859.jpg	Outside	2026-10-21 09:33:43
+390	122297	MR. ANWAR ALI M. RAMMAL	BN-0796	KIA STONIC	E20047011240642273D20112	Active	static/member_profile_img/122297.jpg	Outside	2026-10-21 09:33:43
+8248	005161	MR. ABBAS FARID	ATM-148	TOYOTA VITZ	E28068900000000256448ABE	Active	static/member_profile_img/5161.jpg	Outside	2026-10-21 09:33:43
+8250	005161	MR. ABBAS FARID	ATM-148	TOYOTA VITZ	E2806890000000025798202E	Active	static/member_profile_img/5161.jpg	Outside	2026-10-21 09:33:43
+2711	220705	MRS. RASHIDA MOIEZ SHAIKHALI	CU-4998	TOYOTA HILUX	E28068900000000256448418	Active	static/member_profile_img/220705.JPG	Outside	2026-10-21 09:33:43
+1296	221185	MRS. FATIMA HAFEEZ SHAMSI	AAHF-089	SUZUKI SWIFT	E20047012E106422758F010F	Active	static/member_profile_img/221185.JPG	Outside	2026-10-21 09:33:43
+10064	016954	MR. MUHAMMAD AJAZ	BM-3615	HAVAL JULION	E2004701D37064227FE50109	Active	static/member_profile_img/16954.jpg	Outside	2026-10-21 09:33:44
+9616	082223	R/ADM RIZWAN AHMED KHAN SI(M)	AABG-273	HAVAL	E2004701AD7064227D85010C	Active	static/member_profile_img/82223.JPG	Outside	2026-10-21 09:33:44
+5514	220293	MRS. UMAIMA KHUHRO	AAKY-957	BYD ATTO-3	E200470224B0642284F90112	Active	static/member_profile_img/220293.JPG	Outside	2026-10-21 09:33:43
+3124	190294	MRS. SADIA HUSSAIN	BCY-032	HONDA CITY	E28068900000000257972D21	Active	static/member_profile_img/190294.JPG	Outside	2026-10-21 09:33:43
+3125	190294	MRS. SADIA HUSSAIN	BCY-032	HONDA CITY 2015	E2806894000040175DD400F0	Active	static/member_profile_img/190294.JPG	Outside	2026-10-21 09:33:43
+1152	221206	MRS. ANAM HAMMAD MANDAVIA	BM-8646	TOYOTA LAND CRU	E20047017450642279F3010B	Active	static/member_profile_img/221206.JPG	Outside	2026-10-21 09:33:43
+6085	007835	MR. SAEED HANNAN	LB-7828	TOYOTA REVO	E2806890000000025798F8AC	Active	static/member_profile_img/7835.jpg	Outside	2026-10-21 09:33:43
+8499	0912242	MRS. NUZHAT KHAN	BWL-223	TOYOTA COROLLA	E2806894000050175DD6F0ED	Active	static/member_profile_img/912242.jpg	Outside	2026-10-21 09:33:43
+10463	014944	MR. FAROOQ ALI KHAN	BPR-612	TOYOTA COROLLA	E28068900000000256448221	Active		Outside	2026-10-21 09:33:44
+6938	221119	MRS. ERUM ESBHANI	BLD-070	GRANDE 2017	E20047019C8064227C76010E	Active	static/member_profile_img/221119.JPG	Outside	2026-10-21 09:33:43
+460	124172	MR. KAIZAR H. KHANDWALA	BYQ-410	TOYOTA YARIS	E280689000000002564446B5	Active	static/member_profile_img/124172.jpg	Outside	2026-10-21 09:33:43
+7499	0213491	DR. FAISAL FAIYAZ ZUBERI	BH-3998	KIA SPORTAGE	E2806890000000025798E396	Active	static/member_profile_img/213491.jpg	Outside	2026-10-21 09:33:43
+4658	007299	MR. ASKARI ASGHAR AGHA	AACT-050	TOYOTA FORTUNER	E20047019DE064227C8C0113	Active	static/member_profile_img/7299.JPG	Outside	2026-10-21 09:33:43
+7256	007515	MR. MINHAS ASHFAQ BANDUKDA	BL-5983	KIA SPORTAGE	E20047112310642220120112	Active	static/member_profile_img/7515.JPG	Outside	2026-10-21 09:33:43
+1289	124136	MR. MUHAMMED IQBAL KHAN	BEC-801	TOYTOA COROLLA	E2806894000040175DD8ECEF	Active	static/member_profile_img/124136.JPG	Outside	2026-10-21 09:33:43
+7191	007354	MR. SAJJAD AHMED AIJAZI	BL-5480	CHANGE OSHAN	E28068900000000256447F84	Active	static/member_profile_img/7354.jpg	Outside	2026-10-21 09:33:43
+9592	115959	MR. SHEZI NACKVI	BSC-396	TOYOTA YARIS	E28068900000000257992995	Active	static/member_profile_img/115959.jpg	Outside	2026-10-21 09:33:44
+290	113181	MR. HASAN MERCHANT	AAAZ-9585	JAECOO	E2004701812064227AC00106	Active	static/member_profile_img/113181.jpg	Outside	2026-10-21 09:33:43
+1397	125472	MR. RAIS JAHANGIR AHMED	BJ-4889	HYUNDAI TUCSON	E28068900000000257982126	Active	static/member_profile_img/125472.JPG	Outside	2026-10-21 09:33:43
+4107	006159	MR. JUNAID YOUSUF	BXL-924	TOYOTA COROLLA	E2806890000000025797EE48	Active	static/member_profile_img/6159.jpg	Outside	2026-10-21 09:33:43
+5867	220912	MRS. NOSHABA MYSOORWALA	BEU-060	TOYOTA COROLLA	E2004701B61064227E0F0111	Active	static/member_profile_img/220912.jpg	Outside	2026-10-21 09:33:43
+7972	102281	MRS. RAFIA ZAIN	AAAU-562	HAVAL	E200470159C06422784A010A	Active	static/member_profile_img/102281.JPG	Outside	2026-10-21 09:33:43
+3796	006441	MR. LATIF AMIN BAWANY	AZD-798	TOYOTA COROLLA	E20047115190642222FA010D	Active	static/member_profile_img/6441.jpg	Outside	2026-10-21 09:33:43
+6133	014369	MR. MUSLIM RASHID HABIB	ATW-812	HONDA	E28068900000000257981EC9	Active	static/member_profile_img/14369.JPG	Outside	2026-10-21 09:33:43
+1494	005082	MR. IRFAN MOHSIN	AAJP-493	KIA SORENTO 26	E20047025E106422888F010B	Active	static/member_profile_img/5082.JPG	Outside	2026-10-21 09:33:43
+9474	007392	MR. MANSOOR ZAKARIA FAZIL	BMJ-113	SUZUKI CAIZ	E2004701A3C064227CEA0110	Active	static/member_profile_img/7392.jpg	Outside	2026-10-21 09:33:44
+1215	121326	MR. A. SATTAR COCHINWALA	BEA-281	HONDA	E2004701947064227BF5010D	Active	static/member_profile_img/121326.jpg	Outside	2026-10-21 09:33:43
+7585	0213501	DR. SHAHAB IMAM	AAFV-919	KIA SPORTAGE	E2004711565064222346010F	Active	static/member_profile_img/213501.jpg	Outside	2026-10-21 09:33:43
+9441	007027	MR. ZAIN ANWAR	BNP-708	SUZUKI WAGONR	E2806890000000025798217F	Active	static/member_profile_img/7027.JPG	Outside	2026-10-21 09:33:44
+3954	007881	MR. MUHAMMAD ASIM BILVANI	BL-6980	HYUNDAI SANTA FEV	E2004700E740642271220109	Active	static/member_profile_img/7881.JPG	Outside	2026-10-21 09:33:43
+664	125123	DR. SHAHID HASAN SIDDIQUI	AAED-296	TOYOTA YARIS	E20047114920642222730107	Active	static/member_profile_img/125123.JPG	Outside	2026-10-21 09:33:43
+2353	006363	MR. MUHAMMAD NOMAN SAIGAL	BCY-010	HONDA CIVIC	E2806890000000025799367E	Active	static/member_profile_img/6363.jpg	Outside	2026-10-21 09:33:43
+3581	220270	MRS. SAMIA MAJEED	KZ-0357	TOYOTA REVO	E2806890000000025799C310	Active	static/member_profile_img/220270.jpg	Outside	2026-10-21 09:33:43
+8654	0213730	MR. MUHAMMAD FAIZAN	BL-4898	KIA SPORTAGE	E2806890000000025797D219	Active	static/member_profile_img/213730.JPG	Outside	2026-10-21 09:33:43
+3354	115042	MR. SAJID HAROON	BS-1199	HYUNADI	E2806890000000025798F7CC	Active	static/member_profile_img/115042.JPG	Outside	2026-10-21 09:33:43
+1137	014556	MR. SAQIB NASEEM	BK-3532	KIA SPORTAGE	E2806894000050175DD4BCEE	Active	static/member_profile_img/14556.jpg	Inside	2026-10-21 09:33:43
+3859	007934	MR. MUHAMMAD AZEEM DADA	AJC-762	TOYOTA COROLLA	E2004701B56064227E040109	Active	static/member_profile_img/7934.jpg	Inside	2026-10-21 09:33:43
+3861	007934	MR. MUHAMMAD AZEEM DADA	AJC-762	TOYOTA COROLLA	E2806890000000025797DCAD	Active	static/member_profile_img/7934.jpg	Inside	2026-10-21 09:33:43
+2683	006969	MR. MUHAMMAD HASHIM MUMTAZ	AAHM-969	TOYOTA	E20047012880642275360112	Active	static/member_profile_img/6969.jpg	Outside	2026-10-21 09:33:43
+9351	004697	MR. OMER SAEED	BG-4059	TOYOTA PARADO	E2806894000050175DD248EF	Active	static/member_profile_img/4697.JPG	Outside	2026-10-21 09:33:44
+6452	007696	MR. NADIR HASAN	BFB-040	TOYOTA COROLLA	E28068900000000256445C4A	Active	static/member_profile_img/7696.jpg	Outside	2026-10-21 09:33:43
+9269	0213941	MR. MUHAMMAD UMAIR AYUB KHAN	BF-1742	TOYOTA FORTUNER	E2806890000000025799E7A6	Active	static/member_profile_img/213941.jpg	Outside	2026-10-21 09:33:44
+3615	006980	MR. M. IRFAN MOHAMMEDI	BM-5636	TOOYTA RAIZE	E28068900000000257982F72	Active	static/member_profile_img/6980.jpg	Outside	2026-10-21 09:33:43
+2855	220217	MRS. SARA MOOSA	BDS-527	TOYOTA COROLLA	E2806890000000025798F9CC	Active	static/member_profile_img/220217.jpg	Outside	2026-10-21 09:33:43
+1193	123811	MR. SHAHIN IQBAL	BUP-743	DAIHATSU/CAST CAR	E2806894000050175DD074F0	Active	static/member_profile_img/123811.jpg	Outside	2026-10-21 09:33:43
+1217	121326	MR. A. SATTAR COCHINWALA	BEA-281	HONDA	E2806890000000025799337C	Active	static/member_profile_img/121326.jpg	Outside	2026-10-21 09:33:43
+1218	121326	MR. A. SATTAR COCHINWALA	BEA-281	HONDA	E2806890000000025797E5E0	Active	static/member_profile_img/121326.jpg	Outside	2026-10-21 09:33:43
+6977	220185	MRS. SAMINA  IMTIAZ BANDAY	AUW-355	HONDA CITY	E2806894000050175DD708ED	Active	static/member_profile_img/220185.JPG	Outside	2026-10-21 09:33:43
+7390	123604	MR. GUL HASSAN JAN	EAB-101	AUDI	E28068900000000256445A1E	Active	static/member_profile_img/123604.JPG	Outside	2026-10-21 09:33:43
+8356	124582	MR. BASHIR ALI ABDULLA	AXW-898	HONDA CITY	E280689000000002579828F4	Active	static/member_profile_img/124582.JPG	Outside	2026-10-21 09:33:43
+3639	015233	MR. CYRUS RUSTOM KHURSIGARA	BEE-503	HONDA CITY	E2004701B8F064227E3D0108	Active		Outside	2026-10-21 09:33:43
+3640	015233	MR. CYRUS RUSTOM KHURSIGARA	BEE-503	HONDA CITY	E2806890000000025797E1CF	Active		Outside	2026-10-21 09:33:43
+8717	0214027	MR. OSAMA SHAMIM	BYT-950	TOYOTA PASSO	E2806890000000025797EF3D	Active	static/member_profile_img/214027.jpg	Outside	2026-10-21 09:33:43
+10135	082174	MR. MOHAMMAD YOUNIS	SPA-874	TOYOTA LAND CRU	E2806890000000025799282D	Active	static/member_profile_img/82174.jpg	Outside	2026-10-21 09:33:44
+10198	123407	MR. PERVEZ  NABI OSTO	BSY-060	TOYOTA	E2806890000000025797E025	Active	static/member_profile_img/123407.jpg	Outside	2026-10-21 09:33:44
+8607	0214156	MR. HASAN AHMAD	EAA-321	AUDI	E2004700ED006422717E0110	Active	static/member_profile_img/214156.JPG	Outside	2026-10-21 09:33:43
+572	113802	MR. M. RAFIQ CHINOY	BKE-648	TOYOTA AQUA	E20047017F3064227AA10109	Active	static/member_profile_img/113802.jpg	Outside	2026-10-21 09:33:43
+3505	220540	MRS. FAIZA AURANGZEB	BNC-916	TOYOTA COROLLA	E28068900000000257992547	Active	static/member_profile_img/220540.jpg	Outside	2026-10-21 09:33:43
+2981	240061	DR. ISMAT ARA KHURSHID	BJL-081	TOYOTA COROLLA	E2806894000040175DD46CEE	Active	static/member_profile_img/240061.jpg	Outside	2026-10-21 09:33:43
+4023	007976	MR. SYED FARJAD SULTAN	CV-9182	TOYOTA	E2806890000000025797EDE1	Active	static/member_profile_img/7976.jpg	Inside	2026-10-21 09:33:43
+6496	150109	MR. AMIN GANNY	BJ-7710	KIA SORENTO	E28068900000000256445479	Active	static/member_profile_img/150109.jpg	Outside	2026-10-21 09:33:43
+7058	007638	MR. MUHAMMAD ANAS MAKHDOOM	AABC-316	HAVAL	E20047015200642277CE010D	Active	static/member_profile_img/7638.JPG	Inside	2026-10-21 09:33:43
+5171	101739	MRS. RABIA ZUBAIR	AAEY-370	HAVAL TANK 500	E20047106C80642214A9010F	Active	static/member_profile_img/101739.JPG	Outside	2026-10-21 09:33:43
+7420	008062	MR. SHAHBAZ MAZHAR SAHTO	BCH-928	TOYOTA COROLLA	E2806890000000025799354F	Active	static/member_profile_img/8062.JPG	Inside	2026-10-21 09:33:43
+2211	0213367	MR. MOHAMMED AMIR YUSUFZAI	AADU-866	BYD	E20047010A006422734E0111	Active	static/member_profile_img/213367.jpg	Outside	2026-10-21 09:33:43
+7896	0213659	MR. TAHIR IQBAL KHAN	FV-294	TOYOTA	E28068900000000257982868	Active	static/member_profile_img/213659.JPG	Inside	2026-10-21 09:33:43
+4061	0211424	MR. AHMED NABEEL MEMON	BH-3187	HONDA BRV	E2806894000040175DD0ACEF	Active	static/member_profile_img/211424.jpg	Outside	2026-10-21 09:33:43
+2538	006207	MR. AKBAR IQBAL PURI	AP-9	LAND CRU	E2004701922064227BD00114	Active	static/member_profile_img/6207.JPG	Inside	2026-10-21 09:33:43
 394	027053	MR. SHAHID AHMED	BF-7174	LAN CUR	E2806890000000025799D1F5	Active	static/member_profile_img/27053.JPG	Outside	2026-10-21 09:33:43
 688	126904	MR. SHAHED ISLAM	ANP-280	SUZUKI	E280689000000002579820D8	Active	static/member_profile_img/126904.jpg	Outside	2026-10-21 09:33:43
 1321	007620	MR. GLEN ANWAR BAYAT	BN-1042	SAZGAR	E20047014820642277300112	Active	static/member_profile_img/7620.jpg	Outside	2026-10-21 09:33:43
@@ -15011,9 +16773,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 156	150218	MS. FAUZIA KHAN	BZY-200	HONDA	E28068900000000256448FDF	Active	static/member_profile_img/150218.JPG	Outside	2026-10-21 09:33:43
 157	150218	MS. FAUZIA KHAN	BJ-7494	HYUNDI	E2806894000050175DD6F8EF	Active	static/member_profile_img/150218.JPG	Outside	2026-10-21 09:33:43
 158	150218	MS. FAUZIA KHAN	BTY-261	VITZ	E2806894000040175DD7ECEF	Active	static/member_profile_img/150218.JPG	Outside	2026-10-21 09:33:43
-159	122288	MR. KAMRAN HAMEED	BPR-945	COROLLA 2019	E2806894000040175DD278F0	Active	static/member_profile_img/122288.jpg	Outside	2026-10-21 09:33:43
 160	122288	MR. KAMRAN HAMEED	BQF-951	COROLLA 2019	E2806894000040175DD290F0	Active	static/member_profile_img/122288.jpg	Outside	2026-10-21 09:33:43
-161	122288	MR. KAMRAN HAMEED	BPR-945	TOYOTA COROLLA	E2806894000050175DD650ED	Active	static/member_profile_img/122288.jpg	Outside	2026-10-21 09:33:43
 162	123457	MR. SHAUKAT IQBAL	BUZ-858	TOYOTA YARIS	E2806890000000025799E2B6	Active	static/member_profile_img/123457.jpg	Outside	2026-10-21 09:33:43
 163	123457	MR. SHAUKAT IQBAL	BMJ-858	TOYOTA COROLLA	E2806890000000025799E39A	Active	static/member_profile_img/123457.jpg	Outside	2026-10-21 09:33:43
 164	123457	MR. SHAUKAT IQBAL	BUZ-858	TOYOTA	E2806894000040175DD51CED	Active	static/member_profile_img/123457.jpg	Outside	2026-10-21 09:33:43
@@ -15024,7 +16784,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 170	015575	MR. YOUSUF AZAM	AEZ-070	TOYOTA COROLLA	E28068900000000256448BCA	Active	static/member_profile_img/15575.JPG	Outside	2026-10-21 09:33:43
 171	015575	MR. YOUSUF AZAM	P-2458	CADILLAC	E28068900000000257982B83	Active	static/member_profile_img/15575.JPG	Outside	2026-10-21 09:33:43
 172	015575	MR. YOUSUF AZAM	BNH-080	TOYOTA COROLLA	E2806890000000025797E8DF	Active	static/member_profile_img/15575.JPG	Outside	2026-10-21 09:33:43
-173	015575	MR. YOUSUF AZAM	BNQ-030	TOYOTA COROLLA	E2806890000000025797E74F	Active	static/member_profile_img/15575.JPG	Outside	2026-10-21 09:33:43
 177	124863	MR. SATISH  CHANDAR ANAND	BWA-795	TOYOTA	E280689000000002564440EE	Active	static/member_profile_img/124863.jpg	Outside	2026-10-21 09:33:43
 178	126179	MR. ABDUL AZIZ HABIB	AEX-883	SUZUKI BALINO	E2806890000000025798207B	Active	static/member_profile_img/126179.JPG	Outside	2026-10-21 09:33:43
 179	123244	MR. SHARAF ALI FAKHRI	BK-1837	KIA SPORTAGE	E2806890000000025798F240	Active	static/member_profile_img/123244.JPG	Outside	2026-10-21 09:33:43
@@ -15043,11 +16802,11 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 192	150198	MR. HASAN AKBAR	BL-3398	HONDA HRV	E280689000000002579729AE	Active	static/member_profile_img/150198.jpg	Outside	2026-10-21 09:33:43
 193	125025	MR. AHSAN MAHMOOD ALVI	BRJ-278	SUZUKI CULTUS	E2806890000000025797EEFB	Active	static/member_profile_img/125025.JPG	Outside	2026-10-21 09:33:43
 194	125025	MR. AHSAN MAHMOOD ALVI	BLT-955	HONDA CIVIC	E2806890000000025798241C	Active	static/member_profile_img/125025.JPG	Outside	2026-10-21 09:33:43
+159	122288	MR. KAMRAN HAMEED	BPR-945	COROLLA 2019	E2806894000040175DD278F0	Active	static/member_profile_img/122288.jpg	Inside	2026-10-21 09:33:43
 195	125025	MR. AHSAN MAHMOOD ALVI	BH-3303	HONDA BRV	E2806890000000025644543B	Active	static/member_profile_img/125025.JPG	Outside	2026-10-21 09:33:43
 196	125025	MR. AHSAN MAHMOOD ALVI	BH-3303	HONDA BRV	E2806894000040175DD728ED	Active	static/member_profile_img/125025.JPG	Outside	2026-10-21 09:33:43
 197	125025	MR. AHSAN MAHMOOD ALVI	BRJ-278	SUZUKI CULTUS	E2806894000050175DD6D8ED	Active	static/member_profile_img/125025.JPG	Outside	2026-10-21 09:33:43
 198	125025	MR. AHSAN MAHMOOD ALVI	BLT-955	HONDA CIVIC	E2806894000040175DD6ECED	Active	static/member_profile_img/125025.JPG	Outside	2026-10-21 09:33:43
-200	014734	MR. SHABBIR AKBAR GULAMALI	AAGG-842	BYD ATTO-3	E20047013380642275E6010D	Active	static/member_profile_img/14734.jpg	Outside	2026-10-21 09:33:43
 201	014734	MR. SHABBIR AKBAR GULAMALI	BRR-748	TOYOTA COROLLA	E28068900000000257992BC4	Active	static/member_profile_img/14734.jpg	Outside	2026-10-21 09:33:43
 202	014734	MR. SHABBIR AKBAR GULAMALI	BND-487	TOYOTA COROLLA	E2806890000000025798F18F	Active	static/member_profile_img/14734.jpg	Outside	2026-10-21 09:33:43
 203	123825	MR. ASIF KATCHI	BWV-094	HONDA CITY	E2806894000040175DD184F0	Active	static/member_profile_img/123825.jpg	Outside	2026-10-21 09:33:43
@@ -15090,6 +16849,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 243	121848	MR. MANSOOR-UL- ARFIN	ASH-539	TOYOTA COROLLA	E2806890000000025799D9AF	Active	static/member_profile_img/121848.jpg	Outside	2026-10-21 09:33:43
 244	121989	MR. RAZAK H. MOHAMMED BENGALI	BP-9077	TOYOTA FORTUNER	E200470153C0642277EA010F	Active	static/member_profile_img/121989.jpg	Outside	2026-10-21 09:33:43
 1668	014858	MR. SHAHID AZIZ	AAHU-862	BYD	E20047017B0064227A5E010E	Active	static/member_profile_img/14858.jpg	Outside	2026-10-21 09:33:43
+200	014734	MR. SHABBIR AKBAR GULAMALI	AAGG-842	BYD ATTO-3	E20047013380642275E6010D	Active	static/member_profile_img/14734.jpg	Outside	2026-10-21 09:33:43
 245	121989	MR. RAZAK H. MOHAMMED BENGALI	AUT-503	AUDI E-TRON	E2806890000000025644830D	Active	static/member_profile_img/121989.jpg	Outside	2026-10-21 09:33:43
 246	121989	MR. RAZAK H. MOHAMMED BENGALI	BUA-768	TOYOTA COROLLA	E2806894000040175DD6C4ED	Active	static/member_profile_img/121989.jpg	Outside	2026-10-21 09:33:43
 247	121989	MR. RAZAK H. MOHAMMED BENGALI	BH-8149	HYUNDAI TUCSON	E2806894000050175DD6CCED	Active	static/member_profile_img/121989.jpg	Outside	2026-10-21 09:33:43
@@ -15125,11 +16885,9 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 281	123578	MR. SYED MUZAMMIL HUSAIN	BG-2502	HONDA BRV	E2806890000000025798E89F	Active	static/member_profile_img/123578.jpg	Outside	2026-10-21 09:33:43
 282	123863	MR. KHALIL UR REHMAN CHAUDHRY	BVW-474	TOYOTA YARIS	E28068900000000257982908	Active	static/member_profile_img/123863.JPG	Outside	2026-10-21 09:33:43
 283	123727	MR. ZAKI PASHA	LB-9046	TOYOTA REVO	E2806890000000025797DF64	Active	static/member_profile_img/123727.jpg	Outside	2026-10-21 09:33:43
-284	123727	MR. ZAKI PASHA	BJ-4694	MG/HS	E28068900000000256448FB7	Active	static/member_profile_img/123727.jpg	Outside	2026-10-21 09:33:43
 285	124639	MR. PERVEZ ABBAS HALAI	BWK-353	SUZUKI SWIFT	E2806890000000025797D645	Active	static/member_profile_img/124639.jpg	Outside	2026-10-21 09:33:43
 286	124639	MR. PERVEZ ABBAS HALAI	BJ-2189	PROTON X70	E28068900000000257993B49	Active	static/member_profile_img/124639.jpg	Outside	2026-10-21 09:33:43
 287	123064	MR.ABDUL AZIZ H.YAQOOB PARWANI	AWM-738	TOYOTA COROLLA	E2806890000000025797EDC8	Active	static/member_profile_img/123064.jpg	Outside	2026-10-21 09:33:43
-290	113181	MR. HASAN MERCHANT	AAAZ-9585	JAECOO	E2004701812064227AC00106	Active	static/member_profile_img/113181.jpg	Outside	2026-10-21 09:33:43
 291	113181	MR. HASAN MERCHANT	BRJ-804	TOYOTA COROLLA	E28068900000000257982D60	Active	static/member_profile_img/113181.jpg	Outside	2026-10-21 09:33:43
 292	113181	MR. HASAN MERCHANT	BJH-782	HONDA CIVIC	E28068900000000256448A29	Active	static/member_profile_img/113181.jpg	Outside	2026-10-21 09:33:43
 293	113181	MR. HASAN MERCHANT	BEN-746	TOYOTA COROLLA	E2806890000000025797E233	Active	static/member_profile_img/113181.jpg	Outside	2026-10-21 09:33:43
@@ -15195,7 +16953,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 367	102378	MRS. SADIA HASAN	CAC-012	HONDA CITY	E2806890000000025799D58E	Active	static/member_profile_img/102378.jpg	Outside	2026-10-21 09:33:43
 368	102378	MRS. SADIA HASAN	BGK-619	HONDA CIVIC	E2806890000000025798F917	Active	static/member_profile_img/102378.jpg	Outside	2026-10-21 09:33:43
 369	123188	MR. MOHAMMADI DAUD	BJ-1150	KIA SPORTAGE	E28068900000000257982AC5	Active	static/member_profile_img/123188.jpg	Outside	2026-10-21 09:33:43
-370	123188	MR. MOHAMMADI DAUD	BXF-220	SUZUKI SWIFT	E2806890000000025798ED94	Active	static/member_profile_img/123188.jpg	Outside	2026-10-21 09:33:43
 371	123220	MR. MUHAMMAD YUNUS DADA	AKZ-558	TOYOTA	E2806890000000025644910A	Active	static/member_profile_img/123220.JPG	Outside	2026-10-21 09:33:43
 372	123220	MR. MUHAMMAD YUNUS DADA	BCH-371	TOYOTA	E2806890000000025797DAF5	Active	static/member_profile_img/123220.JPG	Outside	2026-10-21 09:33:43
 373	123220	MR. MUHAMMAD YUNUS DADA	AMY-940	SUZUKI	E2806890000000025797DB72	Active	static/member_profile_img/123220.JPG	Outside	2026-10-21 09:33:43
@@ -15215,7 +16972,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 387	150183	MR. JAWAD KHALIL KHAN	BM-0408	TOYOTA	E2806890000000025799CA77	Active	static/member_profile_img/150183.jpg	Outside	2026-10-21 09:33:43
 388	150184	MR. ARSHADUDDIN AHMED	BYK-976	HONDA CIVIC	E2806890000000025799DE57	Active	static/member_profile_img/150184.JPG	Outside	2026-10-21 09:33:43
 389	150184	MR. ARSHADUDDIN AHMED	BL-3241	KIA SPORTAGE	E2806890000000025799E789	Active	static/member_profile_img/150184.JPG	Outside	2026-10-21 09:33:43
-390	122297	MR. ANWAR ALI M. RAMMAL	BN-0796	KIA STONIC	E20047011240642273D20112	Active	static/member_profile_img/122297.jpg	Outside	2026-10-21 09:33:43
 391	122297	MR. ANWAR ALI M. RAMMAL	AADT-639	BYD	E20047016DD06422798B0114	Active	static/member_profile_img/122297.jpg	Outside	2026-10-21 09:33:43
 392	122297	MR. ANWAR ALI M. RAMMAL	BK-4382	KIA SPORTAGE	E2806890000000025797E5F1	Active	static/member_profile_img/122297.jpg	Outside	2026-10-21 09:33:43
 393	122297	MR. ANWAR ALI M. RAMMAL	BJL-572	HONDA CIVIC	E280689000000002579925D8	Active	static/member_profile_img/122297.jpg	Outside	2026-10-21 09:33:43
@@ -15234,6 +16990,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 413	122776	MR. NAWAZISH ALI HAKIM	BK-9027	HONDA STAR EX	E28068900000000256445099	Active	static/member_profile_img/122776.jpg	Outside	2026-10-21 09:33:43
 414	122776	MR. NAWAZISH ALI HAKIM	BL-4999	TOYOTA LAND CUR	E28068900000000256448D14	Active	static/member_profile_img/122776.jpg	Outside	2026-10-21 09:33:43
 415	123332	MR. S. M. MAHBOOB	AXA-280	TOYOTA GLI	E280689000000002579820BD	Active	static/member_profile_img/123332.jpg	Outside	2026-10-21 09:33:43
+370	123188	MR. MOHAMMADI DAUD	BXF-220	SUZUKI SWIFT	E2806890000000025798ED94	Active	static/member_profile_img/123188.jpg	Outside	2026-10-21 09:33:43
 416	123545	MR. REHAN FAZAL MIRZA	ASP-749	CHEVERLET	E2806890000000025799CFE3	Active	static/member_profile_img/123545.JPG	Outside	2026-10-21 09:33:43
 417	123545	MR. REHAN FAZAL MIRZA	BK-7917	OSHAN CHANGAN	E2806890000000025799CBD5	Active	static/member_profile_img/123545.JPG	Outside	2026-10-21 09:33:43
 419	124289	MR. HABIB HUSSAIN HALAI	BDN-971	TOYOTA PASSO	E2806890000000025798EB6C	Active	static/member_profile_img/124289.JPG	Outside	2026-10-21 09:33:43
@@ -15274,7 +17031,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 457	004847	MR. SARDAR M. ASHRAF KHAN	BPU-981	DIAHATSU MIRA	E2806890000000025797ECE2	Active	static/member_profile_img/4847.jpg	Outside	2026-10-21 09:33:43
 458	004847	MR. SARDAR M. ASHRAF KHAN	BTW-193	TOYOTA YARIS	E2806890000000025797EE3B	Active	static/member_profile_img/4847.jpg	Outside	2026-10-21 09:33:43
 459	004847	MR. SARDAR M. ASHRAF KHAN	BK-9883	HONDA BRV	E280689000000002564486C0	Active	static/member_profile_img/4847.jpg	Outside	2026-10-21 09:33:43
-460	124172	MR. KAIZAR H. KHANDWALA	BYQ-410	TOYOTA YARIS	E280689000000002564446B5	Active	static/member_profile_img/124172.jpg	Outside	2026-10-21 09:33:43
 461	124172	MR. KAIZAR H. KHANDWALA	ADK-141	TOYOTA IND	E2806894000040175DD358F0	Active	static/member_profile_img/124172.jpg	Outside	2026-10-21 09:33:43
 462	124172	MR. KAIZAR H. KHANDWALA	BCC-851	SUZUKI SWIFT	E2806894000050175DD3D8F0	Active	static/member_profile_img/124172.jpg	Outside	2026-10-21 09:33:43
 463	150180	MR. KHALID MAHMOOD	BG-7995	HONDA BRV	E280689000000002579828C7	Active	static/member_profile_img/150180.JPG	Outside	2026-10-21 09:33:43
@@ -15285,7 +17041,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 468	122817	MR. SHEIKH ANJUM REHMAT	BXF-101	TOYOTA ALTIS	E280689000000002564446E6	Active	static/member_profile_img/122817.jpg	Outside	2026-10-21 09:33:43
 469	102138	MRS. ZAHRA AAMIR MILLWALA	AXH-995	HONDA CIVIC	E2806890000000025644905A	Active	static/member_profile_img/102138.jpg	Outside	2026-10-21 09:33:43
 470	121420	MR. ABBAS MOORAJ	BWY-027	TOYOTA	E2806894000040175DD3A0EF	Active	static/member_profile_img/121420.jpg	Outside	2026-10-21 09:33:43
-471	121420	MR. ABBAS MOORAJ	BVV-889	TOYOTA	E2806894000040175DD77CEF	Active	static/member_profile_img/121420.jpg	Outside	2026-10-21 09:33:43
 472	121437	MR. NAVZER MAVALVALA	AHT-041	HONDA CITY	E2806894000050175DD4C4ED	Active	static/member_profile_img/121437.jpg	Outside	2026-10-21 09:33:43
 473	123342	MR. ARIF HAJI HABIB	BET-755	MITSUBISHI	E2806890000000025799D537	Active	static/member_profile_img/123342.JPG	Outside	2026-10-21 09:33:43
 474	123342	MR. ARIF HAJI HABIB	BH-4449	MITSUBISHI JEEP	E2806890000000025799D2BC	Active	static/member_profile_img/123342.JPG	Outside	2026-10-21 09:33:43
@@ -15328,6 +17083,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 517	102235	MRS. ANUM MAZHAR	BWS-993	SUZUKI ALTO	E2806890000000025797E49A	Active	static/member_profile_img/102235.jpg	Outside	2026-10-21 09:33:43
 518	102235	MRS. ANUM MAZHAR	BUQ-711	TOYOTA COROLLA	E2806890000000025797E36B	Active	static/member_profile_img/102235.jpg	Outside	2026-10-21 09:33:43
 519	122740	MR. SHAIKH HAROON RASHID	AAKG-828	BYD ATTO-3	E20047017F7064227AA50104	Active	static/member_profile_img/122740.JPG	Outside	2026-10-21 09:33:43
+471	121420	MR. ABBAS MOORAJ	BVV-889	TOYOTA	E2806894000040175DD77CEF	Active	static/member_profile_img/121420.jpg	Inside	2026-10-21 09:33:43
 520	122740	MR. SHAIKH HAROON RASHID	BNN-704	TOYOTA COROLLA	E200470137C06422762A0108	Active	static/member_profile_img/122740.JPG	Outside	2026-10-21 09:33:43
 521	122740	MR. SHAIKH HAROON RASHID	BJB-979	HONDA	E280689000000002579831D2	Active	static/member_profile_img/122740.JPG	Outside	2026-10-21 09:33:43
 522	122740	MR. SHAIKH HAROON RASHID	BJB-979	HONDA CIVIC	E28068900000000257991D42	Active	static/member_profile_img/122740.JPG	Outside	2026-10-21 09:33:43
@@ -15379,7 +17135,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 569	123725	MR. AZIM MOHAMMAD HAJI	BLH-833	TOYOTA COROLLA	E2806890000000025798EC96	Active	static/member_profile_img/123725.jpg	Outside	2026-10-21 09:33:43
 570	123725	MR. AZIM MOHAMMAD HAJI	BNU-061	HONDA CITY	E280689000000002579931AD	Active	static/member_profile_img/123725.jpg	Outside	2026-10-21 09:33:43
 571	123725	MR. AZIM MOHAMMAD HAJI	BGN-557	HONDA CIVIC	E2806890000000025797E300	Active	static/member_profile_img/123725.jpg	Outside	2026-10-21 09:33:43
-572	113802	MR. M. RAFIQ CHINOY	BKE-648	TOYOTA AQUA	E20047017F3064227AA10109	Active	static/member_profile_img/113802.jpg	Outside	2026-10-21 09:33:43
 573	113802	MR. M. RAFIQ CHINOY	BZN-355	DAIHATSU/MIRA	E280689000000002579826BF	Active	static/member_profile_img/113802.jpg	Outside	2026-10-21 09:33:43
 574	113802	MR. M. RAFIQ CHINOY	BFB-558	HONDA/CIVIC	E28068900000000256448841	Active	static/member_profile_img/113802.jpg	Outside	2026-10-21 09:33:43
 575	003803	MR. AHMED CHINOY	BVX-052	SUZUKI ALTO	E28068900000000256448280	Active	static/member_profile_img/3803.jpg	Outside	2026-10-21 09:33:43
@@ -15387,7 +17142,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 577	003803	MR. AHMED CHINOY	ARP-210	TOYOTA COROLLA	E28068900000000257991E3F	Active	static/member_profile_img/3803.jpg	Outside	2026-10-21 09:33:43
 578	003803	MR. AHMED CHINOY	BGW-131	TOYOTA COROLLA	E280689000000002579734B3	Active	static/member_profile_img/3803.jpg	Outside	2026-10-21 09:33:43
 579	003803	MR. AHMED CHINOY	APR-210	TOYOTA COROOLA	E280689000000002579734E3	Active	static/member_profile_img/3803.jpg	Outside	2026-10-21 09:33:43
-580	102381	MRS. SAMAR	BP-5189	KIA SORENTO	E20047010A30642273510112	Active	static/member_profile_img/102381.jpg	Outside	2026-10-21 09:33:43
 581	102381	MRS. SAMAR	BL-2162	HYUNDAI TUCSON	E28068900000000257991E6E	Active	static/member_profile_img/102381.jpg	Outside	2026-10-21 09:33:43
 582	102381	MRS. SAMAR	BUK-827	TOYOTA COROLLA	E280689000000002564483D0	Active	static/member_profile_img/102381.jpg	Outside	2026-10-21 09:33:43
 583	124073	MR. MEHDI CHAGLA	BYL-701	HONDA CIVIC	E28068900000000256448247	Active	static/member_profile_img/124073.JPG	Outside	2026-10-21 09:33:43
@@ -15424,6 +17178,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 618	006343	MR.  ATHER ALI KHAN	BPB-533	SUZUKI SWIFT	E2806890000000025799E3DC	Active	static/member_profile_img/6343.JPG	Outside	2026-10-21 09:33:43
 619	006343	MR.  ATHER ALI KHAN	BPB-533	SUZUKI SWIFT	E28068900000000257992C84	Active	static/member_profile_img/6343.JPG	Outside	2026-10-21 09:33:43
 620	006343	MR.  ATHER ALI KHAN	KZ-0312	TOYOTA REVO	E2806890000000025799D494	Active	static/member_profile_img/6343.JPG	Outside	2026-10-21 09:33:43
+580	102381	MRS. SAMAR	BP-5189	KIA SORENTO	E20047010A30642273510112	Active	static/member_profile_img/102381.jpg	Outside	2026-10-21 09:33:43
 622	124644	MR. SH. M. SALEEM AKHTAR	AHF-539	TOYOTA	E2004700F070642271B5010B	Active	static/member_profile_img/124644.JPG	Outside	2026-10-21 09:33:43
 623	124644	MR. SH. M. SALEEM AKHTAR	AHF-539	TOYOTA	E2806894000050175DD2DCED	Active	static/member_profile_img/124644.JPG	Outside	2026-10-21 09:33:43
 624	124407	MR. ANISUR REHMAN DHANANI	BZA-907	TOYOTA YARIS	E2806890000000025644808B	Active	static/member_profile_img/124407.JPG	Outside	2026-10-21 09:33:43
@@ -15461,7 +17216,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 661	102402	MRS. BAREERA HAMIDI	BL-1173	TOYOTA FORTUNER	E2806890000000025644584A	Active	static/member_profile_img/102402.jpg	Outside	2026-10-21 09:33:43
 662	102402	MRS. BAREERA HAMIDI	BDK-930	SUZUKI SWIFT	E2806890000000025798F7CB	Active	static/member_profile_img/102402.jpg	Outside	2026-10-21 09:33:43
 663	123927	MR. M. JAVED ASHRAF HUSSAIN	BYG-462	HONDA	E2806890000000025644821A	Active	static/member_profile_img/123927.jpg	Outside	2026-10-21 09:33:43
-664	125123	DR. SHAHID HASAN SIDDIQUI	AAED-296	TOYOTA YARIS	E20047114920642222730107	Active	static/member_profile_img/125123.JPG	Outside	2026-10-21 09:33:43
 665	125123	DR. SHAHID HASAN SIDDIQUI	AZB025	TOYOTA CORROLA	E2806894000040175DD03CEF	Active	static/member_profile_img/125123.JPG	Outside	2026-10-21 09:33:43
 666	125123	DR. SHAHID HASAN SIDDIQUI	AXB-059	TOYOTA COROLLA	E2806894000050175DD188EF	Active	static/member_profile_img/125123.JPG	Outside	2026-10-21 09:33:43
 667	121441	MR. FAROOQ AHMED ABDULLAH GARIB	BZE-322	TOYOTA COROLLA	E2806890000000025798F66C	Active	static/member_profile_img/121441.jpg	Outside	2026-10-21 09:33:43
@@ -15475,7 +17229,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 675	121441	MR. FAROOQ AHMED ABDULLAH GARIB	BD-8150	TOYOTA PRADO	E28068900000000257982023	Active	static/member_profile_img/121441.jpg	Outside	2026-10-21 09:33:43
 676	121441	MR. FAROOQ AHMED ABDULLAH GARIB	BRE-284	TOYOTA COROLLA	E2806894000040175DD27CEF	Active	static/member_profile_img/121441.jpg	Outside	2026-10-21 09:33:43
 677	121441	MR. FAROOQ AHMED ABDULLAH GARIB	BKS-121	HONDA CIVIC	E2806894000050175DD2C0EF	Active	static/member_profile_img/121441.jpg	Outside	2026-10-21 09:33:43
-679	0713859	MR. JUSTICE SHAMSUDDIN ABBASI	HC-0366	HONDA CIVIC	E20047016250642278D3010E	Active	static/member_profile_img/713859.jpg	Outside	2026-10-21 09:33:43
 680	123737	MR. FRAMROZ MINOCHER KANDAWALLA	AXY-705	SUZUKI SWIFT	E2806890000000025798F062	Active	static/member_profile_img/123737.jpg	Outside	2026-10-21 09:33:43
 681	0213271	MR. ALI SOHAIL	BK-1782	TOOYTA FORTUNER	E2806894000040175DD3C8EE	Active	static/member_profile_img/213271.JPG	Outside	2026-10-21 09:33:43
 682	123124	MR. ASIF IMTIAZ SAIGAL	BM-0811	KIA SPORTAGE	E2806890000000025798F1F1	Active	static/member_profile_img/123124.JPG	Outside	2026-10-21 09:33:43
@@ -15658,9 +17411,9 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 876	0911855	MRS. SYEDA HUMA REHMAN	BRS-445	SUZUKI ALTO	E2806890000000025798278B	Active	static/member_profile_img/911855.jpg	Outside	2026-10-21 09:33:43
 877	0911855	MRS. SYEDA HUMA REHMAN	BJ-8146	TOYOTA FORTUNER	E2806894000050175DD304EF	Active	static/member_profile_img/911855.jpg	Outside	2026-10-21 09:33:43
 878	114141	MR. AIJAZ ALI NASSER	AWK-115	HONDA CITY	E2806890000000025799CA3B	Active	static/member_profile_img/114141.jpg	Outside	2026-10-21 09:33:43
-879	114141	MR. AIJAZ ALI NASSER	BBP-523	TOYOTA COROLLA	E2806890000000025798DCCD	Active	static/member_profile_img/114141.jpg	Outside	2026-10-21 09:33:43
 880	124712	MR. MAQBOOL RAHIMTOOLA	BM-2127	CHANGAN OSHAN	E28068900000000257982032	Active	static/member_profile_img/124712.JPG	Outside	2026-10-21 09:33:43
 881	124712	MR. MAQBOOL RAHIMTOOLA	BJV-213	SUZUKI SWIFT	E2806894000040175DD320F0	Active	static/member_profile_img/124712.JPG	Outside	2026-10-21 09:33:43
+879	114141	MR. AIJAZ ALI NASSER	BBP-523	TOYOTA COROLLA	E2806890000000025798DCCD	Active	static/member_profile_img/114141.jpg	Outside	2026-10-21 09:33:43
 882	124712	MR. MAQBOOL RAHIMTOOLA	AUN-291	TOYOTA	E2806894000040175DD380F0	Active	static/member_profile_img/124712.JPG	Outside	2026-10-21 09:33:43
 883	123685	MR. ARIF YUSUF VASI	BWR-781	SUZUKI SWIFT	E2806894000040175DD16CF0	Active	static/member_profile_img/123685.jpg	Outside	2026-10-21 09:33:43
 886	124492	MR. ABDUL SHAKOOR KHATRI	AZW-900	TOYOTA COROLLA	E2806890000000025798EA5A	Active	static/member_profile_img/124492.JPG	Outside	2026-10-21 09:33:43
@@ -15790,7 +17543,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 1020	221174	MRS. ZOHA RAZA JIVANI	BPY-446	TOYOTA COROLLLA	E2806890000000025799E8F3	Active	static/member_profile_img/221174.JPG	Outside	2026-10-21 09:33:43
 1021	221174	MRS. ZOHA RAZA JIVANI	BSM-769	SUZUIKI ALTO	E2806890000000025799C37D	Active	static/member_profile_img/221174.JPG	Outside	2026-10-21 09:33:43
 1022	122972	MR. SHAHZAD ANWAR	BCA-017	TOYOTA COROLLA	E2806890000000025799E3AB	Active	static/member_profile_img/122972.JPG	Outside	2026-10-21 09:33:43
-1023	122972	MR. SHAHZAD ANWAR	BXN-630	HONDA CIVIC	E2806890000000025799D7D1	Active	static/member_profile_img/122972.JPG	Outside	2026-10-21 09:33:43
 1024	124252	MR. MUHAMMAD ASHRAF	BM-7979	TOYOTA LAND CRU	E2806890000000025797E48B	Active	static/member_profile_img/124252.JPG	Outside	2026-10-21 09:33:43
 1025	124252	MR. MUHAMMAD ASHRAF	BJ-6255	KIA SPORTAGE	E28068900000000257982ABD	Active	static/member_profile_img/124252.JPG	Outside	2026-10-21 09:33:43
 1026	014585	MR. NAVEED QAZI	BF-5536	TOYOTA  FORTUNER	E2806890000000025799D003	Active	static/member_profile_img/14585.jpg	Outside	2026-10-21 09:33:43
@@ -15802,6 +17554,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 1033	123688	MR. PARVEZ SUKHIA	ACF-726	TOYOTA COROLLA	E28068900000000257982947	Active	static/member_profile_img/123688.JPG	Outside	2026-10-21 09:33:43
 1034	124053	MR. ABDUL REHMAN MITHANI	AJC-501	DAIHATSU	E2806890000000025797EFB1	Active	static/member_profile_img/124053.jpg	Outside	2026-10-21 09:33:43
 1035	124053	MR. ABDUL REHMAN MITHANI	BVB-790	2020	E2806890000000025797F001	Active	static/member_profile_img/124053.jpg	Outside	2026-10-21 09:33:43
+1023	122972	MR. SHAHZAD ANWAR	BXN-630	HONDA CIVIC	E2806890000000025799D7D1	Active	static/member_profile_img/122972.JPG	Outside	2026-10-21 09:33:43
 1040	123525	MR. ALTAF HUSSAIN AGHA	BG-1299	TOYOTA LAND CRS	E2806894000050175DD20CEF	Active	static/member_profile_img/123525.JPG	Outside	2026-10-21 09:33:43
 1041	123525	MR. ALTAF HUSSAIN AGHA	BNF-127	TOYOTA COROLLA	E280689400004015DC12C1C5	Active	static/member_profile_img/123525.JPG	Outside	2026-10-21 09:33:43
 1042	015483	MR. MUHAMMAD HASEEB FATANI	BVS-178	TOYOTA COROLLA	E2806890000000025799CE05	Active	static/member_profile_img/15483.jpg	Outside	2026-10-21 09:33:43
@@ -15846,7 +17599,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 1083	123057	MR. FIROZUDDIN AHMED FARIDI	AFF-222	TOYOTA COROLLA	E2806890000000025799E94D	Active	static/member_profile_img/123057.jpg	Outside	2026-10-21 09:33:43
 1084	123057	MR. FIROZUDDIN AHMED FARIDI	APR-001	SUZUKI CULTUS	E2806890000000025799C2DC	Active	static/member_profile_img/123057.jpg	Outside	2026-10-21 09:33:43
 1085	122625	MR. RAJA LALI	BGB-489	TOYOTA ALTIS	E2806890000000025799345D	Active	static/member_profile_img/122625.JPG	Outside	2026-10-21 09:33:43
-1086	123063	MR. MUHAMMAD YOUSUF ADIL	BH-3991	KIA SPORTAGE	E2806890000000025799246C	Active	static/member_profile_img/123063.jpg	Outside	2026-10-21 09:33:43
 1087	123063	MR. MUHAMMAD YOUSUF ADIL	BQQ-317	TOYOTA COROLLA	E2806894000050175DD154ED	Active	static/member_profile_img/123063.jpg	Outside	2026-10-21 09:33:43
 1088	122617	MR. JABBAR JAVED	BM-1370	TOYOTA HYBRD CROSS	E2007DD2B1017230B3BA35C8	Active	static/member_profile_img/122617.jpg	Outside	2026-10-21 09:33:43
 1089	012628	MR. AZIZ LATIF JAMAL	BM-1952	CHANGAN X7	E2806890000000025798ED6D	Active	static/member_profile_img/12628.jpg	Outside	2026-10-21 09:33:43
@@ -15868,7 +17620,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 1108	122482	MR. ANIS AHMED KHAN	BG-7821	HONDA	E2806894000050175DD4E4EF	Active	static/member_profile_img/122482.JPG	Outside	2026-10-21 09:33:43
 1109	122482	MR. ANIS AHMED KHAN	AVZ-432	AUDI	E2806894000050175DD52CEF	Active	static/member_profile_img/122482.JPG	Outside	2026-10-21 09:33:43
 1110	124918	MR. ABDUL KALEEM BAAKZA	BF-9234	TOYOTA HARRIER	E2806890000000025799E45D	Active	static/member_profile_img/124918.jpg	Outside	2026-10-21 09:33:43
-1111	124918	MR. ABDUL KALEEM BAAKZA	BF-7234	TOYOTA PUSH	E2806890000000025799CC04	Active	static/member_profile_img/124918.jpg	Outside	2026-10-21 09:33:43
 1112	124918	MR. ABDUL KALEEM BAAKZA	BK-9469	CHANGAN	E28068900000000257972B31	Active	static/member_profile_img/124918.jpg	Outside	2026-10-21 09:33:43
 1113	0213852	MR. SOHAIL HANIF BAIG	BTP-827	TOYOTA GRANDE	E2806890000000025797EE0C	Active	static/member_profile_img/213852.jpg	Outside	2026-10-21 09:33:43
 1114	123652	MR. KHALID AHMED	BVW-696	TOYOTA COROLLA	E2806890000000025797E7FF	Active	static/member_profile_img/123652.jpg	Outside	2026-10-21 09:33:43
@@ -15889,7 +17640,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 1132	122476	MR. WAMIQ A. ZUBERI	BBR-340	HONDA CIVIC	E28068900000000257972B0E	Active	static/member_profile_img/122476.JPG	Outside	2026-10-21 09:33:43
 1133	123645	MR. NAZAR  MOHAMMAD SHAIKH	BMS-590	SUZUKI CULTUS	E2806890000000025798F510	Active	static/member_profile_img/123645.JPG	Outside	2026-10-21 09:33:43
 1134	123645	MR. NAZAR  MOHAMMAD SHAIKH	AWH-469	HONDA CITY	E280689000000002579927EB	Active	static/member_profile_img/123645.JPG	Outside	2026-10-21 09:33:43
-1137	014556	MR. SAQIB NASEEM	BK-3532	KIA SPORTAGE	E2806894000050175DD4BCEE	Active	static/member_profile_img/14556.jpg	Outside	2026-10-21 09:33:43
 1138	014556	MR. SAQIB NASEEM	AVL-098	TOYOTA COROLLA	E2806894000050175DD048EE	Active	static/member_profile_img/14556.jpg	Outside	2026-10-21 09:33:43
 1139	014556	MR. SAQIB NASEEM	BGZ-576	SUZUKI WAGONR	E2806894000040175DD034EE	Active	static/member_profile_img/14556.jpg	Outside	2026-10-21 09:33:43
 1140	123819	MR. HAJI SALEEM UMER	BM-4335	KIA SPORTAGE	E2806890000000025798FA4B	Active	static/member_profile_img/123819.JPG	Outside	2026-10-21 09:33:43
@@ -15897,6 +17647,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 1142	220274	MRS. AMBER AHMED MOTIWALA	AKT-868	TOYOTA COROLLA	E2806890000000025799E8C7	Active	static/member_profile_img/220274.JPG	Outside	2026-10-21 09:33:43
 1143	220274	MRS. AMBER AHMED MOTIWALA	AZC-939	TOYOTA BELTA	E280689000000002564446EB	Active	static/member_profile_img/220274.JPG	Outside	2026-10-21 09:33:43
 1144	220274	MRS. AMBER AHMED MOTIWALA	APD-411	TOYOTA CORLLA	E2806890000000025799EB75	Active	static/member_profile_img/220274.JPG	Outside	2026-10-21 09:33:43
+1111	124918	MR. ABDUL KALEEM BAAKZA	BF-7234	TOYOTA PUSH	E2806890000000025799CC04	Active	static/member_profile_img/124918.jpg	Outside	2026-10-21 09:33:43
 1145	220274	MRS. AMBER AHMED MOTIWALA	BLS-428	HONDA CIVIC	E28068900000000257992A38	Active	static/member_profile_img/220274.JPG	Outside	2026-10-21 09:33:43
 1146	122003	MR. MAQBOOL AHMAD (II)	BGQ-796	SUZUKI SWIFT	E2806890000000025799C6FF	Active	static/member_profile_img/122003.JPG	Outside	2026-10-21 09:33:43
 1147	126697	MR. KHAWAJA KAMAL SHAH	BJY-421	HONDA CIVIC	E2806890000000025797DD44	Active	static/member_profile_img/126697.JPG	Outside	2026-10-21 09:33:43
@@ -15904,7 +17655,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 1149	014794	MR. AKHTAR HABIB	BTC-299	DAIHATSU MIRA	E2806890000000025799C32A	Active	static/member_profile_img/14794.jpg	Outside	2026-10-21 09:33:43
 1150	014794	MR. AKHTAR HABIB	BQN-703	TOYOTA COROLLA	E28068900000000257972C49	Active	static/member_profile_img/14794.jpg	Outside	2026-10-21 09:33:43
 1151	0213563	MR. SYED JEHANZEB ASIM	BPF-599	SUZUKI CULTUS	E2806890000000025798DE2B	Active	static/member_profile_img/213563.jpg	Outside	2026-10-21 09:33:43
-1152	221206	MRS. ANAM HAMMAD MANDAVIA	BM-8646	TOYOTA LAND CRU	E20047017450642279F3010B	Active	static/member_profile_img/221206.JPG	Outside	2026-10-21 09:33:43
 1153	102007	MRS. ZUHA MUSTAFA	BM-7110	MG/HS	E2806890000000025644861B	Active	static/member_profile_img/102007.jpg	Outside	2026-10-21 09:33:43
 1154	102007	MRS. ZUHA MUSTAFA	BQA-711	TOYOTA AQUA	E28068900000000257992256	Active	static/member_profile_img/102007.jpg	Outside	2026-10-21 09:33:43
 1155	124224	MR. ASAD ASHRAF MALIK	BZ-9900	TOYOTA FORTUNER	E280689000000002579832E0	Active	static/member_profile_img/124224.jpg	Outside	2026-10-21 09:33:43
@@ -15933,7 +17683,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 1180	014735	MR. MURTAZA HUSAIN HABIB	BQR-806	TOYOTA COROLLA	E2806890000000025797EC5B	Active	static/member_profile_img/14735.JPG	Outside	2026-10-21 09:33:43
 1181	014735	MR. MURTAZA HUSAIN HABIB	BH-4325	HONDA BRV	E2806894000040175DD5D0ED	Active	static/member_profile_img/14735.JPG	Outside	2026-10-21 09:33:43
 1182	014735	MR. MURTAZA HUSAIN HABIB	BK-6035	KIA SPORTAGE	E2806894000040175DD424ED	Active	static/member_profile_img/14735.JPG	Outside	2026-10-21 09:33:43
-1183	123720	MR. MUMTAZ AHMED	AADD-969	TOYOTACOROLLA	E2004701A2A064227CD80109	Active	static/member_profile_img/123720.JPG	Outside	2026-10-21 09:33:43
 1184	123720	MR. MUMTAZ AHMED	BWZ-696	TOYOTA	E2806894000040175DD5C4F0	Active	static/member_profile_img/123720.JPG	Outside	2026-10-21 09:33:43
 1185	123720	MR. MUMTAZ AHMED	BY-0969	TOYOTA	E2806894000050175DD22CF0	Active	static/member_profile_img/123720.JPG	Outside	2026-10-21 09:33:43
 1186	123720	MR. MUMTAZ AHMED	BKZ-999	TOYOTA	E2806894000040175DD230F0	Active	static/member_profile_img/123720.JPG	Outside	2026-10-21 09:33:43
@@ -15941,10 +17690,10 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 1188	123720	MR. MUMTAZ AHMED	BW-2244	HYUNDAI	E2806894000040175DD400ED	Active	static/member_profile_img/123720.JPG	Outside	2026-10-21 09:33:43
 1189	114153	MR. JAMIL AKHTAR	BJ-2442	MG/HS	E28068900000000257992A03	Active	static/member_profile_img/114153.JPG	Outside	2026-10-21 09:33:43
 1190	114153	MR. JAMIL AKHTAR	AQS-242	TOYOTA PRIUS	E2806890000000025799D499	Active	static/member_profile_img/114153.JPG	Outside	2026-10-21 09:33:43
-1191	123811	MR. SHAHIN IQBAL	BUP-743	DIAHATSU	E2806890000000025644815C	Active	static/member_profile_img/123811.jpg	Outside	2026-10-21 09:33:43
 1192	123811	MR. SHAHIN IQBAL	BH-8962	KIA SPORTAGE	E2806890000000025799D45B	Active	static/member_profile_img/123811.jpg	Outside	2026-10-21 09:33:43
-1193	123811	MR. SHAHIN IQBAL	BUP-743	DAIHATSU/CAST CAR	E2806894000050175DD074F0	Active	static/member_profile_img/123811.jpg	Outside	2026-10-21 09:33:43
 1194	123811	MR. SHAHIN IQBAL	BH-8962	KIA SPORTAGE	E2806894000040175DD680F0	Active	static/member_profile_img/123811.jpg	Outside	2026-10-21 09:33:43
+1183	123720	MR. MUMTAZ AHMED	AADD-969	TOYOTACOROLLA	E2004701A2A064227CD80109	Active	static/member_profile_img/123720.JPG	Outside	2026-10-21 09:33:43
+1191	123811	MR. SHAHIN IQBAL	BUP-743	DIAHATSU	E2806890000000025644815C	Active	static/member_profile_img/123811.jpg	Outside	2026-10-21 09:33:43
 1201	124684	MR. HAKIM AKHTAR HUSSAIN TAYYEBI	BBV-655	TOOYTA VITZ	E2806894000050175DD420EE	Active	static/member_profile_img/124684.JPG	Outside	2026-10-21 09:33:43
 1202	124684	MR. HAKIM AKHTAR HUSSAIN TAYYEBI	BLB-349	TOYOTA COROLLA	E2806894000040175DD424EE	Active	static/member_profile_img/124684.JPG	Outside	2026-10-21 09:33:43
 1203	124170	MR. ABID ABBAS BHAI SALIM	BYH-953	HONDA CITY	E28068900000000256448FD1	Active	static/member_profile_img/124170.JPG	Outside	2026-10-21 09:33:43
@@ -15959,10 +17708,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 1212	114364	MR. SHABBIR S. MOHAMMAD	EAE-111	AUDI E-TRON	E28068900000000256448EA6	Active	static/member_profile_img/114364.jpg	Outside	2026-10-21 09:33:43
 1213	112489	MR. AZIZ USMAN	AZG-853	HONDA CIVIC	E2806894000050175DD498ED	Active	static/member_profile_img/112489.jpg	Outside	2026-10-21 09:33:43
 1214	112489	MR. AZIZ USMAN	ARP-656	MERCEDES BANZ	E2806894000040175DD714EE	Active	static/member_profile_img/112489.jpg	Outside	2026-10-21 09:33:43
-1215	121326	MR. A. SATTAR COCHINWALA	BEA-281	HONDA	E2004701947064227BF5010D	Active	static/member_profile_img/121326.jpg	Outside	2026-10-21 09:33:43
 1216	121326	MR. A. SATTAR COCHINWALA	BJ-3531	PRENCE GLORY	E200471138906422216A0112	Active	static/member_profile_img/121326.jpg	Outside	2026-10-21 09:33:43
-1217	121326	MR. A. SATTAR COCHINWALA	BEA-281	HONDA	E2806890000000025799337C	Active	static/member_profile_img/121326.jpg	Outside	2026-10-21 09:33:43
-1218	121326	MR. A. SATTAR COCHINWALA	BEA-281	HONDA	E2806890000000025797E5E0	Active	static/member_profile_img/121326.jpg	Outside	2026-10-21 09:33:43
 1219	121469	MR. SIRAJUDDIN A. CASSIM	BEP-212	TOYOTA COROLLA	E2806890000000025797E3FD	Active	static/member_profile_img/121469.jpg	Outside	2026-10-21 09:33:43
 1220	121469	MR. SIRAJUDDIN A. CASSIM	BG-4292	HONDA BRV	E28068900000000256448D24	Active	static/member_profile_img/121469.jpg	Outside	2026-10-21 09:33:43
 1221	123132	MR. GHULAMALI FADOO	BPN-582	TOYOTA COROLLA	E2806890000000025798F8D8	Active	static/member_profile_img/123132.jpg	Outside	2026-10-21 09:33:43
@@ -16021,7 +17767,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 1275	117898	MR. ZOHARE ALI SHARIFF	BKG-590	HONDA CITY	E280689000000002579925D5	Active	static/member_profile_img/117898.jpg	Outside	2026-10-21 09:33:43
 1276	117898	MR. ZOHARE ALI SHARIFF	BL-4505	KIA/SPORTAGE	E2806894000050175DD834EE	Active	static/member_profile_img/117898.jpg	Outside	2026-10-21 09:33:43
 1277	124749	MR. SYED ALTAF SAJJAD	BNH-894	TOYOTA COROLLA	E2806894000040175DD6B0EE	Active	static/member_profile_img/124749.jpg	Outside	2026-10-21 09:33:43
-1278	015512	MR. JAVED SULEMAN	BZF-160	HONDA CITY	E20047011380642273E6010C	Active	static/member_profile_img/15512.jpg	Outside	2026-10-21 09:33:43
 1279	015512	MR. JAVED SULEMAN	BK-8103	KIA SPORTAGE	E2806894000040175DD4C4EF	Active	static/member_profile_img/15512.jpg	Outside	2026-10-21 09:33:43
 1280	125815	MR. FATEH MUHAMMAD SHAIKH	BVU-949	TOYOTA COROLLA	E280689000000002579821C9	Active	static/member_profile_img/125815.JPG	Outside	2026-10-21 09:33:43
 1281	014014	MR. SALIM RAZAK TABANI	BJ-0484	HYUNDAI TUCSON	E200470107B064227329010B	Active	static/member_profile_img/14014.JPG	Outside	2026-10-21 09:33:43
@@ -16031,15 +17776,14 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 1285	124259	MR. SHEIKH MOHAMMED TAUFIQ	AVR-519	TOYOTA COROLLA	E280689000000002579821EF	Active	static/member_profile_img/124259.jpg	Outside	2026-10-21 09:33:43
 1286	006662	MR. MUSTAFA MOOSAJEE	BJR-853	TOYOTA PASSO	E2806890000000025798E8FF	Active	static/member_profile_img/6662.jpg	Outside	2026-10-21 09:33:43
 1287	006662	MR. MUSTAFA MOOSAJEE	BVP-453	TOYOTA ALTIS	E2806890000000025797DCAC	Active	static/member_profile_img/6662.jpg	Outside	2026-10-21 09:33:43
-1288	124136	MR. MUHAMMED IQBAL KHAN	BEC-801	TOYOTA COROLLA	E2806890000000025798F801	Active	static/member_profile_img/124136.JPG	Outside	2026-10-21 09:33:43
-1289	124136	MR. MUHAMMED IQBAL KHAN	BEC-801	TOYTOA COROLLA	E2806894000040175DD8ECEF	Active	static/member_profile_img/124136.JPG	Outside	2026-10-21 09:33:43
 1290	121707	MR. ABDUS SAMED	ATP-424	TOYOTA BELTA	E280689000000002579922B8	Active	static/member_profile_img/121707.jpg	Outside	2026-10-21 09:33:43
 1291	121707	MR. ABDUS SAMED	BAR-235	TOYOTA BELTA	E28068900000000257981F4F	Active	static/member_profile_img/121707.jpg	Outside	2026-10-21 09:33:43
 1292	250469	MRS. QAMAR JAFAR	AJG-825	HONDA CITY	E2806890000000025797D705	Active	static/member_profile_img/250469.jpg	Outside	2026-10-21 09:33:43
 1293	124974	MR. NASIR ABDULLAH	BP-7791	KIA SPOTAGE	E20047016EB064227999010E	Active	static/member_profile_img/124974.jpg	Outside	2026-10-21 09:33:43
 1294	124974	MR. NASIR ABDULLAH	BJ-8466	TOYOTA PRADO	E2806894000050175DD5B8EE	Active	static/member_profile_img/124974.jpg	Outside	2026-10-21 09:33:43
 1295	124974	MR. NASIR ABDULLAH	BSK-616	TOYOTA YARIS	E2806894000050175DD56CEE	Active	static/member_profile_img/124974.jpg	Outside	2026-10-21 09:33:43
-1296	221185	MRS. FATIMA HAFEEZ SHAMSI	AAHF-089	SUZUKI SWIFT	E20047012E106422758F010F	Active	static/member_profile_img/221185.JPG	Outside	2026-10-21 09:33:43
+1288	124136	MR. MUHAMMED IQBAL KHAN	BEC-801	TOYOTA COROLLA	E2806890000000025798F801	Active	static/member_profile_img/124136.JPG	Outside	2026-10-21 09:33:43
+1278	015512	MR. JAVED SULEMAN	BZF-160	HONDA CITY	E20047011380642273E6010C	Active	static/member_profile_img/15512.jpg	Outside	2026-10-21 09:33:43
 1297	221185	MRS. FATIMA HAFEEZ SHAMSI	BM-6941	HAVAL H6	E28068900000000257982D54	Active	static/member_profile_img/221185.JPG	Outside	2026-10-21 09:33:43
 1298	221185	MRS. FATIMA HAFEEZ SHAMSI	BG-7831	HODA BRV	E2806890000000025799D72A	Active	static/member_profile_img/221185.JPG	Outside	2026-10-21 09:33:43
 1299	221185	MRS. FATIMA HAFEEZ SHAMSI	BTS-115	HONDA CIVIC	E280689000000002579924F0	Active	static/member_profile_img/221185.JPG	Outside	2026-10-21 09:33:43
@@ -16134,7 +17878,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 1395	125472	MR. RAIS JAHANGIR AHMED	LF-5665	TOYOTA REVO	E28068900000000257982592	Active	static/member_profile_img/125472.JPG	Outside	2026-10-21 09:33:43
 1396	125472	MR. RAIS JAHANGIR AHMED	BR-6222	LAND CUR	E28068900000000257982433	Active	static/member_profile_img/125472.JPG	Outside	2026-10-21 09:33:43
 1350	124089	MR. SHAKIL ASLAM	AAGE-503	GACHPTEC STD	E20047015290642277D70109	Active	static/member_profile_img/124089.JPG	Outside	2026-10-21 09:33:43
-1397	125472	MR. RAIS JAHANGIR AHMED	BJ-4889	HYUNDAI TUCSON	E28068900000000257982126	Active	static/member_profile_img/125472.JPG	Outside	2026-10-21 09:33:43
 1398	115194	MR. ZAHOOR CHAMDIA	BUS-161	TOYOTA YARIS	E2806890000000025798F212	Active	static/member_profile_img/115194.jpg	Outside	2026-10-21 09:33:43
 1399	115194	MR. ZAHOOR CHAMDIA	BVX-751	KIA PICANTO	E28068900000000257992C67	Active	static/member_profile_img/115194.jpg	Outside	2026-10-21 09:33:43
 1400	124203	MR. NAVEED AHMAD	EAA-195	AUDI E-TRON	E28068900000000257993781	Active	static/member_profile_img/124203.jpg	Outside	2026-10-21 09:33:43
@@ -16220,7 +17963,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 1491	147673	MR. JAVID AKBAR FAROOQI	AYF-940	HONDA CIVIC	E2806890000000025798275A	Active	static/member_profile_img/147673.jpg	Outside	2026-10-21 09:33:43
 1492	124122	MR. RAFIQ TABANI	BKR-582	TOYOTA	E28068900000000256448590	Active	static/member_profile_img/124122.jpg	Outside	2026-10-21 09:33:43
 1493	124122	MR. RAFIQ TABANI	BTS-018	TOYOTA COROLLA	E2806890000000025797E986	Active	static/member_profile_img/124122.jpg	Outside	2026-10-21 09:33:43
-1494	005082	MR. IRFAN MOHSIN	AAJP-493	KIA SORENTO 26	E20047025E106422888F010B	Active	static/member_profile_img/5082.JPG	Outside	2026-10-21 09:33:43
 1495	005082	MR. IRFAN MOHSIN	BG-1289	LAND CRU	E2806890000000025799D1D8	Active	static/member_profile_img/5082.JPG	Outside	2026-10-21 09:33:43
 1496	005082	MR. IRFAN MOHSIN	BRK-567	TOYOTA COROLLA	E2806890000000025799CAA6	Active	static/member_profile_img/5082.JPG	Outside	2026-10-21 09:33:43
 1497	115047	MR. RAZA IQBAL	BXV-100	HYUNDAI ELANTARA	E2806890000000025799DD55	Active	static/member_profile_img/115047.JPG	Outside	2026-10-21 09:33:43
@@ -16405,9 +18147,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 1710	125410	MR. MUHAMMAD HANIF	AGT-417	TOYOTA COROLLA	E2806890000000025798EBEB	Active	static/member_profile_img/125410.JPG	Outside	2026-10-21 09:33:43
 1711	125410	MR. MUHAMMAD HANIF	BKJ-192	TOYOTA COROLLA	E28068900000000256448B7C	Active	static/member_profile_img/125410.JPG	Outside	2026-10-21 09:33:43
 1712	125412	MR. M.AMIN RAZZAK MANIYA	ALZ-561	MITSUBISHI LANCER	E28068900000000256448C1D	Active	static/member_profile_img/125412.jpg	Outside	2026-10-21 09:33:43
-1713	006191	MR. NAVED SALIM AHMED	BYZ-105	SUZUKI	E20047014380642276E60111	Active	static/member_profile_img/6191.JPG	Outside	2026-10-21 09:33:43
 1714	006191	MR. NAVED SALIM AHMED	BXE-227	HONDA CITY	E2806894000040175DD170EF	Active	static/member_profile_img/6191.JPG	Outside	2026-10-21 09:33:43
-1715	006191	MR. NAVED SALIM AHMED	AJT-230	HONDA CITY	E2806894000040175DD1C4EF	Active	static/member_profile_img/6191.JPG	Outside	2026-10-21 09:33:43
 1717	014990	MR. MEHMOOD ZAKARIA MOTIWALA	BP-9445	HYUNDAI TUCSON	E20047016E6064227994010A	Active	static/member_profile_img/14990.jpg	Outside	2026-10-21 09:33:43
 1718	014990	MR. MEHMOOD ZAKARIA MOTIWALA	BUF-1850A	HONDA	E2806890000000025798EADF	Active	static/member_profile_img/14990.jpg	Outside	2026-10-21 09:33:43
 1719	014990	MR. MEHMOOD ZAKARIA MOTIWALA	BEE-312	HONDA CITY	E2806890000000025799343F	Active	static/member_profile_img/14990.jpg	Outside	2026-10-21 09:33:43
@@ -16419,6 +18159,8 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 1725	125658	MR. MANSOOR IQBAL KHAN	ATP-376	HONDA CIVIC	E28068900000000256445240	Active	static/member_profile_img/125658.JPG	Outside	2026-10-21 09:33:43
 1726	008162	MR. MUJAHID SADIQ	BD-1209	TOYOTA HAREIER	E2806890000000025798F3E9	Active	static/member_profile_img/8162.JPG	Outside	2026-10-21 09:33:43
 1727	008162	MR. MUJAHID SADIQ	ARB-653	HONDA CITY	E2806890000000025797EC98	Active	static/member_profile_img/8162.JPG	Outside	2026-10-21 09:33:43
+1713	006191	MR. NAVED SALIM AHMED	BYZ-105	SUZUKI	E20047014380642276E60111	Active	static/member_profile_img/6191.JPG	Outside	2026-10-21 09:33:43
+1715	006191	MR. NAVED SALIM AHMED	AJT-230	HONDA CITY	E2806894000040175DD1C4EF	Active	static/member_profile_img/6191.JPG	Outside	2026-10-21 09:33:43
 1728	0210386	MR. FARID OSMAN	BEK-606	TOYOTA COROLLA	E2806890000000025799231D	Active	static/member_profile_img/210386.jpg	Outside	2026-10-21 09:33:43
 1730	006198	MR. HASANAIN ASGHAR HABIB	BN-0419	TOYOTA LAND CRU	E2806890000000025797E15E	Active	static/member_profile_img/6198.jpg	Outside	2026-10-21 09:33:43
 1731	007457	MR. KAMRAN MANSOOR AHMED	CBL-090	TOYOTA	E2004701963064227C11010B	Active	static/member_profile_img/7457.jpg	Outside	2026-10-21 09:33:43
@@ -16453,7 +18195,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 1767	018206	MR. NAVEED YOUNIS	BAQ-533	SUZUKI CULTUS	E28068900000000256448848	Active	static/member_profile_img/18206.jpg	Outside	2026-10-21 09:33:43
 1768	015090	MR. MOHAMMAD ARIF WARIND	BZH-488	TOYOTA	E2806890000000025644840C	Active	static/member_profile_img/15090.jpg	Outside	2026-10-21 09:33:43
 1769	126072	MAJOR. MOIN HASAN SHAH	BEP-244	TOYOTA COROLLA	E280689000000002579827DB	Active	static/member_profile_img/126072.JPG	Outside	2026-10-21 09:33:43
-1770	123960	DR. MOHAMMAD TARIQ SIDDIQI	BEK-319	HONDA CITY	E20047113010642220E2010B	Active	static/member_profile_img/123960.JPG	Outside	2026-10-21 09:33:43
 1771	123960	DR. MOHAMMAD TARIQ SIDDIQI	BJS-244	SUZUKI CULTUS	E280689000000002564486F9	Active	static/member_profile_img/123960.JPG	Outside	2026-10-21 09:33:43
 1772	123960	DR. MOHAMMAD TARIQ SIDDIQI	BGX-069	SUZUKI CULTUS	E2806890000000025799DE42	Active	static/member_profile_img/123960.JPG	Outside	2026-10-21 09:33:43
 1773	123960	DR. MOHAMMAD TARIQ SIDDIQI	BLL-039	SUZUKI EAGONR	E2806890000000025799D9B5	Active	static/member_profile_img/123960.JPG	Outside	2026-10-21 09:33:43
@@ -16466,6 +18207,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 1780	006908	MR. MUHAMMAD SALMAN BURNEY	BG-0595	BMW X5	E28068900000000257993090	Active	static/member_profile_img/6908.JPG	Outside	2026-10-21 09:33:43
 1781	006908	MR. MUHAMMAD SALMAN BURNEY	BL-8350	TOYOTA CROSS	E28068900000000257992CF6	Active	static/member_profile_img/6908.JPG	Outside	2026-10-21 09:33:43
 1782	006908	MR. MUHAMMAD SALMAN BURNEY	BK-4462	TOYOTA FORTUNER	E2806890000000025799CB19	Active	static/member_profile_img/6908.JPG	Outside	2026-10-21 09:33:43
+1770	123960	DR. MOHAMMAD TARIQ SIDDIQI	BEK-319	HONDA CITY	E20047113010642220E2010B	Active	static/member_profile_img/123960.JPG	Outside	2026-10-21 09:33:43
 1783	006908	MR. MUHAMMAD SALMAN BURNEY	BK-4462	TOYOTA FORTUNER	E2806890000000025799C7DC	Active	static/member_profile_img/6908.JPG	Outside	2026-10-21 09:33:43
 1784	005644	MR. RIZWAN JAWAID	BDD-143	TOYOTA CORLLA	E28068900000000256448CE3	Active	static/member_profile_img/5644.jpg	Outside	2026-10-21 09:33:43
 1785	005538	MR. IMRAN EJAZ	BKL-522	SUZUKI ALTO	E2806894000040175DD3E0EE	Active	static/member_profile_img/5538.jpg	Outside	2026-10-21 09:33:43
@@ -16545,7 +18287,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 1865	004649	MR. ABDUL SHAHEED KAZI	APV-462	TOYOTA CORROLA	E2806890000000025799382D	Active	static/member_profile_img/4649.JPG	Outside	2026-10-21 09:33:43
 1866	114139	MR. ASHRAF ABDUL SATTAR	BXR-141	TOYOTA ALTIS	E2806890000000025799D6EC	Active	static/member_profile_img/114139.JPG	Outside	2026-10-21 09:33:43
 1867	059022	MRS. NUSRAT KHANAM	AKR-109	HONDA CITY	E2806890000000025797D418	Active	static/member_profile_img/59022.jpg	Outside	2026-10-21 09:33:43
-1868	059022	MRS. NUSRAT KHANAM	BJF-489	TOYOTA COROLLA	E280689000000002564444B0	Active	static/member_profile_img/59022.jpg	Outside	2026-10-21 09:33:43
 1869	100079	MRS.KOMAL PARVEZ SHAHID	BNH-266	TOYOTA COROLLA	E280689000000002579921A7	Active	static/member_profile_img/100079.JPG	Outside	2026-10-21 09:33:43
 1870	100079	MRS.KOMAL PARVEZ SHAHID	AFD-206	TOYOTA BLACK	E2806890000000025797ECEC	Active	static/member_profile_img/100079.JPG	Outside	2026-10-21 09:33:43
 1871	240213	MRS. TASLEEM SHEIKH	BH-7848	TOYOTA FORTUNER	E2806890000000025797E5ED	Active	static/member_profile_img/240213.jpg	Outside	2026-10-21 09:33:43
@@ -16565,7 +18306,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 1889	115413	MR. ALI ASGHAR SIDDIQ	V-8444	LAND CRS	E2806890000000025799C2AF	Active	static/member_profile_img/115413.jpg	Outside	2026-10-21 09:33:43
 1890	115413	MR. ALI ASGHAR SIDDIQ	APA-529	HONDA CITY	E2806890000000025644406E	Active	static/member_profile_img/115413.jpg	Outside	2026-10-21 09:33:43
 1891	005229	MR. FUAD  HAMID AHMED	BK-1750	FORTUNER	E2806890000000025798F609	Active	static/member_profile_img/5229.jpg	Outside	2026-10-21 09:33:43
-1892	122524	MR. MUHAMMAD ASLAM SANJRANI	AACS-525	FORTUNER	E2004701879064227B270111	Active	static/member_profile_img/122524.JPG	Outside	2026-10-21 09:33:43
 1893	122524	MR. MUHAMMAD ASLAM SANJRANI	AJD-069	SUZUKI	E2806894000040175DD75CEE	Active	static/member_profile_img/122524.JPG	Outside	2026-10-21 09:33:43
 1894	122524	MR. MUHAMMAD ASLAM SANJRANI	ABF-957	HONDA	E2806894000050175DD6D8EE	Active	static/member_profile_img/122524.JPG	Outside	2026-10-21 09:33:43
 1895	122524	MR. MUHAMMAD ASLAM SANJRANI	AEZ-069	TOYOTA	E2806894000050175DD6FCEE	Active	static/member_profile_img/122524.JPG	Outside	2026-10-21 09:33:43
@@ -16715,8 +18455,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 2058	015724	MR. SAQIB MALIK	AZP-227	HONDA CIVIC	E2806890000000025799277A	Active	static/member_profile_img/15724.JPG	Outside	2026-10-21 09:33:43
 2059	124896	MR. SOHAIL AHMED MALIK	BJ-1277	KIA SPORTAGE	E28068900000000257983193	Active	static/member_profile_img/124896.jpg	Outside	2026-10-21 09:33:43
 2060	124896	MR. SOHAIL AHMED MALIK	CJ-4125	TOYOTA HILUX	E2806890000000025798E410	Active	static/member_profile_img/124896.jpg	Outside	2026-10-21 09:33:43
-2061	123667	DR. IFTIKHAR AHMED KHWAJA	BLE-797	TOYOTA COROLLA	E28068900000000256448574	Active	static/member_profile_img/123667.jpg	Outside	2026-10-21 09:33:43
-2062	123667	DR. IFTIKHAR AHMED KHWAJA	BJ-8377	TOYOTA FORTUNER	E2806890000000025797ECD2	Active	static/member_profile_img/123667.jpg	Outside	2026-10-21 09:33:43
 2063	123667	DR. IFTIKHAR AHMED KHWAJA	AJG-535	TOYOTA PREMIO	E280689000000002564483EB	Active	static/member_profile_img/123667.jpg	Outside	2026-10-21 09:33:43
 2064	150192	MR. ALTAF AMIRALI MEGHANI	BYZ-752	TOYOTA YARIS	E2806890000000025798F71C	Active	static/member_profile_img/150192.jpg	Outside	2026-10-21 09:33:43
 2065	150192	MR. ALTAF AMIRALI MEGHANI	BL-4634	TOYOTA RAIZE	E2806890000000025797F0B2	Active	static/member_profile_img/150192.jpg	Outside	2026-10-21 09:33:43
@@ -16747,10 +18485,11 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 2097	100795	MRS. ADILA MUZZAFFAR ISLAM	BBB-110	MERCEDES BANZ	E2806890000000025799203B	Active	static/member_profile_img/100795.JPG	Outside	2026-10-21 09:33:43
 2098	100795	MRS. ADILA MUZZAFFAR ISLAM	BRX-083	TOYOTA COROLLA	E28068900000000257991C64	Active	static/member_profile_img/100795.JPG	Outside	2026-10-21 09:33:43
 2099	007145	MR. SHAIKH DANISH JAVED	AAGU-414	BWM TANK-500	E200470111B0642273C9010F	Active	static/member_profile_img/7145.jpg	Outside	2026-10-21 09:33:43
-2100	007145	MR. SHAIKH DANISH JAVED	AAGZ-414	AION	E2004701298064227546010B	Active	static/member_profile_img/7145.jpg	Outside	2026-10-21 09:33:43
 2101	007145	MR. SHAIKH DANISH JAVED	LA-5078	TOYOTA REVO	E2806890000000025797E5F0	Active	static/member_profile_img/7145.jpg	Outside	2026-10-21 09:33:43
 2102	007145	MR. SHAIKH DANISH JAVED	BK-9832	CHERRY	E2806890000000025798F250	Active	static/member_profile_img/7145.jpg	Outside	2026-10-21 09:33:43
 2103	123959	MR. MASOOD AHMED SHAIKH	BJ-3548	KIA SPORTAGE	E28068900000000256448A2A	Active	static/member_profile_img/123959.jpg	Outside	2026-10-21 09:33:43
+2061	123667	DR. IFTIKHAR AHMED KHWAJA	BLE-797	TOYOTA COROLLA	E28068900000000256448574	Active	static/member_profile_img/123667.jpg	Outside	2026-10-21 09:33:43
+2100	007145	MR. SHAIKH DANISH JAVED	AAGZ-414	AION	E2004701298064227546010B	Active	static/member_profile_img/7145.jpg	Outside	2026-10-21 09:33:43
 2104	115450	MR. RIZWAN SAID	BPA-201	MIRA	E28068900000000257982D8B	Active	static/member_profile_img/115450.JPG	Outside	2026-10-21 09:33:43
 2105	115450	MR. RIZWAN SAID	CY-9877	TOYOTA COROLLA	E2806890000000025798EFBD	Active	static/member_profile_img/115450.JPG	Outside	2026-10-21 09:33:43
 2106	005361	MR. AAMIR MAQBOOL	EAA-722	AUDI E-TRON	E2806890000000025799DE4C	Active	static/member_profile_img/5361.jpg	Outside	2026-10-21 09:33:43
@@ -16760,7 +18499,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 2110	005361	MR. AAMIR MAQBOOL	ATA-044	TOYOTA COROLLA	E2806894000050175DD560F0	Active	static/member_profile_img/5361.jpg	Outside	2026-10-21 09:33:43
 2111	005361	MR. AAMIR MAQBOOL	BPC-981	TOYOTA COROLLA	E2806894000040175DD460F0	Active	static/member_profile_img/5361.jpg	Outside	2026-10-21 09:33:43
 2112	006840	MR. NASIR ANWAR	BYX-324	TOYOTA	E2806890000000025797EBB4	Active	static/member_profile_img/6840.JPG	Outside	2026-10-21 09:33:43
-2113	124163	MR. ALI A. RAHIM	BM-5990	HYUNDAI  TUCSON	E2806890000000025799337E	Active	static/member_profile_img/124163.jpg	Outside	2026-10-21 09:33:43
 2115	124163	MR. ALI A. RAHIM	BQA-599	TOYOTA COROLLA	E28068900000000257981F9C	Active	static/member_profile_img/124163.jpg	Outside	2026-10-21 09:33:43
 2117	124163	MR. ALI A. RAHIM	BQA-599	TOYOTA CORROLA	E2806894000040175DD198EF	Active	static/member_profile_img/124163.jpg	Outside	2026-10-21 09:33:43
 2118	124163	MR. ALI A. RAHIM	ALY-696	TOYOTA COROLLA	E2806894000050175DD1B8EF	Active	static/member_profile_img/124163.jpg	Outside	2026-10-21 09:33:43
@@ -16798,6 +18536,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 2152	015943	MR. MOHAMMAD ARSHAD	EAA-208	AUDI E-TRON	E2806890000000025797DB51	Active	static/member_profile_img/15943.JPG	Outside	2026-10-21 09:33:43
 2153	015943	MR. MOHAMMAD ARSHAD	BVT-886	TOYOTA YARIS	E28068900000000257982EAC	Active	static/member_profile_img/15943.JPG	Outside	2026-10-21 09:33:43
 2154	015442	MR. FAIZULLAH  F. MILLWALA	BL-6253	HONDA HRV	E2806890000000025797ED85	Active	static/member_profile_img/15442.jpg	Outside	2026-10-21 09:33:43
+2113	124163	MR. ALI A. RAHIM	BM-5990	HYUNDAI  TUCSON	E2806890000000025799337E	Active	static/member_profile_img/124163.jpg	Outside	2026-10-21 09:33:43
 2155	116103	MR. MAJID SADRUDDIN HUSSAIN	AXJ-632	MERCEDSES	E2806890000000025799D8A7	Active	static/member_profile_img/116103.jpg	Outside	2026-10-21 09:33:43
 2156	116103	MR. MAJID SADRUDDIN HUSSAIN	BH-4494	KIA SPORTAGE	E2806894000050175DD470EE	Active	static/member_profile_img/116103.jpg	Outside	2026-10-21 09:33:43
 2157	006281	MR. ADNAN BANDUKDA	BGG-279	SUZUKI SWIFT	E2806890000000025797EC35	Active	static/member_profile_img/6281.jpg	Outside	2026-10-21 09:33:43
@@ -16811,13 +18550,11 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 2165	015030	MR. IRFAN PATEL	BJN-091	HONDA CIVIC	E2806894000050175DD6CCF0	Active	static/member_profile_img/15030.jpg	Outside	2026-10-21 09:33:43
 2166	015030	MR. IRFAN PATEL	NH-055	MERSEDES BANZ	E2806894000050175DD0E8F0	Active	static/member_profile_img/15030.jpg	Outside	2026-10-21 09:33:43
 2167	015030	MR. IRFAN PATEL	BG-3135	TOYOTA LAND/CRU	E2806894000050175DD554EF	Active	static/member_profile_img/15030.jpg	Outside	2026-10-21 09:33:43
-2168	114214	MR. WASEEM HAROON REHMANE	ASE-944	HONDA CITY	E2806894000040175DD7C4EF	Active	static/member_profile_img/114214.jpg	Outside	2026-10-21 09:33:43
 2169	123871	MR. HAIDER ALI ALLIBHAI	BF-0186	HONDA	E28068900000000256448368	Active	static/member_profile_img/123871.jpg	Outside	2026-10-21 09:33:43
 2170	123871	MR. HAIDER ALI ALLIBHAI	BV-6006	HONDA BRV	E2806890000000025797E2B0	Active	static/member_profile_img/123871.jpg	Outside	2026-10-21 09:33:43
 2171	260202	MRS. LALEH ALI JAFRI	BSE-843	KIA PICANTO	E2806890000000025799D623	Active	static/member_profile_img/260202.JPG	Outside	2026-10-21 09:33:43
 2172	260202	MRS. LALEH ALI JAFRI	BJ-5163	KIA SPORTAGE	E28068900000000257982A51	Active	static/member_profile_img/260202.JPG	Outside	2026-10-21 09:33:43
 2173	100032	MR. JIMMY F. ENGINEER(H/O) SHIRAZ(LATE)	AEQ-396	HONDA CITY	E2806890000000025644523A	Active	static/member_profile_img/100032.jpg	Outside	2026-10-21 09:33:43
-2174	230499	MRS. AFSHAN KHALID	BH-1013	HONDA BRV	E2806894000040175DD3A4EE	Active	static/member_profile_img/230499.jpg	Outside	2026-10-21 09:33:43
 2175	230499	MRS. AFSHAN KHALID	ASZ-437	TOYOTA BELTA	E2806894000040175DD3B0EE	Active	static/member_profile_img/230499.jpg	Outside	2026-10-21 09:33:43
 2176	230499	MRS. AFSHAN KHALID	ATM-489	TOYOTA SALOON	E2806894000040175DD4C0ED	Active	static/member_profile_img/230499.jpg	Outside	2026-10-21 09:33:43
 2177	230499	MRS. AFSHAN KHALID	BJ-9659	MG	E2806894000050175DD4A8ED	Active	static/member_profile_img/230499.jpg	Outside	2026-10-21 09:33:43
@@ -16831,7 +18568,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 2185	200047	MRS. NIGHAT DAUDI	BM-5708	TOYOTA COROLLA	E2004701494064227742010C	Active	static/member_profile_img/200047.JPG	Outside	2026-10-21 09:33:43
 2186	200047	MRS. NIGHAT DAUDI	BP-0584	TOYOTA FORTUNER	E20047019E3064227C910105	Active	static/member_profile_img/200047.JPG	Outside	2026-10-21 09:33:43
 2190	115506	MR.AUNDLIB ELIAS DADA	BL-8546	HYUNDAI SONATA	E28068900000000257991C53	Active	static/member_profile_img/115506.jpg	Outside	2026-10-21 09:33:43
-2191	115506	MR.AUNDLIB ELIAS DADA	BKS-622	HONDA CIVIC	E2806890000000025797EA89	Active	static/member_profile_img/115506.jpg	Outside	2026-10-21 09:33:43
 2192	115506	MR.AUNDLIB ELIAS DADA	BKF-656	HONDA CIVIC	E28068900000000257993534	Active	static/member_profile_img/115506.jpg	Outside	2026-10-21 09:33:43
 2193	115506	MR.AUNDLIB ELIAS DADA	BNV-208	MIRA	E28068900000000257993426	Active	static/member_profile_img/115506.jpg	Outside	2026-10-21 09:33:43
 2194	006584	MR. AMEEN MUHAMMAD VELLANI	BPL-318	SUZUKI SWIFT	E2806890000000025798EBA6	Active	static/member_profile_img/6584.jpg	Outside	2026-10-21 09:33:43
@@ -16846,9 +18582,10 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 2206	006459	MR. MUHAMMAD RIAZUDDIN	AZD-377	TOYOTA COROLLA	E28068900000000256447F81	Active	static/member_profile_img/6459.jpg	Outside	2026-10-21 09:33:43
 2207	006459	MR. MUHAMMAD RIAZUDDIN	BAP-840	HONDA CIVIC	E2806890000000025799DCF0	Active	static/member_profile_img/6459.jpg	Outside	2026-10-21 09:33:43
 2208	006459	MR. MUHAMMAD RIAZUDDIN	BXS-168	HONDA CIVIC	E28068900000000257991CEF	Active	static/member_profile_img/6459.jpg	Outside	2026-10-21 09:33:43
+2191	115506	MR.AUNDLIB ELIAS DADA	BKS-622	HONDA CIVIC	E2806890000000025797EA89	Active	static/member_profile_img/115506.jpg	Outside	2026-10-21 09:33:43
+2174	230499	MRS. AFSHAN KHALID	BH-1013	HONDA BRV	E2806894000040175DD3A4EE	Active	static/member_profile_img/230499.jpg	Inside	2026-10-21 09:33:43
 2209	005771	MR. HAMMAD ANWAR	AWB-206	HONDA	E20047019B4064227C620110	Active	static/member_profile_img/5771.jpg	Outside	2026-10-21 09:33:43
 2210	005771	MR. HAMMAD ANWAR	BQM-705	SUZUKI ALTO	E2806894000040175DD4F0ED	Active	static/member_profile_img/5771.jpg	Outside	2026-10-21 09:33:43
-2211	0213367	MR. MOHAMMED AMIR YUSUFZAI	AADU-866	BYD	E20047010A006422734E0111	Active	static/member_profile_img/213367.jpg	Outside	2026-10-21 09:33:43
 2212	0213367	MR. MOHAMMED AMIR YUSUFZAI	BJ-3684	KIA SPORTAGE	E280689000000002579927A5	Active	static/member_profile_img/213367.jpg	Outside	2026-10-21 09:33:43
 2213	0213367	MR. MOHAMMED AMIR YUSUFZAI	BQP-649	SUZUKI ALTO	E2806890000000025799D97E	Active	static/member_profile_img/213367.jpg	Outside	2026-10-21 09:33:43
 2214	220077	MRS. ERUM AMIR	BP-5047	HAVAL	E20047019A7064227C55010F	Active	static/member_profile_img/220077.JPG	Outside	2026-10-21 09:33:43
@@ -16867,7 +18604,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 2231	125188	MR. AKBAR ADIL	AZS-718	SUZUKI SWIFT	E2806890000000025798F01A	Active	static/member_profile_img/125188.jpg	Outside	2026-10-21 09:33:43
 2232	125188	MR. AKBAR ADIL	BG-5016	HONDA BRV	E280689000000002579925E0	Active	static/member_profile_img/125188.jpg	Outside	2026-10-21 09:33:43
 2233	016227	MR. PERVEZ DAREDIA	BPT-826	HONDA CITY	E28068900000000257983B46	Active	static/member_profile_img/16227.jpg	Outside	2026-10-21 09:33:43
-2234	016227	MR. PERVEZ DAREDIA	BXE-866	TOYOTA COROLLA	E2806894000050175DD33CEE	Active	static/member_profile_img/16227.jpg	Outside	2026-10-21 09:33:43
 2235	014786	DR. ZAHID HASAN ANSARI	AAEV-898	JAECO	E2004701AD1064227D7F0112	Active	static/member_profile_img/14786.JPG	Outside	2026-10-21 09:33:43
 2236	014786	DR. ZAHID HASAN ANSARI	BJ-2322	TOYOTA FORTUNER	E28068900000000256449067	Active	static/member_profile_img/14786.JPG	Outside	2026-10-21 09:33:43
 2237	014786	DR. ZAHID HASAN ANSARI	BTP-116	TOYOTA ALTIS	E2806890000000025798E586	Active	static/member_profile_img/14786.JPG	Outside	2026-10-21 09:33:43
@@ -16894,9 +18630,9 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 2262	016600	MR. NASIR MAHMOOD YAHYA	BDW-360	TOYOTA	E2806890000000025799298B	Active	static/member_profile_img/16600.JPG	Outside	2026-10-21 09:33:43
 2263	016600	MR. NASIR MAHMOOD YAHYA	ASM-777	NISSAN	E2806894000050175DD7C8EE	Active	static/member_profile_img/16600.JPG	Outside	2026-10-21 09:33:43
 2264	006057	MR. MANSOOR KARIM SHAIKH	BMQ-539	CITY	E20047020FD0642283AB0108	Active	static/member_profile_img/6057.jpg	Outside	2026-10-21 09:33:43
+2234	016227	MR. PERVEZ DAREDIA	BXE-866	TOYOTA COROLLA	E2806894000050175DD33CEE	Active	static/member_profile_img/16227.jpg	Inside	2026-10-21 09:33:43
 2265	124843	MR. MOHAMMED HUSSAIN LOTIA	BYP-353	HONDA RED	E2806890000000025797D1EA	Active	static/member_profile_img/124843.JPG	Outside	2026-10-21 09:33:43
 2266	126334	MR. MAHMOOD YOUSUF	BK-7397	HYNDAI TOCSON	E2806890000000025799C3B7	Active	static/member_profile_img/126334.JPG	Outside	2026-10-21 09:33:43
-2267	126334	MR. MAHMOOD YOUSUF	ASC-080	TOYOTA COROLLA	E28068900000000256448521	Active	static/member_profile_img/126334.JPG	Outside	2026-10-21 09:33:43
 2268	126334	MR. MAHMOOD YOUSUF	ASE-080	TOYOTA COROLLA	E2806890000000025798E356	Active	static/member_profile_img/126334.JPG	Outside	2026-10-21 09:33:43
 2269	126334	MR. MAHMOOD YOUSUF	KX-3006	TOYOTA REVO	E2806890000000025798353A	Active	static/member_profile_img/126334.JPG	Outside	2026-10-21 09:33:43
 2270	127903	MR. KALIM UR RAHMAN	BLP-879	HONDA CIVIC	E280689000000002579824E1	Active	static/member_profile_img/127903.jpg	Outside	2026-10-21 09:33:43
@@ -16941,6 +18677,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 2313	121661	MR.TUFAIL M. SHAIKH	BF-7783	TOYOTA	E280689000000002564486EA	Active	static/member_profile_img/121661.jpg	Outside	2026-10-21 09:33:43
 2314	125486	MR. IMRAN ALAM FAZLI	BBT-533	HONDA CITY	E2806890000000025799268C	Active	static/member_profile_img/125486.jpg	Outside	2026-10-21 09:33:43
 2315	125486	MR. IMRAN ALAM FAZLI	ATY-217	TOYOTA COROLLA	E28068900000000256448B63	Active	static/member_profile_img/125486.jpg	Outside	2026-10-21 09:33:43
+2267	126334	MR. MAHMOOD YOUSUF	ASC-080	TOYOTA COROLLA	E28068900000000256448521	Active	static/member_profile_img/126334.JPG	Outside	2026-10-21 09:33:43
 2316	125486	MR. IMRAN ALAM FAZLI	BBT-533	HONDA CITY	E2806894000050175DD3A8EF	Active	static/member_profile_img/125486.jpg	Outside	2026-10-21 09:33:43
 2317	125486	MR. IMRAN ALAM FAZLI	ATY-217	TOOYTA COROLLA	E2806894000050175DD7A0EF	Active	static/member_profile_img/125486.jpg	Outside	2026-10-21 09:33:43
 2318	125517	MR. ABDUL RAHIM KHIMANI	BDE-888	TOYOTA COROLLA	E28068900000000257993020	Active	static/member_profile_img/125517.jpg	Outside	2026-10-21 09:33:43
@@ -16978,7 +18715,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 2350	005805	MR. FAISAL PARACHA	AQU-277	HONDA CIVIC	E28068900000000256448A27	Active	static/member_profile_img/5805.JPG	Outside	2026-10-21 09:33:43
 2351	005805	MR. FAISAL PARACHA	BD-3633	TOYOTA SURF	E28068900000000256448B26	Active	static/member_profile_img/5805.JPG	Outside	2026-10-21 09:33:43
 2352	015451	MR. NASIM AHMED JUNEJO	BDK-122	TOYOTA COROLLA	E280689000000002579934A3	Active	static/member_profile_img/15451.JPG	Outside	2026-10-21 09:33:43
-2353	006363	MR. MUHAMMAD NOMAN SAIGAL	BCY-010	HONDA CIVIC	E2806890000000025799367E	Active	static/member_profile_img/6363.jpg	Outside	2026-10-21 09:33:43
 2354	006363	MR. MUHAMMAD NOMAN SAIGAL	BF-0007	TOYOTA	E2806890000000025798E574	Active	static/member_profile_img/6363.jpg	Outside	2026-10-21 09:33:43
 2355	015939	MR. ZERMESH GATI	BXF-765	TOYOTA YARIS	E2806890000000025799E02D	Active	static/member_profile_img/15939.JPG	Outside	2026-10-21 09:33:43
 2356	015939	MR. ZERMESH GATI	BL-0734	HYUNDAI TUCSON	E2806894000050175DD1D0ED	Active	static/member_profile_img/15939.JPG	Outside	2026-10-21 09:33:43
@@ -17128,7 +18864,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 2535	006147	MR. M.SOHAIL AHMED	BKR-858	TOYOTA COROLLA	E28068900000000256445847	Active	static/member_profile_img/6147.JPG	Outside	2026-10-21 09:33:43
 2536	006147	MR. M.SOHAIL AHMED	CU-0053	TOYOTA HILUX	E28068900000000257981F9A	Active	static/member_profile_img/6147.JPG	Outside	2026-10-21 09:33:43
 2537	006207	MR. AKBAR IQBAL PURI	AABS-090	CHANGE	E2004701AE3064227D91010A	Active	static/member_profile_img/6207.JPG	Outside	2026-10-21 09:33:43
-2538	006207	MR. AKBAR IQBAL PURI	AP-9	LAND CRU	E2004701922064227BD00114	Active	static/member_profile_img/6207.JPG	Outside	2026-10-21 09:33:43
 2539	006207	MR. AKBAR IQBAL PURI	BL-0009	TOYOT LAND CRU	E280689000000002579827C2	Active	static/member_profile_img/6207.JPG	Outside	2026-10-21 09:33:43
 2540	006207	MR. AKBAR IQBAL PURI	KY-9000	TOYOTA HILUX REVO	E2806890000000025797E6AD	Active	static/member_profile_img/6207.JPG	Outside	2026-10-21 09:33:43
 2541	006207	MR. AKBAR IQBAL PURI	BL-0009	TOYOTA LAND CRU	E28068900000000257982825	Active	static/member_profile_img/6207.JPG	Outside	2026-10-21 09:33:43
@@ -17269,7 +19004,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 2680	007042	MR. AKBAR A. KASAMALI	BN-1300	CHERY	E2806890000000025798F12F	Active	static/member_profile_img/7042.jpg	Outside	2026-10-21 09:33:43
 2681	007009	MR. MOHAMMAD FARAZ FARUQUI	BG-3192	HONDA VEEZEL	E2806890000000025799DBE9	Active	static/member_profile_img/7009.JPG	Outside	2026-10-21 09:33:43
 2682	006969	MR. MUHAMMAD HASHIM MUMTAZ	BH-0969	TOYOTA AVANZA	E20047012740642275220112	Active	static/member_profile_img/6969.jpg	Outside	2026-10-21 09:33:43
-2683	006969	MR. MUHAMMAD HASHIM MUMTAZ	AAHM-969	TOYOTA	E20047012880642275360112	Active	static/member_profile_img/6969.jpg	Outside	2026-10-21 09:33:43
 2684	006969	MR. MUHAMMAD HASHIM MUMTAZ	BH-0969	AVANZA	E2806894000050175DD5A0F0	Active	static/member_profile_img/6969.jpg	Outside	2026-10-21 09:33:43
 2685	006969	MR. MUHAMMAD HASHIM MUMTAZ	BT-0969	FORTUNER	E2806894000050175DD614F0	Active	static/member_profile_img/6969.jpg	Outside	2026-10-21 09:33:43
 2686	006969	MR. MUHAMMAD HASHIM MUMTAZ	BVZ-969	TOYOTA PREMIO	E2806894000050175DD5B8F0	Active	static/member_profile_img/6969.jpg	Outside	2026-10-21 09:33:43
@@ -17287,14 +19021,12 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 2698	015336	MR. ZIA ISMAIL ALLARAKHA	ASA-038	TOYOTA	E280689000000002579821A4	Active	static/member_profile_img/15336.jpg	Outside	2026-10-21 09:33:43
 2699	015336	MR. ZIA ISMAIL ALLARAKHA	ASR-081	TOYOTA	E2806890000000025798F739	Active	static/member_profile_img/15336.jpg	Outside	2026-10-21 09:33:43
 2700	005439	MR. JAWED AKHTAR KAZI	BBM-283	SUZUKI	E2806890000000025797EC18	Active	static/member_profile_img/5439.JPG	Outside	2026-10-21 09:33:43
-2701	005439	MR. JAWED AKHTAR KAZI	HC-0317	SUZUKI CULTUS	E2806890000000025799DD1E	Active	static/member_profile_img/5439.JPG	Outside	2026-10-21 09:33:43
 2702	006261	MR. IRFAN ALI SABIR	ANZ-172	TOYOTA COROLLA	E28068900000000257992AEC	Active	static/member_profile_img/6261.jpg	Outside	2026-10-21 09:33:43
 2703	016594	MR. SAEED ALI RASHID	BPB-907	TOYOTA COROLLA	E2806890000000025799291D	Active	static/member_profile_img/16594.jpg	Outside	2026-10-21 09:33:43
 2704	016594	MR. SAEED ALI RASHID	BL-9608	PEUGEOT	E2806890000000025798F867	Active	static/member_profile_img/16594.jpg	Outside	2026-10-21 09:33:43
 2707	018100	DR. RAHEEL TEHSIN RAHMAN	ABV-978	SUZUKI	E2806890000000025798E617	Active	static/member_profile_img/18100.JPG	Outside	2026-10-21 09:33:43
 2708	016855	MR. MURTAZA ALI KARIMI	BK-4799	TOYOTA HARRIER	E2806894000050175DD2F8F0	Active	static/member_profile_img/16855.jpg	Outside	2026-10-21 09:33:43
 2709	016855	MR. MURTAZA ALI KARIMI	BFK-164	HONDA CIVIC 2016	E2806894000050175DD57CEF	Active	static/member_profile_img/16855.jpg	Outside	2026-10-21 09:33:43
-2711	220705	MRS. RASHIDA MOIEZ SHAIKHALI	CU-4998	TOYOTA HILUX	E28068900000000256448418	Active	static/member_profile_img/220705.JPG	Outside	2026-10-21 09:33:43
 2712	220143	MRS. AYSHA  JABEEN HAROON	AMH-173	DAIHATSU COURE	E280689000000002579922A8	Active	static/member_profile_img/220143.JPG	Outside	2026-10-21 09:33:43
 2713	220143	MRS. AYSHA  JABEEN HAROON	BGZ-529	TOYOTA COROLLA	E28068900000000257992387	Active	static/member_profile_img/220143.JPG	Outside	2026-10-21 09:33:43
 2714	220143	MRS. AYSHA  JABEEN HAROON	BPM-250	TOYOTA COROLLA	E2806890000000025799DD1F	Active	static/member_profile_img/220143.JPG	Outside	2026-10-21 09:33:43
@@ -17324,6 +19056,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 2739	123931	MR. FASIHUDDIN KHAN	AYN-425	HONDA CIVIC	E2806890000000025799E8F2	Active	static/member_profile_img/123931.JPG	Outside	2026-10-21 09:33:43
 2741	006832	MR. ATIF SALMAN	ATC-737	TOYOTA YARIS	E2806894000040175DD2B0EF	Active	static/member_profile_img/6832.jpg	Outside	2026-10-21 09:33:43
 2742	006898	MR. MUSTAFA SAEED	AAD-965	TOYOTA COROLLA	E2806894000050175DD61CEF	Active	static/member_profile_img/6898.JPG	Outside	2026-10-21 09:33:43
+2701	005439	MR. JAWED AKHTAR KAZI	HC-0317	SUZUKI CULTUS	E2806890000000025799DD1E	Active	static/member_profile_img/5439.JPG	Outside	2026-10-21 09:33:43
 2743	006794	MR. ASAD BAIG	F-6657	NISSAN	E28068900000000257982E4E	Active	static/member_profile_img/6794.jpg	Outside	2026-10-21 09:33:43
 2744	006794	MR. ASAD BAIG	E-8736	SUZUKI	E28068900000000257972C37	Active	static/member_profile_img/6794.jpg	Outside	2026-10-21 09:33:43
 2745	006794	MR. ASAD BAIG	ALS-520	SUZUKI	E2806890000000025798EA6D	Active	static/member_profile_img/6794.jpg	Outside	2026-10-21 09:33:43
@@ -17430,7 +19163,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 2852	007172	MR. REHAN BANDUKDA	QD-313	HONDA ACCORD	E2806890000000025798FA1E	Active	static/member_profile_img/7172.JPG	Outside	2026-10-21 09:33:43
 2853	250800	MISS SALEHA NANJIANI	ADDR-226	SUZUKI FRONX	E20047010500642272FE010E	Active	static/member_profile_img/250800.jpg	Outside	2026-10-21 09:33:43
 2854	0911711	MRS. KISHWAR SHAHAB	BJP-587	TOYOTA COROLLA	E28068900000000257973037	Active	static/member_profile_img/911711.jpg	Outside	2026-10-21 09:33:43
-2855	220217	MRS. SARA MOOSA	BDS-527	TOYOTA COROLLA	E2806890000000025798F9CC	Active	static/member_profile_img/220217.jpg	Outside	2026-10-21 09:33:43
 2856	220118	MRS. SARWAT SULTAN CHANDIO	BM-1888	MG/HS	E280689000000002579824B7	Active	static/member_profile_img/220118.JPG	Outside	2026-10-21 09:33:43
 2857	220118	MRS. SARWAT SULTAN CHANDIO	BZ-7888	TOYOTA FORTUNER	E2806890000000025797EC19	Active	static/member_profile_img/220118.JPG	Outside	2026-10-21 09:33:43
 2858	008377	MR. MOHAMMAD ABDULLAH	AJF-929	TOYOTA	E28068900000000256445A8C	Active	static/member_profile_img/8377.JPG	Outside	2026-10-21 09:33:43
@@ -17482,7 +19214,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 2908	006563	MR. RUSTOM KAKALIA	BBJ-140	HONDA CIVIC	E2806890000000025798F893	Active	static/member_profile_img/6563.jpg	Outside	2026-10-21 09:33:43
 2909	006563	MR. RUSTOM KAKALIA	BH-3149	TOYOTA FORTUNER	E280689000000002579821A7	Active	static/member_profile_img/6563.jpg	Outside	2026-10-21 09:33:43
 2910	006563	MR. RUSTOM KAKALIA	BUA-069	HONDA CIVIC	E2806890000000025799DB7D	Active	static/member_profile_img/6563.jpg	Outside	2026-10-21 09:33:43
-2911	220243	MRS. SHARMEEN MAHMUD	BDF-369	TOYOTA	E20047017030642279B10109	Active	static/member_profile_img/220243.JPG	Outside	2026-10-21 09:33:43
 2912	006541	MR. NAVED A. RAZZAK THAPLAWALA	BL-9287	CHANGAN	E2806890000000025799D401	Active	static/member_profile_img/6541.jpg	Outside	2026-10-21 09:33:43
 2913	006541	MR. NAVED A. RAZZAK THAPLAWALA	BNM-247	TOYOTA COROLLA	E280689000000002564490A7	Active	static/member_profile_img/6541.jpg	Outside	2026-10-21 09:33:43
 2914	006541	MR. NAVED A. RAZZAK THAPLAWALA	BXW-289	TOYOTA COROLLA	E280689000000002579936B2	Active	static/member_profile_img/6541.jpg	Outside	2026-10-21 09:33:43
@@ -17504,7 +19235,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 2932	006136	MR. ALI ASGHAR FEROZPURWALA	BPS-553	HONDA CITY	E28068900000000257992DB4	Active	static/member_profile_img/6136.jpg	Outside	2026-10-21 09:33:43
 2933	006136	MR. ALI ASGHAR FEROZPURWALA	BNQ-486	SUZUKI SWIFT	E28068900000000257992E82	Active	static/member_profile_img/6136.jpg	Outside	2026-10-21 09:33:43
 2934	006136	MR. ALI ASGHAR FEROZPURWALA	BMX-553	TOYOTA COROLLA	E2806894000050175DD3E4ED	Active	static/member_profile_img/6136.jpg	Outside	2026-10-21 09:33:43
-2935	006869	MR. ALI RAFIQ CHINOY	CAS-626	HONDA CIVIC	E2004701A67064227D15010A	Active	static/member_profile_img/6869.JPG	Outside	2026-10-21 09:33:43
 2936	006869	MR. ALI RAFIQ CHINOY	AACE-232	TOYOTA CROSS	E200470165A064227908010B	Active	static/member_profile_img/6869.JPG	Outside	2026-10-21 09:33:43
 2937	006869	MR. ALI RAFIQ CHINOY	BMY-626	HONDA CIVIC	E28068900000000257992722	Active	static/member_profile_img/6869.JPG	Outside	2026-10-21 09:33:43
 2940	005693	MR. ADIL SHABBIR KERAI	BFM-979	TOYOTA	E28068900000000257983091	Active	static/member_profile_img/5693.JPG	Outside	2026-10-21 09:33:43
@@ -17514,7 +19244,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 2944	006576	MR. SHEIKH MUHAMMAD WASEEM	BL-9864	SAZGAR HAVAL 1+6	E2806890000000025798F5F6	Active	static/member_profile_img/6576.jpg	Outside	2026-10-21 09:33:43
 2945	006481	MR. KHURRAM ALAM	BH-4206	TOYOTA FORTUNER	E2004701826064227AD40109	Active	static/member_profile_img/6481.jpg	Outside	2026-10-21 09:33:43
 2946	006481	MR. KHURRAM ALAM	BHC-588	TOYOTA COROLLA	E2004701822064227AD00114	Active	static/member_profile_img/6481.jpg	Outside	2026-10-21 09:33:43
-2947	006402	MR. MURTAZA HABIB	BM-7065	KIA SPORTAGE	E2806890000000025797E712	Active	static/member_profile_img/6402.jpg	Outside	2026-10-21 09:33:43
+2935	006869	MR. ALI RAFIQ CHINOY	CAS-626	HONDA CIVIC	E2004701A67064227D15010A	Active	static/member_profile_img/6869.JPG	Outside	2026-10-21 09:33:43
 2948	006402	MR. MURTAZA HABIB	BNJ-425	SUZUKI	E2806890000000025644467A	Active	static/member_profile_img/6402.jpg	Outside	2026-10-21 09:33:43
 2949	006402	MR. MURTAZA HABIB	BTA-874	TOYOTA YARIS	E2806890000000025799EB39	Active	static/member_profile_img/6402.jpg	Outside	2026-10-21 09:33:43
 2950	230329	MISS HAMIDA ESBHANI	AYC-025	HONDA CITY	E28068900000000256445669	Active	static/member_profile_img/230329.jpg	Outside	2026-10-21 09:33:43
@@ -17560,10 +19290,10 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 3003	115595	MR.  ASIF RAZAQUE	BJJ-909	TOYOTA PASSO	E2806890000000025799D165	Active	static/member_profile_img/115595.jpg	Outside	2026-10-21 09:33:43
 3004	115595	MR.  ASIF RAZAQUE	BH-1909	HONDA BRV	E2806890000000025797EE47	Active	static/member_profile_img/115595.jpg	Outside	2026-10-21 09:33:43
 3005	115595	MR.  ASIF RAZAQUE	BL-6618	HAVAL	E28068900000000257992A1A	Active	static/member_profile_img/115595.jpg	Outside	2026-10-21 09:33:43
+2947	006402	MR. MURTAZA HABIB	BM-7065	KIA SPORTAGE	E2806890000000025797E712	Active	static/member_profile_img/6402.jpg	Outside	2026-10-21 09:33:43
 3006	115634	MR. BABAR SAYEED SHAIKH	BL-8939	HONDA BRV	E280689000000002564487F0	Active	static/member_profile_img/115634.JPG	Outside	2026-10-21 09:33:43
 3007	115634	MR. BABAR SAYEED SHAIKH	BJ-8326	HONDA BRV	E280689000000002579935AF	Active	static/member_profile_img/115634.JPG	Outside	2026-10-21 09:33:43
 3008	115634	MR. BABAR SAYEED SHAIKH	BVZ-070	TOYOTA COROLLA	E28068900000000257993A67	Active	static/member_profile_img/115634.JPG	Outside	2026-10-21 09:33:43
-3011	015201	MR. MOHAMMAD AKBER ALI KHAN	AWM-295	TOYOTA COROLLA	E2004701D5C06422800A010E	Active	static/member_profile_img/15201.jpg	Outside	2026-10-21 09:33:43
 3013	015460	MR. MUHAMMAD JAWED	BDG-115	HONDA	E2806890000000025799E692	Active	static/member_profile_img/15460.jpg	Outside	2026-10-21 09:33:43
 3014	015460	MR. MUHAMMAD JAWED	BK-5174	KIA/SPORTAGE	E2806890000000025798F292	Active	static/member_profile_img/15460.jpg	Outside	2026-10-21 09:33:43
 3015	007268	MR. FEROZE JAMALL	BP-7330	HAVAL H6	E20047019F8064227CA60112	Active	static/member_profile_img/7268.jpg	Outside	2026-10-21 09:33:43
@@ -17607,7 +19337,8 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 3057	005869	MR. MOIN A. RAZZAK	ATG-480	SUZUKI ALTO	E2806890000000025799EB66	Active	static/member_profile_img/5869.jpg	Outside	2026-10-21 09:33:43
 3058	005869	MR. MOIN A. RAZZAK	BSG-907	TOYOTA COROLLA	E280689000000002564440FF	Active	static/member_profile_img/5869.jpg	Outside	2026-10-21 09:33:43
 3020	220579	MRS.  MARYAM KHAWAJA	AAFB-338	HONDA BRV	E2004710B1A0642218FB0111	Active	static/member_profile_img/220579.JPG	Outside	2026-10-21 09:33:43
-3023	0210774	MR. KARIM KURBAN ALI	BNQ-254	HONDA	E20047017090642279B7010F	Active	static/member_profile_img/210774.JPG	Inside	2026-10-21 09:33:43
+3023	0210774	MR. KARIM KURBAN ALI	BNQ-254	HONDA	E20047017090642279B7010F	Active	static/member_profile_img/210774.JPG	Outside	2026-10-21 09:33:43
+3011	015201	MR. MOHAMMAD AKBER ALI KHAN	AWM-295	TOYOTA COROLLA	E2004701D5C06422800A010E	Active	static/member_profile_img/15201.jpg	Inside	2026-10-21 09:33:43
 3059	005869	MR. MOIN A. RAZZAK	ATX-958	TOYOTA VITZ	E2806890000000025798DE2C	Active	static/member_profile_img/5869.jpg	Outside	2026-10-21 09:33:43
 3060	014950	MR. GHULAM MOHAMMED MALKANI	BSM-320	TOYOTA	E2806890000000025797DD1C	Active	static/member_profile_img/14950.jpg	Outside	2026-10-21 09:33:43
 3061	014950	MR. GHULAM MOHAMMED MALKANI	BQZ-487	TOYOTA	E2806890000000025797DD46	Active	static/member_profile_img/14950.jpg	Outside	2026-10-21 09:33:43
@@ -17672,8 +19403,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 3121	150032	MR. MOHAMMAD YAHYA BARRY	BPR-587	HONDA CIVIC	E280689000000002564483BB	Active	static/member_profile_img/150032.jpg	Outside	2026-10-21 09:33:43
 3122	150032	MR. MOHAMMAD YAHYA BARRY	BEY-849	TOYOTA COROLLA	E2806890000000025644815A	Active	static/member_profile_img/150032.jpg	Outside	2026-10-21 09:33:43
 3123	150032	MR. MOHAMMAD YAHYA BARRY	BF-7434	TOYOTA PRADO	E2806890000000025799D60B	Active	static/member_profile_img/150032.jpg	Outside	2026-10-21 09:33:43
-3124	190294	MRS. SADIA HUSSAIN	BCY-032	HONDA CITY	E28068900000000257972D21	Active	static/member_profile_img/190294.JPG	Outside	2026-10-21 09:33:43
-3125	190294	MRS. SADIA HUSSAIN	BCY-032	HONDA CITY 2015	E2806894000040175DD400F0	Active	static/member_profile_img/190294.JPG	Outside	2026-10-21 09:33:43
 3126	0911496	MRS. BAKHTAWAR M. MINWALLA	AUC-882	HONDA CITY	E280689000000002579829E4	Active	static/member_profile_img/911496.JPG	Outside	2026-10-21 09:33:43
 3127	221151	MRS. NORIN MASOOD	Z-4791	LANCER	E2806890000000025799252C	Active	static/member_profile_img/221151.jpg	Outside	2026-10-21 09:33:43
 3128	015296	MR. GUL HAMEED GHANCHI	BXN-065	KIA	E28068900000000257991D13	Active	static/member_profile_img/15296.jpg	Outside	2026-10-21 09:33:43
@@ -17716,7 +19445,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 3174	015885	MR. ALI ASGHAR NANJI	BHY-167	TOYOTA COROLLA	E2806894000040175DD3E0ED	Active	static/member_profile_img/15885.jpg	Outside	2026-10-21 09:33:43
 3175	0210489	MR. REHAN SULEMAN	BWH-779	SUZUKI ALTO	E2806890000000025798F94A	Active	static/member_profile_img/210489.JPG	Outside	2026-10-21 09:33:43
 3176	0210489	MR. REHAN SULEMAN	BWH-779	SUZUKI ALTO	E2806890000000025797DC2E	Active	static/member_profile_img/210489.JPG	Outside	2026-10-21 09:33:43
-3177	220501	MRS. SAMEEN MURTUZA	BPG-860	TOYOTA	E28068900000000257982DDF	Active	static/member_profile_img/220501.jpg	Outside	2026-10-21 09:33:43
 3178	220501	MRS. SAMEEN MURTUZA	ATR-653	HONDA CIVIC	E2806890000000025797E331	Active	static/member_profile_img/220501.jpg	Outside	2026-10-21 09:33:43
 3179	221109	MRS. NASREEN BANOO MUKATY	BPF-513	SUZUKI ALTO	E2806890000000025797E9B6	Active	static/member_profile_img/221109.JPG	Outside	2026-10-21 09:33:43
 3180	005823	MR. SHAIKH SAQIB SAEED MASOOD	AADN-118	BYD	E20047015120642277C0010F	Active	static/member_profile_img/5823.jpg	Outside	2026-10-21 09:33:43
@@ -17730,13 +19458,11 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 3188	220618	MRS. ARSHIA KHALID	BZH-974	CHANGAN ALSVIN	E2004700FE8064227296010D	Active	static/member_profile_img/220618.jpg	Outside	2026-10-21 09:33:43
 3189	005987	MR. MIR SHAHZAD KHAN TALPUR	BK-7772	FORTUNER	E2806890000000025799D355	Active	static/member_profile_img/5987.JPG	Outside	2026-10-21 09:33:43
 3190	005987	MR. MIR SHAHZAD KHAN TALPUR	BWY-545	TOYOTA COROLLA	E2806890000000025797EA38	Active	static/member_profile_img/5987.JPG	Outside	2026-10-21 09:33:43
-3191	007751	MR. AHSAN AFTAB	BP-7999	TOYOTA	E20047020DD06422838B0111	Active	static/member_profile_img/7751.JPG	Outside	2026-10-21 09:33:43
 3192	007751	MR. AHSAN AFTAB	AWU-707	TOYOTA COROLLA	E280689000000002579827D7	Active	static/member_profile_img/7751.JPG	Outside	2026-10-21 09:33:43
 3193	007751	MR. AHSAN AFTAB	BD-8311	BD-8311	E2806890000000025799DDC2	Active	static/member_profile_img/7751.JPG	Outside	2026-10-21 09:33:43
 3194	007751	MR. AHSAN AFTAB	BD-8311	SURF 2006	E2806894000040175DD608F0	Active	static/member_profile_img/7751.JPG	Outside	2026-10-21 09:33:43
 3195	007751	MR. AHSAN AFTAB	BG-8580	LEXUS-8580	E2806894000040175DD5C8F0	Active	static/member_profile_img/7751.JPG	Outside	2026-10-21 09:33:43
 3196	007751	MR. AHSAN AFTAB	AWU-707	COROLLA 2011	E2806894000050175DD5B4F0	Active	static/member_profile_img/7751.JPG	Outside	2026-10-21 09:33:43
-3197	007751	MR. AHSAN AFTAB	BP-7999	PRADO 2017	E2806894000040175DD734EF	Active	static/member_profile_img/7751.JPG	Outside	2026-10-21 09:33:43
 3198	220894	MRS. URSILA SAEED	BBK-345	TOYOTA COROLLA	E280689000000002564487B9	Active	static/member_profile_img/220894.jpg	Outside	2026-10-21 09:33:43
 3199	220894	MRS. URSILA SAEED	BNE-345	TOYOTA COROLLA	E28068900000000257982B9E	Active	static/member_profile_img/220894.jpg	Outside	2026-10-21 09:33:43
 3200	220184	MRS. ZIL E. HUMA IRFAN	BCR-701	TOOYTA COROLLA	E2806890000000025797E97E	Active	static/member_profile_img/220184.jpg	Outside	2026-10-21 09:33:43
@@ -17751,6 +19477,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 3210	220158	MRS. SAIMA FAYAZ NAVTANKIA	BK-9146	TOYOTA	E2806890000000025799E7B1	Active	static/member_profile_img/220158.JPG	Outside	2026-10-21 09:33:43
 3211	230138	MRS. ALIYA NAEEM	BZC-430	TOYOTA YARIS	E28068900000000257982068	Active	static/member_profile_img/230138.jpg	Outside	2026-10-21 09:33:43
 3212	006710	MR. SHEHERYAR PIRACHA	BEB-526	TOYOTA COROLLA	E2806890000000025644831C	Active	static/member_profile_img/6710.jpg	Outside	2026-10-21 09:33:43
+3177	220501	MRS. SAMEEN MURTUZA	BPG-860	TOYOTA	E28068900000000257982DDF	Active	static/member_profile_img/220501.jpg	Outside	2026-10-21 09:33:43
 3213	006710	MR. SHEHERYAR PIRACHA	BL-9254	HYUNDAI TUCSON	E2806890000000025799D386	Active	static/member_profile_img/6710.jpg	Outside	2026-10-21 09:33:43
 3214	006562	DR. REHANUDDIN QURESHI	BMY-653	SUZUKI SWIFT	E2806890000000025797EA77	Active	static/member_profile_img/6562.JPG	Outside	2026-10-21 09:33:43
 3215	006562	DR. REHANUDDIN QURESHI	BDQ-144	HONDA CITY	E2806890000000025798248D	Active	static/member_profile_img/6562.JPG	Outside	2026-10-21 09:33:43
@@ -17825,7 +19552,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 3288	006035	MR. JAWED LAKHANY	BF-9325	TOYOTA PRADO	E2806890000000025799D89D	Active	static/member_profile_img/6035.jpg	Outside	2026-10-21 09:33:43
 3289	220272	MRS. ALIYA ALI	BGG-112	TOYOTA COROLLA	E2806890000000025797E007	Active	static/member_profile_img/220272.jpg	Outside	2026-10-21 09:33:43
 3290	220272	MRS. ALIYA ALI	AFR	MG H,S 1.5	E2806894000040175DD64CED	Active	static/member_profile_img/220272.jpg	Outside	2026-10-21 09:33:43
-3291	016380	MR. TARIQ  IQBAL MIAN	E-9888	MERCEDES BANZ	E2806890000000025798F30E	Active	static/member_profile_img/16380.jpg	Outside	2026-10-21 09:33:43
 3292	016380	MR. TARIQ  IQBAL MIAN	BG-6984	TOYOTA RUSH	E280689000000002579820CD	Active	static/member_profile_img/16380.jpg	Outside	2026-10-21 09:33:43
 3293	016380	MR. TARIQ  IQBAL MIAN	AXE-250	MERCEDES BANZ	E28068900000000257982386	Active	static/member_profile_img/16380.jpg	Outside	2026-10-21 09:33:43
 3294	016380	MR. TARIQ  IQBAL MIAN	BD-8782	TOYOTA	E2806890000000025798FA25	Active	static/member_profile_img/16380.jpg	Outside	2026-10-21 09:33:43
@@ -17833,7 +19559,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 3296	220945	MRS. AASIA FAISAL	AGS-451	HONDA CITY	E2806890000000025799D9BE	Active	static/member_profile_img/220945.jpg	Outside	2026-10-21 09:33:43
 3297	220945	MRS. AASIA FAISAL	AVH-879	HONDA CITY	E2806890000000025799D743	Active	static/member_profile_img/220945.jpg	Outside	2026-10-21 09:33:43
 3298	008258	MR. MAZHAR ALI	BFK-078	HONDA CIVIC	E2806890000000025799E387	Active	static/member_profile_img/8258.jpg	Outside	2026-10-21 09:33:43
-3300	007059	MR. AHMAD JABRAN SIDDIQUI	SB-8795	TOYOTA VIGO	E20047015D6064227884010E	Active	static/member_profile_img/7059.JPG	Outside	2026-10-21 09:33:43
 3301	006627	MR. SAUD ANSARI	BYG-918	SUZUKI SWIFT	E2806890000000025797E4ED	Active	static/member_profile_img/6627.jpg	Outside	2026-10-21 09:33:43
 3302	006627	MR. SAUD ANSARI	BL-4472	HAVAL H6	E28068900000000257982798	Active	static/member_profile_img/6627.jpg	Outside	2026-10-21 09:33:43
 3303	220526	MRS. ATIQA PIR MUHAMMAD KHAN ODHO	AAAU-757	KIA SPORTAGE	E2004701AC7064227D750112	Active	static/member_profile_img/220526.JPG	Outside	2026-10-21 09:33:43
@@ -17849,11 +19574,11 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 3314	220431	MRS. FARAH YASIR	BTW-720	TOOYTA YARIS	E2806894000040175DD08CEE	Active	static/member_profile_img/220431.jpg	Outside	2026-10-21 09:33:43
 3315	006374	MR. MEHERYAR MAVALVALA	AJW-749	HONDA CITY	E20047012E40642275920112	Active	static/member_profile_img/6374.JPG	Outside	2026-10-21 09:33:43
 3316	220379	MRS. BUSHRA LAKHANI	BXZ-104	SUZUKI ALTO	E2007DD2B1017DF0B3BA35F7	Active	static/member_profile_img/220379.JPG	Outside	2026-10-21 09:33:43
+3300	007059	MR. AHMAD JABRAN SIDDIQUI	SB-8795	TOYOTA VIGO	E20047015D6064227884010E	Active	static/member_profile_img/7059.JPG	Inside	2026-10-21 09:33:43
 3318	220379	MRS. BUSHRA LAKHANI	BHW-313	TOYOTA	E28068900000000256448190	Active	static/member_profile_img/220379.JPG	Outside	2026-10-21 09:33:43
 3319	220379	MRS. BUSHRA LAKHANI	BH-9545	HYUNDAI	E2806890000000025799E029	Active	static/member_profile_img/220379.JPG	Outside	2026-10-21 09:33:43
 3320	220379	MRS. BUSHRA LAKHANI	CX-8692	HONDA	E2806890000000025799DE82	Active	static/member_profile_img/220379.JPG	Outside	2026-10-21 09:33:43
 3321	220379	MRS. BUSHRA LAKHANI	AWX-792	TOYOTA	E2806890000000025799DAED	Active	static/member_profile_img/220379.JPG	Outside	2026-10-21 09:33:43
-3324	006820	MR. NAVEED SULTAN CHAWLA	AAKH-493	BYD ATTO -3	E2004701800064227AAE010E	Active	static/member_profile_img/6820.jpg	Outside	2026-10-21 09:33:43
 3325	006820	MR. NAVEED SULTAN CHAWLA	CCR-432	HONDA	E20047015AF06422785D010F	Active	static/member_profile_img/6820.jpg	Outside	2026-10-21 09:33:43
 3326	006602	MR. FAISAL SHEHZAD	BKL-775	TOYOTA COROLLA	E28068900000000256448AE8	Active	static/member_profile_img/6602.JPG	Outside	2026-10-21 09:33:43
 3327	006602	MR. FAISAL SHEHZAD	BTF-817	TOYOTA YARIS	E2806894000050175DD3ACEE	Active	static/member_profile_img/6602.JPG	Outside	2026-10-21 09:33:43
@@ -17882,7 +19607,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 3351	007230	MR. ZAIN NOSHIR IRANI	AC-6070	CHEVERLET	E2806890000000025798F33A	Active	static/member_profile_img/7230.JPG	Outside	2026-10-21 09:33:43
 3352	007230	MR. ZAIN NOSHIR IRANI	AUV-874	MERCEDES BANZ	E2806890000000025799DB9B	Active	static/member_profile_img/7230.JPG	Outside	2026-10-21 09:33:43
 3353	007230	MR. ZAIN NOSHIR IRANI	BEN-044	TOYOTA AQUA	E2806890000000025799DE75	Active	static/member_profile_img/7230.JPG	Outside	2026-10-21 09:33:43
-3354	115042	MR. SAJID HAROON	BS-1199	HYUNADI	E2806890000000025798F7CC	Active	static/member_profile_img/115042.JPG	Outside	2026-10-21 09:33:43
 3355	115042	MR. SAJID HAROON	SA-9990	KIA CARNIVAL	E2806894000050175DD36CF0	Active	static/member_profile_img/115042.JPG	Outside	2026-10-21 09:33:43
 3356	115042	MR. SAJID HAROON	BV-9099	TOYOTA FORTUNER	E2806894000040175DD32CF0	Active	static/member_profile_img/115042.JPG	Outside	2026-10-21 09:33:43
 3357	117217	MR.  MUHAMMAD ABDULLAH	BHD-421	TOYOTA COROLLA	E280689000000002564489FF	Active	static/member_profile_img/117217.jpg	Outside	2026-10-21 09:33:43
@@ -17897,6 +19621,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 3369	017656	MR. SYED ZIA ABBAS JAFFERY	BA-0348	MITSUBISHI PAJERO	E2806890000000025799D657	Active	static/member_profile_img/17656.jpg	Outside	2026-10-21 09:33:43
 3370	017656	MR. SYED ZIA ABBAS JAFFERY	AGK-149	SUZUKI SALOON	E2806890000000025799D77F	Active	static/member_profile_img/17656.jpg	Outside	2026-10-21 09:33:43
 3371	017656	MR. SYED ZIA ABBAS JAFFERY	AGK-149	SUZUKI SALOON	E280689000000002579823F3	Active	static/member_profile_img/17656.jpg	Outside	2026-10-21 09:33:43
+3324	006820	MR. NAVEED SULTAN CHAWLA	AAKH-493	BYD ATTO -3	E2004701800064227AAE010E	Active	static/member_profile_img/6820.jpg	Inside	2026-10-21 09:33:43
 3372	220627	MRS. SHEBA SHOAIB QADRI	ADD-062	HONDA CITY	E2806890000000025799C3C9	Active	static/member_profile_img/220627.jpg	Outside	2026-10-21 09:33:43
 3373	220627	MRS. SHEBA SHOAIB QADRI	ADY-794	HONDA CITY	E2806890000000025799C7BA	Active	static/member_profile_img/220627.jpg	Outside	2026-10-21 09:33:43
 3374	005979	MR. ABDUL  RAUF CHHOTANI	APK-912	T-VITZ	E2806894000050175DD140F0	Active	static/member_profile_img/5979.jpg	Outside	2026-10-21 09:33:43
@@ -18017,8 +19742,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 3501	220145	MRS. GOHAR FARAZ ALI	AAEW-433	TOYOTA FORTUNER	E20047019DD064227C8B0112	Active	static/member_profile_img/220145.JPG	Outside	2026-10-21 09:33:43
 3502	220145	MRS. GOHAR FARAZ ALI	BUK-784	TOYOTA COROLLA	E2806890000000025799D9B7	Active	static/member_profile_img/220145.JPG	Outside	2026-10-21 09:33:43
 3503	220145	MRS. GOHAR FARAZ ALI	BJ-7068	MG/HS	E2007DAF0CCB3FF0D0441CFF	Active	static/member_profile_img/220145.JPG	Outside	2026-10-21 09:33:43
-3504	220540	MRS. FAIZA AURANGZEB	BCZ-581	TOYOTA PIXIS	E2806890000000025799D794	Active	static/member_profile_img/220540.jpg	Outside	2026-10-21 09:33:43
-3505	220540	MRS. FAIZA AURANGZEB	BNC-916	TOYOTA COROLLA	E28068900000000257992547	Active	static/member_profile_img/220540.jpg	Outside	2026-10-21 09:33:43
 3506	150031	MR. RAZA HASNAIN	BVH-905	TOYOTA YARIS	E2806890000000025798E404	Active	static/member_profile_img/150031.JPG	Outside	2026-10-21 09:33:43
 3507	150031	MR. RAZA HASNAIN	BG-0702	HONDA VEEZAL	E28068900000000257993531	Active	static/member_profile_img/150031.JPG	Outside	2026-10-21 09:33:43
 3508	150031	MR. RAZA HASNAIN	BXT-179	SUZUKI	E2806890000000025798F36F	Active	static/member_profile_img/150031.JPG	Outside	2026-10-21 09:33:43
@@ -18034,13 +19757,13 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 3520	125469	DR. MIRZA NAQI ZAFAR	BK-8477	KIA SPORTAGE	E2806894000050175DD418EF	Active	static/member_profile_img/125469.JPG	Outside	2026-10-21 09:33:43
 3525	124709	MR.  SOHAIL ANWAR	BWV-867	DAIHATSU MIRA	E2806890000000025798DFAB	Active	static/member_profile_img/124709.JPG	Outside	2026-10-21 09:33:43
 3526	124709	MR.  SOHAIL ANWAR	BWV-867	DAIHATSU MIRA	E2806894000040175DD8F8EF	Active	static/member_profile_img/124709.JPG	Outside	2026-10-21 09:33:43
-3527	124709	MR.  SOHAIL ANWAR	BFY-203	TOYOTA COROLLA	E2806894000050175DD8A8EE	Active	static/member_profile_img/124709.JPG	Outside	2026-10-21 09:33:43
 3528	014685	MR. SYED MOHAMMAD ZAEEM	ADH-751	HONDA CIVIC	E28068900000000257983D44	Active	static/member_profile_img/14685.jpg	Outside	2026-10-21 09:33:43
 3529	014685	MR. SYED MOHAMMAD ZAEEM	AMX-375	HONDA CIVIC	E2806890000000025799C89D	Active	static/member_profile_img/14685.jpg	Outside	2026-10-21 09:33:43
 3530	014661	MR. AMIN SIDDIQUE	BGU-852	TOYOTA COROLLA	E2806890000000025797E994	Active	static/member_profile_img/14661.JPG	Outside	2026-10-21 09:33:43
 3531	014661	MR. AMIN SIDDIQUE	APV-595	HONDA CITY	E2806890000000025799252B	Active	static/member_profile_img/14661.JPG	Outside	2026-10-21 09:33:43
 3532	125071	MR. FAROOQ JANGDA	BQF-660	TOYOTA	E2806890000000025798FA96	Active	static/member_profile_img/125071.JPG	Outside	2026-10-21 09:33:43
 3533	125071	MR. FAROOQ JANGDA	AYA-602	TOYOTA PREMIO	E2806894000040175DD57CEE	Active	static/member_profile_img/125071.JPG	Outside	2026-10-21 09:33:43
+3504	220540	MRS. FAIZA AURANGZEB	BCZ-581	TOYOTA PIXIS	E2806890000000025799D794	Active	static/member_profile_img/220540.jpg	Outside	2026-10-21 09:33:43
 3534	125071	MR. FAROOQ JANGDA	BJH-120	TOYOTA COROLLA	E2806894000050175DD590EE	Active	static/member_profile_img/125071.JPG	Outside	2026-10-21 09:33:43
 3535	125071	MR. FAROOQ JANGDA	BTH-837	SUZUKI CULTUS	E2806894000050175DD5E8EE	Active	static/member_profile_img/125071.JPG	Outside	2026-10-21 09:33:43
 3536	125071	MR. FAROOQ JANGDA	BTG-443	KIA PICANTO	E2806890000000025799D310	Active	static/member_profile_img/125071.JPG	Outside	2026-10-21 09:33:43
@@ -18061,7 +19784,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 3553	006296	MR. DADABHOY R. MAMA	AVW-562	TOOYTA COROLLA	E2806890000000025797DA75	Active	static/member_profile_img/6296.jpg	Outside	2026-10-21 09:33:43
 3554	006296	MR. DADABHOY R. MAMA	AVW-562	TOYOTA COROLLA	E2806894000040175DD3C4EE	Active	static/member_profile_img/6296.jpg	Outside	2026-10-21 09:33:43
 3556	0211467	MR. SYED AAMIR HUSSAIN	BGM-386	HONDA CIVIC	E280689000000002564484C2	Active	static/member_profile_img/211467.JPG	Outside	2026-10-21 09:33:43
-3557	006571	MR. IMRAN LATIF	EAA-766	TESLA	E2004701973064227C210111	Active	static/member_profile_img/6571.jpg	Outside	2026-10-21 09:33:43
 3558	006571	MR. IMRAN LATIF	BJ-2486	KIA SPORTAGE	E2806890000000025798EDEC	Active	static/member_profile_img/6571.jpg	Outside	2026-10-21 09:33:43
 3559	006571	MR. IMRAN LATIF	BUK-290	HONDA CIVIC	E2806890000000025798EEAC	Active	static/member_profile_img/6571.jpg	Outside	2026-10-21 09:33:43
 3560	006571	MR. IMRAN LATIF	BPT-250	TOYOTA COROLLA	E2806890000000025798F268	Active	static/member_profile_img/6571.jpg	Outside	2026-10-21 09:33:43
@@ -18085,10 +19807,10 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 3578	102151	MRS. SWALEHA HASSAM PARACHA	BK-7061	TOYOTA FORTUNER	E2806890000000025798DD0B	Active	static/member_profile_img/102151.jpg	Outside	2026-10-21 09:33:43
 3579	122464	CAPT. PERVEZ SAEED	ALT-022	HONDA CITY	E2806890000000025798FA38	Active	static/member_profile_img/122464.JPG	Outside	2026-10-21 09:33:43
 3580	220270	MRS. SAMIA MAJEED	BLR-610	HONDA CIVIC	E2806890000000025799C673	Active	static/member_profile_img/220270.jpg	Outside	2026-10-21 09:33:43
-3581	220270	MRS. SAMIA MAJEED	KZ-0357	TOYOTA REVO	E2806890000000025799C310	Active	static/member_profile_img/220270.jpg	Outside	2026-10-21 09:33:43
 3582	0910155	DR. MRS. CHAND QAYYUM	BYT-808	TOYOTA COROLLA	E200470225A064228508010B	Active	static/member_profile_img/910155.jpg	Outside	2026-10-21 09:33:43
 3583	014038	MR. ARIF ELAHI	APN-009	AUDI E-TRON	E2004710CD5064221AB60107	Active	static/member_profile_img/14038.jpg	Outside	2026-10-21 09:33:43
 3584	101339	MRS. HUMERA AHMAD	BKP-833	TOYOTA COROLLA	E28068900000000257982AC0	Active	static/member_profile_img/101339.jpg	Outside	2026-10-21 09:33:43
+3557	006571	MR. IMRAN LATIF	EAA-766	TESLA	E2004701973064227C210111	Active	static/member_profile_img/6571.jpg	Inside	2026-10-21 09:33:43
 3585	0911726	MRS. AMINA SHABBIR FEROZPURWALA	BLF-953	SUZUKI SWIFT	E28068900000000257982933	Active	static/member_profile_img/911726.jpg	Outside	2026-10-21 09:33:43
 3586	017942	MR. NADIR TUFAIL	BSY-320	SUZUKI SWIFT	E2806894000050175DD4ECF0	Active	static/member_profile_img/17942.JPG	Outside	2026-10-21 09:33:43
 3587	017942	MR. NADIR TUFAIL	ASA-635	CULTUS-2009	E2806894000040175DD4B8F0	Active	static/member_profile_img/17942.JPG	Outside	2026-10-21 09:33:43
@@ -18118,7 +19840,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 3612	0212071	MR. JAHANGIR ADIL KHATRI	BVB-451	HONDA CIVIC	E2806890000000025797D566	Active	static/member_profile_img/212071.JPG	Outside	2026-10-21 09:33:43
 3613	0212071	MR. JAHANGIR ADIL KHATRI	RK-844	TOYOTA COROLLA	E2806890000000025798359B	Active	static/member_profile_img/212071.JPG	Outside	2026-10-21 09:33:43
 3614	007054	MR. YASIR DADA	AZB-869	TOYOTA VITZ	E280689000000002579824B9	Active	static/member_profile_img/7054.jpg	Outside	2026-10-21 09:33:43
-3615	006980	MR. M. IRFAN MOHAMMEDI	BM-5636	TOOYTA RAIZE	E28068900000000257982F72	Active	static/member_profile_img/6980.jpg	Outside	2026-10-21 09:33:43
 3616	006980	MR. M. IRFAN MOHAMMEDI	ANX-100	TOYOTA PLATZ	E2806890000000025797DF17	Active	static/member_profile_img/6980.jpg	Outside	2026-10-21 09:33:43
 3617	006980	MR. M. IRFAN MOHAMMEDI	BNH-132	DAIHATSU CAST	E2806890000000025798E3E2	Active	static/member_profile_img/6980.jpg	Outside	2026-10-21 09:33:43
 3618	220269	MRS. ASIYA ABDUL REHMAN	BPP-400	TOYOTA AQUA	E280689000000002564446C8	Active	static/member_profile_img/220269.jpg	Outside	2026-10-21 09:33:43
@@ -18278,7 +19999,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 3793	0212273	MR. MIR ARIF ALI TALPUR	ATN-302	SUZUKI ALTO	E280689000000002564480D6	Active	static/member_profile_img/212273.JPG	Outside	2026-10-21 09:33:43
 3794	0212273	MR. MIR ARIF ALI TALPUR	ATN-302	SUZUKI ALTO	E2806890000000025797DD8F	Active	static/member_profile_img/212273.JPG	Outside	2026-10-21 09:33:43
 3795	006998	MR. RASHID MINHAS ABDULLAH	BNQ-087	TOYOTA COROLLA	E200470227006422851E010A	Active	static/member_profile_img/6998.JPG	Outside	2026-10-21 09:33:43
-3796	006441	MR. LATIF AMIN BAWANY	AZD-798	TOYOTA COROLLA	E20047115190642222FA010D	Active	static/member_profile_img/6441.jpg	Outside	2026-10-21 09:33:43
 3797	006519	MR. FARRUKH AKHTAR	BYY-655	HONDA CITY	E2806890000000025798234F	Active	static/member_profile_img/6519.jpg	Outside	2026-10-21 09:33:43
 3798	006519	MR. FARRUKH AKHTAR	BGK-183	HONDA CITY	E28068900000000256448957	Active	static/member_profile_img/6519.jpg	Outside	2026-10-21 09:33:43
 3799	006519	MR. FARRUKH AKHTAR	AMA-174	HONDA CITY	E28068900000000256448759	Active	static/member_profile_img/6519.jpg	Outside	2026-10-21 09:33:43
@@ -18286,7 +20006,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 3802	220449	MISS ATIQUA VALLY	BMG-329	HONDA CITY	E2806890000000025799D3C1	Active	static/member_profile_img/220449.jpg	Outside	2026-10-21 09:33:43
 3803	007282	MR. AMIR BAWANY	BPQ-690	HONDA	E2806890000000025797EF82	Active	static/member_profile_img/7282.jpg	Outside	2026-10-21 09:33:43
 3804	007260	MR. MUHAMMAD HUSSAIN	AAEC-139	HONDA CIVIC	E20047021FA0642284A8010D	Active	static/member_profile_img/7260.jpg	Outside	2026-10-21 09:33:43
-3805	007260	MR. MUHAMMAD HUSSAIN	BVW-205	HONDA CIVIC	E200470100C0642272BA010F	Active	static/member_profile_img/7260.jpg	Outside	2026-10-21 09:33:43
 3806	007260	MR. MUHAMMAD HUSSAIN	BVW-105	HONDA CIVIC	E20047016F90642279A70112	Active	static/member_profile_img/7260.jpg	Outside	2026-10-21 09:33:43
 3807	007260	MR. MUHAMMAD HUSSAIN	ANR-506	HONDA CIVIC	E2806890000000025799CCF6	Active	static/member_profile_img/7260.jpg	Outside	2026-10-21 09:33:43
 3808	007260	MR. MUHAMMAD HUSSAIN	BVW-105	HONDA CIVIC	E2806890000000025799CC8D	Active	static/member_profile_img/7260.jpg	Outside	2026-10-21 09:33:43
@@ -18298,7 +20017,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 3814	115026	DR. ASGHAR ABID	BRA-453	2019	E2806894000050175DD0F0EE	Active	static/member_profile_img/115026.JPG	Outside	2026-10-21 09:33:43
 3815	015004	MR. MOHAMMAD YOUSUF	BYK-368	TOYOT YARIS	E2806890000000025644888F	Active	static/member_profile_img/15004.jpg	Outside	2026-10-21 09:33:43
 3816	125150	MR. NAJMUL HUSSAIN DOSSA	BUQ-968	TOYOTA YARIS	E2806894000050175DD508EF	Active	static/member_profile_img/125150.jpg	Outside	2026-10-21 09:33:43
-3817	125150	MR. NAJMUL HUSSAIN DOSSA	BG-4967	HONDA BRV	E2806894000040175DD304F0	Active	static/member_profile_img/125150.jpg	Outside	2026-10-21 09:33:43
 3818	116240	MR. AHMAD PATHAN	AAAP-414	TOYOTA CROSS	E20047019D7064227C85010E	Active	static/member_profile_img/116240.JPG	Outside	2026-10-21 09:33:43
 3819	116240	MR. AHMAD PATHAN	KY-0650	TOYOTA HILUX	E28068900000000256445412	Active	static/member_profile_img/116240.JPG	Outside	2026-10-21 09:33:43
 3820	116240	MR. AHMAD PATHAN	BH-1163	HONDA BRV	E2806890000000025644508D	Active	static/member_profile_img/116240.JPG	Outside	2026-10-21 09:33:43
@@ -18330,6 +20048,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 3846	007866	DR. SHUJJAT AHMED	BL-2329	PEUGEOT	E28068900000000257982BD5	Active	static/member_profile_img/7866.JPG	Outside	2026-10-21 09:33:43
 3847	007866	DR. SHUJJAT AHMED	BUL-810	TOYOTA YARIS	E280689000000002579826DE	Active	static/member_profile_img/7866.JPG	Outside	2026-10-21 09:33:43
 3848	007866	DR. SHUJJAT AHMED	BMM-823	HONDA CIVIC	E280689000000002579927DA	Active	static/member_profile_img/7866.JPG	Outside	2026-10-21 09:33:43
+3805	007260	MR. MUHAMMAD HUSSAIN	BVW-205	HONDA CIVIC	E200470100C0642272BA010F	Active	static/member_profile_img/7260.jpg	Outside	2026-10-21 09:33:43
 3849	007341	MR. AKBAR KHAN	APR-024	MERCEDES BENZ	E2806890000000025797DE6C	Active	static/member_profile_img/7341.jpg	Outside	2026-10-21 09:33:43
 3850	007100	MR. MUHAMMAD UMAIR USMAN	AGX-898	LANCER	E2806890000000025799D119	Active	static/member_profile_img/7100.jpg	Outside	2026-10-21 09:33:43
 3851	007100	MR. MUHAMMAD UMAIR USMAN	AGX-898	LANCER	E2806890000000025799D07C	Active	static/member_profile_img/7100.jpg	Outside	2026-10-21 09:33:43
@@ -18339,10 +20058,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 3855	007070	MR. SHAHZAD NOOR	AQC-327	SUZUKI ALTO	E280689000000002579831F3	Active	static/member_profile_img/7070.JPG	Outside	2026-10-21 09:33:43
 3856	007090	MR. ADEEL AHMED BALOCH	BPL-074	SUZUKI WAGONR	E2806890000000025799DD24	Active	static/member_profile_img/7090.JPG	Outside	2026-10-21 09:33:43
 3857	007234	MR. GHULAM TALHA	AAFH-801	DEEPAL S05	E2004710A620642218430110	Active	static/member_profile_img/7234.jpg	Outside	2026-10-21 09:33:43
-3858	007934	MR. MUHAMMAD AZEEM DADA	AQV-879	SUZUKI CULTUS	E2004701B46064227DF40107	Active	static/member_profile_img/7934.jpg	Outside	2026-10-21 09:33:43
-3859	007934	MR. MUHAMMAD AZEEM DADA	AJC-762	TOYOTA COROLLA	E2004701B56064227E040109	Active	static/member_profile_img/7934.jpg	Outside	2026-10-21 09:33:43
-3860	007934	MR. MUHAMMAD AZEEM DADA	AQV-879	SUZUKI CULTUS	E28068900000000257972A61	Active	static/member_profile_img/7934.jpg	Outside	2026-10-21 09:33:43
-3861	007934	MR. MUHAMMAD AZEEM DADA	AJC-762	TOYOTA COROLLA	E2806890000000025797DCAD	Active	static/member_profile_img/7934.jpg	Outside	2026-10-21 09:33:43
 3862	0211098	MR.MUHAMMAD JAMIL NOORANI	AAAW-712	HONDA CIVIC	E20047011A70642274550110	Active	static/member_profile_img/211098.jpg	Outside	2026-10-21 09:33:43
 3863	0211098	MR.MUHAMMAD JAMIL NOORANI	ADY-240	SUZUKI CULTUS	E28068900000000256445077	Active	static/member_profile_img/211098.jpg	Outside	2026-10-21 09:33:43
 3864	006439	MR. AHMED ANWAR HEMANI	BK-8981	TOYOTA FORTUNER	E2806894000040175DD0E0EE	Active	static/member_profile_img/6439.jpg	Outside	2026-10-21 09:33:43
@@ -18366,8 +20081,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 3883	220198	MRS. FARAH KHANANI	CAL-201	DIAHATSU MIRA	E28068900000000256444A4D	Active	static/member_profile_img/220198.JPG	Outside	2026-10-21 09:33:43
 3884	220198	MRS. FARAH KHANANI	BM-7206	KIA SPORTAGE	E28068900000000256447FB9	Active	static/member_profile_img/220198.JPG	Outside	2026-10-21 09:33:43
 3885	220385	MRS. RABIA ATIF	BQ-8887	PROTON X70	E2004701398064227646010D	Active	static/member_profile_img/220385.JPG	Outside	2026-10-21 09:33:43
-3886	101126	MR. UMEED ALI (H/O) RIFAT OSTO (LATE)	BL-0695	HONDA	E2806890000000025797D954	Active	static/member_profile_img/101126.jpg	Outside	2026-10-21 09:33:43
-3887	101126	MR. UMEED ALI (H/O) RIFAT OSTO (LATE)	BL-0695	TOYOTA COROLLA	E2806890000000025797D984	Active	static/member_profile_img/101126.jpg	Outside	2026-10-21 09:33:43
 3888	101126	MR. UMEED ALI (H/O) RIFAT OSTO (LATE)	BH-8935	KIA SPORATGE	E2806894000050175DD5D4ED	Active	static/member_profile_img/101126.jpg	Outside	2026-10-21 09:33:43
 3889	220462	MRS. YASMIN ALI ZAIDI	BF-3445	TOYOTA LAND CRU	E2806890000000025797F052	Active	static/member_profile_img/220462.JPG	Outside	2026-10-21 09:33:43
 3890	220462	MRS. YASMIN ALI ZAIDI	ASW-914	TOYOTA GRANDE	E2806890000000025799280C	Active	static/member_profile_img/220462.JPG	Outside	2026-10-21 09:33:43
@@ -18378,6 +20091,10 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 3896	220485	MRS. KARIMA SADIQ	ATN-282	SUZUKI CULTUS	E2806890000000025799DB22	Active	static/member_profile_img/220485.jpg	Outside	2026-10-21 09:33:43
 3897	220485	MRS. KARIMA SADIQ	BSX-211	SUZUKI	E2806890000000025799C293	Active	static/member_profile_img/220485.jpg	Outside	2026-10-21 09:33:43
 3898	008260	DR. MAISAM ABBAS	BVQ-491	PRINCE	E280689000000002579931DE	Active	static/member_profile_img/8260.JPG	Outside	2026-10-21 09:33:43
+3886	101126	MR. UMEED ALI (H/O) RIFAT OSTO (LATE)	BL-0695	HONDA	E2806890000000025797D954	Active	static/member_profile_img/101126.jpg	Outside	2026-10-21 09:33:43
+3887	101126	MR. UMEED ALI (H/O) RIFAT OSTO (LATE)	BL-0695	TOYOTA COROLLA	E2806890000000025797D984	Active	static/member_profile_img/101126.jpg	Outside	2026-10-21 09:33:43
+3858	007934	MR. MUHAMMAD AZEEM DADA	AQV-879	SUZUKI CULTUS	E2004701B46064227DF40107	Active	static/member_profile_img/7934.jpg	Outside	2026-10-21 09:33:43
+3860	007934	MR. MUHAMMAD AZEEM DADA	AQV-879	SUZUKI CULTUS	E28068900000000257972A61	Active	static/member_profile_img/7934.jpg	Outside	2026-10-21 09:33:43
 3899	008260	DR. MAISAM ABBAS	BQY-355	TOYOTA COROLLA	E28068900000000257982AB6	Active	static/member_profile_img/8260.JPG	Outside	2026-10-21 09:33:43
 3900	008260	DR. MAISAM ABBAS	BKG-464	SUZUKI WAGONAR	E280689000000002579829D6	Active	static/member_profile_img/8260.JPG	Outside	2026-10-21 09:33:43
 3901	008264	MR. DANISH IQBAL	BXY-246	TOYOTA 2022	E2806894000050175DD5FCEE	Active	static/member_profile_img/8264.JPG	Outside	2026-10-21 09:33:43
@@ -18427,7 +20144,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 3951	220958	MRS. NAZIA  AHMED ZAHEER	BD-4099	TOYOTA PRADO	E2806890000000025797EF37	Active	static/member_profile_img/220958.jpg	Outside	2026-10-21 09:33:43
 3952	0212648	MR. SOHAIL TAI	CZ-3552	KIA CARNIVAL	E2806894000050175DD298ED	Active	static/member_profile_img/212648.JPG	Outside	2026-10-21 09:33:43
 3953	0212648	MR. SOHAIL TAI	AEF-005	AUDI	E2806894000040175DD214ED	Active	static/member_profile_img/212648.JPG	Outside	2026-10-21 09:33:43
-3954	007881	MR. MUHAMMAD ASIM BILVANI	BL-6980	HYUNDAI SANTA FEV	E2004700E740642271220109	Active	static/member_profile_img/7881.JPG	Outside	2026-10-21 09:33:43
 3955	008193	MR. NADIR SALIM KHAN	BLD-676	SUZUKI ALTO	E20047025B50642288630110	Active	static/member_profile_img/8193.jpg	Outside	2026-10-21 09:33:43
 3956	0212896	MR. MIR TAIMUR ALI	BL-3743	KIA SPORTAGE	E2806890000000025644580E	Active	static/member_profile_img/212896.jpg	Outside	2026-10-21 09:33:43
 3957	0212896	MR. MIR TAIMUR ALI	BRR-297	HONDA CITY	E28068900000000257981F42	Active	static/member_profile_img/212896.jpg	Outside	2026-10-21 09:33:43
@@ -18493,7 +20209,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 4020	115814	MR. SHAHID AHSANULLAH	BWP-252	TOYOTA COROLLA	E2806890000000025797EADC	Active	static/member_profile_img/115814.jpg	Outside	2026-10-21 09:33:43
 4021	115814	MR. SHAHID AHSANULLAH	BXZ-851	TOYOTA COROLLA	E2806890000000025798F738	Active	static/member_profile_img/115814.jpg	Outside	2026-10-21 09:33:43
 4022	115814	MR. SHAHID AHSANULLAH	BLM-471	TOYOTA	E2806890000000025799DDEF	Active	static/member_profile_img/115814.jpg	Outside	2026-10-21 09:33:43
-4023	007976	MR. SYED FARJAD SULTAN	CV-9182	TOYOTA	E2806890000000025797EDE1	Active	static/member_profile_img/7976.jpg	Outside	2026-10-21 09:33:43
 4024	007976	MR. SYED FARJAD SULTAN	BMR-331	SUZUKI SWIFT	E28068900000000257982208	Active	static/member_profile_img/7976.jpg	Outside	2026-10-21 09:33:43
 4025	115774	MR. MUHAMMAD ASHRAF	BUD-659	KIA PICANTO	E28068900000000257972A71	Active	static/member_profile_img/115774.JPG	Outside	2026-10-21 09:33:43
 4026	115774	MR. MUHAMMAD ASHRAF	BDR-841	HONDA CITY	E2806890000000025797D367	Active	static/member_profile_img/115774.JPG	Outside	2026-10-21 09:33:43
@@ -18530,7 +20245,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 4058	006676	MR. BILAL SHAUKAT	SB-6050	BYD	E20047016B6064227964010F	Active	static/member_profile_img/6676.JPG	Outside	2026-10-21 09:33:43
 4059	006789	MR. SAJID AHMED	BWU-139	SUZUKI SWIFT	E280689000000002579834F9	Active	static/member_profile_img/6789.JPG	Outside	2026-10-21 09:33:43
 4060	006789	MR. SAJID AHMED	BU-6789	TOYOTA FORTUNER	E2806890000000025798E82E	Active	static/member_profile_img/6789.JPG	Outside	2026-10-21 09:33:43
-4061	0211424	MR. AHMED NABEEL MEMON	BH-3187	HONDA BRV	E2806894000040175DD0ACEF	Active	static/member_profile_img/211424.jpg	Outside	2026-10-21 09:33:43
 4062	0211424	MR. AHMED NABEEL MEMON	AFU-055	TOYOYA COROLLA	E2806894000040175DD7F8EF	Active	static/member_profile_img/211424.jpg	Outside	2026-10-21 09:33:43
 4063	0211425	MR. AGHA SHAMS HUSSAIN	ADA-604	HYUNDAI SONTRO	E28068900000000257983996	Active	static/member_profile_img/211425.JPG	Outside	2026-10-21 09:33:43
 4064	0211425	MR. AGHA SHAMS HUSSAIN	LB-5373	ISUZU D-MAX	E2806890000000025797D516	Active	static/member_profile_img/211425.JPG	Outside	2026-10-21 09:33:43
@@ -18570,7 +20284,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 4102	210145	MRS. ZARIN FARIDA NAQVI	BGF-043	SUZKI SWIFT	E2806890000000025799C76A	Active	static/member_profile_img/210145.jpg	Outside	2026-10-21 09:33:43
 4105	220533	MRS.RUBAIN ALI AAMIR	BXX-636	TOYOTA YARIS	E2806890000000025798255F	Active	static/member_profile_img/220533.jpg	Outside	2026-10-21 09:33:43
 4106	220533	MRS.RUBAIN ALI AAMIR	BH-7931	KIA SPORTAGE	E2806894000050175DD1E0ED	Active	static/member_profile_img/220533.jpg	Outside	2026-10-21 09:33:43
-4107	006159	MR. JUNAID YOUSUF	BXL-924	TOYOTA COROLLA	E2806890000000025797EE48	Active	static/member_profile_img/6159.jpg	Outside	2026-10-21 09:33:43
 4108	006159	MR. JUNAID YOUSUF	BKJ-539	HONDA CIVIC	E28068900000000257982319	Active	static/member_profile_img/6159.jpg	Outside	2026-10-21 09:33:43
 4109	015702	MR. AGHA RAFIUDDIN K. DURRANI	AEE-300	HONDA CIVIC	E280689000000002579729BE	Active	static/member_profile_img/15702.jpg	Outside	2026-10-21 09:33:43
 4110	015702	MR. AGHA RAFIUDDIN K. DURRANI	AUK-728	TOYOTA COROLLA	E28068900000000256448F6C	Active	static/member_profile_img/15702.jpg	Outside	2026-10-21 09:33:43
@@ -18626,7 +20339,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 4165	142331	MR. JAWAID ALI KHAN	AYB-819	TOYOTA PASSO	E2806894000040175DD474ED	Active	static/member_profile_img/142331.jpg	Outside	2026-10-21 09:33:43
 4166	007247	MR. SHAHJEHAN MANIAR	BXM-535	HONDA CIVIC	E2806894000050175DD578ED	Active	static/member_profile_img/7247.jpg	Outside	2026-10-21 09:33:43
 4167	220752	MRS. SHAZIA NASIR	BHL-903	MITSUBISHI	E2806890000000025798F589	Active	static/member_profile_img/220752.jpg	Outside	2026-10-21 09:33:43
-4168	220921	MRS. SANA RAHIM	AABU-095	SUZUKI ALTO	E2004701A47064227CF50109	Active	static/member_profile_img/220921.jpg	Outside	2026-10-21 09:33:43
 4169	220921	MRS. SANA RAHIM	KY-1614	ISUZU D-MAX	E280689000000002579934ED	Active	static/member_profile_img/220921.jpg	Outside	2026-10-21 09:33:43
 4171	220921	MRS. SANA RAHIM	BQB-857	TOYOTA ALTIS	E2806890000000025797F04A	Active	static/member_profile_img/220921.jpg	Outside	2026-10-21 09:33:43
 4172	220921	MRS. SANA RAHIM	AQB-505	TOYOTA MARK 2	E28068900000000257993A97	Active	static/member_profile_img/220921.jpg	Outside	2026-10-21 09:33:43
@@ -18656,7 +20368,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 4199	220604	MRS. HUMAIRA SHABBIR	AAAU-512	TOYOTA COROLLA	E20047015FF0642278AD010E	Active	static/member_profile_img/220604.jpg	Outside	2026-10-21 09:33:43
 4200	220604	MRS. HUMAIRA SHABBIR	ALG-10	TOYOTA	E200470160B0642278B90113	Active	static/member_profile_img/220604.jpg	Outside	2026-10-21 09:33:43
 4201	0411315	MISS MARIAM HALAI	BXZ-653	SUZUKI SWIFT	E200470152D0642277DB0112	Active	static/member_profile_img/411315.JPG	Outside	2026-10-21 09:33:43
-4202	150196	MRS. KIRAN KHAN ALI	BK-1656	KIA SPORTAGE	E2806894000050175DD720ED	Active	static/member_profile_img/150196.jpg	Outside	2026-10-21 09:33:43
 4203	221129	MRS. SONIA IRFAN	BDV-625	SUZUKI SWIFT	E2806890000000025799CFD6	Active	static/member_profile_img/221129.JPG	Outside	2026-10-21 09:33:43
 4204	220450	MRS. AMBER KASHIF	BFL-507	TOYOTA PRIUS	E20047014070642276B50105	Active	static/member_profile_img/220450.JPG	Outside	2026-10-21 09:33:43
 4205	220450	MRS. AMBER KASHIF	BJU-258	SUZUKI CULTUS	E2004701986064227C340114	Active	static/member_profile_img/220450.JPG	Outside	2026-10-21 09:33:43
@@ -18665,6 +20376,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 4208	007251	MR. PIR QASIM ALI SHAH JILLANI	BXG-203	SUZUKI SWIFT	E280689000000002564444D1	Active	static/member_profile_img/7251.jpg	Outside	2026-10-21 09:33:43
 4209	007215	MR. FARAZ PARVEZ	AAKT-615	BYD	E2004701D9C06422804A0110	Active	static/member_profile_img/7215.jpg	Outside	2026-10-21 09:33:43
 4210	007215	MR. FARAZ PARVEZ	AAKU-915	TOYOTA HILUX REVO	E2004701DFE0642280AC0115	Active	static/member_profile_img/7215.jpg	Outside	2026-10-21 09:33:43
+4168	220921	MRS. SANA RAHIM	AABU-095	SUZUKI ALTO	E2004701A47064227CF50109	Active	static/member_profile_img/220921.jpg	Outside	2026-10-21 09:33:43
 4211	007215	MR. FARAZ PARVEZ	BN-7815	TOYOTA	E2004701DD6064228084010E	Active	static/member_profile_img/7215.jpg	Outside	2026-10-21 09:33:43
 4212	0910214	MRS. MUKHTIAR KAZI	BRE-430	TOYOTA COROLLA	E28068900000000257992355	Active	static/member_profile_img/910214.jpg	Outside	2026-10-21 09:33:43
 4213	102076	MRS. AYESHA TARIQ	SA-3720	KIA CARNAVAL	E2806894000050175DD42CED	Active	static/member_profile_img/102076.JPG	Outside	2026-10-21 09:33:43
@@ -18739,7 +20451,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 4286	100928	MRS. SHEEMA FARHAN	ATA-887	TOYOTA COROLLA	E2806890000000025798EE91	Active	static/member_profile_img/100928.jpg	Outside	2026-10-21 09:33:43
 4287	100928	MRS. SHEEMA FARHAN	BCJ-103	HONDA CIVIC	E2806890000000025799D765	Active	static/member_profile_img/100928.jpg	Outside	2026-10-21 09:33:43
 4288	100928	MRS. SHEEMA FARHAN	KP-5059	TOYOTA HILUX	E2806890000000025799D33E	Active	static/member_profile_img/100928.jpg	Outside	2026-10-21 09:33:43
-4289	150025	MR. PIR MUJEEBUL HAQ	SC-1777	2023	E2004701897064227B450113	Active	static/member_profile_img/150025.jpg	Outside	2026-10-21 09:33:43
 4290	150025	MR. PIR MUJEEBUL HAQ	CT-7900	TOYOTA HILUX	E28068900000000257993564	Active	static/member_profile_img/150025.jpg	Outside	2026-10-21 09:33:43
 4291	150025	MR. PIR MUJEEBUL HAQ	BJ-5949	TOYOTA FORTUNRR	E2806890000000025799C64F	Active	static/member_profile_img/150025.jpg	Outside	2026-10-21 09:33:43
 4292	150025	MR. PIR MUJEEBUL HAQ	LB-7123	TOYOTA PRADO	E2806890000000025799DD9C	Active	static/member_profile_img/150025.jpg	Outside	2026-10-21 09:33:43
@@ -18758,6 +20469,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 4305	007911	MR. SYED RASHID HUSSAIN	BNF-652	HONDA CITY	E2806890000000025644565D	Active	static/member_profile_img/7911.jpg	Outside	2026-10-21 09:33:43
 4306	007911	MR. SYED RASHID HUSSAIN	APL-646	HONDA CITY	E28068900000000256448E25	Active	static/member_profile_img/7911.jpg	Outside	2026-10-21 09:33:43
 4307	007887	MR. KHOWAJA SHAMOUN AHMED ILYAS	BK-6957	KIA SPORTAGE	E2004701A43064227CF10110	Active	static/member_profile_img/7887.jpg	Outside	2026-10-21 09:33:43
+4289	150025	MR. PIR MUJEEBUL HAQ	SC-1777	2023	E2004701897064227B450113	Active	static/member_profile_img/150025.jpg	Outside	2026-10-21 09:33:43
 4308	007887	MR. KHOWAJA SHAMOUN AHMED ILYAS	AAAZ-574	CHANGAN	E2004701A53064227D010112	Active	static/member_profile_img/7887.jpg	Outside	2026-10-21 09:33:43
 4309	007415	MR. IMRAN HANIF	BKR-805	TOYOTA COROLLA	E2806890000000025797E6ED	Active	static/member_profile_img/7415.jpg	Outside	2026-10-21 09:33:43
 4310	007415	MR. IMRAN HANIF	BF-7984	TOYOTA PRADO	E2806890000000025797E1F2	Active	static/member_profile_img/7415.jpg	Outside	2026-10-21 09:33:43
@@ -18765,7 +20477,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 4312	220637	MRS. SADAF ABDE ALI	ADJ-402	TOYOTA COROLLA	E28068900000000257983B24	Active	static/member_profile_img/220637.JPG	Outside	2026-10-21 09:33:43
 4313	015303	MR. ABBAS  SAIFUDDIN VALIKA	ABU-321	TOYOTA PRIUS	E2806890000000025799232C	Active	static/member_profile_img/15303.jpg	Outside	2026-10-21 09:33:43
 4314	015303	MR. ABBAS  SAIFUDDIN VALIKA	AVV-535	TOYOTA	E2806890000000025797EEE3	Active	static/member_profile_img/15303.jpg	Outside	2026-10-21 09:33:43
-4316	007250	MR. MOHAMMAD AMEEN MOON	BN-4154	HAVAL H6	E20047016450642278F30111	Active	static/member_profile_img/7250.jpg	Outside	2026-10-21 09:33:43
 4317	007250	MR. MOHAMMAD AMEEN MOON	AME-322	HONDA CIVIC	E28068900000000257982C6B	Active	static/member_profile_img/7250.jpg	Outside	2026-10-21 09:33:43
 4318	007185	MR. EHSAN NASEER AWAN	BMJ-917	HONDA CIVIC	E2806890000000025799DA80	Active	static/member_profile_img/7185.JPG	Outside	2026-10-21 09:33:43
 4319	007185	MR. EHSAN NASEER AWAN	BWA-121	MERCEDEC E-18	E2806890000000025644816E	Active	static/member_profile_img/7185.JPG	Outside	2026-10-21 09:33:43
@@ -19088,13 +20799,12 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 4655	007473	MR. SHEHZAD ALI SHARIF	BM-2866	OSHAN X7	E2806890000000025798255A	Active	static/member_profile_img/7473.JPG	Outside	2026-10-21 09:33:43
 4656	220836	MRS. MARZIA IMRAN	ACN-923	TOYOTA	E2806894000040175DD09CEF	Active	static/member_profile_img/220836.jpg	Outside	2026-10-21 09:33:43
 4657	101598	MRS. JAVERIA NAVEED	AWE-696	DAIHATSU COURE	E2806890000000025644847B	Active	static/member_profile_img/101598.jpg	Outside	2026-10-21 09:33:43
-4658	007299	MR. ASKARI ASGHAR AGHA	AACT-050	TOYOTA FORTUNER	E20047019DE064227C8C0113	Active	static/member_profile_img/7299.JPG	Outside	2026-10-21 09:33:43
 4659	007299	MR. ASKARI ASGHAR AGHA	BDM-671	TOYOTA COROLLA	E2806890000000025798DDAC	Active	static/member_profile_img/7299.JPG	Outside	2026-10-21 09:33:43
 4660	059954	MRS. YASMIN ZUBAIR BHATTY	AYT-968	CULTUS 2013	E2806894000040175DD6D4EF	Active	static/member_profile_img/59954.jpg	Outside	2026-10-21 09:33:43
-4661	115022	DR. MOHAMMAD  FEROZ GADIT	178-218	TOYOTA STARLET	E2806890000000025799D879	Active	static/member_profile_img/115022.jpg	Outside	2026-10-21 09:33:43
 4662	125183	MR.  MUHAMMAD ARIF QASIM	BK-3457	KIA SORENTO	E2806894000040175DD2ACED	Active	static/member_profile_img/125183.JPG	Outside	2026-10-21 09:33:43
 4663	221232	MRS. BUSHRA ASIM	LEC16-9637	HONDA CITY	E28068900000000256448576	Active	static/member_profile_img/221232.JPG	Outside	2026-10-21 09:33:43
 4664	230189	MRS. ANISA ABDUL RASHEED	AFY-302	CHEVERLET	E28068900000000257982A80	Active	static/member_profile_img/230189.JPG	Outside	2026-10-21 09:33:43
+4661	115022	DR. MOHAMMAD  FEROZ GADIT	178-218	TOYOTA STARLET	E2806890000000025799D879	Active	static/member_profile_img/115022.jpg	Outside	2026-10-21 09:33:43
 4666	220341	MRS. MALIHA KHAN	BJ-7390	TOYOTA FORTUNER	E28068900000000257982892	Active	static/member_profile_img/220341.jpg	Outside	2026-10-21 09:33:43
 4667	220341	MRS. MALIHA KHAN	BUQ-490	TOYOTA COROLLA	E2806890000000025797E6FA	Active	static/member_profile_img/220341.jpg	Outside	2026-10-21 09:33:43
 4668	006407	MR. FAISAL NASIM	BVD-145	HONDA CIVIC	E2806894000040175DD4F0F0	Active	static/member_profile_img/6407.jpg	Outside	2026-10-21 09:33:43
@@ -19127,14 +20837,12 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 4696	220973	MRS. FARHANA NASEEM	AHP-664	TOYOTA COROLLA	E2806890000000025797DB53	Active	static/member_profile_img/220973.JPG	Outside	2026-10-21 09:33:43
 4697	006899	DR. OMER WALIULLAH JUNG	AAAL-866	BYD SHARK	E200470176B064227A19010C	Active	static/member_profile_img/6899.JPG	Outside	2026-10-21 09:33:43
 4698	006899	DR. OMER WALIULLAH JUNG	BRA-212	TOYOTA COROLLA	E2806890000000025799210D	Active	static/member_profile_img/6899.JPG	Outside	2026-10-21 09:33:43
-4699	006899	DR. OMER WALIULLAH JUNG	BK-1680	KIA SPORTAGE	E2806890000000025799DB4A	Active	static/member_profile_img/6899.JPG	Outside	2026-10-21 09:33:43
 4700	0711685	MR. JUSTICE GULZAR AHMED	BWB-538	HONDA CIVIC	E2004701AA7064227D55010C	Active	static/member_profile_img/711685.jpg	Outside	2026-10-21 09:33:43
 4701	125076	MR. MUHAMMAD SALIM KHANANI	AXF-169	DAIHATSU BOON	E2806890000000025798E9FC	Active	static/member_profile_img/125076.jpg	Outside	2026-10-21 09:33:43
 4702	125076	MR. MUHAMMAD SALIM KHANANI	AF-7722	COROLLA	E2806890000000025798E97E	Active	static/member_profile_img/125076.jpg	Outside	2026-10-21 09:33:43
 4704	101651	DR. NAUREEN IQBAL	AXZ-039	SUZUKI CULTUS	E2806890000000025644888E	Active	static/member_profile_img/101651.jpg	Outside	2026-10-21 09:33:43
 4705	101651	DR. NAUREEN IQBAL	AVV-163	HONDA CITY	E28068900000000256448E69	Active	static/member_profile_img/101651.jpg	Outside	2026-10-21 09:33:43
 4706	007472	MR. MOHAMMAD RAHEEL	BK-6223	HONDA BRV	E28068900000000256448C05	Active	static/member_profile_img/7472.JPG	Outside	2026-10-21 09:33:43
-4707	007472	MR. MOHAMMAD RAHEEL	BJ-0311	KI ASPORTAGE	E2806890000000025797E34E	Active	static/member_profile_img/7472.JPG	Outside	2026-10-21 09:33:43
 4708	007808	MR. MUHAMMAD ABBAS	BP-3513	TUCSON	E2004701AC4064227D720113	Active	static/member_profile_img/7808.JPG	Outside	2026-10-21 09:33:43
 4709	007808	MR. MUHAMMAD ABBAS	BBG-313	TOYOT COROLLA	E2806894000050175DD544EE	Active	static/member_profile_img/7808.JPG	Outside	2026-10-21 09:33:43
 4710	007808	MR. MUHAMMAD ABBAS	BYH-072	HYUNDAI SONATA	E2806890000000025799D598	Active	static/member_profile_img/7808.JPG	Outside	2026-10-21 09:33:43
@@ -19144,6 +20852,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 4714	220367	MRS. HIMAILA ALI	BH-2109	HONDA BRV	E2806894000040175DD4D8EE	Active	static/member_profile_img/220367.jpg	Outside	2026-10-21 09:33:43
 4715	101085	MRS. FAIZA AAMIR	BJC-858	TOYOTA COROLLA	E280689000000002579920E6	Active	static/member_profile_img/101085.JPG	Outside	2026-10-21 09:33:43
 4813	250780	MISS FIZZA ANVARALI	BG-4322	HONDA BRV	E2806890000000025798E810	Active	static/member_profile_img/250780.jpg	Outside	2026-10-21 09:33:43
+4707	007472	MR. MOHAMMAD RAHEEL	BJ-0311	KI ASPORTAGE	E2806890000000025797E34E	Active	static/member_profile_img/7472.JPG	Outside	2026-10-21 09:33:43
 4716	007730	MR. ADNAN SHAMS HAJI	AUX-545	TOYOTA COROLA	E2806894000040175DD384EF	Active	static/member_profile_img/7730.jpg	Outside	2026-10-21 09:33:43
 4717	007730	MR. ADNAN SHAMS HAJI	BUV-293	TOYOTA ALTIS	E2806894000050175DD3D0EF	Active	static/member_profile_img/7730.jpg	Outside	2026-10-21 09:33:43
 4718	007730	MR. ADNAN SHAMS HAJI	BK-3182	TOYOTA FORTUNER	E2806894000050175DD730EF	Active	static/member_profile_img/7730.jpg	Outside	2026-10-21 09:33:43
@@ -19190,7 +20899,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 4759	0212900	MR. BILAL SHAHID ANWAR	AYM-177	BMW/BMW	E2806894000050175DD8B4EF	Active	static/member_profile_img/212900.jpg	Outside	2026-10-21 09:33:43
 4760	0212900	MR. BILAL SHAHID ANWAR	AVC-584	AUDI/ETRON-50	E2806894000040175DD424F0	Active	static/member_profile_img/212900.jpg	Outside	2026-10-21 09:33:43
 4761	0212900	MR. BILAL SHAHID ANWAR	BK-8667	KIA SPORTAGE	E2806894000050175DD310EF	Active	static/member_profile_img/212900.jpg	Outside	2026-10-21 09:33:43
-4762	006560	MR. MUHAMMAD YOUNUS SHAIKH	AAHG-727	SUZUKI SWIFT	E20047012440642274F20109	Active	static/member_profile_img/6560.jpg	Outside	2026-10-21 09:33:43
 4763	006560	MR. MUHAMMAD YOUNUS SHAIKH	LD-7404	TOYOTA REVO	E28068900000000256448CFC	Active	static/member_profile_img/6560.jpg	Outside	2026-10-21 09:33:43
 4764	006560	MR. MUHAMMAD YOUNUS SHAIKH	BWX-564	SUZUKI SWIFT	E28068900000000257983888	Active	static/member_profile_img/6560.jpg	Outside	2026-10-21 09:33:43
 4765	006560	MR. MUHAMMAD YOUNUS SHAIKH	BWX-564	SUZIKI SWIFT	E2806894000050175DD748EF	Active	static/member_profile_img/6560.jpg	Outside	2026-10-21 09:33:43
@@ -19204,7 +20912,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 4773	190986	MS. NAZIHA SYED ALI	BG-0215	HONDA VEZEL	E2806890000000025797D289	Active	static/member_profile_img/190986.JPG	Outside	2026-10-21 09:33:43
 4774	126131	MR. SHAHNAWAZ GHAZALI	BAZ-645	TOYOTA COROLLA	E2806890000000025799E727	Active	static/member_profile_img/126131.JPG	Outside	2026-10-21 09:33:43
 4775	126131	MR. SHAHNAWAZ GHAZALI	BKE-103	HONDA CITY	E2806890000000025799E4DA	Active	static/member_profile_img/126131.JPG	Outside	2026-10-21 09:33:43
-4776	006096	MR. ADNAN NASEEM KALIA	EAB-967	KIA SROTAGE	E20047015060642277B4010C	Active	static/member_profile_img/6096.jpg	Outside	2026-10-21 09:33:43
 4777	006096	MR. ADNAN NASEEM KALIA	BDL-255	TOYOTA VITZ	E2806890000000025798F942	Active	static/member_profile_img/6096.jpg	Outside	2026-10-21 09:33:43
 4778	006096	MR. ADNAN NASEEM KALIA	BH-9376	KIA SPORTAGE	E28068900000000257992A25	Active	static/member_profile_img/6096.jpg	Outside	2026-10-21 09:33:43
 4779	006393	MR. SHAKIR ARIF VASI	BTT-860	SUZUKI WAGONR	E280689000000002579939B9	Active	static/member_profile_img/6393.jpg	Outside	2026-10-21 09:33:43
@@ -19307,7 +21014,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 4879	0213381	MR. ALTAMASH KOHATI	BG-0488	TOYOTA PRADO	E28068900000000256445417	Active	static/member_profile_img/213381.jpg	Outside	2026-10-21 09:33:43
 4881	0213381	MR. ALTAMASH KOHATI	BFB-924	TOYOTA AQWA	E2806894000040175DD460EE	Active	static/member_profile_img/213381.jpg	Outside	2026-10-21 09:33:43
 4882	0213381	MR. ALTAMASH KOHATI	BG-0488	TOYOTA PRADO	E2806894000050175DD438EE	Active	static/member_profile_img/213381.jpg	Outside	2026-10-21 09:33:43
-4883	007813	MR. SALMAN WAHID BALAGAMWALA	BP-6574	TOYOTA LAND CRUSER	E20047014A3064227751010F	Active	static/member_profile_img/7813.jpg	Outside	2026-10-21 09:33:43
 4884	007655	MR. SALMAN AHMED TABBA	EAA-580	KIA	E2007DD2B1016470B3BA3591	Active	static/member_profile_img/7655.jpg	Outside	2026-10-21 09:33:43
 4885	007787	MR.IRFAN LATIF	AAEM-454	SAZGAR TANK	E2004700FC4064227272010C	Active	static/member_profile_img/7787.jpg	Outside	2026-10-21 09:33:43
 4886	007787	MR.IRFAN LATIF	BNB-039	HONDA CITY	E280689000000002579828CF	Active	static/member_profile_img/7787.jpg	Outside	2026-10-21 09:33:43
@@ -19337,7 +21043,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 4911	0911502	DR. MRS. TANVIR KAZI	ANM-144	SUZUKI ALTO	E2806890000000025797E4DD	Active	static/member_profile_img/911502.JPG	Outside	2026-10-21 09:33:43
 4912	0911502	DR. MRS. TANVIR KAZI	AWD-365	TOYOTA BELTA	E28068900000000257982A01	Active	static/member_profile_img/911502.JPG	Outside	2026-10-21 09:33:43
 4913	220437	MRS. AMBER MALIK	BAZ-736	TOYOTA COROLLA	E280689000000002564489AC	Active	static/member_profile_img/220437.jpg	Outside	2026-10-21 09:33:43
-4914	220437	MRS. AMBER MALIK	BQF-173	TOYOTA COROLLA	E28068900000000256448B79	Active	static/member_profile_img/220437.jpg	Outside	2026-10-21 09:33:43
 4915	220437	MRS. AMBER MALIK	LA-5483	TOYOTA LAND CRU	E2806890000000025797E352	Active	static/member_profile_img/220437.jpg	Outside	2026-10-21 09:33:43
 4916	007340	MR. ABDUL AHAD HILALY	BHV-757	HONDA CIVIC	E2806894000040175DD154EF	Active	static/member_profile_img/7340.jpg	Outside	2026-10-21 09:33:43
 4917	240527	MRS. YASMIN ZAFAR	AWC-993	TOYOTA COROLLA	E2806890000000025798FA1F	Active	static/member_profile_img/240527.JPG	Outside	2026-10-21 09:33:43
@@ -19349,7 +21054,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 4923	220076	MRS. AMBREEN SOHAIL	AXD-057	SUZUKI SWIFT	E2806890000000025798F68F	Active	static/member_profile_img/220076.JPG	Outside	2026-10-21 09:33:43
 4924	220076	MRS. AMBREEN SOHAIL	BLX-463	NISSAN	E2806890000000025799C9DA	Active	static/member_profile_img/220076.JPG	Outside	2026-10-21 09:33:43
 4926	008186	MR. GHULAM AAMIR BALOCH	BHK-512	TOYOTA COROLLA	E2806890000000025644502A	Active	static/member_profile_img/8186.jpg	Outside	2026-10-21 09:33:43
-4927	008186	MR. GHULAM AAMIR BALOCH	BYF-742	SUZUKI SWIFT	E28068900000000256448928	Active	static/member_profile_img/8186.jpg	Outside	2026-10-21 09:33:43
 4928	0512031	MRS. TALAT LALLJEE	ALT-477	HONDA CIVIC	E28068900000000256445C4C	Active	static/member_profile_img/512031.JPG	Outside	2026-10-21 09:33:43
 4929	008320	MR. IRSHAD QURESHI	BCX-650	TOYOTA COROLLA	E2806890000000025798ECE1	Active	static/member_profile_img/8320.JPG	Outside	2026-10-21 09:33:43
 4930	007412	MR. MOHSIN ALAM	BWT-603	TOYOTA COROLLA ALTIS	E2806894000040175DD8FCEE	Active	static/member_profile_img/7412.JPG	Outside	2026-10-21 09:33:43
@@ -19371,7 +21075,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 4947	221136	MRS. RAHILA NAZ AMIR	BJ-6088	KIA SPOTAGE	E2806890000000025799C499	Active	static/member_profile_img/221136.JPG	Outside	2026-10-21 09:33:43
 4948	007104	MR. BILAL AHMED SOLEJA	BFJ-782	TOYOTA CORLLLA	E28068900000000257991EFE	Active	static/member_profile_img/7104.JPG	Outside	2026-10-21 09:33:43
 4950	007261	MR. MUHAMMAD AHMED IQBAL BALOCH	BJW-133	TOYOTA	E2806890000000025799E6FA	Active	static/member_profile_img/7261.jpg	Outside	2026-10-21 09:33:43
-4951	007261	MR. MUHAMMAD AHMED IQBAL BALOCH	BYY-782	SUZUKI	E2806890000000025799CED8	Active	static/member_profile_img/7261.jpg	Outside	2026-10-21 09:33:43
 4952	007261	MR. MUHAMMAD AHMED IQBAL BALOCH	BMG-411	TOYOTA	E2806890000000025799CB5A	Active	static/member_profile_img/7261.jpg	Outside	2026-10-21 09:33:43
 4953	007261	MR. MUHAMMAD AHMED IQBAL BALOCH	LC-7739	TOYOTA	E2806890000000025798EE36	Active	static/member_profile_img/7261.jpg	Outside	2026-10-21 09:33:43
 4954	0911434	MRS. NERGISH  M. DINSHAW	AZD-991	SUZUKI MEHRAN	E2806894000050175DD0D4EE	Active	static/member_profile_img/911434.jpg	Outside	2026-10-21 09:33:43
@@ -19384,6 +21087,8 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 4961	221230	MRS. MADIHA KHURRAM	BWG-272	TOYOTA YARIS	E28068900000000257972ABD	Active	static/member_profile_img/221230.JPG	Outside	2026-10-21 09:33:43
 4962	007863	MR. MUHAMMAD RIZWAN SAEED	BBZ-906	TOYOTA COROLLA	E2806890000000025798E8E9	Active	static/member_profile_img/7863.jpg	Outside	2026-10-21 09:33:43
 4963	007863	MR. MUHAMMAD RIZWAN SAEED	BHG-586	TOYOTA COROLLA	E2806890000000025797E524	Active	static/member_profile_img/7863.jpg	Outside	2026-10-21 09:33:43
+4914	220437	MRS. AMBER MALIK	BQF-173	TOYOTA COROLLA	E28068900000000256448B79	Active	static/member_profile_img/220437.jpg	Outside	2026-10-21 09:33:43
+4951	007261	MR. MUHAMMAD AHMED IQBAL BALOCH	BYY-782	SUZUKI	E2806890000000025799CED8	Active	static/member_profile_img/7261.jpg	Outside	2026-10-21 09:33:43
 4964	007863	MR. MUHAMMAD RIZWAN SAEED	BG-2204	LAND CRUISER	E28068900000000257982A18	Active	static/member_profile_img/7863.jpg	Outside	2026-10-21 09:33:43
 4965	007851	MR. UMER ANIS SHAIKH	BH-8502	KIA SPOTAGE	E280689000000002579938F0	Active	static/member_profile_img/7851.JPG	Outside	2026-10-21 09:33:43
 4966	007851	MR. UMER ANIS SHAIKH	BXW-560	PRATON SAGA	E2806890000000025798EC2F	Active	static/member_profile_img/7851.JPG	Outside	2026-10-21 09:33:43
@@ -19438,7 +21143,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 5019	231159	MRS. YASMEEN SHAKEEL	ADP-051	TOYOTA COROLLA	E28068900000000257983A94	Active	static/member_profile_img/231159.JPG	Outside	2026-10-21 09:33:43
 5020	231159	MRS. YASMEEN SHAKEEL	BTG-526	HONDA CITY	E2806890000000025798DB8E	Active	static/member_profile_img/231159.JPG	Outside	2026-10-21 09:33:43
 5021	101989	MRS. TANIA AHMED	BQA-548	TOYOTA COROLLA	E2004711585064222366010E	Active	static/member_profile_img/101989.JPG	Outside	2026-10-21 09:33:43
-5022	101989	MRS. TANIA AHMED	AAHJ-797	BYD SHARK	E2004711581064222362010B	Active	static/member_profile_img/101989.JPG	Outside	2026-10-21 09:33:43
 5023	101989	MRS. TANIA AHMED	AAGD-258	TOYOTA HILUX	E2004700F270642271D50112	Active	static/member_profile_img/101989.JPG	Outside	2026-10-21 09:33:43
 5024	101989	MRS. TANIA AHMED	BP-7060	TOYOTA PRADO	E20047018EE064227B9C010E	Active	static/member_profile_img/101989.JPG	Outside	2026-10-21 09:33:43
 5025	101989	MRS. TANIA AHMED	BL-5106	TOYOTA	E2806890000000025797E972	Active	static/member_profile_img/101989.JPG	Outside	2026-10-21 09:33:43
@@ -19584,7 +21288,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 5168	220532	MRS. FAIZA SAVUL	AUJ-282	AUDI	E28068900000000256445409	Active	static/member_profile_img/220532.jpg	Outside	2026-10-21 09:33:43
 5169	220532	MRS. FAIZA SAVUL	BZ-0426	MG/HS 2024	E280689000000002579929FF	Active	static/member_profile_img/220532.jpg	Outside	2026-10-21 09:33:43
 5170	220532	MRS. FAIZA SAVUL	BM-1517	SAZGAR	E2806890000000025799D77E	Active	static/member_profile_img/220532.jpg	Outside	2026-10-21 09:33:43
-5171	101739	MRS. RABIA ZUBAIR	AAEY-370	HAVAL TANK 500	E20047106C80642214A9010F	Active	static/member_profile_img/101739.JPG	Outside	2026-10-21 09:33:43
 5172	101739	MRS. RABIA ZUBAIR	CAF-579	HONDA CITY	E2004700F680642272160103	Active	static/member_profile_img/101739.JPG	Outside	2026-10-21 09:33:43
 5173	101739	MRS. RABIA ZUBAIR	BBG-642	HONDA CIVIC	E2806890000000025797E270	Active	static/member_profile_img/101739.JPG	Outside	2026-10-21 09:33:43
 5174	101739	MRS. RABIA ZUBAIR	BF-5671	TOYOTA PRADO	E2806890000000025797E1A3	Active	static/member_profile_img/101739.JPG	Outside	2026-10-21 09:33:43
@@ -19793,7 +21496,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 5388	221139	MS. RUBINA HUSSAIN	ARP-322	TOYOTA COROLLA	E2806890000000025798DC1D	Active	static/member_profile_img/221139.JPG	Outside	2026-10-21 09:33:43
 5389	221104	MRS. SARA MUHAMMAD UBAID PIRANI	AWX-175	TOOYTA COROLLA	E2806890000000025798DEBB	Active	static/member_profile_img/221104.jpg	Outside	2026-10-21 09:33:43
 5390	221104	MRS. SARA MUHAMMAD UBAID PIRANI	CY-0289	TOYOTA REVO	E280689000000002564481AF	Active	static/member_profile_img/221104.jpg	Outside	2026-10-21 09:33:43
-5391	220237	MR. MOEENUDDIN FARUQI (H/O) MAHVASH(LATE)	BUV-772	TOYOTA COROLLA	E2806894000050175DD574ED	Active	static/member_profile_img/220237.JPG	Outside	2026-10-21 09:33:43
 5392	220237	MR. MOEENUDDIN FARUQI (H/O) MAHVASH(LATE)	BJ-9391	KIA SPORTAGE	E2806894000050175DD588ED	Active	static/member_profile_img/220237.JPG	Outside	2026-10-21 09:33:43
 5393	005533	MR. RIZWAN DIWAN	EAB-500	AUDI	E2806894000050175DD0FCED	Active	static/member_profile_img/5533.jpg	Outside	2026-10-21 09:33:43
 5394	005533	MR. RIZWAN DIWAN	BF-3022	TOYOTA SURF	E2806894000050175DD0D4ED	Active	static/member_profile_img/5533.jpg	Outside	2026-10-21 09:33:43
@@ -19907,7 +21609,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 5508	007839	MR. KASHIF HUSSAIN NAQVI	BDA-590	SUZUKI SWIFT	E2806894000050175DD34CEF	Active	static/member_profile_img/7839.jpg	Outside	2026-10-21 09:33:43
 5512	221095	MRS. ALFIYA HALAI	LB-5090	ISUZU D-MAX	E2806890000000025799E336	Active	static/member_profile_img/221095.jpg	Outside	2026-10-21 09:33:43
 5513	221095	MRS. ALFIYA HALAI	BH-1035	HONDA BRV	E2806890000000025799D7F8	Active	static/member_profile_img/221095.jpg	Outside	2026-10-21 09:33:43
-5514	220293	MRS. UMAIMA KHUHRO	AAKY-957	BYD ATTO-3	E200470224B0642284F90112	Active	static/member_profile_img/220293.JPG	Outside	2026-10-21 09:33:43
 5515	220293	MRS. UMAIMA KHUHRO	BPW-049	HONDA CITY	E28068900000000257982785	Active	static/member_profile_img/220293.JPG	Outside	2026-10-21 09:33:43
 5516	220293	MRS. UMAIMA KHUHRO	BK-0844	KIA SPORTAGE	E280689000000002579826B6	Active	static/member_profile_img/220293.JPG	Outside	2026-10-21 09:33:43
 5517	220530	MRS. RUBINA IKRAM	BJ-0736	KIA SPORTAGE	E28068900000000257991CFE	Active	static/member_profile_img/220530.jpg	Outside	2026-10-21 09:33:43
@@ -19964,7 +21665,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 5568	006846	MR. SHAHID AHMED KHAN	BK-9522	KIA SPORTAGE	E2806894000050175DD22CEE	Active	static/member_profile_img/6846.jpg	Outside	2026-10-21 09:33:43
 5569	006846	MR. SHAHID AHMED KHAN	BVU-164	KIA PICANTO	E2806894000040175DD6BCEE	Active	static/member_profile_img/6846.jpg	Outside	2026-10-21 09:33:43
 5570	006666	MR. SHAHID AHMED	ARH-654	TOYOTA COROLLA	E2806890000000025798E730	Active	static/member_profile_img/6666.JPG	Outside	2026-10-21 09:33:43
-5571	006666	MR. SHAHID AHMED	ARJ-654	TOOYTA COROLLA	E2806890000000025797DA33	Active	static/member_profile_img/6666.JPG	Outside	2026-10-21 09:33:43
 5572	220102	MRS. RASHIDA  IQBAL BHATY	BP-6363	KIA	E20047014130642276C1010C	Active	static/member_profile_img/220102.JPG	Outside	2026-10-21 09:33:43
 5573	220102	MRS. RASHIDA  IQBAL BHATY	BDJ-263	HONDA CIVIC	E20047014230642276D1010F	Active	static/member_profile_img/220102.JPG	Outside	2026-10-21 09:33:43
 5574	101970	MRS. NAZIA DANISH PUNJWANI	BHE-296	TOYOTA COROLLA	E2806894000040175DD2C4EF	Active	static/member_profile_img/101970.JPG	Outside	2026-10-21 09:33:43
@@ -19985,7 +21685,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 5589	220654	MRS. TOOBA FARRUKH	LA-0002	FORD	E2806890000000025799E38D	Active	static/member_profile_img/220654.jpg	Outside	2026-10-21 09:33:43
 5590	220654	MRS. TOOBA FARRUKH	BS-0002	LEXUS	E2806890000000025799D2EA	Active	static/member_profile_img/220654.jpg	Outside	2026-10-21 09:33:43
 5591	220654	MRS. TOOBA FARRUKH	KX-2500	TOYOTA REVO	E2806890000000025799E306	Active	static/member_profile_img/220654.jpg	Outside	2026-10-21 09:33:43
-5597	221209	MRS. FAIZA JADOON	BNW-367	TOYOTA CAMRY	E200470155F06422780D010A	Active	static/member_profile_img/221209.JPG	Outside	2026-10-21 09:33:43
 5601	123266	MR. M. H. ASIF	BQP-236	SUZUKI  ALTO	E28068900000000257972DE9	Active	static/member_profile_img/123266.jpg	Outside	2026-10-21 09:33:43
 5602	007296	MR. MUHAMMAD RIAZ	BKT-224	TOYOTA COROLLA	E2806894000040175DD3A4F0	Active	static/member_profile_img/7296.jpg	Outside	2026-10-21 09:33:43
 5603	007296	MR. MUHAMMAD RIAZ	BUV-387	TOYOTA COROLLA	E2806894000050175DD49CEF	Active	static/member_profile_img/7296.jpg	Outside	2026-10-21 09:33:43
@@ -20004,6 +21703,8 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 5616	220828	MRS. FARRAH AMAN	AAHU-450	TOYOTA YARIS	E20047113D10642221B20108	Active	static/member_profile_img/220828.jpg	Outside	2026-10-21 09:33:43
 5617	220828	MRS. FARRAH AMAN	BMM-891	TOYOTA COROLLA	E2806890000000025799C90B	Active	static/member_profile_img/220828.jpg	Outside	2026-10-21 09:33:43
 5618	220828	MRS. FARRAH AMAN	AXW-974	SUZIKI SWIFT	E2806890000000025799EAF6	Active	static/member_profile_img/220828.jpg	Outside	2026-10-21 09:33:43
+5571	006666	MR. SHAHID AHMED	ARJ-654	TOOYTA COROLLA	E2806890000000025797DA33	Active	static/member_profile_img/6666.JPG	Outside	2026-10-21 09:33:43
+5597	221209	MRS. FAIZA JADOON	BNW-367	TOYOTA CAMRY	E200470155F06422780D010A	Active	static/member_profile_img/221209.JPG	Inside	2026-10-21 09:33:43
 5620	220911	MRS. MARIA ZAHEER	AYH-272	TOYOTA HILUX	E20047010330642272E1010B	Active	static/member_profile_img/220911.JPG	Outside	2026-10-21 09:33:43
 5621	007871	MR. MUHAMMAD FARHAN ARIF	AMD-822	HONDA	E28068900000000257983362	Active	static/member_profile_img/7871.jpg	Outside	2026-10-21 09:33:43
 5622	007871	MR. MUHAMMAD FARHAN ARIF	ANM-745	BMW	E28068900000000257982EEF	Active	static/member_profile_img/7871.jpg	Outside	2026-10-21 09:33:43
@@ -20037,7 +21738,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 5650	007543	BRIG. SABUR AHMED KHAN	AJC-830	HONDA CIVIC	E2806890000000025799289C	Active	static/member_profile_img/7543.JPG	Outside	2026-10-21 09:33:43
 5651	007543	BRIG. SABUR AHMED KHAN	AUS-807	TOYOTA COROLLA	E2806890000000025799E3D1	Active	static/member_profile_img/7543.JPG	Outside	2026-10-21 09:33:43
 5652	007543	BRIG. SABUR AHMED KHAN	BHZ-078	HONDA CIVIC	E2806890000000025799D6A6	Active	static/member_profile_img/7543.JPG	Outside	2026-10-21 09:33:43
-5653	0213415	MR. ABDUL GHAFFAR KHAN JAKHRANI	SC-2523	JAC	E200470197F064227C2D010D	Active	static/member_profile_img/213415.jpg	Outside	2026-10-21 09:33:43
 5654	007771	MR. UMAIR SHAFIQ GADIT	CAM-209	MIRA	E2806890000000025798ECE8	Active	static/member_profile_img/7771.jpg	Outside	2026-10-21 09:33:43
 5655	007771	MR. UMAIR SHAFIQ GADIT	AUE-905	TOYOTA ALTIS	E2806894000040175DD830EE	Active	static/member_profile_img/7771.jpg	Outside	2026-10-21 09:33:43
 5656	007771	MR. UMAIR SHAFIQ GADIT	BVD-138	TOYOTA ALTIS	E2806894000040175DD844EE	Active	static/member_profile_img/7771.jpg	Outside	2026-10-21 09:33:43
@@ -20051,6 +21751,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 5665	150072	MR. MUHAMMAD ASLAM GATTA	LA-9646	TOYOTA REVO	E28068900000000257972E59	Active	static/member_profile_img/150072.JPG	Outside	2026-10-21 09:33:43
 5666	150072	MR. MUHAMMAD ASLAM GATTA	LE-0212	TOYOTA REVO	E28068900000000257973145	Active	static/member_profile_img/150072.JPG	Outside	2026-10-21 09:33:43
 5667	0911656	MRS. NAJMA PIRZADA	ATH-595	HONDA CIVIC	E2806890000000025798327E	Active	static/member_profile_img/911656.jpg	Outside	2026-10-21 09:33:43
+5653	0213415	MR. ABDUL GHAFFAR KHAN JAKHRANI	SC-2523	JAC	E200470197F064227C2D010D	Active	static/member_profile_img/213415.jpg	Outside	2026-10-21 09:33:43
 5668	0911658	MRS. SURAIYA SAEED	LS-1345	WILLIS JEEP	E2806894000040175DD6BCF0	Active	static/member_profile_img/911658.jpg	Outside	2026-10-21 09:33:43
 5669	0911658	MRS. SURAIYA SAEED	BTA-456	KIA PICANTO	E2806890000000025799E367	Active	static/member_profile_img/911658.jpg	Outside	2026-10-21 09:33:43
 5670	101915	MRS. ZAINAB KASHIF KAPADIA	AQH-766	TOYOTA COROLLA	E2806890000000025797E59C	Active	static/member_profile_img/101915.JPG	Outside	2026-10-21 09:33:43
@@ -20071,7 +21772,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 5691	123789	MR. M. SIDDIQUE BUDHANI	ACT-139	TOYOTA XLI	E280689000000002579937DB	Active	static/member_profile_img/123789.JPG	Outside	2026-10-21 09:33:43
 5692	123789	MR. M. SIDDIQUE BUDHANI	ASK-727	TOYOTA GLI	E2806890000000025798303F	Active	static/member_profile_img/123789.JPG	Outside	2026-10-21 09:33:43
 5693	123789	MR. M. SIDDIQUE BUDHANI	BQX-334	SUZUKI ALTO	E28068900000000257983563	Active	static/member_profile_img/123789.JPG	Outside	2026-10-21 09:33:43
-5694	124076	MR. SALIM HARIANAWALA	BXX-144	SUZUKI ALTO	E2007DD2B1015FF0B3BA357F	Active	static/member_profile_img/124076.jpg	Outside	2026-10-21 09:33:43
 5695	124076	MR. SALIM HARIANAWALA	BZX-953	SUZUKI SWIFT	E2007DD2B1015470B3BA3551	Active	static/member_profile_img/124076.jpg	Outside	2026-10-21 09:33:43
 5696	124076	MR. SALIM HARIANAWALA	ATQ-052	SUZUKI LIANA	E2806890000000025798E518	Active	static/member_profile_img/124076.jpg	Outside	2026-10-21 09:33:43
 5697	124076	MR. SALIM HARIANAWALA	AYA-272	SUZUKI SWIFT	E28068900000000257972CF4	Active	static/member_profile_img/124076.jpg	Outside	2026-10-21 09:33:43
@@ -20132,7 +21832,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 5754	007947	MR. AHMED YUSUF KARIM	BGK-099	TOYOTA COROLLA	E2806894000050175DD344F0	Active	static/member_profile_img/7947.jpg	Outside	2026-10-21 09:33:43
 5755	007947	MR. AHMED YUSUF KARIM	AYK-099	TOYOTA COROLLA	E2806894000050175DD29CEF	Active	static/member_profile_img/7947.jpg	Outside	2026-10-21 09:33:43
 5756	007947	MR. AHMED YUSUF KARIM	BBK-099	TOYOTA PASSO	E2806894000050175DD2F0EF	Active	static/member_profile_img/7947.jpg	Outside	2026-10-21 09:33:43
-5757	0411580	MISS. SONIA PIRACHA	AAAZ-322	BYD	E200470178A064227A38010E	Active	static/member_profile_img/411580.JPG	Outside	2026-10-21 09:33:43
 5758	0411580	MISS. SONIA PIRACHA	BPF-457	HONDA CIVIC	E2806890000000025797E9CE	Active	static/member_profile_img/411580.JPG	Outside	2026-10-21 09:33:43
 5759	0213423	MR. JAFFER HASAN	GP-1213	HONDA CIVIC	E2806890000000025797D2D8	Active	static/member_profile_img/213423.jpg	Outside	2026-10-21 09:33:43
 5760	016769	MR. JAMSHED MUJEEB	BCE-270	SUZUKI ALTO	E2806890000000025799346C	Active	static/member_profile_img/16769.jpg	Outside	2026-10-21 09:33:43
@@ -20146,7 +21845,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 5768	006774	MR. SAQIB ELAHI	ASX-399	HONDA CITY	E28068900000000257982950	Active	static/member_profile_img/6774.JPG	Outside	2026-10-21 09:33:43
 5769	006774	MR. SAQIB ELAHI	ANX-496	MITSUBISHI LANCER	E2806890000000025798EEFD	Active	static/member_profile_img/6774.JPG	Outside	2026-10-21 09:33:43
 5771	220879	MRS. MARIAM MAQBOOL	KN-7868	TOYOTA VIGO	E2806890000000025798E63F	Active	static/member_profile_img/220879.jpg	Outside	2026-10-21 09:33:43
-5772	220879	MRS. MARIAM MAQBOOL	BPK-673	TOYOTA COROLLA	E2806890000000025799C4B9	Active	static/member_profile_img/220879.jpg	Outside	2026-10-21 09:33:43
+5757	0411580	MISS. SONIA PIRACHA	AAAZ-322	BYD	E200470178A064227A38010E	Active	static/member_profile_img/411580.JPG	Outside	2026-10-21 09:33:43
 5773	220879	MRS. MARIAM MAQBOOL	BWC-541	TOYOTA COROLLA	E2806890000000025798E65C	Active	static/member_profile_img/220879.jpg	Outside	2026-10-21 09:33:43
 5774	220879	MRS. MARIAM MAQBOOL	BL-6894	HAVAL H6	E2806890000000025799DA62	Active	static/member_profile_img/220879.jpg	Outside	2026-10-21 09:33:43
 5775	015822	MR. AMIN COCHINWALA	AHM-977	HONDA CITY	E2806894000040175DD1B4F0	Active	static/member_profile_img/15822.jpg	Outside	2026-10-21 09:33:43
@@ -20233,8 +21932,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 5864	102210	MRS. NADYA QAMAR CHISHTY MUJAHID	BLZ-311	TOYOTA COROLLA	E2806890000000025797E52B	Active	static/member_profile_img/102210.jpg	Outside	2026-10-21 09:33:43
 5865	102211	MRS. MADIHA KAZI	AYB-527	TOYOTA VITZ	E2806890000000025798F6FF	Active	static/member_profile_img/102211.jpg	Outside	2026-10-21 09:33:43
 5866	102211	MRS. MADIHA KAZI	BBQ-463	TOYOTA BELTA	E280689000000002579924CB	Active	static/member_profile_img/102211.jpg	Outside	2026-10-21 09:33:43
-5867	220912	MRS. NOSHABA MYSOORWALA	BEU-060	TOYOTA COROLLA	E2004701B61064227E0F0111	Active	static/member_profile_img/220912.jpg	Outside	2026-10-21 09:33:43
-5868	220912	MRS. NOSHABA MYSOORWALA	BN-8781	HONDA BRV	E200470140D0642276BB010B	Active	static/member_profile_img/220912.jpg	Outside	2026-10-21 09:33:43
 5869	006614	MR. SALMAN HANIF	BF-6605	TOYOTA PRADO	E2806890000000025797E811	Active	static/member_profile_img/6614.jpg	Outside	2026-10-21 09:33:43
 5870	006614	MR. SALMAN HANIF	BCB-919	TOYOTA COROLLA	E2806890000000025798ED82	Active	static/member_profile_img/6614.jpg	Outside	2026-10-21 09:33:43
 5871	006614	MR. SALMAN HANIF	LC-2312	TOYOTA REVO	E2806894000040175DD20CED	Active	static/member_profile_img/6614.jpg	Outside	2026-10-21 09:33:43
@@ -20243,6 +21940,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 5874	150060	MR. MUHAMMAD ZEESHAN MERCHANT	BJ-2912	TOYOTA FORTUNER	E2806890000000025799CCF8	Active	static/member_profile_img/150060.jpg	Outside	2026-10-21 09:33:43
 5875	150060	MR. MUHAMMAD ZEESHAN MERCHANT	BYL-009	HYUNDAI	E2806890000000025797E772	Active	static/member_profile_img/150060.jpg	Outside	2026-10-21 09:33:43
 5876	008146	MR. ZUBAIR IQBAL	BYS-246	TOYOTA COROLLA	E2806890000000025799DC94	Active	static/member_profile_img/8146.JPG	Outside	2026-10-21 09:33:43
+5868	220912	MRS. NOSHABA MYSOORWALA	BN-8781	HONDA BRV	E200470140D0642276BB010B	Active	static/member_profile_img/220912.jpg	Outside	2026-10-21 09:33:43
 5877	008146	MR. ZUBAIR IQBAL	BP-0246	KIA SPORTAGE	E2806894000050175DD37CEF	Active	static/member_profile_img/8146.JPG	Outside	2026-10-21 09:33:43
 5879	200664	DR. MUMTAZ SULEMAN KATH	BNZ-695	SUZUKI CULTUS	E28068900000000257991DCE	Active	static/member_profile_img/200664.JPG	Outside	2026-10-21 09:33:43
 5880	200664	DR. MUMTAZ SULEMAN KATH	BXG-719	SUZUKI ALTO	E2806890000000025799EB77	Active	static/member_profile_img/200664.JPG	Outside	2026-10-21 09:33:43
@@ -20287,8 +21985,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 5919	221099	MRS. BIBI MEHER TAREEN	ADR-622	SUZUKI	E28068900000000257983CF5	Active	static/member_profile_img/221099.JPG	Outside	2026-10-21 09:33:43
 5920	114682	MR. KHAWAJA TANVEER AHMED	CY-253	GERANDI	E2806890000000025797EECD	Active	static/member_profile_img/114682.jpg	Outside	2026-10-21 09:33:43
 5921	114682	MR. KHAWAJA TANVEER AHMED	BG-8779	TOYOTA PRADO	E2806890000000025799290F	Active	static/member_profile_img/114682.jpg	Outside	2026-10-21 09:33:43
-5922	114682	MR. KHAWAJA TANVEER AHMED	BF-7944	TOYOTA PRADO	E28068900000000257982170	Active	static/member_profile_img/114682.jpg	Outside	2026-10-21 09:33:43
-5923	114682	MR. KHAWAJA TANVEER AHMED	BF-7944	TOYOTA PRADO	E2806890000000025797E184	Active	static/member_profile_img/114682.jpg	Outside	2026-10-21 09:33:43
 5924	114682	MR. KHAWAJA TANVEER AHMED	CY-858		E28068900000000257982835	Active	static/member_profile_img/114682.jpg	Outside	2026-10-21 09:33:43
 5925	114682	MR. KHAWAJA TANVEER AHMED	B-G-8779	LAND CRUSER	E2806890000000025799251A	Active	static/member_profile_img/114682.jpg	Outside	2026-10-21 09:33:43
 5926	150005	MR. MAQSOOD ISMAIL AHMAD	AAEP-481	SAZGAR TANK	E20047015490642277F7010C	Active	static/member_profile_img/150005.JPG	Outside	2026-10-21 09:33:43
@@ -20312,7 +22008,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 5944	220899	MRS. NAJJIA ARSHAD	BM-7721	HYUNDAI SONATA	E2806890000000025798F7EE	Active	static/member_profile_img/220899.jpg	Outside	2026-10-21 09:33:43
 5945	220899	MRS. NAJJIA ARSHAD	BXN-641	SUZUKI SWIFT	E2806894000050175DD30CEE	Active	static/member_profile_img/220899.jpg	Outside	2026-10-21 09:33:43
 5946	102165	MRS. CHANDNI SAIGOL KHAN	BP-1888	PRATON X70	E2806894000040175DD7B8EE	Active	static/member_profile_img/102165.JPG	Outside	2026-10-21 09:33:43
-5947	007329	MR. SYED FAHAD HUMAYUN	BMH-968	SUZUKI SWIFT	E2806894000050175DD620EF	Active	static/member_profile_img/7329.jpg	Outside	2026-10-21 09:33:43
 5948	007700	MR. ZAIN ANWAR	BK-7895	KIA	E2806894000050175DD768EE	Active	static/member_profile_img/7700.JPG	Outside	2026-10-21 09:33:43
 5949	007700	MR. ZAIN ANWAR	LB-8910	TOYOTA	E2806894000040175DD5A8EE	Active	static/member_profile_img/7700.JPG	Outside	2026-10-21 09:33:43
 5950	006884	MR. NASIRUDDIN SHAHAB	BM-1062	KIA STONIC	E2806890000000025798226E	Active	static/member_profile_img/6884.JPG	Outside	2026-10-21 09:33:43
@@ -20348,7 +22043,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 5979	008032	MR. SHAFIQ AHMED	BAJ-450	SUZUKI CULTUS	E280689000000002579921DD	Active	static/member_profile_img/8032.jpg	Outside	2026-10-21 09:33:43
 5980	008032	MR. SHAFIQ AHMED	BPM-213	DAIHATSU MIRA	E2806890000000025798F96E	Active	static/member_profile_img/8032.jpg	Outside	2026-10-21 09:33:43
 5981	007857	MR. FAISAL JAVED SIDDIQUI	AYK-403	SUZUKI SWIFT	E2806890000000025797E5AC	Active	static/member_profile_img/7857.jpg	Outside	2026-10-21 09:33:43
-5982	150042	MR. MIAN SHAHZAD AHMED	AAHC-637	SAZGAR TANK	E200471159A06422237B0111	Active	static/member_profile_img/150042.jpg	Outside	2026-10-21 09:33:43
 5983	150037	PROF. DR.NOSHAD AHMED SHAIKH	BL-2232	PEUGEOT	E2806890000000025797E703	Active	static/member_profile_img/150037.jpg	Outside	2026-10-21 09:33:43
 5984	150037	PROF. DR.NOSHAD AHMED SHAIKH	BK-1275	KIA SPORTAGE	E2806890000000025798E735	Active	static/member_profile_img/150037.jpg	Outside	2026-10-21 09:33:43
 5985	150037	PROF. DR.NOSHAD AHMED SHAIKH	BL-2232	PEUGEOT	E2806890000000025799E930	Active	static/member_profile_img/150037.jpg	Outside	2026-10-21 09:33:43
@@ -20357,7 +22051,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 5988	0213282	MR. HUZEFA ZAHID LOTIA	BHT-853	SUZUKI CAIZ	E28068900000000257982E1F	Active	static/member_profile_img/213282.jpg	Outside	2026-10-21 09:33:43
 5989	221058	MRS. SARWAT FATIMA	AHA-176	CIVIC 2004	E2806894000050175DD184EF	Active	static/member_profile_img/221058.JPG	Outside	2026-10-21 09:33:43
 5990	100659	MRS. TEHMINA NADEEM	AVK-020	SUZUKI 2011	E2806890000000025797EBB6	Active	static/member_profile_img/100659.JPG	Outside	2026-10-21 09:33:43
-5991	100659	MRS. TEHMINA NADEEM	BUY-464	HONDA	E28068900000000256448082	Active	static/member_profile_img/100659.JPG	Outside	2026-10-21 09:33:43
 5992	100659	MRS. TEHMINA NADEEM	BNJ-620	TOYOTA COROLLA	E2806890000000025797E85E	Active	static/member_profile_img/100659.JPG	Outside	2026-10-21 09:33:43
 5993	100660	MRS. FAIZA MAHMOOD	FC-814	NISSAN	E20047011C3064227471010F	Active	static/member_profile_img/100660.JPG	Outside	2026-10-21 09:33:43
 5994	100660	MRS. FAIZA MAHMOOD	BP-7835	TOYOTA	E20047011C70642274750103	Active	static/member_profile_img/100660.JPG	Outside	2026-10-21 09:33:43
@@ -20375,7 +22068,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 6006	124319	MR. HANIF PAREKH	APT-086	TOYOTA COROLLA	E280689000000002579938EA	Active	static/member_profile_img/124319.jpg	Outside	2026-10-21 09:33:43
 6007	220031	MRS. SAIMA ARBAB GOHAR	BK-6614	TOYOTA FORTUNER	E2806894000040175DD124EE	Active	static/member_profile_img/220031.jpg	Outside	2026-10-21 09:33:43
 6008	220031	MRS. SAIMA ARBAB GOHAR	BHL-189	HONDA CIVIC	E2806894000050175DD468EE	Active	static/member_profile_img/220031.jpg	Outside	2026-10-21 09:33:43
-6009	220035	MRS. HUNEZA FAROOQ	EAB-333	AUDI E.TRON	E2806894000050175DD498EE	Active	static/member_profile_img/220035.JPG	Outside	2026-10-21 09:33:43
 6012	007922	MR. YOUSUF KERAI	BXD-955	AQWA	E2806894000040175DD390EF	Active	static/member_profile_img/7922.jpg	Outside	2026-10-21 09:33:43
 6013	007922	MR. YOUSUF KERAI	BH-9380	KIA SPORTAGE	E2806894000040175DD78CEF	Active	static/member_profile_img/7922.jpg	Outside	2026-10-21 09:33:43
 6014	007883	MR. DANISH AZWER	BJ-5877	MG	E2806894000040175DD4E4EE	Active	static/member_profile_img/7883.jpg	Outside	2026-10-21 09:33:43
@@ -20387,6 +22079,9 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 6021	220518	MRS. AMEERA ZEESHAN	BHM-129	TOYOTA PURIS	E280689000000002564486FD	Active	static/member_profile_img/220518.JPG	Outside	2026-10-21 09:33:43
 6022	220518	MRS. AMEERA ZEESHAN	ATM-137	TOYOTA COROLLA	E2806890000000025644866B	Active	static/member_profile_img/220518.JPG	Outside	2026-10-21 09:33:43
 6023	220518	MRS. AMEERA ZEESHAN	BHM-129	TOYOTA PRIUS	E2806894000040175DD788EE	Active	static/member_profile_img/220518.JPG	Outside	2026-10-21 09:33:43
+5982	150042	MR. MIAN SHAHZAD AHMED	AAHC-637	SAZGAR TANK	E200471159A06422237B0111	Active	static/member_profile_img/150042.jpg	Outside	2026-10-21 09:33:43
+6009	220035	MRS. HUNEZA FAROOQ	EAB-333	AUDI E.TRON	E2806894000050175DD498EE	Active	static/member_profile_img/220035.JPG	Outside	2026-10-21 09:33:43
+5991	100659	MRS. TEHMINA NADEEM	BUY-464	HONDA	E28068900000000256448082	Active	static/member_profile_img/100659.JPG	Outside	2026-10-21 09:33:43
 6024	220518	MRS. AMEERA ZEESHAN	ATM-137	TOYOTA COROLLA	E2806894000050175DD69CEE	Active	static/member_profile_img/220518.JPG	Outside	2026-10-21 09:33:43
 6025	220518	MRS. AMEERA ZEESHAN	BLQ-129	TOYOTA ALTIS	E2806894000040175DD79CEE	Active	static/member_profile_img/220518.JPG	Outside	2026-10-21 09:33:43
 6026	260779	MRS. KISHWAR TARIQ ALLAWALA	CCQ-768	SUZUKI SWIFT	E2004701816064227AC4010A	Active	static/member_profile_img/260779.jpg	Outside	2026-10-21 09:33:43
@@ -20446,7 +22141,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 6082	102058	MRS. NAUSHEEN SAAD	BPM-424	HONDA CITY	E2806890000000025798EE0B	Active	static/member_profile_img/102058.JPG	Outside	2026-10-21 09:33:43
 6083	102058	MRS. NAUSHEEN SAAD	ATK-355	TOYOTA COROLLA	E280689000000002579827E3	Active	static/member_profile_img/102058.JPG	Outside	2026-10-21 09:33:43
 6084	007835	MR. SAEED HANNAN	BTK-901	TOYOTA YARIS	E2806890000000025797E583	Active	static/member_profile_img/7835.jpg	Outside	2026-10-21 09:33:43
-6085	007835	MR. SAEED HANNAN	LB-7828	TOYOTA REVO	E2806890000000025798F8AC	Active	static/member_profile_img/7835.jpg	Outside	2026-10-21 09:33:43
 6086	007835	MR. SAEED HANNAN	BKT-901	YARIS-2021	E2806894000050175DD59CEE	Active	static/member_profile_img/7835.jpg	Outside	2026-10-21 09:33:43
 6087	007670	MR. MURTAZA FEROZPURWALA	AABC-272	SUZUKI SWIFT	E200470175D064227A0B010D	Active	static/member_profile_img/7670.JPG	Outside	2026-10-21 09:33:43
 6088	007670	MR. MURTAZA FEROZPURWALA	BHU-867	TOYOTA VITZ	E2806890000000025798F919	Active	static/member_profile_img/7670.JPG	Outside	2026-10-21 09:33:43
@@ -20490,7 +22184,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 6130	123990	DR. CAMERUDDIN VELLANI	AWE-489	HONDA CIVIC	E2806890000000025797EA7E	Active	static/member_profile_img/123990.jpg	Outside	2026-10-21 09:33:43
 6131	014369	MR. MUSLIM RASHID HABIB	CAJ-773	HYUNDAI TUCSON	E2806890000000025797E713	Active	static/member_profile_img/14369.JPG	Outside	2026-10-21 09:33:43
 6132	014369	MR. MUSLIM RASHID HABIB	BK-5162	KI A SORENTO	E280689000000002579924EE	Active	static/member_profile_img/14369.JPG	Outside	2026-10-21 09:33:43
-6133	014369	MR. MUSLIM RASHID HABIB	ATW-812	HONDA	E28068900000000257981EC9	Active	static/member_profile_img/14369.JPG	Outside	2026-10-21 09:33:43
 6134	250136	MRS. RIZWAN KHAN	ASB-642	SUZUKI LIANA	E2806894000050175DD5ECEF	Active	static/member_profile_img/250136.jpg	Outside	2026-10-21 09:33:43
 6135	250136	MRS. RIZWAN KHAN	BEJ-596	HONDA CITY	E2806894000050175DD838EE	Active	static/member_profile_img/250136.jpg	Outside	2026-10-21 09:33:43
 6138	007065	MR. QURESH  Q. NOORUDDIN	BVA-128	TOYOTA AXID	E2806890000000025798EDFA	Active	static/member_profile_img/7065.JPG	Outside	2026-10-21 09:33:43
@@ -20505,7 +22198,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 6147	101932	MRS. NOOR HASHMI	AYT-708	HONDA CITY	E2806894000040175DD420EF	Active	static/member_profile_img/101932.JPG	Outside	2026-10-21 09:33:43
 6150	221235	MRS. SARAH SADIQ DANDIA	KX-0660	REVO	E280689000000002564454A0	Active	static/member_profile_img/221235.jpg	Outside	2026-10-21 09:33:43
 6151	221235	MRS. SARAH SADIQ DANDIA	BJS-142	HONDA CIVIC	E28068900000000256445460	Active	static/member_profile_img/221235.jpg	Outside	2026-10-21 09:33:43
-6152	221175	MRS. MOMINA TALHA	BYZ-162	HYUNDAI ELANTRA	E2806890000000025797E9AC	Active	static/member_profile_img/221175.JPG	Outside	2026-10-21 09:33:43
 6153	221175	MRS. MOMINA TALHA	BL-5996	MG/HS	E2806890000000025798F79D	Active	static/member_profile_img/221175.JPG	Outside	2026-10-21 09:33:43
 6154	123098	DR. IMDAD H. BALOCH	BDX-546	SUZUKI SWIFT	E2806890000000025797E2DE	Active	static/member_profile_img/123098.jpg	Outside	2026-10-21 09:33:43
 6155	220121	MRS. SABA YOUSUF PERYANI	ARD-708	TOYOTA PLATZ	E2007DD2B10166F0B3BA359B	Active	static/member_profile_img/220121.jpg	Outside	2026-10-21 09:33:43
@@ -20531,6 +22223,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 6176	018112	DR. SYED ZAFAR ZAIDI	BCC-466	SUZUKI SWIFT	E2806890000000025799D338	Active	static/member_profile_img/18112.jpg	Outside	2026-10-21 09:33:43
 6177	114923	DR. HUMAYUN MATIN	APU-733	SUZUKI CULTUS	E28068900000000257992C45	Active	static/member_profile_img/114923.JPG	Outside	2026-10-21 09:33:43
 6178	007122	MR. M. UMER ELAHI FARUQI	BXF-360	HONDA CITY	E200470199D064227C4B0107	Active	static/member_profile_img/7122.jpg	Outside	2026-10-21 09:33:43
+6152	221175	MRS. MOMINA TALHA	BYZ-162	HYUNDAI ELANTRA	E2806890000000025797E9AC	Active	static/member_profile_img/221175.JPG	Outside	2026-10-21 09:33:43
 6179	007122	MR. M. UMER ELAHI FARUQI	BH-4134	TOYOTA FORTUNER	E20047015E106422788F010B	Active	static/member_profile_img/7122.jpg	Outside	2026-10-21 09:33:43
 6180	114380	MR. IRFAN ZAKARIA	BZA-663	HYUNDAI	E2806890000000025799DB8C	Active	static/member_profile_img/114380.jpg	Outside	2026-10-21 09:33:43
 6181	114380	MR. IRFAN ZAKARIA	BZA-926	HYUNDAI	E2806890000000025798F59E	Active	static/member_profile_img/114380.jpg	Outside	2026-10-21 09:33:43
@@ -20642,7 +22335,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 6302	220038	MRS. SEEMA ALTAF BILWANI	SA-0559	TOYOTA REVO	E2007DD2B1014C70B3BA3531	Active	static/member_profile_img/220038.JPG	Outside	2026-10-21 09:33:43
 6303	220038	MRS. SEEMA ALTAF BILWANI	BG-2247	LAND CRU	E2806890000000025797EBCF	Active	static/member_profile_img/220038.JPG	Outside	2026-10-21 09:33:43
 6304	220045	MRS. SHAHA TARIQ	BKQ-712	TOYOTA ALTIS	E2806890000000025799EB44	Active	static/member_profile_img/220045.JPG	Outside	2026-10-21 09:33:43
-6305	220049	MRS. SOBIA ABDUL WAHAB	BP-0704	HYUNDAI TUCSON	E2806894000050175DD388ED	Active	static/member_profile_img/220049.JPG	Outside	2026-10-21 09:33:43
 6306	220049	MRS. SOBIA ABDUL WAHAB	BLN-704	TOYOTA COROLLA	E2806894000050175DD6B8EE	Active	static/member_profile_img/220049.JPG	Outside	2026-10-21 09:33:43
 6307	220050	MRS. SAMEETA NADEEM	KW-0936	TOYOTA REVO	E2806890000000025798EDFC	Active	static/member_profile_img/220050.JPG	Outside	2026-10-21 09:33:43
 6308	220050	MRS. SAMEETA NADEEM	BBQ-400	MERCEDES BANZ	E28068900000000257982B7D	Active	static/member_profile_img/220050.JPG	Outside	2026-10-21 09:33:43
@@ -20673,7 +22365,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 6333	220617	MRS. SABEEN  ZEHRA ALI PANJU	AZH-770	HONDA CIVIC	E2806894000050175DD48CEE	Active	static/member_profile_img/220617.jpg	Outside	2026-10-21 09:33:43
 6334	008257	MR. MUHAMMAD UZAIR MANIAR	AAD-030	HONDA CIVIC	E2806890000000025797E063	Active	static/member_profile_img/8257.JPG	Outside	2026-10-21 09:33:43
 6335	008257	MR. MUHAMMAD UZAIR MANIAR	AAD-030	HONDA CIVIC	E28068900000000257982B0C	Active	static/member_profile_img/8257.JPG	Outside	2026-10-21 09:33:43
-6336	220919	MS. QAMARUNNISA DADABHOY	BSD-916	KIA PICANTO	E2806890000000025799DB87	Active	static/member_profile_img/220919.jpg	Outside	2026-10-21 09:33:43
+6305	220049	MRS. SOBIA ABDUL WAHAB	BP-0704	HYUNDAI TUCSON	E2806894000050175DD388ED	Active	static/member_profile_img/220049.JPG	Outside	2026-10-21 09:33:43
 6338	008290	MR. AHSAN ABBAS ALAVI	AGH-413	LAND CRUISER	E2004701B15064227DC30109	Active	static/member_profile_img/8290.JPG	Outside	2026-10-21 09:33:43
 6339	102020	MRS. MAHNOOR USMAN	AMX-946	KIA SORENTO	E200470168F06422793D010D	Active	static/member_profile_img/102020.jpg	Outside	2026-10-21 09:33:43
 6340	102020	MRS. MAHNOOR USMAN	LEA-193447	HONDA CIVIC	E280689400005015DC12C5C5	Active	static/member_profile_img/102020.jpg	Outside	2026-10-21 09:33:43
@@ -20704,7 +22396,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 6368	150145	MR. SHEIKH MUHAMMAD JAVED	BF-9079	TOYOTA PRADO	E28068900000000257992D34	Active	static/member_profile_img/150145.jpg	Outside	2026-10-21 09:33:43
 6369	150146	MR. TALHA MERCHANT	BK-7849	PROTON	E2806894000040175DD104EF	Active	static/member_profile_img/150146.JPG	Outside	2026-10-21 09:33:43
 6370	150147	MRS. AZRA SULTANA(W/O) JAVED KHANANI(LATE)	AABS-553	TOYOTA COROLLA	E2004701EB9064228167010F	Active	static/member_profile_img/150147.JPG	Outside	2026-10-21 09:33:43
-6371	150147	MRS. AZRA SULTANA(W/O) JAVED KHANANI(LATE)	AAJG-880	KIA SPORTAGE	E2004701EBD06422816B010D	Active	static/member_profile_img/150147.JPG	Outside	2026-10-21 09:33:43
 6372	150147	MRS. AZRA SULTANA(W/O) JAVED KHANANI(LATE)	AAGE-808	TOYOTA REVO	E2004701EC9064228177010F	Active	static/member_profile_img/150147.JPG	Outside	2026-10-21 09:33:43
 6373	150147	MRS. AZRA SULTANA(W/O) JAVED KHANANI(LATE)	BH-6030	BH-6030	E2806890000000025798EE53	Active	static/member_profile_img/150147.JPG	Outside	2026-10-21 09:33:43
 6374	150147	MRS. AZRA SULTANA(W/O) JAVED KHANANI(LATE)	BWD-603	HONDA	E2806890000000025798ED44	Active	static/member_profile_img/150147.JPG	Outside	2026-10-21 09:33:43
@@ -20719,6 +22410,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 6383	150151	MRS. MEHREEN FUAD	AZQ-368	SUZUKI SWIFT	E28068900000000256445C09	Active	static/member_profile_img/150151.jpg	Outside	2026-10-21 09:33:43
 6384	150152	MR. M. FURQAN HASAN KHAN	BTM-996	TOYOTA YARIS	E28068900000000257972F19	Active	static/member_profile_img/150152.JPG	Outside	2026-10-21 09:33:43
 6359	150143	MR. MUHAMMAD ABDULLAH	BMW-183	BMW	E2806894000040175DD680EE	Active	static/member_profile_img/150143.jpg	Outside	2026-10-21 09:33:43
+6371	150147	MRS. AZRA SULTANA(W/O) JAVED KHANANI(LATE)	AAJG-880	KIA SPORTAGE	E2004701EBD06422816B010D	Active	static/member_profile_img/150147.JPG	Outside	2026-10-21 09:33:43
 6350	0213315	MR. AHSAN MERCHANT	AAAQ-187	BYD ATTO 3	E2004701876064227B24010A	Active	static/member_profile_img/213315.JPG	Inside	2026-10-21 09:33:43
 6385	0213229	MR. REHAN RAHMAN	EAE-567	AUDI E-TRON	E28068900000000257972990	Active	static/member_profile_img/213229.jpg	Outside	2026-10-21 09:33:43
 6386	0213229	MR. REHAN RAHMAN	BQP-567	HONDA CIVIC	E2806890000000025797DDDC	Active	static/member_profile_img/213229.jpg	Outside	2026-10-21 09:33:43
@@ -20781,10 +22473,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 6446	007695	MR. AHMAD AZIZ ZUBERI	AWT-679	AUDI E-TRON	E28068900000000256448AF9	Active	static/member_profile_img/7695.jpg	Outside	2026-10-21 09:33:43
 6447	007987	MR. KASHIF MERCHANT	BUC-637	SUZUKI ALTO	E2806894000050175DD24CF0	Active	static/member_profile_img/7987.JPG	Outside	2026-10-21 09:33:43
 6448	007987	MR. KASHIF MERCHANT	BEV-855	AUDI	E2806894000050175DD238F0	Active	static/member_profile_img/7987.JPG	Outside	2026-10-21 09:33:43
-6449	007987	MR. KASHIF MERCHANT	BDR-658	TOYOTA PREMIO	E2806894000050175DD1C4F0	Active	static/member_profile_img/7987.JPG	Outside	2026-10-21 09:33:43
-6450	007696	MR. NADIR HASAN	BFB-040	TOYOTA COROLLA	E280689000000002579928BD	Active	static/member_profile_img/7696.jpg	Outside	2026-10-21 09:33:43
 6451	007696	MR. NADIR HASAN	BTQ-135	TOYOTA COROLLA	E28068900000000257992DF4	Active	static/member_profile_img/7696.jpg	Outside	2026-10-21 09:33:43
-6452	007696	MR. NADIR HASAN	BFB-040	TOYOTA COROLLA	E28068900000000256445C4A	Active	static/member_profile_img/7696.jpg	Outside	2026-10-21 09:33:43
 6453	007696	MR. NADIR HASAN	BVV-980	TOYOTA YARIS	E2806890000000025799DE8E	Active	static/member_profile_img/7696.jpg	Outside	2026-10-21 09:33:43
 6454	007696	MR. NADIR HASAN	ASQ 480	HONDA CITY	E2806890000000025798F915	Active	static/member_profile_img/7696.jpg	Outside	2026-10-21 09:33:43
 6455	007679	MR. MUHAMMAD NOUMAN	AXU-929	TOYOTA COROLLA	E28068900000000257983527	Active	static/member_profile_img/7679.JPG	Outside	2026-10-21 09:33:43
@@ -20814,6 +22503,8 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 6480	007182	MR. ADEEL AHMED ALLAWALA	BLK-176	AUDI	E2806890000000025797F00F	Active	static/member_profile_img/7182.JPG	Outside	2026-10-21 09:33:43
 6481	007182	MR. ADEEL AHMED ALLAWALA	BAL-315	HONDA CIVIC	E28068900000000257981EE0	Active	static/member_profile_img/7182.JPG	Outside	2026-10-21 09:33:43
 6476	102387	MRS. ZARMINEH IKRAM	AKC-633	TOYOTA MARK II	E28068900000000257991D15	Active	static/member_profile_img/102387.jpg	Outside	2026-10-21 09:33:43
+6450	007696	MR. NADIR HASAN	BFB-040	TOYOTA COROLLA	E280689000000002579928BD	Active	static/member_profile_img/7696.jpg	Outside	2026-10-21 09:33:43
+6449	007987	MR. KASHIF MERCHANT	BDR-658	TOYOTA PREMIO	E2806894000050175DD1C4F0	Active	static/member_profile_img/7987.JPG	Outside	2026-10-21 09:33:43
 6482	007182	MR. ADEEL AHMED ALLAWALA	CY-2432	KIA CARNIVAL	E2806890000000025797EFF1	Active	static/member_profile_img/7182.JPG	Outside	2026-10-21 09:33:43
 6483	007182	MR. ADEEL AHMED ALLAWALA	AWY-950	MERCEDEC BANZ	E2806890000000025797EF48	Active	static/member_profile_img/7182.JPG	Outside	2026-10-21 09:33:43
 6484	008140	MR. FAROOQ AKBAR	BYG-290	SUZUKI ALTO	E2806890000000025799D471	Active	static/member_profile_img/8140.JPG	Outside	2026-10-21 09:33:43
@@ -20855,17 +22546,16 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 6524	240275	MRS. YASMIN MANZAR	SA-0734	CHANGAN KARVAAN	E2806894000040175DD728EE	Active	static/member_profile_img/240275.jpg	Outside	2026-10-21 09:33:43
 6525	220856	MRS. RASHNA J. MINWALA	BSU-773	HONDA CITY	E2806890000000025797E0E3	Active	static/member_profile_img/220856.JPG	Outside	2026-10-21 09:33:43
 6526	220856	MRS. RASHNA J. MINWALA	BEQ-670	HONDA CIVIC	E2806890000000025798E63D	Active	static/member_profile_img/220856.JPG	Outside	2026-10-21 09:33:43
-6527	007810	MR. MUSTAFA HUMAYUN SHEIKH	AACE-814	BYD	E20047016350642278E3010F	Active	static/member_profile_img/7810.jpg	Outside	2026-10-21 09:33:43
 6528	007810	MR. MUSTAFA HUMAYUN SHEIKH	BJ-1849	TOYOTA FORTUNER	E2806890000000025799D4B9	Active	static/member_profile_img/7810.jpg	Outside	2026-10-21 09:33:43
 6529	007406	MR. RAMIZ BAIG	BDG-820	TOYOTA COROLLA	E2806890000000025798EF6B	Active	static/member_profile_img/7406.jpg	Outside	2026-10-21 09:33:43
 6530	007406	MR. RAMIZ BAIG	BDG-820	TOYOTA COROLLA	E28068900000000257993500	Active	static/member_profile_img/7406.jpg	Outside	2026-10-21 09:33:43
+6527	007810	MR. MUSTAFA HUMAYUN SHEIKH	AACE-814	BYD	E20047016350642278E3010F	Active	static/member_profile_img/7810.jpg	Outside	2026-10-21 09:33:43
 6531	007830	MR. UROOJ AHMED	BJT-331	DAIHATSU MIRA	E2806894000040175DD52CEE	Active	static/member_profile_img/7830.jpg	Outside	2026-10-21 09:33:43
 6532	008335	MR. MUHAMMAD ALI HAI	BJ-9092	TOYOTA PRADO	E28068900000000256445A5D	Active	static/member_profile_img/8335.JPG	Outside	2026-10-21 09:33:43
 6533	220013	MISS MEHER SOHRAB PATEL	BMD-223	TOYOTA COROLLA	E2806890000000025798F14C	Active	static/member_profile_img/220013.jpg	Outside	2026-10-21 09:33:43
 6534	220013	MISS MEHER SOHRAB PATEL	BNW-780	TOYOTA CORLLA	E2806890000000025798F15C	Active	static/member_profile_img/220013.jpg	Outside	2026-10-21 09:33:43
 6535	220015	MRS. NAFEESA ABDUL SAMAD	BEY-027	HONDA CIVIC	E2806890000000025797E4E1	Active	static/member_profile_img/220015.jpg	Outside	2026-10-21 09:33:43
 6536	220015	MRS. NAFEESA ABDUL SAMAD	AZY-230	HONDA CIVIC	E2806890000000025798265F	Active	static/member_profile_img/220015.jpg	Outside	2026-10-21 09:33:43
-6537	220015	MRS. NAFEESA ABDUL SAMAD	BJ-2520	HYUNDAI TUCSON	E2806894000040175DD3DCEE	Active	static/member_profile_img/220015.jpg	Outside	2026-10-21 09:33:43
 6539	240027	MRS. RAZIA SALEEM KHANDWALA	AMQ-533	TOYOTA COROLLA	E2806894000040175DD564ED	Active	static/member_profile_img/240027.jpg	Outside	2026-10-21 09:33:43
 6540	220040	MRS. PAREEZAD YEZDI TALATI	AXC-556	TOYOTA VITZ	E280689000000002579928E9	Active	static/member_profile_img/220040.jpg	Outside	2026-10-21 09:33:43
 6541	220040	MRS. PAREEZAD YEZDI TALATI	BPZ-995	TOYOTA COROLLA	E280689000000002579924BE	Active	static/member_profile_img/220040.jpg	Outside	2026-10-21 09:33:43
@@ -20876,7 +22566,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 6546	220053	MRS. SHEHLA IMRAN	BKA-897	TOYOTA COROLLA	E2806890000000025799E736	Active	static/member_profile_img/220053.jpg	Outside	2026-10-21 09:33:43
 6547	220053	MRS. SHEHLA IMRAN	BH-2934	HONDA BRV	E2806890000000025799CA75	Active	static/member_profile_img/220053.jpg	Outside	2026-10-21 09:33:43
 6548	220073	MRS. NOORAIN ASIF KARIM	BVT-891	HONDA CIVIC	E2806894000050175DD5F0EE	Active	static/member_profile_img/220073.JPG	Outside	2026-10-21 09:33:43
-6549	220073	MRS. NOORAIN ASIF KARIM	BK-0943	TOYOTA FORTUNER	E2806894000040175DD190EE	Active	static/member_profile_img/220073.JPG	Outside	2026-10-21 09:33:43
 6550	220085	MRS. SHAZIA VAZIR	BTM-950	TOYOTA	E2806894000040175DD19CED	Active	static/member_profile_img/220085.jpg	Outside	2026-10-21 09:33:43
 6551	220101	MRS. FARKHANDA YAQOOB	BUL-132	SUZUKI CULTUS VXL	E28068900000000256448193	Active	static/member_profile_img/220101.jpg	Outside	2026-10-21 09:33:43
 6552	220101	MRS. FARKHANDA YAQOOB	BL-4701	KIA SPORTAGE	E2806890000000025798F6F9	Active	static/member_profile_img/220101.jpg	Outside	2026-10-21 09:33:43
@@ -20905,6 +22594,8 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 6577	008212	MR. IMRAN MEHMOOD	BGH-882	TOYOTA COROLLA	E28068900000000256448F59	Active	static/member_profile_img/8212.JPG	Outside	2026-10-21 09:33:43
 6578	008212	MR. IMRAN MEHMOOD	BGH-882	TOYOTA COROLLA	E2806890000000025799C449	Active	static/member_profile_img/8212.JPG	Outside	2026-10-21 09:33:43
 6579	102068	MRS. ALEENA RAMEEZ	BL-6615	KIA SPORTAGE	E2806890000000025797E16B	Active	static/member_profile_img/102068.jpg	Outside	2026-10-21 09:33:43
+6549	220073	MRS. NOORAIN ASIF KARIM	BK-0943	TOYOTA FORTUNER	E2806894000040175DD190EE	Active	static/member_profile_img/220073.JPG	Outside	2026-10-21 09:33:43
+6537	220015	MRS. NAFEESA ABDUL SAMAD	BJ-2520	HYUNDAI TUCSON	E2806894000040175DD3DCEE	Active	static/member_profile_img/220015.jpg	Outside	2026-10-21 09:33:43
 6580	102068	MRS. ALEENA RAMEEZ	BJ-6051	KIA SPORTAGE	E28068900000000256448D4D	Active	static/member_profile_img/102068.jpg	Outside	2026-10-21 09:33:43
 6581	102068	MRS. ALEENA RAMEEZ	BVM-694	TOYOTA YARIS	E280689000000002564448B0	Active	static/member_profile_img/102068.jpg	Outside	2026-10-21 09:33:43
 6582	102097	MRS. MAHEEN ABDULLAH	BMS-761	HONDA CITY	E28068900000000257983169	Active	static/member_profile_img/102097.JPG	Outside	2026-10-21 09:33:43
@@ -21236,10 +22927,9 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 6934	221116	MRS. RADYA  ANWER BALAGAMWALA	CAX-319	HYUNDAI	E2806890000000025797E973	Active	static/member_profile_img/221116.JPG	Outside	2026-10-21 09:33:43
 6935	221116	MRS. RADYA  ANWER BALAGAMWALA	BG-1935	FORTUNER	E2806890000000025798F3C1	Active	static/member_profile_img/221116.JPG	Outside	2026-10-21 09:33:43
 6936	221167	DR. UROOJ  MUMTAZ KHAN	JAD-286	MITSUBISHI PAJERO	E2806890000000025798276E	Active	static/member_profile_img/221167.jpg	Outside	2026-10-21 09:33:43
-6937	221167	DR. UROOJ  MUMTAZ KHAN	BH-7759	KIA SPORTAGE	E2806890000000025799E7D3	Active	static/member_profile_img/221167.jpg	Outside	2026-10-21 09:33:43
-6938	221119	MRS. ERUM ESBHANI	BLD-070	GRANDE 2017	E20047019C8064227C76010E	Active	static/member_profile_img/221119.JPG	Outside	2026-10-21 09:33:43
 6939	101873	MRS. UZMA AMIR KOTHAWALA	BNP-812	HONDA CIVIC	E28068900000000257982597	Active	static/member_profile_img/101873.jpg	Outside	2026-10-21 09:33:43
 6940	101873	MRS. UZMA AMIR KOTHAWALA	BF-9812	TOYOTA PRADO	E2806890000000025798F302	Active	static/member_profile_img/101873.jpg	Outside	2026-10-21 09:33:43
+6937	221167	DR. UROOJ  MUMTAZ KHAN	BH-7759	KIA SPORTAGE	E2806890000000025799E7D3	Active	static/member_profile_img/221167.jpg	Outside	2026-10-21 09:33:43
 6941	101873	MRS. UZMA AMIR KOTHAWALA	ALC-350	MERCEDES	E2806890000000025798F3AF	Active	static/member_profile_img/101873.jpg	Outside	2026-10-21 09:33:43
 6942	101873	MRS. UZMA AMIR KOTHAWALA	CZ-8231	KIA CARNIVAL	E2806890000000025798339D	Active	static/member_profile_img/101873.jpg	Outside	2026-10-21 09:33:43
 6943	221056	MRS. SALEHA AMIR	BNG-461	SUZUKI CULTUS	E2806890000000025798F506	Active	static/member_profile_img/221056.JPG	Outside	2026-10-21 09:33:43
@@ -21274,7 +22964,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 6974	007973	MR. ABDUL LATIF ASHRAF	BV-0009	TOYOTA LAND CRS	E2806890000000025799DA42	Active	static/member_profile_img/7973.JPG	Outside	2026-10-21 09:33:43
 6975	126781	MR. ABDUL  MURAD VEERJEE	BHH-596	TOYOTA COROLLA	E2806890000000025798EB76	Active	static/member_profile_img/126781.jpg	Outside	2026-10-21 09:33:43
 6976	220185	MRS. SAMINA  IMTIAZ BANDAY	AJA-442	MITSUBISHI LANCER	E2806894000040175DD6F4ED	Active	static/member_profile_img/220185.JPG	Outside	2026-10-21 09:33:43
-6977	220185	MRS. SAMINA  IMTIAZ BANDAY	AUW-355	HONDA CITY	E2806894000050175DD708ED	Active	static/member_profile_img/220185.JPG	Outside	2026-10-21 09:33:43
 6978	220185	MRS. SAMINA  IMTIAZ BANDAY	BK-7147	KIA SPORTAGE	E2806894000040175DD178ED	Active	static/member_profile_img/220185.JPG	Outside	2026-10-21 09:33:43
 6979	221152	MRS. ANESEH DEHDASHTY	BH-9445	KIA SPORTAGE	E2806894000040175DD35CEF	Active	static/member_profile_img/221152.JPG	Outside	2026-10-21 09:33:43
 6980	221152	MRS. ANESEH DEHDASHTY	BHV-646	HONDA CIVIC	E2806894000040175DD210EF	Active	static/member_profile_img/221152.JPG	Outside	2026-10-21 09:33:43
@@ -21353,7 +23042,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 7055	0213840	MR. HASAN ZAKARIA MOHSEN	BK-2486	KIA SPORTAGE	E2806890000000025799DE85	Active	static/member_profile_img/213840.JPG	Outside	2026-10-21 09:33:43
 7056	0213840	MR. HASAN ZAKARIA MOHSEN	STC-3600	COROLLA-1980	E2806894000050175DD704EE	Active	static/member_profile_img/213840.JPG	Outside	2026-10-21 09:33:43
 7057	0213840	MR. HASAN ZAKARIA MOHSEN	BK-2486	KIA SPORTAGE	E2806894000040175DD0C4EE	Active	static/member_profile_img/213840.JPG	Outside	2026-10-21 09:33:43
-7058	007638	MR. MUHAMMAD ANAS MAKHDOOM	AABC-316	HAVAL	E20047015200642277CE010D	Active	static/member_profile_img/7638.JPG	Outside	2026-10-21 09:33:43
 7059	007638	MR. MUHAMMAD ANAS MAKHDOOM	BHR-274	TOYOTA COROLLA	E2806890000000025798379A	Active	static/member_profile_img/7638.JPG	Outside	2026-10-21 09:33:43
 7060	007638	MR. MUHAMMAD ANAS MAKHDOOM	AWN-064	TOYOTA COROLLA	E280689000000002579939FD	Active	static/member_profile_img/7638.JPG	Outside	2026-10-21 09:33:43
 7061	007532	MR. IQBAL AHMED SAKRANI	AAEG-302	SUZUKI ALTO	E20047011A006422744E0109	Active	static/member_profile_img/7532.jpg	Outside	2026-10-21 09:33:43
@@ -21461,7 +23149,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 7169	150132	MR. DEEPAK KUMAR RAMRAKHIANI	LC-2596	TOYOTA ROCCO	E2806890000000025799D983	Active	static/member_profile_img/150132.JPG	Outside	2026-10-21 09:33:43
 7170	007861	MR. SHAHVEZ FARRUKH FAZAIL	BK-9884	CHERY	E2806894000040175DD594EE	Active	static/member_profile_img/7861.jpg	Outside	2026-10-21 09:33:43
 7171	102048	MRS. BINISH UMAIR MOON	BCM-037	TOYOTA COROLLA	E2806890000000025799D37E	Active	static/member_profile_img/102048.jpg	Outside	2026-10-21 09:33:43
-7172	102048	MRS. BINISH UMAIR MOON	BCT-982	HONDA CIVIC	E280689000000002579929A8	Active	static/member_profile_img/102048.jpg	Outside	2026-10-21 09:33:43
 7173	221047	MRS. FABEHA SUMAIR	BYC-366	TOYOTA YARIS	E2806890000000025799D408	Active	static/member_profile_img/221047.jpg	Outside	2026-10-21 09:33:43
 7174	008304	MR. TAUQEER ARIF DAWOOD	BJD-955	HONDA CIVIC	E2806890000000025799C90A	Active	static/member_profile_img/8304.JPG	Outside	2026-10-21 09:33:43
 7175	008304	MR. TAUQEER ARIF DAWOOD	CY-2644	TOYOTA REVO	E2806890000000025797DEBA	Active	static/member_profile_img/8304.JPG	Outside	2026-10-21 09:33:43
@@ -21476,9 +23163,9 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 7184	003824	MR. M. ARIF MAJID	BGW-123	TOYOTA COROLLA	E2806890000000025798332B	Active	static/member_profile_img/3824.jpg	Outside	2026-10-21 09:33:43
 7185	003824	MR. M. ARIF MAJID	BG-7362	HONDA BRV	E280689000000002564440DC	Active	static/member_profile_img/3824.jpg	Outside	2026-10-21 09:33:43
 7190	007354	MR. SAJJAD AHMED AIJAZI	BJD-990	HONDA CIVIC	E2806890000000025644880A	Active	static/member_profile_img/7354.jpg	Outside	2026-10-21 09:33:43
-7191	007354	MR. SAJJAD AHMED AIJAZI	BL-5480	CHANGE OSHAN	E28068900000000256447F84	Active	static/member_profile_img/7354.jpg	Outside	2026-10-21 09:33:43
 7192	007452	MR. OMAR NAWAB	BG-6498	TOYOTA LC 2013	E20047113050642220E6010A	Active	static/member_profile_img/7452.JPG	Outside	2026-10-21 09:33:43
 7193	007452	MR. OMAR NAWAB	BK-0693	TOYOTA	E2806890000000025799E36A	Active	static/member_profile_img/7452.JPG	Outside	2026-10-21 09:33:43
+7172	102048	MRS. BINISH UMAIR MOON	BCT-982	HONDA CIVIC	E280689000000002579929A8	Active	static/member_profile_img/102048.jpg	Outside	2026-10-21 09:33:43
 7194	007452	MR. OMAR NAWAB	BDK-555	AUDI	E2806890000000025797EC30	Active	static/member_profile_img/7452.JPG	Outside	2026-10-21 09:33:43
 7195	0212452	MR. SHEHRYAR ALI KHAN SWATI	BUA-590	TOYOTA COROLLA	E2806890000000025644448B	Active	static/member_profile_img/212452.JPG	Outside	2026-10-21 09:33:43
 7196	007548	MR. IMRAN AHMED	BG-6450	TOYOTA FORTUNER	E28068900000000257983809	Active	static/member_profile_img/7548.JPG	Outside	2026-10-21 09:33:43
@@ -21540,7 +23227,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 7253	007893	MR. TAIMOOR ASLAM	BJ-8325	TOYOTA FORTUNER	E2806890000000025799C7EF	Active	static/member_profile_img/7893.jpg	Outside	2026-10-21 09:33:43
 7254	007893	MR. TAIMOOR ASLAM	BAW-264	HONDA CIVIC	E2806890000000025799DE1B	Active	static/member_profile_img/7893.jpg	Outside	2026-10-21 09:33:43
 7255	007510	MR. MURTAZA AHMED	BM-4488	KIA	E2806894000040175DD5DCF0	Active	static/member_profile_img/7510.jpg	Outside	2026-10-21 09:33:43
-7256	007515	MR. MINHAS ASHFAQ BANDUKDA	BL-5983	KIA SPORTAGE	E20047112310642220120112	Active	static/member_profile_img/7515.JPG	Outside	2026-10-21 09:33:43
 7257	007515	MR. MINHAS ASHFAQ BANDUKDA	BL-4607	PEUGEOT	E2806890000000025799EA82	Active	static/member_profile_img/7515.JPG	Outside	2026-10-21 09:33:43
 7258	007515	MR. MINHAS ASHFAQ BANDUKDA	BH-6883	KIA	E2806890000000025799C377	Active	static/member_profile_img/7515.JPG	Outside	2026-10-21 09:33:43
 7259	006701	MR. NAVEED HAKIM	BF-7965	TOYOTA FORTUNER	E28068900000000256448831	Active	static/member_profile_img/6701.JPG	Outside	2026-10-21 09:33:43
@@ -21664,7 +23350,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 7387	123604	MR. GUL HASSAN JAN	ATH-669	TOYOTA COROLLA	E2806890000000025798F67F	Active	static/member_profile_img/123604.JPG	Outside	2026-10-21 09:33:43
 7388	123604	MR. GUL HASSAN JAN	KW-6566	TOYOTA REVO	E2806890000000025798F7BE	Active	static/member_profile_img/123604.JPG	Outside	2026-10-21 09:33:43
 7389	123604	MR. GUL HASSAN JAN	BDW-475	TOYOTA COROLLA	E2806890000000025797EE2B	Active	static/member_profile_img/123604.JPG	Outside	2026-10-21 09:33:43
-7390	123604	MR. GUL HASSAN JAN	EAB-101	AUDI	E28068900000000256445A1E	Active	static/member_profile_img/123604.JPG	Outside	2026-10-21 09:33:43
 7391	150064	MR. FAHIM ZAKARIA BILWANI	BQR-345	HONDA CIVIC	E2806890000000025797F078	Active	static/member_profile_img/150064.jpg	Outside	2026-10-21 09:33:43
 7392	150064	MR. FAHIM ZAKARIA BILWANI	KZ-0755	HILUX REVO	E28068900000000257982533	Active	static/member_profile_img/150064.jpg	Outside	2026-10-21 09:33:43
 7393	150064	MR. FAHIM ZAKARIA BILWANI	AVE-819	AUDI E-TRON	E28068900000000257991F7F	Active	static/member_profile_img/150064.jpg	Outside	2026-10-21 09:33:43
@@ -21694,7 +23379,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 7417	0213001	MR. ZAID SIDDIK	BG-0928	TOYOTA LAND CRU	E280689000000002564482A8	Active	static/member_profile_img/213001.JPG	Outside	2026-10-21 09:33:43
 7418	008097	MR. BILAL ESBHANI	BFE-686	TOYOTA COROLLA	E280689000000002564446A8	Active	static/member_profile_img/8097.JPG	Outside	2026-10-21 09:33:43
 7419	008062	MR. SHAHBAZ MAZHAR SAHTO	BJ-5323	HONDA VEZEL	E28068900000000257991E7B	Active	static/member_profile_img/8062.JPG	Outside	2026-10-21 09:33:43
-7420	008062	MR. SHAHBAZ MAZHAR SAHTO	BCH-928	TOYOTA COROLLA	E2806890000000025799354F	Active	static/member_profile_img/8062.JPG	Outside	2026-10-21 09:33:43
 7421	008044	MR. ASAD SHAKIL	BL-8586	TOYOTA FORTUNER	E28068900000000257993A87	Active	static/member_profile_img/8044.jpg	Outside	2026-10-21 09:33:43
 7422	008044	MR. ASAD SHAKIL	BOS-345	TOYOTA COROLLA	E28068900000000257972CE6	Active	static/member_profile_img/8044.jpg	Outside	2026-10-21 09:33:43
 7423	008044	MR. ASAD SHAKIL	BPJ-345	TOYOTA COROLLA	E28068900000000257993590	Active	static/member_profile_img/8044.jpg	Outside	2026-10-21 09:33:43
@@ -21770,9 +23454,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 7494	0213490	MR. SYED MUHAMMAD ASIF ALI	AAJN-099	TOYOTA VITZ	E200470224F0642284FD0111	Active	static/member_profile_img/213490.JPG	Outside	2026-10-21 09:33:43
 7495	0213490	MR. SYED MUHAMMAD ASIF ALI	AXP-140	SUZUKI ALTO	E28068900000000257972B20	Active	static/member_profile_img/213490.JPG	Outside	2026-10-21 09:33:43
 7496	0213490	MR. SYED MUHAMMAD ASIF ALI	ALM-736	HONDA CIVIC	E2806890000000025799E8F0	Active	static/member_profile_img/213490.JPG	Outside	2026-10-21 09:33:43
-7497	0213491	DR. FAISAL FAIYAZ ZUBERI	BH-3998	KI ASPORTAGE	E20047014C4064227772010D	Active	static/member_profile_img/213491.jpg	Outside	2026-10-21 09:33:43
 7498	0213491	DR. FAISAL FAIYAZ ZUBERI	SC-2338	ISUZU MAX	E20047014D40642277820114	Active	static/member_profile_img/213491.jpg	Outside	2026-10-21 09:33:43
-7499	0213491	DR. FAISAL FAIYAZ ZUBERI	BH-3998	KIA SPORTAGE	E2806890000000025798E396	Active	static/member_profile_img/213491.jpg	Outside	2026-10-21 09:33:43
 7500	0213491	DR. FAISAL FAIYAZ ZUBERI	BPR-472	SUZUKI CULTUS	E2806890000000025799EC02	Active	static/member_profile_img/213491.jpg	Outside	2026-10-21 09:33:43
 7501	0213492	DR. BADER FAIYAZ ZUBERI	BNR-065	SUZUKI CULTUS	E2806890000000025798E9AC	Active	static/member_profile_img/213492.JPG	Outside	2026-10-21 09:33:43
 7502	0213492	DR. BADER FAIYAZ ZUBERI	BH-4001	KIA SPORTAGE	E28068900000000257993494	Active	static/member_profile_img/213492.JPG	Outside	2026-10-21 09:33:43
@@ -21813,6 +23495,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 7541	102156	MRS. ZAINAB JUZZER KUVAWALA	BPB-240	HONDA CIVIC	E2806894000040175DD8C4EF	Active	static/member_profile_img/102156.jpg	Outside	2026-10-21 09:33:43
 7542	102157	MRS. ANAM SOHAIL	BVZ-606	HONDA CITY	E2806890000000025799DA9C	Active	static/member_profile_img/102157.jpg	Outside	2026-10-21 09:33:43
 7543	102157	MRS. ANAM SOHAIL	BVP-189	HONDA CITY	E280689000000002564486EC	Active	static/member_profile_img/102157.jpg	Outside	2026-10-21 09:33:43
+7497	0213491	DR. FAISAL FAIYAZ ZUBERI	BH-3998	KI ASPORTAGE	E20047014C4064227772010D	Active	static/member_profile_img/213491.jpg	Outside	2026-10-21 09:33:43
 7544	102158	MRS. ASRA PAREKH	BSW-076	TOYOTA YARIS	E28068900000000257981FA3	Active	static/member_profile_img/102158.JPG	Outside	2026-10-21 09:33:43
 7545	102158	MRS. ASRA PAREKH	BL-3061	MG/HS	E28068900000000257982474	Active	static/member_profile_img/102158.JPG	Outside	2026-10-21 09:33:43
 7546	102160	MRS. NIDA MOOSA	BL-3988	KIA STONIC	E2806890000000025798F1C9	Active	static/member_profile_img/102160.jpg	Outside	2026-10-21 09:33:43
@@ -21854,7 +23537,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 7582	0213461	MR. IBAD-UL- ISLAM	AEA-247	HYUNDAI SANTRO	E2806890000000025799EC25	Active	static/member_profile_img/213461.jpg	Outside	2026-10-21 09:33:43
 7583	0213461	MR. IBAD-UL- ISLAM	BXJ-265	TOYOTA YARIS	E28068900000000257972E28	Active	static/member_profile_img/213461.jpg	Outside	2026-10-21 09:33:43
 7584	0213501	DR. SHAHAB IMAM	BH-8001	LAND CRU	E2004710AA60642218870110	Active	static/member_profile_img/213501.jpg	Outside	2026-10-21 09:33:43
-7585	0213501	DR. SHAHAB IMAM	AAFV-919	KIA SPORTAGE	E2004711565064222346010F	Active	static/member_profile_img/213501.jpg	Outside	2026-10-21 09:33:43
 7586	0313502	MR. MUHAMMAD  AHSAN	BUV-680	TOYOTA ALTIS	E2806890000000025799C76B	Active	static/member_profile_img/313502.JPG	Outside	2026-10-21 09:33:43
 7587	0313502	MR. MUHAMMAD  AHSAN	BJ-3766	MG-HS	E2806890000000025798EB48	Active	static/member_profile_img/313502.JPG	Outside	2026-10-21 09:33:43
 7588	0313502	MR. MUHAMMAD  AHSAN	BM-0309	TOYOTA FORTUNER	E2806890000000025799D82C	Active	static/member_profile_img/313502.JPG	Outside	2026-10-21 09:33:43
@@ -21896,7 +23578,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 7622	102219	MRS. TAHIRA HASHAM	BTL-702	TOYOTA	E2806894000040175DD32CEE	Active	static/member_profile_img/102219.jpg	Outside	2026-10-21 09:33:43
 7623	102221	MRS. SARA AHMAD JAVAID	BK-9326	KIA SORENTO	E2004701AEA064227D98010A	Active	static/member_profile_img/102221.jpg	Outside	2026-10-21 09:33:43
 7624	102222	MRS. ARSHEEN PREMJEE	BJ-6022	HYUNDAI TUCSON	E2806890000000025644523D	Active	static/member_profile_img/102222.jpg	Outside	2026-10-21 09:33:43
-7625	0213542	MR. MUHAMMAD SULEMAN SHISHMAHAL	AAAY-063	BYD	E20047015AB0642278590107	Active	static/member_profile_img/213542.JPG	Outside	2026-10-21 09:33:43
 7626	0213542	MR. MUHAMMAD SULEMAN SHISHMAHAL	BFU-123	TOYOTA COROLLA	E28068900000000256448355	Active	static/member_profile_img/213542.JPG	Outside	2026-10-21 09:33:43
 7627	0213543	MR. ABDUL MOHEE KAZI	AZA-604	TOYOTA VITZ	E2806890000000025797EE22	Active	static/member_profile_img/213543.jpg	Outside	2026-10-21 09:33:43
 7628	0213543	MR. ABDUL MOHEE KAZI	BSA-658	TOYOTA YARIS	E2806890000000025799D24B	Active	static/member_profile_img/213543.jpg	Outside	2026-10-21 09:33:43
@@ -21935,7 +23616,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 7663	150200	MR. AMIR HANI MUSLIM	BJA-864	HONDA CIVIC	E28068900000000257983211	Active	static/member_profile_img/150200.jpg	Outside	2026-10-21 09:33:43
 7664	150200	MR. AMIR HANI MUSLIM	BF-1360	TOOYTA LAND CRS	E2806890000000025799C9CB	Active	static/member_profile_img/150200.jpg	Outside	2026-10-21 09:33:43
 7666	150202	MR. AMJED BAHADUR ALI	BGL-291	SUZUKI SWIFT	E28068900000000257991F2F	Active	static/member_profile_img/150202.JPG	Outside	2026-10-21 09:33:43
-7667	150202	MR. AMJED BAHADUR ALI	BPS-038	SUZUKI SWIFT	E2806890000000025798236B	Active	static/member_profile_img/150202.JPG	Outside	2026-10-21 09:33:43
 7668	150202	MR. AMJED BAHADUR ALI	BSE-676	HONDA CIVIC	E2806890000000025797DE38	Active	static/member_profile_img/150202.JPG	Outside	2026-10-21 09:33:43
 7669	150202	MR. AMJED BAHADUR ALI	BEG-069	HONAD CIVIC	E2806894000050175DD438ED	Active	static/member_profile_img/150202.JPG	Outside	2026-10-21 09:33:43
 7670	150202	MR. AMJED BAHADUR ALI	BKL-569	SUZUKI	E2806894000040175DD448ED	Active	static/member_profile_img/150202.JPG	Outside	2026-10-21 09:33:43
@@ -21955,7 +23635,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 7685	0213835	MR. AMMAR VALIKA	BCZ-053	TOYOTA COROLLA	E28068900000000256448C75	Active	static/member_profile_img/213835.jpg	Outside	2026-10-21 09:33:43
 7686	0213835	MR. AMMAR VALIKA	BRN-553	TOYOTA COROLLA	E280689000000002564488BA	Active	static/member_profile_img/213835.jpg	Outside	2026-10-21 09:33:43
 7687	0213698	MR. SYED ZAIN ABBAS	BF-0858	DAIHATSU	E28068900000000256448282	Active	static/member_profile_img/213698.jpg	Outside	2026-10-21 09:33:43
-7688	0213701	MR. NADIR KHAN	CAG-923	TOYOTA COROLLA	E2806890000000025797E2D5	Active	static/member_profile_img/213701.JPG	Outside	2026-10-21 09:33:43
+7667	150202	MR. AMJED BAHADUR ALI	BPS-038	SUZUKI SWIFT	E2806890000000025798236B	Active	static/member_profile_img/150202.JPG	Outside	2026-10-21 09:33:43
 7689	0213701	MR. NADIR KHAN	AMS-611	HONDA CIVIC	E2806894000050175DD2F4EE	Active	static/member_profile_img/213701.JPG	Outside	2026-10-21 09:33:43
 7690	0213716	MR. ANEEL KUMAR KHIALANI	BJV-707	TOYOTA AIXO	E28068900000000257972B4E	Active	static/member_profile_img/213716.jpg	Outside	2026-10-21 09:33:43
 7691	0213716	MR. ANEEL KUMAR KHIALANI	BEH-200	LEXUS	E28068900000000256448F3A	Active	static/member_profile_img/213716.jpg	Outside	2026-10-21 09:33:43
@@ -22158,7 +23838,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 7893	0213654	MR. FAHAD ILYAS	BG-3805	HONDA VEZEL	E2806890000000025797D6E7	Active	static/member_profile_img/213654.jpg	Outside	2026-10-21 09:33:43
 7894	0213654	MR. FAHAD ILYAS	KW-7717	TOYOTA REVO	E28068900000000257983977	Active	static/member_profile_img/213654.jpg	Outside	2026-10-21 09:33:43
 7895	0213654	MR. FAHAD ILYAS	BK-7717	KIA SPORTAGE	E2806890000000025798DB80	Active	static/member_profile_img/213654.jpg	Outside	2026-10-21 09:33:43
-7896	0213659	MR. TAHIR IQBAL KHAN	FV-294	TOYOTA	E28068900000000257982868	Active	static/member_profile_img/213659.JPG	Outside	2026-10-21 09:33:43
 7897	0213659	MR. TAHIR IQBAL KHAN	KZ-0525	ISUZU	E2806890000000025797E6A0	Active	static/member_profile_img/213659.JPG	Outside	2026-10-21 09:33:43
 7898	0213660	MR. JAVED	AADK-116	TOYOTA FROTUNER	E2004701E6106422810F010B	Active	static/member_profile_img/213660.jpg	Outside	2026-10-21 09:33:43
 7899	0213660	MR. JAVED	LD-5877	TOYOTA REVO	E2004701E650642281130109	Active	static/member_profile_img/213660.jpg	Outside	2026-10-21 09:33:43
@@ -22234,7 +23913,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 7969	102336	MRS. SABAH HASAN	AXT-840	AUDI E-TRON	E2004710D7D064221B5E010E	Active	static/member_profile_img/102336.JPG	Outside	2026-10-21 09:33:43
 7970	102336	MRS. SABAH HASAN	BN-8439	KIA SORENTO	E2004710C9D064221A7E010D	Active	static/member_profile_img/102336.JPG	Outside	2026-10-21 09:33:43
 7971	102336	MRS. SABAH HASAN	BN-3419	KIA SPORTAGE	E20047106D40642214B5010B	Active	static/member_profile_img/102336.JPG	Outside	2026-10-21 09:33:43
-7972	102281	MRS. RAFIA ZAIN	AAAU-562	HAVAL	E200470159C06422784A010A	Active	static/member_profile_img/102281.JPG	Outside	2026-10-21 09:33:43
 7973	102281	MRS. RAFIA ZAIN	BPM-657	HONDA CIVIC	E280689000000002579920FD	Active	static/member_profile_img/102281.JPG	Outside	2026-10-21 09:33:43
 7974	102281	MRS. RAFIA ZAIN	BXN-115	SUZUKI WAGONR	E2806890000000025797E71B	Active	static/member_profile_img/102281.JPG	Outside	2026-10-21 09:33:43
 7975	102281	MRS. RAFIA ZAIN	BNB-888	HONDA CIVIC	E2806890000000025798EC60	Active	static/member_profile_img/102281.JPG	Outside	2026-10-21 09:33:43
@@ -22350,8 +24028,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 8090	0213760	MR. AHMED ALI SHAH	BTR-677	HONDA CITY	E2806890000000025799DE6A	Active	static/member_profile_img/213760.jpg	Outside	2026-10-21 09:33:43
 8091	0911992	MRS. DURAIN CASSIM	EAC-692	BYD ATTO	E200471143D06422221E010E	Active	static/member_profile_img/911992.JPG	Outside	2026-10-21 09:33:43
 8092	102418	MRS. AYESHA MALIK	BSW-211	DIAHATSU	E28068900000000257981F8C	Active	static/member_profile_img/102418.JPG	Outside	2026-10-21 09:33:43
-8093	102421	MRS. FATIMA BILWANI	BM-0898	TOYOTA FORTUNER	E280689000000002564480F5	Active	static/member_profile_img/102421.JPG	Outside	2026-10-21 09:33:43
-8094	102421	MRS. FATIMA BILWANI	BM-0898	TOYOTA FORTUNER	E2806890000000025799D6BA	Active	static/member_profile_img/102421.JPG	Outside	2026-10-21 09:33:43
 8095	102421	MRS. FATIMA BILWANI	BVF-846	TOYOTA YARIS	E2806890000000025799D4CC	Active	static/member_profile_img/102421.JPG	Outside	2026-10-21 09:33:43
 8096	102421	MRS. FATIMA BILWANI	BSZ-114	HONDA CIVIC	E2806890000000025799D5E6	Active	static/member_profile_img/102421.JPG	Outside	2026-10-21 09:33:43
 8097	102422	MRS. KHADIJA NASIM AHMED	BVM-992	TOYOTA COROLLA	E2806890000000025799D825	Active	static/member_profile_img/102422.jpg	Outside	2026-10-21 09:33:43
@@ -22465,10 +24141,8 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 8203	0214173	MR. SAJID HUSSAIN	BL-6505	PENGO	E2806890000000025798E64B	Active	static/member_profile_img/214173.jpg	Outside	2026-10-21 09:33:43
 8206	0214174	MR. JANWHAR MAL	BHA-039	SUZUKI	E2806890000000025797D2BB	Active	static/member_profile_img/214174.jpg	Outside	2026-10-21 09:33:43
 8207	0214174	MR. JANWHAR MAL	BKR-306	SUZUKI CULTUS	E28068900000000257993563	Active	static/member_profile_img/214174.jpg	Outside	2026-10-21 09:33:43
-8208	0214175	MR. BHAGWAN DAS	BSX-667	HONDA CIVIC	E2806890000000025798EDA5	Active	static/member_profile_img/214175.jpg	Outside	2026-10-21 09:33:43
 8209	0214175	MR. BHAGWAN DAS	EAA-359	I5 BMW	E280689000000002579927D2	Active	static/member_profile_img/214175.jpg	Outside	2026-10-21 09:33:43
 8210	0214175	MR. BHAGWAN DAS	BSX-531	SUZUKI CULTUS	E28068900000000257983B73	Active	static/member_profile_img/214175.jpg	Outside	2026-10-21 09:33:43
-8211	0214175	MR. BHAGWAN DAS	BSX-667	HONDA CIVIC	E2806890000000025799E81E	Active	static/member_profile_img/214175.jpg	Outside	2026-10-21 09:33:43
 8212	0214175	MR. BHAGWAN DAS	BPZ-513	SUZUKI SWIFT	E28068900000000257982E9F	Active	static/member_profile_img/214175.jpg	Outside	2026-10-21 09:33:43
 8213	0214175	MR. BHAGWAN DAS	BKH-934	HONDA CIVIC	E2806890000000025797DC8A	Active	static/member_profile_img/214175.jpg	Outside	2026-10-21 09:33:43
 8214	0214175	MR. BHAGWAN DAS	BUP-255	TOYOTA COROLLA	E2806890000000025797E0B4	Active	static/member_profile_img/214175.jpg	Outside	2026-10-21 09:33:43
@@ -22505,9 +24179,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 8245	0214408	MR. ANIQUE NAVED THAPLAWALA	BHQ-583	TOYOTA AQUA	E2806890000000025799C839	Active	static/member_profile_img/214408.JPG	Outside	2026-10-21 09:33:43
 8246	0214413	MR. HASSAN M. ALI FEROZPURWALA	BDS-553	SUZUKI SWIFT	E2806890000000025798EFAB	Active	static/member_profile_img/214413.JPG	Outside	2026-10-21 09:33:43
 8247	005161	MR. ABBAS FARID	BJZ-166	TOYOTA PASSO	E2806890000000025799258E	Active	static/member_profile_img/5161.jpg	Outside	2026-10-21 09:33:43
-8248	005161	MR. ABBAS FARID	ATM-148	TOYOTA VITZ	E28068900000000256448ABE	Active	static/member_profile_img/5161.jpg	Outside	2026-10-21 09:33:43
 8249	005161	MR. ABBAS FARID	BJZ-166	TOYOTA PASSO	E2806890000000025797ED68	Active	static/member_profile_img/5161.jpg	Outside	2026-10-21 09:33:43
-8250	005161	MR. ABBAS FARID	ATM-148	TOYOTA VITZ	E2806890000000025798202E	Active	static/member_profile_img/5161.jpg	Outside	2026-10-21 09:33:43
 8251	0214200	MR. HOOSAMUDDIN S. BANDUKWALA	ANK-652	HONDA CITY	E28068900000000257983858	Active	static/member_profile_img/214200.jpg	Outside	2026-10-21 09:33:43
 8252	0214200	MR. HOOSAMUDDIN S. BANDUKWALA	BUN-954	TOYOTA COROLLA	E280689000000002579838C7	Active	static/member_profile_img/214200.jpg	Outside	2026-10-21 09:33:43
 8253	0214211	MR. HASSAN SOHAIL	AAZ-555	MITSUBISHI	E2806890000000025799E020	Active	static/member_profile_img/214211.jpg	Outside	2026-10-21 09:33:43
@@ -22524,11 +24196,11 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 8264	102564	MRS. RAMSHA MEMON	BH-1393	TOYOTA PRADO	E28068900000000257993AE5	Active	static/member_profile_img/102564.jpg	Outside	2026-10-21 09:33:43
 8265	0912317	MRS. NOOR JEHAN ANWAR AJANEE	ARX-118	HONDA CIVIC	E2806890000000025797DC5C	Active	static/member_profile_img/912317.jpg	Outside	2026-10-21 09:33:43
 8266	102580	MRS. SIDRA ALI	LB-4130	2022	E280689000000002564481F2	Active	static/member_profile_img/102580.JPG	Outside	2026-10-21 09:33:43
-8267	0713437	MR. JUSTICE AFTAB AHMED GORAR	BYK-087	TOYOTA COROLLA	E200470172E0642279DC0107	Active	static/member_profile_img/713437.jpg	Outside	2026-10-21 09:33:43
 8268	0713437	MR. JUSTICE AFTAB AHMED GORAR	BPJ-649	HONDA CIVIC	E2004701789064227A37010C	Active	static/member_profile_img/713437.jpg	Outside	2026-10-21 09:33:43
 8269	102527	MRS. LUBNA MAJID MANIAR	BKC-040	TOYOTA AQUA	E28068900000000256448A06	Active	static/member_profile_img/102527.JPG	Outside	2026-10-21 09:33:43
 8270	0214296	MR. SHAHAN ALI JAMIL	BK-9113	TOYOTA FORTUNER	E2806890000000025797E17F	Active	static/member_profile_img/214296.JPG	Outside	2026-10-21 09:33:43
 8271	0912075	MRS. ALIFIA HUSSAINI MOOSAJI	AAM-547	TOYOTA YARIS	E2004701A87064227D350109	Active	static/member_profile_img/912075.jpg	Outside	2026-10-21 09:33:43
+8267	0713437	MR. JUSTICE AFTAB AHMED GORAR	BYK-087	TOYOTA COROLLA	E200470172E0642279DC0107	Active	static/member_profile_img/713437.jpg	Outside	2026-10-21 09:33:43
 8272	0214034	MR. IMRAN ALEEM	BFV-694	TOYOTA AQUA	E2806890000000025799375F	Active	static/member_profile_img/214034.jpg	Outside	2026-10-21 09:33:43
 8273	0214034	MR. IMRAN ALEEM	AJT-586	HONDA ACCORD	E280689000000002579935FD	Active	static/member_profile_img/214034.jpg	Outside	2026-10-21 09:33:43
 8274	0214034	MR. IMRAN ALEEM	BF-6632	TOYOTA RUSH	E2806890000000025799C81B	Active	static/member_profile_img/214034.jpg	Outside	2026-10-21 09:33:43
@@ -22584,7 +24256,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 8328	102453	MRS. ANUM RAZZAK	BBG-335	TOYOTA PASSO	E2806890000000025799C4A8	Active	static/member_profile_img/102453.jpg	Outside	2026-10-21 09:33:43
 8329	082117	MR. MUHAMMAD ASLAM JAMRO	AUA-015	TOYOTA COROLLA	E2806894000050175DD560EE	Active	static/member_profile_img/82117.jpg	Outside	2026-10-21 09:33:43
 8330	082117	MR. MUHAMMAD ASLAM JAMRO	BJ-9094	TOYOTA FORTUNER	E2806894000050175DD524EE	Active	static/member_profile_img/82117.jpg	Outside	2026-10-21 09:33:43
-8331	221237	MRS. SUNYA AHMED	AAAN-232	TOYOTA CROSS	E20047019B3064227C61010D	Active	static/member_profile_img/221237.jpg	Outside	2026-10-21 09:33:43
 8332	221237	MRS. SUNYA AHMED	BGD-816	TOYOTA COROLLA	E2806894000050175DD65CED	Active	static/member_profile_img/221237.jpg	Outside	2026-10-21 09:33:43
 8333	124868	MR. AGHA BADR HUSAIN	AHL-419	HONDA CIVIC	E280689000000002579833BD	Active	static/member_profile_img/124868.JPG	Outside	2026-10-21 09:33:43
 8334	124868	MR. AGHA BADR HUSAIN	ASF-249	HONDA CIVIC	E2806890000000025797DE0A	Active	static/member_profile_img/124868.JPG	Outside	2026-10-21 09:33:43
@@ -22604,9 +24275,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 8351	014894	MR. ATIQ AHMED KOCHRA	BFE-086	TOYOTA COROLLA	E2806890000000025799E933	Active	static/member_profile_img/14894.jpg	Outside	2026-10-21 09:33:43
 8352	014894	MR. ATIQ AHMED KOCHRA	BFX-303	TOYOTA COROLLA	E2806890000000025799C2C2	Active	static/member_profile_img/14894.jpg	Outside	2026-10-21 09:33:43
 8353	014894	MR. ATIQ AHMED KOCHRA	BG-5911	BMW	E2806890000000025799C6A2	Active	static/member_profile_img/14894.jpg	Outside	2026-10-21 09:33:43
-8354	124582	MR. BASHIR ALI ABDULLA	AXW-898	HONDA CIVIC	E28068900000000257981F92	Active	static/member_profile_img/124582.JPG	Outside	2026-10-21 09:33:43
 8355	124582	MR. BASHIR ALI ABDULLA	ASR-579	SUZUKI MEHRAN	E2806890000000025799326D	Active	static/member_profile_img/124582.JPG	Outside	2026-10-21 09:33:43
-8356	124582	MR. BASHIR ALI ABDULLA	AXW-898	HONDA CITY	E280689000000002579828F4	Active	static/member_profile_img/124582.JPG	Outside	2026-10-21 09:33:43
 8357	082127	MR. FAISAL DARA SHIKOH KHARAL	BVA-355	TOYOTA	E2806890000000025798EA22	Active	static/member_profile_img/82127.JPG	Outside	2026-10-21 09:33:43
 8358	220762	MRS. SAADIA ZAFAR	AYT-949	TOYOTA	E2806890000000025799D135	Active	static/member_profile_img/220762.JPG	Outside	2026-10-21 09:33:43
 8359	220762	MRS. SAADIA ZAFAR	BBP-252	TOYOTA	E2806890000000025799E9C4	Active	static/member_profile_img/220762.JPG	Outside	2026-10-21 09:33:43
@@ -22625,6 +24294,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 8372	0213957	MR. NAEEM ASGHAR MALIK	BK-0626	TOYOTA FORTUNER	E2806894000050175DD618EE	Active	static/member_profile_img/213957.jpg	Outside	2026-10-21 09:33:43
 8373	0213959	MR. MUBASHIR HASAN	BL-9770	TOYOTA PRADO	E2007DD2B1017030B3BA35C0	Active	static/member_profile_img/213959.jpg	Outside	2026-10-21 09:33:43
 8374	0213961	MR. HAQ NAWAZ TALPUR	BXR-809	HYUNDAI SONATA	E2806894000050175DD0F4EF	Active	static/member_profile_img/213961.jpg	Outside	2026-10-21 09:33:43
+8354	124582	MR. BASHIR ALI ABDULLA	AXW-898	HONDA CIVIC	E28068900000000257981F92	Active	static/member_profile_img/124582.JPG	Outside	2026-10-21 09:33:43
 8375	0213961	MR. HAQ NAWAZ TALPUR	BG-7967	TOYOTA FORTUNER	E2806894000050175DD6BCEF	Active	static/member_profile_img/213961.jpg	Outside	2026-10-21 09:33:43
 8376	0213961	MR. HAQ NAWAZ TALPUR	AXR-809	MERCEDEZ BENZ	E2806894000050175DD198F0	Active	static/member_profile_img/213961.jpg	Outside	2026-10-21 09:33:43
 8377	0213964	MR. UMAIR ALI BHATTI	BYU-644	TOYOTA COROLLA	E2806890000000025798280F	Active	static/member_profile_img/213964.jpg	Outside	2026-10-21 09:33:43
@@ -22735,7 +24405,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 8496	0214286	MR. MUHAMMAD FAHD IMAM	BK-8959	PEUGOT	E2806890000000025799C72D	Active	static/member_profile_img/214286.jpg	Outside	2026-10-21 09:33:43
 8497	0214287	MR. FAREED-UZ-ZAMAN KHAN	BVY-481	SUZUKI ALTO	E2806894000040175DD1C0EE	Active	static/member_profile_img/214287.jpg	Outside	2026-10-21 09:33:43
 8498	0214287	MR. FAREED-UZ-ZAMAN KHAN	BL-8619	KIA STONIC	E28068900000000257982C74	Active	static/member_profile_img/214287.jpg	Outside	2026-10-21 09:33:43
-8499	0912242	MRS. NUZHAT KHAN	BWL-223	TOYOTA COROLLA	E2806894000050175DD6F0ED	Active	static/member_profile_img/912242.jpg	Outside	2026-10-21 09:33:43
 8500	0912242	MRS. NUZHAT KHAN	BBN-860	TOYOTA COROLLA	E2806894000050175DD17CEE	Active	static/member_profile_img/912242.jpg	Outside	2026-10-21 09:33:43
 8501	082076	MR. ZULFIKAR ALI NIZAMANI	AXS-388	TOYOYA GLI	E2806894000040175DD3A8EE	Active	static/member_profile_img/82076.jpg	Outside	2026-10-21 09:33:43
 8502	082080	DR. SYED YAWAR ALI ABIDI	BKA-833	SUZUKI	E2806890000000025798F2F3	Active	static/member_profile_img/82080.jpg	Outside	2026-10-21 09:33:43
@@ -22839,7 +24508,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 8604	0214153	MR. GHULAM RASOOL DADABHOY	BMA-025	SUZUKI	E2806894000050175DD09CF0	Active	static/member_profile_img/214153.jpg	Outside	2026-10-21 09:33:43
 8605	0214153	MR. GHULAM RASOOL DADABHOY	LB-2909	TOOYTA REVO	E2806894000040175DD274F0	Active	static/member_profile_img/214153.jpg	Outside	2026-10-21 09:33:43
 8606	0214153	MR. GHULAM RASOOL DADABHOY	BJ-6204	TOYOTA FORTUNER	E2806894000040175DD6409A	Active	static/member_profile_img/214153.jpg	Outside	2026-10-21 09:33:43
-8607	0214156	MR. HASAN AHMAD	EAA-321	AUDI	E2004700ED006422717E0110	Active	static/member_profile_img/214156.JPG	Outside	2026-10-21 09:33:43
 8608	0213878	MR. OMAIR MATEEN CHAWLA	BM-7319	HYUNDAI	E2004701AD3064227D810110	Active	static/member_profile_img/213878.jpg	Outside	2026-10-21 09:33:43
 8609	0213878	MR. OMAIR MATEEN CHAWLA	BL-3515	CHANOSHAN	E28068900000000257991EC1	Active	static/member_profile_img/213878.jpg	Outside	2026-10-21 09:33:43
 8610	0213878	MR. OMAIR MATEEN CHAWLA	AYF-297	TOYOTA COROLLA	E28068900000000256445E56	Active	static/member_profile_img/213878.jpg	Outside	2026-10-21 09:33:43
@@ -22883,7 +24551,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 8651	0213312	MR. YAWAR HUSSAIN ANWAR	BUL-809	SUZUKI/CULTUS	E2806894000050175DD378F0	Active	static/member_profile_img/213312.jpg	Outside	2026-10-21 09:33:43
 8652	007349	MR. FAWAD AHMED AIJAZI	BG-3223	HONDA BRV	E2806890000000025644873A	Active	static/member_profile_img/7349.jpg	Outside	2026-10-21 09:33:43
 8653	007349	MR. FAWAD AHMED AIJAZI	AUM-565	TOYOTA COROLLA	E28068900000000256448CB5	Active	static/member_profile_img/7349.jpg	Outside	2026-10-21 09:33:43
-8654	0213730	MR. MUHAMMAD FAIZAN	BL-4898	KIA SPORTAGE	E2806890000000025797D219	Active	static/member_profile_img/213730.JPG	Outside	2026-10-21 09:33:43
 8655	082024	MR. SYED MIRAN MUHAMMAD SHAH	GSE-613	TOYOTA COROLLA	E2806890000000025644801E	Active	static/member_profile_img/82024.jpg	Outside	2026-10-21 09:33:43
 8656	0214188	MR. SHAHZAIB ARIF SHAIKH	AAHQ-510	CHANGAN OSHAN	E2004710A060642217E70108	Active	static/member_profile_img/214188.jpg	Outside	2026-10-21 09:33:43
 8657	0214188	MR. SHAHZAIB ARIF SHAIKH	BVW-333	TOYOTA COROLLA	E2004710A160642217F7010A	Active	static/member_profile_img/214188.jpg	Outside	2026-10-21 09:33:43
@@ -22940,7 +24607,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 8714	0214030	MR. RAVI	BME-221	TOYOTA PASSO	E2806894000050175DD764ED	Active	static/member_profile_img/214030.jpg	Outside	2026-10-21 09:33:43
 8715	0214030	MR. RAVI	BK-2028	KIA SPORTAGE	E2806894000040175DD778ED	Active	static/member_profile_img/214030.jpg	Outside	2026-10-21 09:33:43
 8716	0214027	MR. OSAMA SHAMIM	BBY-167	TOYOTA COROLLA	E28068900000000257982C3C	Active	static/member_profile_img/214027.jpg	Outside	2026-10-21 09:33:43
-8717	0214027	MR. OSAMA SHAMIM	BYT-950	TOYOTA PASSO	E2806890000000025797EF3D	Active	static/member_profile_img/214027.jpg	Outside	2026-10-21 09:33:43
 8718	0214027	MR. OSAMA SHAMIM	BBY-167	TOYOTA PASSO	E28068900000000256445E53	Active	static/member_profile_img/214027.jpg	Outside	2026-10-21 09:33:43
 8719	0214122	MR. ABDUL RAFAY SIDDIQUI	BM-1882	TOYOTA CROSS	E28068900000000257982034	Active	static/member_profile_img/214122.jpg	Outside	2026-10-21 09:33:43
 8720	0214122	MR. ABDUL RAFAY SIDDIQUI	BJV-671	TOYOTA COROLLA	E280689000000002564440BF	Active	static/member_profile_img/214122.jpg	Outside	2026-10-21 09:33:43
@@ -23007,7 +24673,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 8783	0214340	MR. HAMZA SALMAN SIDDIQUI	CBW-087	SUZUKI SWIFT	E20047018D1064227B7F0114	Active	static/member_profile_img/214340.JPG	Outside	2026-10-21 09:33:44
 8784	0214340	MR. HAMZA SALMAN SIDDIQUI	BWP-974	SUZUKI SWIFT	E2806894000040175DD1CCEE	Active	static/member_profile_img/214340.JPG	Outside	2026-10-21 09:33:44
 8785	0214345	MR. MOHAMMAD MUJTABA	AADC-169	TOYOTA HILUX	E2004701AB1064227D5F010F	Active	static/member_profile_img/214345.jpg	Outside	2026-10-21 09:33:44
-8786	0214345	MR. MOHAMMAD MUJTABA	EAC-638	BYD ATTO-3	E20047014390642276E7010C	Active	static/member_profile_img/214345.jpg	Outside	2026-10-21 09:33:44
 8787	0214345	MR. MOHAMMAD MUJTABA	EAC-635	OMODA JAECO	E200470142D0642276DB010D	Active	static/member_profile_img/214345.jpg	Outside	2026-10-21 09:33:44
 8788	0214351	MR. UMAIR MASOOD	ATT-395	SUZUKI MEHRAN	E2806890000000025797E471	Active	static/member_profile_img/214351.JPG	Outside	2026-10-21 09:33:44
 8789	0214003	MR. SYED EMAAD UDDIN	BYU-854	SUZUKI	E2806890000000025797EE1A	Active	static/member_profile_img/214003.jpg	Outside	2026-10-21 09:33:44
@@ -23054,6 +24719,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 8832	124128	MR. SHAHEEN MERCHANT	BMY-713	TOYOTA COROLLA	E2806894000040175DD450F0	Active	static/member_profile_img/124128.jpg	Outside	2026-10-21 09:33:44
 8833	124128	MR. SHAHEEN MERCHANT	BFX-337	MERCED BENZ	E2806894000040175DD43CF0	Active	static/member_profile_img/124128.jpg	Outside	2026-10-21 09:33:44
 8834	124128	MR. SHAHEEN MERCHANT	BF-9337	TOYATA LEXUS	E2806894000050175DD454F0	Active	static/member_profile_img/124128.jpg	Outside	2026-10-21 09:33:44
+8786	0214345	MR. MOHAMMAD MUJTABA	EAC-638	BYD ATTO-3	E20047014390642276E7010C	Active	static/member_profile_img/214345.jpg	Outside	2026-10-21 09:33:44
 8835	124128	MR. SHAHEEN MERCHANT	EAA-166	BMW2022	E2806894000040175DD108EF	Active	static/member_profile_img/124128.jpg	Outside	2026-10-21 09:33:44
 8836	0912320	MRS. ANISA FARUQUI	BUD-070	TOYOTA ALTIS	E2806890000000025797E689	Active	static/member_profile_img/912320.jpg	Outside	2026-10-21 09:33:44
 8837	0912320	MRS. ANISA FARUQUI	BUD-070	TOYOTA COROLLA	E2806890000000025799335C	Active	static/member_profile_img/912320.jpg	Outside	2026-10-21 09:33:44
@@ -23095,7 +24761,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 8876	102492	MRS. KHADIJA JAWED	BPM-817	HONDA CITY	E2806890000000025797D19A	Active	static/member_profile_img/102492.JPG	Outside	2026-10-21 09:33:44
 8877	102492	MRS. KHADIJA JAWED	BK-8103	KIA SPORTAGE	E2806890000000025799E811	Active	static/member_profile_img/102492.JPG	Outside	2026-10-21 09:33:44
 8878	102494	MRS. GHAZAL BEG	AACA-361	TOYOTA	E20047012300642274DE0108	Active	static/member_profile_img/102494.jpg	Outside	2026-10-21 09:33:44
-8879	102494	MRS. GHAZAL BEG	AADD-852	HONDA	E200470121C0642274CA0111	Active	static/member_profile_img/102494.jpg	Outside	2026-10-21 09:33:44
 8880	102494	MRS. GHAZAL BEG	BRK-678	HONDA CIVIC	E2806890000000025798EB38	Active	static/member_profile_img/102494.jpg	Outside	2026-10-21 09:33:44
 8882	0214071	MR. FAIZ MUHAMMAD SOOMRO	BUX-641	TOYOTA PASSO	E2806894000040175DD888EE	Active	static/member_profile_img/214071.jpg	Outside	2026-10-21 09:33:44
 8883	0214071	MR. FAIZ MUHAMMAD SOOMRO	LC-1177	TOYOTA HILUX REVO	E2806894000040175DD8A0EE	Active	static/member_profile_img/214071.jpg	Outside	2026-10-21 09:33:44
@@ -23163,13 +24828,11 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 8945	0213869	MR. SYED TANVEER AHMED JAFRI	BES-715	HONDA CIVIC	E2806890000000025797E202	Active	static/member_profile_img/213869.jpg	Outside	2026-10-21 09:33:44
 8946	0213869	MR. SYED TANVEER AHMED JAFRI	BTA-721	TOYOTA COROLLA	E28068900000000257982C10	Active	static/member_profile_img/213869.jpg	Outside	2026-10-21 09:33:44
 8947	0213869	MR. SYED TANVEER AHMED JAFRI	ATE-797	TOYOTA	E28068900000000257982CF1	Active	static/member_profile_img/213869.jpg	Outside	2026-10-21 09:33:44
-8948	0213873	MR. MOHAMMAD AMIR KHAN KHOSO	BUV-845	TOYOTA VITZ	E200470149D06422774B0111	Active	static/member_profile_img/213873.jpg	Outside	2026-10-21 09:33:44
 8949	0213873	MR. MOHAMMAD AMIR KHAN KHOSO	AAFD-377	SUZUKI ALTO	E200470107A064227328010D	Active	static/member_profile_img/213873.jpg	Outside	2026-10-21 09:33:44
 8950	0213873	MR. MOHAMMAD AMIR KHAN KHOSO	AAFC-147	KIA SPORTAGE	E20047010370642272E5010D	Active	static/member_profile_img/213873.jpg	Outside	2026-10-21 09:33:44
 8951	0213873	MR. MOHAMMAD AMIR KHAN KHOSO	BH-4142	TOYOTA FORTUNER	E2806890000000025799240E	Active	static/member_profile_img/213873.jpg	Outside	2026-10-21 09:33:44
 8952	0213873	MR. MOHAMMAD AMIR KHAN KHOSO	BGK-959	TOYOTA COROLLA	E280689000000002579820ED	Active	static/member_profile_img/213873.jpg	Outside	2026-10-21 09:33:44
 8953	0213873	MR. MOHAMMAD AMIR KHAN KHOSO	KV-3686	TOYOTA REVO	E28068900000000257982A56	Active	static/member_profile_img/213873.jpg	Outside	2026-10-21 09:33:44
-8954	0213873	MR. MOHAMMAD AMIR KHAN KHOSO	BUV-845	TOYOTA VITZ	E280689000000002564454A4	Active	static/member_profile_img/213873.jpg	Outside	2026-10-21 09:33:44
 8955	0213873	MR. MOHAMMAD AMIR KHAN KHOSO	BK-3933	KIA SPORTAGE	E28068900000000257982C24	Active	static/member_profile_img/213873.jpg	Outside	2026-10-21 09:33:44
 8956	0213874	MR. KHALIL AHMED SIDDIQUI	AAJP-192	BYD ATTO-3	E20047021C8064228476010D	Active	static/member_profile_img/213874.JPG	Outside	2026-10-21 09:33:44
 8957	0213874	MR. KHALIL AHMED SIDDIQUI	BWQ-781	SUZUKI SWIFT	E280689000000002579729D9	Active	static/member_profile_img/213874.JPG	Outside	2026-10-21 09:33:44
@@ -23247,7 +24910,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 9034	082057	MR. MUHAMMAD ASFANDYAR JANJUA	ASM-656	TOYOTA COROLLA	E2806890000000025798DC6C	Active	static/member_profile_img/82057.jpg	Outside	2026-10-21 09:33:44
 9035	0912306	MRS. NUSRAT TARIQ	AQZ-888	TOYOTA CAMRY	E28068900000000257993763	Active	static/member_profile_img/912306.jpg	Outside	2026-10-21 09:33:44
 9036	0214077	MR. JIBRAN NADIR SAITHI	BVC-735	TOYOTA COROLLA	E2806894000050175DD0B8ED	Active	static/member_profile_img/214077.jpg	Outside	2026-10-21 09:33:44
-9037	102605	MRS. MANAAL RAFI	AAHS-169	BYD ATTO 3	E20047017E8064227A96010E	Active	static/member_profile_img/102605.JPG	Outside	2026-10-21 09:33:44
 9039	102605	MRS. MANAAL RAFI	AVF-285	AUDI E-TRON	E2806890000000025798F18B	Active	static/member_profile_img/102605.JPG	Outside	2026-10-21 09:33:44
 9041	102605	MRS. MANAAL RAFI	BHG-027	TOYOTA COROLLA	E2806894000050175DD108ED	Active	static/member_profile_img/102605.JPG	Outside	2026-10-21 09:33:44
 9042	102605	MRS. MANAAL RAFI	BH-2069	TOYOTA PRADO	E2806894000040175DD0F4ED	Active	static/member_profile_img/102605.JPG	Outside	2026-10-21 09:33:44
@@ -23291,6 +24953,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 9081	0214331	MR. YOUSUF SADIQ MONNOO	BJE-192	TOYOTA COROLLA	E2004701AA1064227D4F010C	Active	static/member_profile_img/214331.jpg	Outside	2026-10-21 09:33:44
 9083	0912055	MRS. MARYAM AFZAL MUNIF	BDS-424	TOYOTA	E2806890000000025799DEFC	Active	static/member_profile_img/912055.jpg	Outside	2026-10-21 09:33:44
 9084	0912056	MRS. SHAMIM KHALID	BFC-651	TOYOTA COROLLA	E2806890000000025798DD3B	Active	static/member_profile_img/912056.jpg	Outside	2026-10-21 09:33:44
+9037	102605	MRS. MANAAL RAFI	AAHS-169	BYD ATTO 3	E20047017E8064227A96010E	Active	static/member_profile_img/102605.JPG	Inside	2026-10-21 09:33:44
 9085	0912057	MRS. NELOFAR FARRUKH	BKZ-273	TOYOTA	E28068900000000256445281	Active	static/member_profile_img/912057.jpg	Outside	2026-10-21 09:33:44
 9086	0912058	MRS. NASIMA YOUSUF	BXX-912	SUZUKI ALTO	E2806894000050175DD5A0EE	Active	static/member_profile_img/912058.jpg	Outside	2026-10-21 09:33:44
 9087	0213872	MR. MUBASHIR TANVEER	BF-4544	TOYOTA	E28068900000000256448370	Active	static/member_profile_img/213872.jpg	Outside	2026-10-21 09:33:44
@@ -23412,7 +25075,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 9211	0214361	MR. SYED SHAZIL ALI SHAH	BRH-915	HONDA CIVIC	E2806894000040175DD150ED	Active	static/member_profile_img/214361.jpg	Outside	2026-10-21 09:33:44
 9212	0912396	MRS. MEHAR IFTIKHAR	BK-8793	KIA SPORTAGE	E2806894000040175DD594ED	Active	static/member_profile_img/912396.jpg	Outside	2026-10-21 09:33:44
 9213	0912397	MRS. JAVIDA ZENUDDIN ANJARWALLA	BSM-121	TOYOTA	E2806890000000025799EC40	Active	static/member_profile_img/912397.jpg	Outside	2026-10-21 09:33:44
-9214	0912397	MRS. JAVIDA ZENUDDIN ANJARWALLA	BH-8142	KIA SPORTAGE	E2806894000040175DD5B4EF	Active	static/member_profile_img/912397.jpg	Outside	2026-10-21 09:33:44
 9215	014628	MR. ZAFAR IQBAL	BRG-990	TOYOTA COROLLA	E2806894000040175DD710EF	Active	static/member_profile_img/14628.jpg	Outside	2026-10-21 09:33:44
 9216	014628	MR. ZAFAR IQBAL	BK-6287	KIA SPORTAGE	E2806894000050175DD5E8F0	Active	static/member_profile_img/14628.jpg	Outside	2026-10-21 09:33:44
 9217	082113	MR. MUHAMMAD HARIS	ALN-732	SUZUKI CULTUS	E280689000000002579934D3	Active	static/member_profile_img/82113.JPG	Outside	2026-10-21 09:33:44
@@ -23438,7 +25100,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 9238	0214371	MR. KARIM	BH-8481	KIA SPORTAGE	E2806890000000025799D0D9	Active	static/member_profile_img/214371.jpg	Outside	2026-10-21 09:33:44
 9239	0214371	MR. KARIM	BJ-3246	HONDA VEZEL	E28068900000000257991F28	Active	static/member_profile_img/214371.jpg	Outside	2026-10-21 09:33:44
 9240	0214371	MR. KARIM	AZV-633	TOYOTA VITZ	E2806894000050175DD568EF	Active	static/member_profile_img/214371.jpg	Outside	2026-10-21 09:33:44
-9241	113431	MR. HUMAYUN QURESHI	AAHX-088	BYD ATTO-3	E20047026150642288C30110	Active	static/member_profile_img/113431.JPG	Outside	2026-10-21 09:33:44
 9242	113431	MR. HUMAYUN QURESHI	CV-8888	TOYOTA VIGO	E2806890000000025799CA4A	Active	static/member_profile_img/113431.JPG	Outside	2026-10-21 09:33:44
 9243	113431	MR. HUMAYUN QURESHI	BJ-8175	TOYOTA FORTUNER	E28068900000000256448F3F	Active	static/member_profile_img/113431.JPG	Outside	2026-10-21 09:33:44
 9244	113431	MR. HUMAYUN QURESHI	BJ-5770	HONDA BRV	E2806890000000025799C2E3	Active	static/member_profile_img/113431.JPG	Outside	2026-10-21 09:33:44
@@ -23462,8 +25123,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 9265	0213937	MR. SHEIKH FAHEEM KARAMAT MASUD	AZL-180	TOYOTA COROLLA	E2806890000000025799C62F	Active	static/member_profile_img/213937.JPG	Outside	2026-10-21 09:33:44
 9266	0213938	MR. HASAN GOKAL	BZG-098	HONDA CITY	E28068900000000256448B0D	Active	static/member_profile_img/213938.JPG	Outside	2026-10-21 09:33:44
 9267	0213938	MR. HASAN GOKAL	BNM-707	HONDA CIVIC	E2806894000040175DD1D4ED	Active	static/member_profile_img/213938.JPG	Outside	2026-10-21 09:33:44
-9268	0213941	MR. MUHAMMAD UMAIR AYUB KHAN	BF-1742	TOYOTA FORTUNER	E20047015D2064227880010A	Active	static/member_profile_img/213941.jpg	Outside	2026-10-21 09:33:44
-9269	0213941	MR. MUHAMMAD UMAIR AYUB KHAN	BF-1742	TOYOTA FORTUNER	E2806890000000025799E7A6	Active	static/member_profile_img/213941.jpg	Outside	2026-10-21 09:33:44
 9270	0213943	MR. WALI MOHAMMAD HANIF KHANANI	AAFU-163	CHANGAN OSHAN	E20047114C60642222A70112	Active	static/member_profile_img/213943.jpg	Outside	2026-10-21 09:33:44
 9271	0213944	MR. MUHAMMAD USMAN JAVED	BTN-312	TOYOTA YARIS	E28068900000000256448463	Active	static/member_profile_img/213944.jpg	Outside	2026-10-21 09:33:44
 9272	0213944	MR. MUHAMMAD USMAN JAVED	BLQ-998	TOYOTA COROLLA	E28068900000000256445C89	Active	static/member_profile_img/213944.jpg	Outside	2026-10-21 09:33:44
@@ -23483,6 +25142,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 9286	0214035	MR. SOHAIB AKBER	BM-1152	HYUNDAI SONATA	E28068900000000257991DE5	Active	static/member_profile_img/214035.JPG	Outside	2026-10-21 09:33:44
 9287	0214035	MR. SOHAIB AKBER	BRH-935	TOYOTA COROLLA	E28068900000000256448EA3	Active	static/member_profile_img/214035.JPG	Outside	2026-10-21 09:33:44
 9288	0214035	MR. SOHAIB AKBER	BVZ-838	HYUNDAI ELANTRA	E2806890000000025797E191	Active	static/member_profile_img/214035.JPG	Outside	2026-10-21 09:33:44
+9268	0213941	MR. MUHAMMAD UMAIR AYUB KHAN	BF-1742	TOYOTA FORTUNER	E20047015D2064227880010A	Active	static/member_profile_img/213941.jpg	Outside	2026-10-21 09:33:44
 9289	0214035	MR. SOHAIB AKBER	BRH-935	TOYOTA COROLLA	E2806894000040175DD488F0	Active	static/member_profile_img/214035.JPG	Outside	2026-10-21 09:33:44
 9290	0214035	MR. SOHAIB AKBER	BVZ-838	HYUNDAI ELANTRA	E2806894000050175DD048F0	Active	static/member_profile_img/214035.JPG	Outside	2026-10-21 09:33:44
 9291	0214035	MR. SOHAIB AKBER	AWJ-302	SUZUKI CULTUS	E2806894000040175DD634EE	Active	static/member_profile_img/214035.JPG	Outside	2026-10-21 09:33:44
@@ -23545,7 +25205,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 9348	004697	MR. OMER SAEED	BKM-111	MERCEDES BENZ	E2806894000040175DD254EF	Active	static/member_profile_img/4697.JPG	Outside	2026-10-21 09:33:44
 9349	004697	MR. OMER SAEED	BF-2286	TOYOTA PRADO	E2806894000050175DD288EF	Active	static/member_profile_img/4697.JPG	Outside	2026-10-21 09:33:44
 9350	004697	MR. OMER SAEED	BM-1003	KIA SPORTAGE	E2806894000040175DD258EF	Active	static/member_profile_img/4697.JPG	Outside	2026-10-21 09:33:44
-9351	004697	MR. OMER SAEED	BG-4059	TOYOTA PARADO	E2806894000050175DD248EF	Active	static/member_profile_img/4697.JPG	Outside	2026-10-21 09:33:44
 9352	0211804	MR. DANYAL VIQAR ZEPHYR	BRS-646	SUZUKI WAGONR	E280689000000002579927E3	Active	static/member_profile_img/211804.JPG	Outside	2026-10-21 09:33:44
 9353	0211804	MR. DANYAL VIQAR ZEPHYR	BCB-512	HONDA CITY	E2806890000000025798F237	Active	static/member_profile_img/211804.JPG	Outside	2026-10-21 09:33:44
 9354	0912400	MRS. NAZLI JAVED HUSAIN	BEP-661	HONDA CITY	E2806890000000025799E79B	Active	static/member_profile_img/912400.jpg	Outside	2026-10-21 09:33:44
@@ -23625,10 +25284,8 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 9436	006677	MR. IMRAN MATEEN	AUL-014	MERCEDES BENZ	E2806894000040175DD6C8EE	Active	static/member_profile_img/6677.jpg	Outside	2026-10-21 09:33:44
 9437	006677	MR. IMRAN MATEEN	BHN-263	HONDA CIVIC	E2806894000040175DD6A8EE	Active	static/member_profile_img/6677.jpg	Outside	2026-10-21 09:33:44
 9438	006677	MR. IMRAN MATEEN	AVB-849	AUDI E-TRON	E2806894000040175DD68CEE	Active	static/member_profile_img/6677.jpg	Outside	2026-10-21 09:33:44
-9441	007027	MR. ZAIN ANWAR	BNP-708	SUZUKI WAGONR	E2806890000000025798217F	Active	static/member_profile_img/7027.JPG	Outside	2026-10-21 09:33:44
 9443	007027	MR. ZAIN ANWAR	BUB-659	KIA PICANTO	E2806890000000025798F732	Active	static/member_profile_img/7027.JPG	Outside	2026-10-21 09:33:44
 9444	007027	MR. ZAIN ANWAR	AAA-541	HONDA CIVIC	E28068900000000257982DCC	Active	static/member_profile_img/7027.JPG	Outside	2026-10-21 09:33:44
-9445	007027	MR. ZAIN ANWAR	BNP-708	SUZUKI	E2806894000050175DD76CEF	Active	static/member_profile_img/7027.JPG	Outside	2026-10-21 09:33:44
 9446	007027	MR. ZAIN ANWAR	BUB-659	KIA	E2806894000050175DD73CEF	Active	static/member_profile_img/7027.JPG	Outside	2026-10-21 09:33:44
 9447	082142	MR. GHAZANFAR ALI QADRI	LD-4653	HILUX REVO	E28068900000000257992166	Active	static/member_profile_img/82142.jpg	Outside	2026-10-21 09:33:44
 9448	082142	MR. GHAZANFAR ALI QADRI	BVZ-237	HONDA CIVIC	E2806890000000025797DCED	Active	static/member_profile_img/82142.jpg	Outside	2026-10-21 09:33:44
@@ -23654,7 +25311,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 9471	102842	MS. SHAZMEEN SAQIB PIRZADA	BZK-960	DAIHATSU MIRA	E2004701B6F064227E1D0110	Active	static/member_profile_img/102842.jpg	Outside	2026-10-21 09:33:44
 9472	102842	MS. SHAZMEEN SAQIB PIRZADA	BN-8773	TOYOTA RAIZE	E2004701B5B064227E09010F	Active	static/member_profile_img/102842.jpg	Outside	2026-10-21 09:33:44
 9473	102849	MS. DANIA SHER ALI SIDDIQUI	AJU-683	TOYOTA CORLLLA	E2806890000000025798F7A1	Active	static/member_profile_img/102849.JPG	Outside	2026-10-21 09:33:44
-9474	007392	MR. MANSOOR ZAKARIA FAZIL	BMJ-113	SUZUKI CAIZ	E2004701A3C064227CEA0110	Active	static/member_profile_img/7392.jpg	Outside	2026-10-21 09:33:44
 9475	007392	MR. MANSOOR ZAKARIA FAZIL	AJL-323	HONDA CITY	E2806894000040175DD5B8EF	Active	static/member_profile_img/7392.jpg	Outside	2026-10-21 09:33:44
 9476	082146	MR. DADLO ZUHRANI	GSC-291	TOYOTA COROLLA	E280689000000002579821D0	Active	static/member_profile_img/82146.JPG	Outside	2026-10-21 09:33:44
 9477	102798	MRS. MARIAM MANIAR	BLV-155	TOYOTA COROLLA	E28068900000000257991C4F	Active	static/member_profile_img/102798.JPG	Outside	2026-10-21 09:33:44
@@ -23673,8 +25329,9 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 9493	006386	MR. MUHAMMAD  NADEEM DALIA	BDZ-483	TOYOTA ALTIS	E2806890000000025797E61E	Active	static/member_profile_img/6386.JPG	Outside	2026-10-21 09:33:44
 9494	101804	MRS. UMMEHANI ABDI ALI TURAB	BF-4769	TOYOTA FORTUNER	E28068900000000257993181	Active	static/member_profile_img/101804.jpg	Outside	2026-10-21 09:33:44
 9495	0912675	MRS. SEEMA ARSHAD ZUBERI	AAGU-625	BYD ATTO-3	E20047109CE0642217AF010A	Active	static/member_profile_img/912675.JPG	Outside	2026-10-21 09:33:44
-9496	008269	MR. SAAD RIZWANI SHEIKH	BLF-685	HONDA CITY	E2806890000000025644584C	Active	static/member_profile_img/8269.JPG	Outside	2026-10-21 09:33:44
 9497	007399	MR. ZIAD AFTAB EJAZ	AAHG-821	BYD	E2004711441064222222010D	Active	static/member_profile_img/7399.jpg	Outside	2026-10-21 09:33:44
+9496	008269	MR. SAAD RIZWANI SHEIKH	BLF-685	HONDA CITY	E2806890000000025644584C	Active	static/member_profile_img/8269.JPG	Outside	2026-10-21 09:33:44
+9445	007027	MR. ZAIN ANWAR	BNP-708	SUZUKI	E2806894000050175DD76CEF	Active	static/member_profile_img/7027.JPG	Outside	2026-10-21 09:33:44
 9498	007399	MR. ZIAD AFTAB EJAZ	BXL-932	TOYOTA COROLLA	E2806894000040175DD128EE	Active	static/member_profile_img/7399.jpg	Outside	2026-10-21 09:33:44
 9499	007399	MR. ZIAD AFTAB EJAZ	BC-9220	TOYOTA LAND CRS	E28068900000000256445289	Active	static/member_profile_img/7399.jpg	Outside	2026-10-21 09:33:44
 9500	007399	MR. ZIAD AFTAB EJAZ	KZ-7700	TOYOTA HILUX REVO	E2806890000000025798F1FF	Active	static/member_profile_img/7399.jpg	Outside	2026-10-21 09:33:44
@@ -23762,7 +25419,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 9589	082222	MR. SYED JUNAID ALAM RIZVI	GSE-510	TOYOTA COROLLA	E2806890000000025797DCA9	Active	static/member_profile_img/82222.jpg	Outside	2026-10-21 09:33:44
 9590	082229	MR. SHIRAZ-UL- HAQ	BXN-392	TOYOTA COROLLA	E2806890000000025799D959	Active	static/member_profile_img/82229.JPG	Outside	2026-10-21 09:33:44
 9591	007072	MR. QASIM CHHOTANI	BHF-218	SUZUKI ALTO	E2806890000000025797E073	Active	static/member_profile_img/7072.JPG	Outside	2026-10-21 09:33:44
-9592	115959	MR. SHEZI NACKVI	BSC-396	TOYOTA YARIS	E28068900000000257992995	Active	static/member_profile_img/115959.jpg	Outside	2026-10-21 09:33:44
 9593	220557	MRS. RAZIA KALWAR	BEX-988	TOYOTA COROLLA	E280689000000002564444BE	Active	static/member_profile_img/220557.jpg	Outside	2026-10-21 09:33:44
 9594	0214511	MR. SYED FAZAL ABBAS	BN-8212	OSHAN X7	E2004701969064227C170109	Active	static/member_profile_img/214511.jpg	Outside	2026-10-21 09:33:44
 9595	0214511	MR. SYED FAZAL ABBAS	BUH-761	SUZUKI ALTO	E2806890000000025799E971	Active	static/member_profile_img/214511.jpg	Outside	2026-10-21 09:33:44
@@ -23786,7 +25442,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 9613	0214569	MR. HUMZA USMAN GHANI	CAG-775	HONDA CIVIC	E2806890000000025798F4D5	Active	static/member_profile_img/214569.jpg	Outside	2026-10-21 09:33:44
 9614	0912587	MRS. AZIZA A. FEERASTA	BM-7879	TOYOTA LAND CRS	E28068900000000257992521	Active	static/member_profile_img/912587.jpg	Outside	2026-10-21 09:33:44
 9615	0912587	MRS. AZIZA A. FEERASTA	BM-7879	TOYOTA	E2806890000000025798326F	Active	static/member_profile_img/912587.jpg	Outside	2026-10-21 09:33:44
-9616	082223	R/ADM RIZWAN AHMED KHAN SI(M)	AABG-273	HAVAL	E2004701AD7064227D85010C	Active	static/member_profile_img/82223.JPG	Outside	2026-10-21 09:33:44
 9617	082223	R/ADM RIZWAN AHMED KHAN SI(M)	XA-856	HONDA CIVIC	E2007DD2B1014330B3BA350C	Active	static/member_profile_img/82223.JPG	Outside	2026-10-21 09:33:44
 9618	082223	R/ADM RIZWAN AHMED KHAN SI(M)	BWA-781	TOYOTA ALTIS	E2806890000000025799D988	Active	static/member_profile_img/82223.JPG	Outside	2026-10-21 09:33:44
 9619	082223	R/ADM RIZWAN AHMED KHAN SI(M)	ANW-866	HONDA CITY	E2806890000000025799D849	Active	static/member_profile_img/82223.JPG	Outside	2026-10-21 09:33:44
@@ -23837,7 +25492,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 9664	102700	MRS. AYLA MALIK	BH-7350	KIA SPORTAGE	E2806890000000025798E7C2	Active	static/member_profile_img/102700.JPG	Outside	2026-10-21 09:33:44
 9665	124042	MR. HAMZA AHMAD DADA	BM-1204	HYUNDAI	E28068900000000257991EC2	Active	static/member_profile_img/124042.jpg	Outside	2026-10-21 09:33:44
 9666	124042	MR. HAMZA AHMAD DADA	BCS-950	TOYOTA PRIUS	E28068900000000257991E62	Active	static/member_profile_img/124042.jpg	Outside	2026-10-21 09:33:44
-9667	124042	MR. HAMZA AHMAD DADA	BM-7218	TOYOTA CROSS	E2806890000000025798ECB7	Active	static/member_profile_img/124042.jpg	Outside	2026-10-21 09:33:44
 9668	124042	MR. HAMZA AHMAD DADA	BCS-950	TOYOTA PRIUS	E280689000000002579938E2	Active	static/member_profile_img/124042.jpg	Outside	2026-10-21 09:33:44
 9669	124042	MR. HAMZA AHMAD DADA	BCS-950	TOYOTA PRIUS	E2806890000000025798EDAC	Active	static/member_profile_img/124042.jpg	Outside	2026-10-21 09:33:44
 9670	124042	MR. HAMZA AHMAD DADA	BM-1204	HUNDAI-2022	E2806894000050175DD0B4F0	Active	static/member_profile_img/124042.jpg	Outside	2026-10-21 09:33:44
@@ -23921,7 +25575,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 9752	0912491	MRS. ZULAIKHA AGHA	BNG-014	MEATOMIC	E280689000000002564480AE	Active	static/member_profile_img/912491.JPG	Outside	2026-10-21 09:33:44
 9753	0512501	MRS. TASNEEM	BZS-153	TOYOTA COROLLA	E2806890000000025799D89B	Active	static/member_profile_img/512501.jpg	Outside	2026-10-21 09:33:44
 9754	0912502	MRS. SAEEDA JAVAID	BRA-094	TOYOTA COROLLA	E2806890000000025798F5C6	Active	static/member_profile_img/912502.JPG	Outside	2026-10-21 09:33:44
-9755	082172	COL. JUNAID SALAH-UD-DIN SWATI	ICT-0485	TOYOTA SURF	E28068900000000256448650	Active	static/member_profile_img/82172.JPG	Outside	2026-10-21 09:33:44
 9756	082172	COL. JUNAID SALAH-UD-DIN SWATI	AK-325	TOYOTA REVO	E28068900000000256448597	Active	static/member_profile_img/82172.JPG	Outside	2026-10-21 09:33:44
 9757	006367	MR. RIAZ SALIM	BMA-498	HONDA CIVIC	E2806890000000025798EC11	Active	static/member_profile_img/6367.jpg	Outside	2026-10-21 09:33:44
 9758	006367	MR. RIAZ SALIM	BDQ-455	HONDA CIVIC	E28068900000000257992AFC	Active	static/member_profile_img/6367.jpg	Outside	2026-10-21 09:33:44
@@ -23996,7 +25649,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 9826	0214418	MR. MOHAMMAD ALI SHAHZADA	KX-2344	TOOYTA REVO	E2806894000040175DD38CED	Active	static/member_profile_img/214418.JPG	Outside	2026-10-21 09:33:44
 9831	082156	MR. SANAULLAH ABBASI	CAM-374	TOYOTA COROLLA	E2007DAF0CCB3E30D0441CF8	Active	static/member_profile_img/82156.jpg	Outside	2026-10-21 09:33:44
 9832	082156	MR. SANAULLAH ABBASI	GAK-808	TOYOTA REVO	E2806890000000025799DB69	Active	static/member_profile_img/82156.jpg	Outside	2026-10-21 09:33:44
-9833	082156	MR. SANAULLAH ABBASI	SPF-782	TOYOTA COROLLA	E28068900000000257981EBF	Active	static/member_profile_img/82156.jpg	Outside	2026-10-21 09:33:44
 9834	082156	MR. SANAULLAH ABBASI	AUZ-903	CYGNUS 2000	E2806890000000025797F050	Active	static/member_profile_img/82156.jpg	Outside	2026-10-21 09:33:44
 9835	082157	MR. KAMRAN MUGHAL	BUW-880	HYUNDAI ELANTARA	E280689000000002579822FC	Active	static/member_profile_img/82157.jpg	Outside	2026-10-21 09:33:44
 9836	082157	MR. KAMRAN MUGHAL	BMK-111	TOYOTA COROLLA	E2806890000000025798F8BC	Active	static/member_profile_img/82157.jpg	Outside	2026-10-21 09:33:44
@@ -24031,8 +25683,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 9874	006251	MR. MOHAMMAD JALAL KHAN	BUL-857	TOYOTA YARIS	E2806894000040175DD598EE	Active	static/member_profile_img/6251.jpg	Outside	2026-10-21 09:33:44
 9875	006254	MR. EDDIE M DINSHAW	BDD-610	TOYOTA COROLLA	E2806894000040175DD5E0ED	Active	static/member_profile_img/6254.jpg	Outside	2026-10-21 09:33:44
 9877	006819	MR. AHMED RAZA SHIRAZI	AADY-058	TOYOTA LAND CRU	E2004701AE5064227D93010B	Active	static/member_profile_img/6819.jpg	Outside	2026-10-21 09:33:44
-9878	006819	MR. AHMED RAZA SHIRAZI	AAAK-058	LAND CURSER	E2004701A7A064227D280111	Active	static/member_profile_img/6819.jpg	Outside	2026-10-21 09:33:44
-9879	006819	MR. AHMED RAZA SHIRAZI	AAAK-058	LAND CURSER	E20047016BF06422796D010E	Active	static/member_profile_img/6819.jpg	Outside	2026-10-21 09:33:44
 9880	006819	MR. AHMED RAZA SHIRAZI	KV-0058	LAND CRUSER	E2806890000000025799D830	Active	static/member_profile_img/6819.jpg	Outside	2026-10-21 09:33:44
 9881	006819	MR. AHMED RAZA SHIRAZI	AXU-305	LAND CRUSER	E2007DD2B1015C70B3BA3571	Active	static/member_profile_img/6819.jpg	Outside	2026-10-21 09:33:44
 9882	006819	MR. AHMED RAZA SHIRAZI	YG-058	TOYTA VIGO	E28068900000000256448BD2	Active	static/member_profile_img/6819.jpg	Outside	2026-10-21 09:33:44
@@ -24112,7 +25762,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 9957	0213277	MR. SAAD CHHOTANI	BXF-125	TOYOTA COROLLA	E28068900000000256445636	Active	static/member_profile_img/213277.JPG	Outside	2026-10-21 09:33:44
 9958	0213924	MR. ZAIN JAVED	BXC-844	SUZUKI ALTO	E2806890000000025797EAD9	Active	static/member_profile_img/213924.jpg	Outside	2026-10-21 09:33:44
 9959	0213924	MR. ZAIN JAVED	BMX-632	TOYOTA	E280689000000002579835DC	Active	static/member_profile_img/213924.jpg	Outside	2026-10-21 09:33:44
-9960	0214545	MR. WAHEED ALI BURKI	AAKU-977	BYD SHARK	E2004701D9006422803E010F	Active	static/member_profile_img/214545.JPG	Outside	2026-10-21 09:33:44
 9962	0214545	MR. WAHEED ALI BURKI	BCX-062	TOOYTA COROLLA	E2806890000000025799DDDD	Active	static/member_profile_img/214545.JPG	Outside	2026-10-21 09:33:44
 9963	0214545	MR. WAHEED ALI BURKI	BNB-457	SUZUKI SWIFT	E28068900000000257991E9C	Active	static/member_profile_img/214545.JPG	Outside	2026-10-21 09:33:44
 9964	0214545	MR. WAHEED ALI BURKI	BL-7765	TOYOTA FORTUNER	E28068900000000257992287	Active	static/member_profile_img/214545.JPG	Outside	2026-10-21 09:33:44
@@ -24210,7 +25859,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 10061	102847	MS. NEESHA DARA KHAN	BYV-261	TOYOTA COROLLA	E2806890000000025798285F	Active	static/member_profile_img/102847.JPG	Outside	2026-10-21 09:33:44
 10062	102847	MS. NEESHA DARA KHAN	BVL-547	HYUNDAI SONATA	E2806890000000025798E96A	Active	static/member_profile_img/102847.JPG	Outside	2026-10-21 09:33:44
 10063	102847	MS. NEESHA DARA KHAN	BVL-547	HYUNDAI SONATA	E2806890000000025797EEDB	Active	static/member_profile_img/102847.JPG	Outside	2026-10-21 09:33:44
-10064	016954	MR. MUHAMMAD AJAZ	BM-3615	HAVAL JULION	E2004701D37064227FE50109	Active	static/member_profile_img/16954.jpg	Outside	2026-10-21 09:33:44
 10065	115961	MR. HANIF ABDUL HAMEED	BCZ-984	TOYOTA COROLLA	E2806894000050175DD490EF	Active	static/member_profile_img/115961.JPG	Outside	2026-10-21 09:33:44
 10066	115961	MR. HANIF ABDUL HAMEED	BH-5904	KIA SPORTAGE	E2806890000000025799CDB5	Active	static/member_profile_img/115961.JPG	Outside	2026-10-21 09:33:44
 10067	115961	MR. HANIF ABDUL HAMEED	BK-2199	TOYOTA	E2806894000040175DD49CEE	Active	static/member_profile_img/115961.JPG	Outside	2026-10-21 09:33:44
@@ -24276,7 +25924,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 10132	017038	MR. SHAHRUKH ESSA	BVE-652	HONDACITY	E2806890000000025799DCF3	Active	static/member_profile_img/17038.jpg	Outside	2026-10-21 09:33:44
 10133	082174	MR. MOHAMMAD YOUNIS	SPG-291	HILUX REVO	E2806890000000025797EB1F	Active	static/member_profile_img/82174.jpg	Outside	2026-10-21 09:33:44
 10134	082174	MR. MOHAMMAD YOUNIS	SPA-283	TOYOTA COROOLLA	E28068900000000257982199	Active	static/member_profile_img/82174.jpg	Outside	2026-10-21 09:33:44
-10135	082174	MR. MOHAMMAD YOUNIS	SPA-874	TOYOTA LAND CRU	E2806890000000025799282D	Active	static/member_profile_img/82174.jpg	Outside	2026-10-21 09:33:44
 10136	102261	MRS. NERMEEN KHALID KUSHTIWALA	BTD-152	TOYOTA COROLLA	E2806894000040175DD160EE	Active	static/member_profile_img/102261.jpg	Outside	2026-10-21 09:33:44
 10137	102261	MRS. NERMEEN KHALID KUSHTIWALA	EAA-173	AUDI  E-TRON	E2806894000050175DD1C4EE	Active	static/member_profile_img/102261.jpg	Outside	2026-10-21 09:33:44
 10138	102261	MRS. NERMEEN KHALID KUSHTIWALA	BDT-314	HONDA ACCORD	E2806894000050175DD18CEE	Active	static/member_profile_img/102261.jpg	Outside	2026-10-21 09:33:44
@@ -24334,16 +25981,15 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 10191	221156	MRS. SHARMEEN NASIR	BUS-282	TOYOTA VITZ	E280689000000002564482EA	Active	static/member_profile_img/221156.JPG	Outside	2026-10-21 09:33:44
 10192	221156	MRS. SHARMEEN NASIR	BDC-177	TOYOTA COROLLA	E28068900000000256445C1D	Active	static/member_profile_img/221156.JPG	Outside	2026-10-21 09:33:44
 10193	221156	MRS. SHARMEEN NASIR	BH-6405	KIA SPORTAGE	E2806890000000025797EFB8	Active	static/member_profile_img/221156.JPG	Outside	2026-10-21 09:33:44
-10194	082224	MR. MANZOOR ALI JOKHIO	AAKR-909	HONDA CIVIC	E200470179C064227A4A0110	Active	static/member_profile_img/82224.JPG	Outside	2026-10-21 09:33:44
 10195	082224	MR. MANZOOR ALI JOKHIO	AAJU-909	TOYOTA YARIS	E2004710CBD064221A9E010C	Active	static/member_profile_img/82224.JPG	Outside	2026-10-21 09:33:44
-10196	123407	MR. PERVEZ  NABI OSTO	BSY-060	TOYOTA/YARIS	E28068900000000256448DFC	Active	static/member_profile_img/123407.jpg	Outside	2026-10-21 09:33:44
 10197	123407	MR. PERVEZ  NABI OSTO	AVV-060	TOYOTA CORLLA	E2806890000000025797E643	Active	static/member_profile_img/123407.jpg	Outside	2026-10-21 09:33:44
-10198	123407	MR. PERVEZ  NABI OSTO	BSY-060	TOYOTA	E2806890000000025797E025	Active	static/member_profile_img/123407.jpg	Outside	2026-10-21 09:33:44
 10199	123407	MR. PERVEZ  NABI OSTO	AVV-060	TOYOTA CORLLA	E2806890000000025799EBC2	Active	static/member_profile_img/123407.jpg	Outside	2026-10-21 09:33:44
 10200	017103	MR. TARIQ ALEXANDER QAISER	AAHK-104	TOYOTA CROSS	E2004701DEC06422809A010E	Active	static/member_profile_img/17103.jpg	Outside	2026-10-21 09:33:44
 10201	082133	MR. SYED MUHAMMAD ALI	BDT-701	TOYOTA COROLLA	E2806894000050175DD24CEE	Active	static/member_profile_img/82133.JPG	Outside	2026-10-21 09:33:44
 10202	082133	MR. SYED MUHAMMAD ALI	KX-2446	TOYOTA REVO	E2806894000040175DD260EE	Active	static/member_profile_img/82133.JPG	Outside	2026-10-21 09:33:44
 10203	082133	MR. SYED MUHAMMAD ALI	BL-0044	TOYOTA FORTUNER	E2806894000050175DD2DCEE	Active	static/member_profile_img/82133.JPG	Outside	2026-10-21 09:33:44
+10194	082224	MR. MANZOOR ALI JOKHIO	AAKR-909	HONDA CIVIC	E200470179C064227A4A0110	Active	static/member_profile_img/82224.JPG	Outside	2026-10-21 09:33:44
+10196	123407	MR. PERVEZ  NABI OSTO	BSY-060	TOYOTA/YARIS	E28068900000000256448DFC	Active	static/member_profile_img/123407.jpg	Outside	2026-10-21 09:33:44
 10204	082133	MR. SYED MUHAMMAD ALI	GSE-888	TOYOTA FORTUNER	E2806894000050175DD2C4EE	Active	static/member_profile_img/82133.JPG	Outside	2026-10-21 09:33:44
 10205	102671	MRS. HAYA ESBHANI	AAEW-864	SUZUKI FRONX	E2004701E490642280F7010C	Active	static/member_profile_img/102671.jpg	Outside	2026-10-21 09:33:44
 10206	102671	MRS. HAYA ESBHANI	BWR-864	KIA PICANTO	E2806894000050175DD220EE	Active	static/member_profile_img/102671.jpg	Outside	2026-10-21 09:33:44
@@ -24395,7 +26041,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 10251	102804	MRS. MARIA FARHAN	ARQ-949	HONDA CITY	E2806890000000025644820E	Active	static/member_profile_img/102804.JPG	Outside	2026-10-21 09:33:44
 10252	102804	MRS. MARIA FARHAN	BNU-651	TOYOTA PASSO	E2806890000000025797EE46	Active	static/member_profile_img/102804.JPG	Outside	2026-10-21 09:33:44
 10253	0214637	MR. MUHAMMAD FAIZAN FARRUKH	ANH-771	SUZUKI CULTUS	E2806890000000025798EFE5	Active	static/member_profile_img/214637.JPG	Outside	2026-10-21 09:33:44
-10254	0214638	MR. FAHAD WAHID MOTEN	AAAR-284	SAZGAR HAVAL	E2004701B55064227E03010F	Active	static/member_profile_img/214638.JPG	Outside	2026-10-21 09:33:44
 10256	0214646	MR. ADIL AHMED CHAPRA	BH-8121	KIA SPORTAGE	E28068900000000257981E62	Active	static/member_profile_img/214646.jpg	Outside	2026-10-21 09:33:44
 10257	0214646	MR. ADIL AHMED CHAPRA	KW-2977	TOYOTA REVO	E28068900000000256447FD4	Active	static/member_profile_img/214646.jpg	Outside	2026-10-21 09:33:44
 10258	014932	MR. KAZIM SULTAN DATTOO	BXP-473	SUZUKI SWIFT	E28068900000000257982D91	Active	static/member_profile_img/14932.JPG	Outside	2026-10-21 09:33:44
@@ -24439,6 +26084,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 10297	006478	MR. SAQIB RIAZ	AHG-517	AUDI E-TRON	E2007DD2B1015630B3BA3558	Active	static/member_profile_img/6478.jpg	Outside	2026-10-21 09:33:44
 10298	006478	MR. SAQIB RIAZ	BMW-141	TOYOTA GARNDE	E2806890000000025799D59C	Active	static/member_profile_img/6478.jpg	Outside	2026-10-21 09:33:44
 10299	006478	MR. SAQIB RIAZ	BG-1986	LAND CRUISER	E28068900000000257992B26	Active	static/member_profile_img/6478.jpg	Outside	2026-10-21 09:33:44
+10254	0214638	MR. FAHAD WAHID MOTEN	AAAR-284	SAZGAR HAVAL	E2004701B55064227E03010F	Active	static/member_profile_img/214638.JPG	Outside	2026-10-21 09:33:44
 10300	006478	MR. SAQIB RIAZ	CY-2138	TOYOTA VELFIRE	E2806890000000025798F360	Active	static/member_profile_img/6478.jpg	Outside	2026-10-21 09:33:44
 10301	006478	MR. SAQIB RIAZ	BCH-400	MERCEDES BANZ	E28068900000000256448B13	Active	static/member_profile_img/6478.jpg	Outside	2026-10-21 09:33:44
 10302	006143	MR. KHURSHED AGA	BBG-789	TOYOTA COROLLA	E2806894000040175DD668ED	Active	static/member_profile_img/6143.jpg	Outside	2026-10-21 09:33:44
@@ -24459,7 +26105,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 10318	101715	MRS. SARA NAVEED	EAA-257	BMW	E2806890000000025799DE4D	Active	static/member_profile_img/101715.JPG	Outside	2026-10-21 09:33:44
 10319	102875	MS. AMMARA AMIR BHESANIA	AAAW-392	HONDA BRV	E2004710BC30642219A4010F	Active	static/member_profile_img/102875.JPG	Outside	2026-10-21 09:33:44
 10320	082160	MRS. FARIDA MEMON	BJR-506	TOYOTA COROLLA	E2806890000000025797EB7F	Active	static/member_profile_img/82160.jpg	Outside	2026-10-21 09:33:44
-10321	082160	MRS. FARIDA MEMON	BUY-506	HONDA CITY	E28068900000000256448322	Active	static/member_profile_img/82160.jpg	Outside	2026-10-21 09:33:44
 10322	0214558	MR. MIR ZABER KUSH TALPUR	BSA-676	SUZUKI	E2806890000000025797EEA4	Active	static/member_profile_img/214558.JPG	Outside	2026-10-21 09:33:44
 10323	0214558	MR. MIR ZABER KUSH TALPUR	AUJ-219	TOYOTA	E2806890000000025799DF55	Active	static/member_profile_img/214558.JPG	Outside	2026-10-21 09:33:44
 10324	0214584	MR. SYED SHAYAAN SHAH	CZ-0044	TOYOTA COROLLA	E2806890000000025799273D	Active	static/member_profile_img/214584.JPG	Outside	2026-10-21 09:33:44
@@ -24530,7 +26175,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 10391	007105	MR. RIZWAN FEROZ	BH-8016	KIA SPORTAGE	E28068900000000257992764	Active	static/member_profile_img/7105.JPG	Outside	2026-10-21 09:33:44
 10392	007105	MR. RIZWAN FEROZ	AVH-799	AUDI E-TRON	E280689000000002579929B1	Active	static/member_profile_img/7105.JPG	Outside	2026-10-21 09:33:44
 10393	007132	MR. MOEZ BHORA	BXV-676	HONDA CIVIC	E2806894000050175DD53CED	Active	static/member_profile_img/7132.JPG	Outside	2026-10-21 09:33:44
-10394	007134	MR. HASSAN MUNIR QURESHI	BDE-581	TOYOTA ALTIS	E280689000000002579936EE	Active	static/member_profile_img/7134.JPG	Outside	2026-10-21 09:33:44
 10395	007134	MR. HASSAN MUNIR QURESHI	KY-7475	ISUZU D-MAX	E280689000000002564480A5	Active	static/member_profile_img/7134.JPG	Outside	2026-10-21 09:33:44
 10396	007137	MR. AIJAZ ALAM KHAN YOUSUFZAI	BJ-4697	LAND DEFENDER	E280689000000002564486E8	Active	static/member_profile_img/7137.jpg	Outside	2026-10-21 09:33:44
 10397	007137	MR. AIJAZ ALAM KHAN YOUSUFZAI	BCM-451	TOYOTA COROLA	E2806890000000025799DA5B	Active	static/member_profile_img/7137.jpg	Outside	2026-10-21 09:33:44
@@ -24621,8 +26265,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 10489	008374	BRIG. IMRAN ASGHAR	GS-4391	GS-4391	E200471135D06422213E0110	Active	static/member_profile_img/8374.JPG	Outside	2026-10-21 09:33:44
 10490	102898	MS. AZEEMAH MIKHDAD NAKHODA	AAAZ-823	CHANGAN	E2004701AE1064227D8F010B	Active	static/member_profile_img/102898.jpg	Outside	2026-10-21 09:33:44
 10492	0214813	MR. MUHAMMAD NAUFAL JAVED	AAGU-789	BYD ATTO-3	E2004711351064222132010E	Active	static/member_profile_img/214813.JPG	Outside	2026-10-21 09:33:44
-10493	0412693	MISS. MYRA IMAN BILAL KHAN	BG-1018	TOYOTA	E2004710DBD064221B9E0116	Active	static/member_profile_img/412693.JPG	Outside	2026-10-21 09:33:44
-10494	0412693	MISS. MYRA IMAN BILAL KHAN	AAHP-101	BYD	E2004710CA9064221A8A0109	Active	static/member_profile_img/412693.JPG	Outside	2026-10-21 09:33:44
 10495	0214834	MR. NOHAIL ALAVI	BCV-580	SUZUKI SWIFT	E2004710BEE0642219CF0106	Active	static/member_profile_img/214834.jpg	Outside	2026-10-21 09:33:44
 10496	102920	MRS. AISHA KHAN	ART-465	HONDA CIVIC	E20047017250642279D30101	Active	static/member_profile_img/102920.JPG	Outside	2026-10-21 09:33:44
 10497	0214859	MR. SAIF NAVED AHMED	AADS-071	TOYOTA YARIS	E20047010100642272BE0101	Active	static/member_profile_img/214859.JPG	Outside	2026-10-21 09:33:44
@@ -24632,6 +26274,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 10501	102917	MRS. SARAH MUNAWAR BAWANY	AZF-902	TOYOTA AXIO	E2004701B01064227DAF0110	Active	static/member_profile_img/102917.jpg	Outside	2026-10-21 09:33:44
 10503	0214850	MR. SYED AZFAR ALI	AAGM-935	HYUNDAI TUCSON	E20047113A50642221860110	Active	static/member_profile_img/214850.JPG	Outside	2026-10-21 09:33:44
 10504	0214851	MR. USMAN GHANI	AAAC-320	BYD SHARK	E200470144F0642276FD0102	Active	static/member_profile_img/214851.JPG	Outside	2026-10-21 09:33:44
+10494	0412693	MISS. MYRA IMAN BILAL KHAN	AAHP-101	BYD	E2004710CA9064221A8A0109	Active	static/member_profile_img/412693.JPG	Outside	2026-10-21 09:33:44
 10505	0214853	MR. IBRAHIM AHMED ZAHIDIE	CCA-730	TOYOTA YARIS	E20047109E60642217C70115	Active	static/member_profile_img/214853.JPG	Outside	2026-10-21 09:33:44
 10506	0214853	MR. IBRAHIM AHMED ZAHIDIE	BP-6227	HAVAL	E20047109F60642217D7010A	Active	static/member_profile_img/214853.JPG	Outside	2026-10-21 09:33:44
 10507	0214856	MR. KHURRAM MUGHAL	BFN-786	HONDA CIVIC	E2004701B13064227DC1010F	Active	static/member_profile_img/214856.JPG	Outside	2026-10-21 09:33:44
@@ -24691,7 +26334,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 10562	082242	MR. MANGRIO MUHAMMAD QASIM	BNB-990	TOYOTA COROLLA	E20047018A7064227B550108	Active	static/member_profile_img/82242.jpg	Outside	2026-10-21 09:33:44
 10563	082250	MR. SURESH KUMAR	HC-0324	HONDA CITY 2022	E20047114B60642222970112	Active	static/member_profile_img/82250.JPG	Outside	2026-10-21 09:33:44
 10564	082283	MR. ASHFAQ AHMED AWAN	AUQ-594	TOYOTA COROLLA	E20047014030642276B1010D	Active	static/member_profile_img/82283.jpg	Outside	2026-10-21 09:33:44
-10565	082283	MR. ASHFAQ AHMED AWAN	BHQ-402	TOYOTA COROLLA	E20047013F70642276A50111	Active	static/member_profile_img/82283.jpg	Outside	2026-10-21 09:33:44
 10566	082286	MR. MUNEER AHMED	GSD-249	SUZUKI CULTUS	E2004710B36064221917010F	Active	static/member_profile_img/82286.JPG	Outside	2026-10-21 09:33:44
 10567	082286	MR. MUNEER AHMED	BM-3761	MG/HS	E2004701AB4064227D620110	Active	static/member_profile_img/82286.JPG	Outside	2026-10-21 09:33:44
 10568	0912694	MRS. NAUSHABA ARSHAD SALEEM	AABB-356	TOYOTA YARIS	E20047013EC06422769A010E	Active	static/member_profile_img/912694.JPG	Outside	2026-10-21 09:33:44
@@ -24721,10 +26363,11 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 10593	0214876	MR.MUHAMMAD ALI LAKHANI	AABM-085	NISSAN	E200470154D0642277FB0109	Active	static/member_profile_img/214876.JPG	Outside	2026-10-21 09:33:44
 10594	102972	MRS. SARAH MEMON	BLA-343	HONDA CIVIC	E200470173A0642279E80113	Active	static/member_profile_img/102972.jpg	Outside	2026-10-21 09:33:44
 10595	0412748	MISS. ZAHRA SOHAIL MUKHI	EAA-889	NISSAN LEAF	E20047019B7064227C650110	Active	static/member_profile_img/412748.JPG	Outside	2026-10-21 09:33:44
-10596	0412748	MISS. ZAHRA SOHAIL MUKHI	AB-0217	SUZUKI	E20047015A006422784E010D	Active	static/member_profile_img/412748.JPG	Outside	2026-10-21 09:33:44
 10597	102991	MRS. SYEDA MAHAM HUSSAIN	BYG-750	HYUNDAI SORENTO	E2004701903064227BB1010A	Active	static/member_profile_img/102991.JPG	Outside	2026-10-21 09:33:44
 10598	0912780	MRS. NASEEM BANO AHMAD	APW-260	TOYOTA COROLLA	E20047017230642279D10110	Active	static/member_profile_img/912780.jpg	Outside	2026-10-21 09:33:44
+10565	082283	MR. ASHFAQ AHMED AWAN	BHQ-402	TOYOTA COROLLA	E20047013F70642276A50111	Active	static/member_profile_img/82283.jpg	Outside	2026-10-21 09:33:44
 10600	0214985	MR. HAMAS ESBHANI	AAJY-528	SUZUKI SWIFT	E20047021110642283BF0107	Active	static/member_profile_img/214985.jpg	Outside	2026-10-21 09:33:44
+10596	0412748	MISS. ZAHRA SOHAIL MUKHI	AB-0217	SUZUKI	E20047015A006422784E010D	Active	static/member_profile_img/412748.JPG	Outside	2026-10-21 09:33:44
 10602	0214965	MUHAMMAD SHAHZAIN TALPUR	CBG-016	HYUNDAI SONATA	E20047014740642277220106	Active	static/member_profile_img/214965.JPG	Outside	2026-10-21 09:33:44
 10603	0214965	MUHAMMAD SHAHZAIN TALPUR	SC-2028	BYD-SHARK	E2004701478064227726010F	Active	static/member_profile_img/214965.JPG	Outside	2026-10-21 09:33:44
 10605	082295	LT. COL. SIKANDAR HAQ TAREEN	GH-0066	CAMRY	E200470177A064227A280106	Active	static/member_profile_img/82295.JPG	Outside	2026-10-21 09:33:44
@@ -24776,14 +26419,12 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 10653	082278	MR. MUNEEZA MAJEED	GAV-363	TOYOTA PRADO	E200470157B064227829010D	Active	static/member_profile_img/82278.JPG	Outside	2026-10-21 09:33:44
 10654	0214270	MR. HAMZA SHIVANI	AAAD-894	HONDA CIVIC	E20047014A70642277550110	Active	static/member_profile_img/214270.jpg	Outside	2026-10-21 09:33:44
 10655	0214996	MR.MUHAMMAD SAMIR	SA-5622	NISSAN SERENA	E20047010BF06422736D0111	Active	static/member_profile_img/214996.jpg	Outside	2026-10-21 09:33:44
-10656	005748	MR. SYED MEHDI ALI RIZVI	SA-9296	ISUZU D-MAX	E2004710C22064221A030111	Active	static/member_profile_img/5748.jpg	Outside	2026-10-21 09:33:44
 10657	005748	MR. SYED MEHDI ALI RIZVI	BH-3338	TOYOTA PRADO	E2806890000000025799D6D7	Active	static/member_profile_img/5748.jpg	Outside	2026-10-21 09:33:44
 10658	006113	MR. SHAMOON MOOSAJEE	ATS-652	TOYOTA	E28068900000000257983C73	Active	static/member_profile_img/6113.jpg	Outside	2026-10-21 09:33:44
 10659	006113	MR. SHAMOON MOOSAJEE	BH-7519	KIA	E2806890000000025799C4C6	Active	static/member_profile_img/6113.jpg	Outside	2026-10-21 09:33:44
 10660	006113	MR. SHAMOON MOOSAJEE	BDL-172	TOYOTA	E28068900000000257972960	Active	static/member_profile_img/6113.jpg	Outside	2026-10-21 09:33:44
 10661	005694	MR. ABID JAPANWALLA	BG-2309	TOYOTA FORTUNER	E2806890000000025797E6DB	Active	static/member_profile_img/5694.JPG	Outside	2026-10-21 09:33:44
 10662	005963	MR.SYED MOHSIN ALI RIZVI	BMW-318	BMW	E2806890000000025797EF2B	Active	static/member_profile_img/5963.jpg	Outside	2026-10-21 09:33:44
-10663	005963	MR.SYED MOHSIN ALI RIZVI	BWW-014	MERCEDES BANZ	E2806890000000025798F51A	Active	static/member_profile_img/5963.jpg	Outside	2026-10-21 09:33:44
 10664	005963	MR.SYED MOHSIN ALI RIZVI	BK-2903	SAZGAR BAIC	E28068900000000257982315	Active	static/member_profile_img/5963.jpg	Outside	2026-10-21 09:33:44
 10665	005963	MR.SYED MOHSIN ALI RIZVI	AZS-007	BMW	E2806890000000025797EB44	Active	static/member_profile_img/5963.jpg	Outside	2026-10-21 09:33:44
 10666	115611	MR. AFZAL HUSSEIN DOSSANI	CAJ-239	TOYOTA YARIS	E280689000000002564440BA	Active	static/member_profile_img/115611.jpg	Outside	2026-10-21 09:33:44
@@ -24800,7 +26441,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 10679	0214290	MR. AZLAN TAHIR DADA	BLR-968	MITSUBISHI MIRAGE	E28068900000000257981F9F	Active	static/member_profile_img/214290.jpg	Outside	2026-10-21 09:33:44
 10680	015985	MR. ASAD HABIB	BLW-183	HONDA CIVIC	E28068900000000256445453	Active	static/member_profile_img/15985.JPG	Outside	2026-10-21 09:33:44
 10681	015985	MR. ASAD HABIB	BDC-470	TOYOTA	E28068900000000256445661	Active	static/member_profile_img/15985.JPG	Outside	2026-10-21 09:33:44
-10683	125415	MR. AMIR MUHAMMAD ALI DHANJEE	AABL-530	JEECO	E20047013F30642276A10112	Active	static/member_profile_img/125415.jpg	Outside	2026-10-21 09:33:44
 10684	125415	MR. AMIR MUHAMMAD ALI DHANJEE	BYS-912	TOYOTA ALTIS	E2806890000000025799C5D4	Active	static/member_profile_img/125415.jpg	Outside	2026-10-21 09:33:44
 10685	125415	MR. AMIR MUHAMMAD ALI DHANJEE	ATY-132	HONDA CIVIC	E2806894000050175DD0C0ED	Active	static/member_profile_img/125415.jpg	Outside	2026-10-21 09:33:44
 10686	125415	MR. AMIR MUHAMMAD ALI DHANJEE	BJ-4319	TOYOTA FORTUNER	E2806894000050175DD77CED	Active	static/member_profile_img/125415.jpg	Outside	2026-10-21 09:33:44
@@ -24818,6 +26458,9 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 10701	124764	MR. MUHAMMED ARIF BILVANI	BXL-375	TOOYTA YARIS	E2806894000040175DD0A4ED	Active	static/member_profile_img/124764.JPG	Outside	2026-10-21 09:33:44
 10702	102863	MRS. HADIYA	BUL-601	HYNUDAI TUCSON	E20047016220642278D0010E	Active	static/member_profile_img/102863.JPG	Outside	2026-10-21 09:33:44
 10703	102863	MRS. HADIYA	EAC-301	BYD ATTO	E200470188E064227B3C0111	Active	static/member_profile_img/102863.JPG	Outside	2026-10-21 09:33:44
+10663	005963	MR.SYED MOHSIN ALI RIZVI	BWW-014	MERCEDES BANZ	E2806890000000025798F51A	Active	static/member_profile_img/5963.jpg	Outside	2026-10-21 09:33:44
+10683	125415	MR. AMIR MUHAMMAD ALI DHANJEE	AABL-530	JEECO	E20047013F30642276A10112	Active	static/member_profile_img/125415.jpg	Outside	2026-10-21 09:33:44
+10656	005748	MR. SYED MEHDI ALI RIZVI	SA-9296	ISUZU D-MAX	E2004710C22064221A030111	Active	static/member_profile_img/5748.jpg	Inside	2026-10-21 09:33:44
 10704	220106	MRS. NATASHA AZDIAR MOBED	BH-8366	HYUNDAI TUCSON	E2806894000050175DD518ED	Active	static/member_profile_img/220106.jpg	Outside	2026-10-21 09:33:44
 10705	220106	MRS. NATASHA AZDIAR MOBED	BPT-264	TOYOTA COROLLA	E2806894000050175DD4ECED	Active	static/member_profile_img/220106.jpg	Outside	2026-10-21 09:33:44
 10706	0214625	MR. FAIZAN SIDDIQUI	BNR-634	HONDA CITY	E2806890000000025799D1C6	Active	static/member_profile_img/214625.JPG	Outside	2026-10-21 09:33:44
@@ -24876,7 +26519,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 10760	082309	MR. ABDUL SALAM	BJ-1668	TOYOTA	E20047013FA0642276A8010A	Active	static/member_profile_img/82309.jpg	Outside	2026-10-21 09:33:44
 10761	082309	MR. ABDUL SALAM	BPF-203	TOYOTA	E20047013FE0642276AC010D	Active	static/member_profile_img/82309.jpg	Outside	2026-10-21 09:33:44
 10762	082309	MR. ABDUL SALAM	SP-024-A	TOYOTA	E200470140A0642276B80111	Active	static/member_profile_img/82309.jpg	Outside	2026-10-21 09:33:44
-10763	0310658	MR. NEJDET PASHA MOORAJ	BXD-100	TOYOTA YARIS	E2004701B65064227E13010E	Active	static/member_profile_img/310658.JPG	Outside	2026-10-21 09:33:44
 10764	0310658	MR. NEJDET PASHA MOORAJ	CCZ-251	SUZUKI HUSTLER	E200470190D064227BBB0114	Active	static/member_profile_img/310658.JPG	Outside	2026-10-21 09:33:44
 10765	0912792	MRS. TEHMINA IMTIAZ	BJA-529	TOYOTA COROLLA	E20047011B006422745E0112	Active	static/member_profile_img/912792.jpg	Outside	2026-10-21 09:33:44
 10766	007212	MR. JAWAD SALIM	BJ-8108	TOYOTA FORTUNER	E2806890000000025797E55B	Active	static/member_profile_img/7212.jpg	Outside	2026-10-21 09:33:44
@@ -24884,7 +26526,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 10768	007212	MR. JAWAD SALIM	BN-0554	HONDA VEEZAL	E2806890000000025798F28C	Active	static/member_profile_img/7212.jpg	Outside	2026-10-21 09:33:44
 10769	016913	MR. ANWAR-UR-REHMAN ALVI	BM-4547	SAZGAR/HAVAL	E2806890000000025798311F	Active	static/member_profile_img/16913.JPG	Outside	2026-10-21 09:33:44
 10770	006748	MR. M. ALI CHOTTANI	AKN-734	HONDA	E2806890000000025798E91F	Active	static/member_profile_img/6748.JPG	Outside	2026-10-21 09:33:44
-10771	006748	MR. M. ALI CHOTTANI	AZH-131	HONDA	E2806890000000025798E405	Active	static/member_profile_img/6748.JPG	Outside	2026-10-21 09:33:44
 10772	007381	MR. SYED MOIZUDDIN	BCC-620	SUZUKI SWIFT	E20047014F70642277A5010B	Active	static/member_profile_img/7381.jpg	Outside	2026-10-21 09:33:44
 10773	007381	MR. SYED MOIZUDDIN	BUR-874	TOYOTA YARIS	E2806890000000025798F731	Active	static/member_profile_img/7381.jpg	Outside	2026-10-21 09:33:44
 10774	007381	MR. SYED MOIZUDDIN	APV-731	TOYOTA COROLLA	E2806890000000025797DB42	Active	static/member_profile_img/7381.jpg	Outside	2026-10-21 09:33:44
@@ -24898,7 +26539,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 10786	103000	MRS. HAFSA LAKHANI	BMJ-966	HONDA GRACE	E20047021DA064228488010F	Active	static/member_profile_img/103000.JPG	Outside	2026-10-21 09:33:44
 10787	082311	MR. AGHA FAKHAR HUSSAIN DURRANI	BL-6647	CHANGAN OSHAN	E2004700F170642271C5010B	Active	static/member_profile_img/82311.jpg	Outside	2026-10-21 09:33:44
 10788	082312	MR. CAPT. AHMED SHABIEH-UL- KABEER	AC-4438	TOYOTA COROLLA	E2004711496064222277010D	Active	static/member_profile_img/82312.JPG	Outside	2026-10-21 09:33:44
-10789	082312	MR. CAPT. AHMED SHABIEH-UL- KABEER	AXS-821	HONDA CITY	E20047114760642222570113	Active	static/member_profile_img/82312.JPG	Outside	2026-10-21 09:33:44
 10790	0912142	MRS. SAMINA MASOOD	AXB-262	TOYOTA COROLLA	E28068900000000257972C15	Active	static/member_profile_img/912142.jpg	Outside	2026-10-21 09:33:44
 10791	0912142	MRS. SAMINA MASOOD	BFT-616	TOYOTA COROLLA	E28068900000000257983092	Active	static/member_profile_img/912142.jpg	Outside	2026-10-21 09:33:44
 10792	0912142	MRS. SAMINA MASOOD	BUM-184	TOYOTA COROLLA	E28068900000000257972B2D	Active	static/member_profile_img/912142.jpg	Outside	2026-10-21 09:33:44
@@ -24914,6 +26554,8 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 10802	082314	MRS. ALIA ANWAR	BGF-028	SUZUKI SWIFT	E20047022300642284DE010D	Active	static/member_profile_img/82314.JPG	Outside	2026-10-21 09:33:44
 10803	082314	MRS. ALIA ANWAR	GSC-815	2026	E200470222C0642284DA010D	Active	static/member_profile_img/82314.JPG	Outside	2026-10-21 09:33:44
 10804	082315	MR. ZULFIQAR LARIK	SPF-047	TOYOTA PRIUS 2013	E2004710AE60642218C7010E	Active	static/member_profile_img/82315.JPG	Outside	2026-10-21 09:33:44
+10789	082312	MR. CAPT. AHMED SHABIEH-UL- KABEER	AXS-821	HONDA CITY	E20047114760642222570113	Active	static/member_profile_img/82312.JPG	Outside	2026-10-21 09:33:44
+10771	006748	MR. M. ALI CHOTTANI	AZH-131	HONDA	E2806890000000025798E405	Active	static/member_profile_img/6748.JPG	Outside	2026-10-21 09:33:44
 10805	082316	MR. TARIQ HUSSAIN	GS-7079	TOYOTA HILUX	E2004711365064222146010B	Active	static/member_profile_img/82316.JPG	Outside	2026-10-21 09:33:44
 10806	082316	MR. TARIQ HUSSAIN	BN-7823	TOYOTA RAZE	E2004710AD20642218B30112	Active	static/member_profile_img/82316.JPG	Outside	2026-10-21 09:33:44
 10807	082316	MR. TARIQ HUSSAIN	LC-3609	TOYOTA HILUX	E2004710AE20642218C30110	Active	static/member_profile_img/82316.JPG	Outside	2026-10-21 09:33:44
@@ -24923,7 +26565,6 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 10811	103016	MRS. BINISH FATIMA BASATHIA	BRX-106	COROLA ALTIS	E2004701DAC06422805A010F	Active	static/member_profile_img/103016.JPG	Outside	2026-10-21 09:33:44
 10812	103016	MRS. BINISH FATIMA BASATHIA	AYY-594	CULTUS	E2004701DB006422805E010F	Active	static/member_profile_img/103016.JPG	Outside	2026-10-21 09:33:44
 10813	103021	MRS. SHAZIA ABBASI	CBL-306	TOYOTA	E20047021F80642284A60107	Active	static/member_profile_img/103021.JPG	Outside	2026-10-21 09:33:44
-10814	0215095	MR. MUHAMMAD SAAD BANDUKDA	BPE-150	TOYOTA COROLLA	E20047021D40642284820106	Active	static/member_profile_img/215095.JPG	Outside	2026-10-21 09:33:44
 10815	0215060	MR. RYAAN ADNAN ALI	ADU-333	HONDA CIVIC VTI	E20047025B106422885F010E	Active	static/member_profile_img/215060.JPG	Outside	2026-10-21 09:33:44
 10816	0213083	MR. MUHAMMAD SAAD KHAWAJA	CAG-034	TOYOTA YARIS	E28068900000000257982CD5	Active	static/member_profile_img/213083.jpg	Outside	2026-10-21 09:33:44
 10817	0213083	MR. MUHAMMAD SAAD KHAWAJA	BYH-753	SUZUKI SWIFT	E28068900000000257973056	Active	static/member_profile_img/213083.jpg	Outside	2026-10-21 09:33:44
@@ -24931,9 +26572,7 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 10819	0213083	MR. MUHAMMAD SAAD KHAWAJA	BMZ-048	COROLLA ALTIS	E2806894000040175DD6F8ED	Active	static/member_profile_img/213083.jpg	Outside	2026-10-21 09:33:44
 10822	082319	MR. MUHAMMAD YAQOOB AWAN	GJ-0059	ISUZU	E20047021150642283C3010B	Active	static/member_profile_img/82319.JPG	Outside	2026-10-21 09:33:44
 10823	082320	MR. TARIQUE AZIZ	BYM-222	TOYOTA COROLLA	E20047021C30642284710112	Active	static/member_profile_img/82320.JPG	Outside	2026-10-21 09:33:44
-10824	082320	MR. TARIQUE AZIZ	BGK-796	DIAHATSU MIRA	E20047021C70642284750109	Active	static/member_profile_img/82320.JPG	Outside	2026-10-21 09:33:44
 10825	0215088	MR. MUHAMMAD AHMAD HUMAYUN HANIF	BLJ-920	TOYOTA COROLLA	E20047025C50642288730110	Active	static/member_profile_img/215088.JPG	Outside	2026-10-21 09:33:44
-10826	0214390	MR. DANIYAL SHAH	BYN-302	SUZUKI ALTO	E28068900000000256448080	Active	static/member_profile_img/214390.JPG	Outside	2026-10-21 09:33:44
 10827	0214390	MR. DANIYAL SHAH	BPC-572	DAIHATSU MIRA	E28068900000000256445A38	Active	static/member_profile_img/214390.JPG	Outside	2026-10-21 09:33:44
 10828	221193	MRS. UROOJ  MOIZ ALLAWALA	BSJ-928	TOYOTA YARIS	E2806890000000025798EF06	Active	static/member_profile_img/221193.JPG	Outside	2026-10-21 09:33:44
 10829	221193	MRS. UROOJ  MOIZ ALLAWALA	BRB-775	HONDA CIVIC	E2806890000000025797E533	Active	static/member_profile_img/221193.JPG	Outside	2026-10-21 09:33:44
@@ -24947,6 +26586,9 @@ COPY public.members (id, mem_id, name, car_number, make_model, e_tag_id, status,
 10838	082296	MR. INTISAR ALI	CCF-720	SUZUKI SWIFT	E20047016FE0642279AC010A	Active	static/member_profile_img/82296.JPG	Outside	2026-10-21 09:33:44
 10839	005712	DR. SHAHID MITHA	BXF-125	TOYOTA COROLLA	E2806890000000025798F3E6	Active	static/member_profile_img/5712.jpg	Outside	2026-10-21 09:33:44
 10837	082296	MR. INTISAR ALI	GSC-818	SUZUKI SWIFT	E200470170A0642279B8010A	Active	static/member_profile_img/82296.JPG	Outside	2026-10-21 09:33:44
+10826	0214390	MR. DANIYAL SHAH	BYN-302	SUZUKI ALTO	E28068900000000256448080	Active	static/member_profile_img/214390.JPG	Outside	2026-10-21 09:33:44
+10824	082320	MR. TARIQUE AZIZ	BGK-796	DIAHATSU MIRA	E20047021C70642284750109	Active	static/member_profile_img/82320.JPG	Outside	2026-10-21 09:33:44
+10814	0215095	MR. MUHAMMAD SAAD BANDUKDA	BPE-150	TOYOTA COROLLA	E20047021D40642284820106	Active	static/member_profile_img/215095.JPG	Outside	2026-10-21 09:33:44
 \.
 
 
@@ -25956,6 +27598,65 @@ COPY public.raw_reader_logs (id, tag_scanned, system_response, direction, "times
 999	TEST_INSIDE_EXIT_002	PROCESSED: Exit	Exit	2026-10-22 03:15:52
 1000	TEST_INSIDE_EXIT_002	PROCESSED: Entry	Entry	2026-10-22 03:15:52
 1001	TEST_INSIDE_EXIT_002	PROCESSED: Exit	Exit	2026-10-22 03:15:52
+1232	E2806894000050175DD650ED	PROCESSED: Exit	Exit	2026-10-22 15:35:06
+1233	E2004701E9D06422814B010B	PROCESSED: Exit	Exit	2026-10-22 15:37:11
+1234	E20047017030642279B10109	PROCESSED: Exit	Exit	2026-10-22 15:37:41
+1235	E2806890000000025799C4B9	PROCESSED: Entry	Entry	2026-10-22 15:38:00
+1236	E200471112E064221F0F0108	PROCESSED: Exit	Exit	2026-10-22 15:39:06
+1237	E2004710E76064221C570110	PROCESSED: Entry	Entry	2026-10-22 15:42:41
+1238	E20047012440642274F20109	PROCESSED: Entry	Entry	2026-10-22 15:43:27
+1239	E2004703FE506823E60D010A	PROCESSED: Exit	Exit	2026-10-22 15:44:39
+1240	E2004701EBD06422816B010D	PROCESSED: Entry	Entry	2026-10-22 15:44:44
+1241	E2004711581064222362010B	PROCESSED: Entry	Entry	2026-10-22 15:45:00
+1242	E20047113010642220E2010B	PROCESSED: Entry	Entry	2026-10-22 15:45:11
+1243	E20047113010642220E2010B	PROCESSED: Exit	Exit	2026-10-22 15:46:41
+1244	E2806890000000025798ECB7	PROCESSED: Entry	Entry	2026-10-22 15:47:52
+1245	E2004710E76064221C570110	PROCESSED: Exit	Exit	2026-10-22 15:48:26
+1246	E2003412012D010008A54C27	PROCESSED: Entry	Entry	2026-10-22 15:51:47
+1247	E200470121C0642274CA0111	PROCESSED: Entry	Entry	2026-10-22 15:52:50
+1248	E2806890000000025799CED8	PROCESSED: Entry	Entry	2026-10-22 15:53:16
+1249	E2004701B51064227DFF0105	PROCESSED: Exit	Exit	2026-10-22 15:54:20
+1250	E2004710A860642218670110	PROCESSED: Exit	Exit	2026-10-22 15:54:33
+1251	E200470121C0642274CA0111	PROCESSED: Exit	Exit	2026-10-22 15:55:30
+1252	E2806890000000025798F809	PROCESSED: Exit	Exit	2026-10-22 15:57:05
+1253	E2007DAF0CCB5030D0441D40	PROCESSED: Exit	Exit	2026-10-22 15:58:15
+1254	E200470178A064227A38010E	PROCESSED: Entry	Entry	2026-10-22 15:59:08
+1255	E280689000000002579936EE	PROCESSED: Entry	Entry	2026-10-22 15:59:26
+1256	E2004710F91064221D72010E	PROCESSED: Entry	Entry	2026-10-22 16:00:04
+1257	E2803821200064260B10A9EF	PROCESSED: Entry	Entry	2026-10-22 16:01:25
+1258	E200471159A06422237B0111	PROCESSED: Entry	Entry	2026-10-22 16:02:29
+1259	E2806995A05B220082C7A47C	PROCESSED: Entry	Entry	2026-10-22 16:03:06
+1260	E2806890000000025799DB87	PROCESSED: Entry	Entry	2026-10-22 16:03:37
+1261	E2806890000000025799E81E	PROCESSED: Entry	Entry	2026-10-22 16:04:52
+1262	E28068900000000256448650	PROCESSED: Entry	Entry	2026-10-22 16:04:58
+1263	E20047115620642223430111	PROCESSED: Entry	Entry	2026-10-22 16:05:32
+1264	E2806894000050175DD720ED	PROCESSED: Exit	Exit	2026-10-22 16:06:24
+1265	E20047013F70642276A50111	PROCESSED: Entry	Entry	2026-10-22 16:08:34
+1266	E2003412013BF6000F733D50	PROCESSED: Entry	Entry	2026-10-22 16:08:40
+1267	E2003412013BF6000F739AEE	PROCESSED: Exit	Exit	2026-10-22 16:10:17
+1268	E2806890000000025799E81E	PROCESSED: Exit	Exit	2026-10-22 16:10:18
+1269	E2806890000000025799CED8	PROCESSED: Exit	Exit	2026-10-22 16:12:00
+1270	E200471134906422212A010A	PROCESSED: Entry	Entry	2026-10-22 16:13:55
+1271	E20047104600642212410110	PROCESSED: Exit	Exit	2026-10-22 16:14:42
+1272	E20047115620642223430111	PROCESSED: Exit	Exit	2026-10-22 16:14:49
+1273	E280F33620003000000B01FF	PROCESSED: Entry	Entry	2026-10-22 16:15:03
+1274	E2003412012D010008A54C27	PROCESSED: Exit	Exit	2026-10-22 16:16:05
+1275	E28068900000000256448082	PROCESSED: Entry	Entry	2026-10-22 16:16:52
+1276	E2806890000000025799C4B9	PROCESSED: Exit	Exit	2026-10-22 16:17:19
+1277	E20047015AB0642278590107	PROCESSED: Entry	Entry	2026-10-22 16:19:23
+1278	E20047112A5064222086010E	PROCESSED: Exit	Exit	2026-10-22 16:20:01
+1279	E2004710AB20642218930114	PROCESSED: Entry	Entry	2026-10-22 16:20:54
+1280	E280F3362000600000660877	PROCESSED: Entry	Entry	2026-10-22 16:21:05
+1281	E20047015AB0642278590107	PROCESSED: Exit	Exit	2026-10-22 16:21:05
+1282	E20047016350642278E3010F	PROCESSED: Entry	Entry	2026-10-22 16:21:37
+1283	E2806995A05B220082C7A47C	PROCESSED: Exit	Exit	2026-10-22 16:23:01
+1284	E20047016350642278E3010F	PROCESSED: Exit	Exit	2026-10-22 16:23:48
+1285	E2806890000000025799246C	PROCESSED: Exit	Exit	2026-10-22 16:25:11
+1286	E200470149D06422774B0111	PROCESSED: Exit	Exit	2026-10-22 16:25:21
+1287	E2004710F91064221D72010E	PROCESSED: Exit	Exit	2026-10-22 16:27:57
+1288	E2004711581064222362010B	PROCESSED: Exit	Exit	2026-10-22 16:29:25
+1289	E2004710B870642219680112	PROCESSED: Entry	Entry	2026-10-22 16:33:34
+1290	E2004710B870642219680112	PROCESSED: Exit	Exit	2026-10-22 16:35:30
 1002	E2004710A920642218730113	PROCESSED: Entry	Entry	2026-10-22 06:29:37
 1003	E2806894000050175DD3CCF0	PROCESSED: Entry	Entry	2026-10-22 06:46:41
 1004	E20047021F106422849F0112	PROCESSED: Entry	Entry	2026-10-22 06:46:45
@@ -26107,6 +27808,31 @@ COPY public.raw_reader_logs (id, tag_scanned, system_response, direction, "times
 1150	E2004711061064221E42010B	PROCESSED: Exit	Exit	2026-10-22 12:26:14
 1151	E2806890000000025797E64A	PROCESSED: Exit	Exit	2026-10-22 12:26:29
 1152	E2004711341064222122010D	PROCESSED: Entry	Entry	2026-10-22 12:34:23
+1291	E20047013F70642276A50111	PROCESSED: Exit	Exit	2026-10-22 16:38:31
+1292	E2003098191902521440822B	PROCESSED: Entry	Entry	2026-10-22 16:44:25
+1293	E2806890000000025798F51A	PROCESSED: Exit	Exit	2026-10-22 16:44:27
+1294	E28068940000403153D7048C	PROCESSED: Exit	Exit	2026-10-22 16:45:37
+1295	E280689000000002579820CF	PROCESSED: Exit	Exit	2026-10-22 16:46:35
+1296	E20047113010642220E2010B	PROCESSED: Exit	Exit	2026-10-22 16:47:33
+1297	E2003098191902521440822B	PROCESSED: Exit	Exit	2026-10-22 16:48:08
+1298	E20047110B1064221E920116	PROCESSED: Entry	Entry	2026-10-22 16:51:56
+1299	E2806890000000025799DB87	PROCESSED: Exit	Exit	2026-10-22 16:58:35
+1300	E280F3362000600000660877	PROCESSED: Exit	Exit	2026-10-22 17:00:03
+1301	E20047110FE064221EDF010D	PROCESSED: Exit	Exit	2026-10-22 17:00:33
+1302	E2004710661064221442010B	PROCESSED: Entry	Entry	2026-10-22 17:02:25
+1303	E2201F000000000000000000	PROCESSED: Entry	Entry	2026-10-22 17:04:50
+1304	E2004701298064227546010B	PROCESSED: Entry	Entry	2026-10-22 17:05:46
+1305	E20047106410642214220110	PROCESSED: Entry	Entry	2026-10-22 17:07:29
+1306	E280F33620003000000B01F4	PROCESSED: Exit	Exit	2026-10-22 17:07:55
+1307	E2806894000040175DD5B4EF	PROCESSED: Exit	Exit	2026-10-22 17:12:50
+1308	E200471568006823FCA8010C	PROCESSED: Exit	Exit	2026-10-22 17:13:55
+1309	E28068900000000257982170	PROCESSED: Exit	Exit	2026-10-22 17:14:05
+1310	E20047015AB0642278590107	PROCESSED: Exit	Exit	2026-10-22 17:15:56
+1311	E20047015060642277B4010C	PROCESSED: Entry	Entry	2026-10-22 17:17:10
+1312	E20047015060642277B4010C	PROCESSED: Exit	Exit	2026-10-22 17:20:31
+1313	E20047017F7064227AA50104	PROCESSED: Exit	Exit	2026-10-22 17:20:47
+1314	E2004701298064227546010B	PROCESSED: Exit	Exit	2026-10-22 17:21:30
+1315	E2004701EBD06422816B010D	PROCESSED: Exit	Exit	2026-10-22 17:21:49
 1153	E2806894000040175DD0D4EF	PROCESSED: Exit	Exit	2026-10-22 12:35:13
 1154	E2806890000000025799D6DD	PROCESSED: Exit	Exit	2026-10-22 12:36:53
 1155	E20047114720642222530113	PROCESSED: Entry	Entry	2026-10-22 12:39:54
@@ -26117,6 +27843,638 @@ COPY public.raw_reader_logs (id, tag_scanned, system_response, direction, "times
 1160	E280F33620003000000B6054	PROCESSED: Exit	Exit	2026-10-22 13:08:36
 1161	E200471144D06422222E0108	PROCESSED: Exit	Exit	2026-10-22 13:08:44
 1162	E20034120136F50004CB3A79	PROCESSED: Entry	Entry	2026-10-22 13:09:25
+1316	E20047113DE0642221BF010D	PROCESSED: Exit	Exit	2026-10-22 17:22:39
+1317	E200470256106422880F0110	PROCESSED: Exit	Exit	2026-10-22 17:23:10
+1318	E2806890000000025798DCCD	PROCESSED: Entry	Entry	2026-10-22 17:23:32
+1319	E20034120137F50004CBC66D	PROCESSED: Entry	Entry	2026-10-22 17:23:53
+1320	E200471568006823FCA8010C	PROCESSED: Exit	Exit	2026-10-22 17:24:16
+1321	E28068900000000256448574	PROCESSED: Exit	Exit	2026-10-22 17:24:19
+1322	E20047016450642278F30111	PROCESSED: Entry	Entry	2026-10-22 17:25:08
+1323	E2806894000050175DD620EF	PROCESSED: Exit	Exit	2026-10-22 17:25:43
+1324	E20047020DD06422838B0111	PROCESSED: Exit	Exit	2026-10-22 17:26:21
+1325	E20047014A3064227751010F	PROCESSED: Exit	Exit	2026-10-22 17:26:40
+1326	E280689000000002564444B0	PROCESSED: Exit	Exit	2026-10-22 17:27:43
+1327	E2806894000050175DD620EF	PROCESSED: Exit	Exit	2026-10-22 17:28:04
+1464	E2806894000040175DD7F4EF	PROCESSED: Exit	Exit	2026-10-22 18:58:15
+1465	E2004701054064227302010A	PROCESSED: Entry	Entry	2026-10-22 18:58:18
+1466	E2806890000000025799D52D	PROCESSED: Entry	Entry	2026-10-22 18:59:30
+1467	E20047109BB06422179C010F	PROCESSED: Exit	Exit	2026-10-22 18:59:39
+1468	E28068900000000256448418	PROCESSED: Exit	Exit	2026-10-22 18:59:55
+1469	E2806890000000025797D219	PROCESSED: Entry	Entry	2026-10-22 18:59:59
+1470	E2004710D89064221B6A0110	PROCESSED: Exit	Exit	2026-10-22 19:00:50
+1471	E28068940000403153C06CF9	PROCESSED: Exit	Exit	2026-10-22 19:00:56
+1472	E2004710AB20642218930114	PROCESSED: Exit	Exit	2026-10-22 19:01:05
+1473	E20047012E106422758F010F	PROCESSED: Exit	Exit	2026-10-22 19:01:23
+1474	E280F3362000600000663E65	PROCESSED: Exit	Exit	2026-10-22 19:02:31
+1475	E2004701D37064227FE50109	PROCESSED: Exit	Exit	2026-10-22 19:02:37
+1476	E20047026150642288C30110	PROCESSED: Entry	Entry	2026-10-22 19:02:53
+1477	E20047014380642276E60111	PROCESSED: Entry	Entry	2026-10-22 19:03:23
+1478	E2004714D4406820AA0E010A	PROCESSED: Entry	Entry	2026-10-22 19:04:34
+1479	E2806890000000025797EA89	PROCESSED: Entry	Entry	2026-10-22 19:04:41
+1480	E20047026150642288C30110	PROCESSED: Exit	Exit	2026-10-22 19:05:10
+1481	E2806890000000025799246C	PROCESSED: Exit	Exit	2026-10-22 19:05:39
+1482	E2004701DD50642280830112	PROCESSED: Entry	Entry	2026-10-22 19:05:53
+1483	E20047015060642277B4010C	PROCESSED: Entry	Entry	2026-10-22 19:06:27
+1484	E2806894000050175DD8A8EE	PROCESSED: Exit	Exit	2026-10-22 19:07:51
+1485	E2806890000000025797EE48	PROCESSED: Entry	Entry	2026-10-22 19:08:12
+1486	E2004701AD7064227D85010C	PROCESSED: Exit	Exit	2026-10-22 19:08:23
+1487	E280F3362000600000684977	PROCESSED: Entry	Entry	2026-10-22 19:09:05
+1488	E20047115190642222FA010D	PROCESSED: Entry	Entry	2026-10-22 19:09:31
+1489	E20047114760642222570113	PROCESSED: Exit	Exit	2026-10-22 19:10:11
+1490	E20047015060642277B4010C	PROCESSED: Exit	Exit	2026-10-22 19:10:14
+1491	E2003412012CFE0007B1E549	PROCESSED: Entry	Entry	2026-10-22 19:10:45
+1492	E280F3362000600000684977	PROCESSED: Exit	Exit	2026-10-22 19:11:47
+1493	E2806890000000025798ECB7	PROCESSED: Exit	Exit	2026-10-22 19:12:24
+1494	E200470224B0642284F90112	PROCESSED: Exit	Exit	2026-10-22 19:13:06
+1495	E2003412012CFE0007B1E549	PROCESSED: Exit	Exit	2026-10-22 19:14:13
+1496	E28068900000000256448650	PROCESSED: Exit	Exit	2026-10-22 19:14:36
+1497	E200471144D06422222E0108	PROCESSED: Exit	Exit	2026-10-22 19:15:03
+1498	E20034120134FF00082B8703	PROCESSED: Entry	Entry	2026-10-22 19:16:14
+1499	E2806894000040175DD400F0	PROCESSED: Exit	Exit	2026-10-22 19:17:14
+1500	E20047114920642222730107	PROCESSED: Entry	Entry	2026-10-22 19:17:44
+1501	E2004701DDB0642280890113	PROCESSED: Entry	Entry	2026-10-22 19:18:41
+1502	E20047114760642222570113	PROCESSED: Exit	Exit	2026-10-22 19:18:55
+1503	E20034120139F50004CBBA46	PROCESSED: Entry	Entry	2026-10-22 19:21:19
+1504	E2002075641201710880BD48	PROCESSED: Entry	Entry	2026-10-22 19:22:04
+1505	E2004711565064222346010F	PROCESSED: Entry	Entry	2026-10-22 19:23:01
+1506	E2004701B55064227E03010F	PROCESSED: Entry	Entry	2026-10-22 19:23:37
+1507	E20047103BC06422119D0110	PROCESSED: Entry	Entry	2026-10-22 19:24:07
+1508	E20047017450642279F3010B	PROCESSED: Exit	Exit	2026-10-22 19:26:39
+1509	E2004710A5F064221840010B	PROCESSED: Exit	Exit	2026-10-22 19:26:55
+1510	E2004700E740642271220109	PROCESSED: Entry	Entry	2026-10-22 19:27:08
+1511	E2004701879064227B270111	PROCESSED: Exit	Exit	2026-10-22 19:27:27
+1512	E2806890000000025798F8AC	PROCESSED: Exit	Exit	2026-10-22 19:27:45
+1572	E28068900000000256448B79	PROCESSED: Exit	Exit	2026-10-22 20:17:39
+1573	E2806890000000025798F9CC	PROCESSED: Entry	Entry	2026-10-22 20:17:43
+1574	E20047021D40642284820106	PROCESSED: Entry	Entry	2026-10-22 20:18:03
+1575	E2806894000050175DD248EF	PROCESSED: Exit	Exit	2026-10-22 20:18:33
+1576	E2806890000000025799CED8	PROCESSED: Exit	Exit	2026-10-22 20:19:03
+1577	E280F3362000600000604A0F	PROCESSED: Exit	Exit	2026-10-22 20:19:17
+1578	E200471018D064220F6E010C	PROCESSED: Entry	Entry	2026-10-22 20:19:33
+1579	E2806894000050286F12D142	PROCESSED: Exit	Exit	2026-10-22 20:19:41
+1580	E2004701A9A064227D480115	PROCESSED: Entry	Entry	2026-10-22 20:20:57
+1581	E21AC5000000000000000000	PROCESSED: Entry	Entry	2026-10-22 20:21:06
+1582	E2806890000000025797EF3D	PROCESSED: Entry	Entry	2026-10-22 20:24:27
+1583	E2004701B51064227DFF0105	PROCESSED: Exit	Exit	2026-10-22 20:24:43
+1584	E20047021E70642284950113	PROCESSED: Exit	Exit	2026-10-22 20:25:52
+1585	E200471115A064221F3B010A	PROCESSED: Exit	Exit	2026-10-22 20:26:51
+1586	E2806894000050175DD498EE	PROCESSED: Exit	Exit	2026-10-22 20:27:58
+1587	E280F33620003000000B60E7	PROCESSED: Exit	Exit	2026-10-22 20:28:27
+1588	E2806890000000025797EE48	PROCESSED: Exit	Exit	2026-10-22 20:28:29
+1163	E20047017090642279B7010F	PROCESSED: Exit	Exit	2026-10-22 13:13:41
+1164	E200F336200060000016A4F8	PROCESSED: Exit	Exit	2026-10-22 13:13:41
+1165	E2806890000000025799D116	PROCESSED: Exit	Exit	2026-10-22 13:15:33
+1166	E2806890000000025799D7D1	PROCESSED: Exit	Exit	2026-10-22 13:21:46
+1167	E2004701B51064227DFF0105	PROCESSED: Entry	Entry	2026-10-22 13:22:26
+1168	E200471154D06422232E0107	PROCESSED: Exit	Exit	2026-10-22 13:24:45
+1169	E28038212000642202D509B7	PROCESSED: Exit	Exit	2026-10-22 13:26:16
+1170	E20047016BF06422796D010E	PROCESSED: Exit	Exit	2026-10-22 13:27:29
+1171	E2004710DBD064221B9E0116	PROCESSED: Entry	Entry	2026-10-22 13:27:49
+1172	E20047113CD0642221AE0110	PROCESSED: Exit	Exit	2026-10-22 13:29:02
+1173	E2806890000000025797E2D5	PROCESSED: Entry	Entry	2026-10-22 13:29:52
+1174	E20047019B3064227C61010D	PROCESSED: Entry	Entry	2026-10-22 13:31:35
+1175	E200471112E064221F0F0108	PROCESSED: Exit	Exit	2026-10-22 13:35:14
+1176	E2004711179064221F5A010B	PROCESSED: Exit	Exit	2026-10-22 13:38:33
+1177	E28068900000000256448FB7	PROCESSED: Exit	Exit	2026-10-22 13:39:09
+1178	E2004701876064227B24010A	PROCESSED: Exit	Exit	2026-10-22 13:39:31
+1179	E20047114A6064222287010F	PROCESSED: Exit	Exit	2026-10-22 13:40:23
+1180	E20047026150642288C30110	PROCESSED: Exit	Exit	2026-10-22 13:44:34
+1181	E2004701A19064227CC7010E	PROCESSED: Exit	Exit	2026-10-22 13:45:15
+1182	E2007DD2B1015FF0B3BA357F	PROCESSED: Exit	Exit	2026-10-22 13:46:28
+1183	E2806894000050175DD8A8EE	PROCESSED: Exit	Exit	2026-10-22 13:50:25
+1184	E200471567F06823FCA7010B	PROCESSED: Exit	Exit	2026-10-22 13:58:05
+1185	E2806890000000025797ECD2	PROCESSED: Exit	Exit	2026-10-22 13:58:07
+1186	E20047012440642274F20109	PROCESSED: Entry	Entry	2026-10-22 13:59:50
+1187	E200F336200060000016AA1D	PROCESSED: Entry	Entry	2026-10-22 14:01:05
+1188	E2004710F91064221D72010E	PROCESSED: Exit	Exit	2026-10-22 14:01:59
+1189	E2004701A09064227CB70110	PROCESSED: Exit	Exit	2026-10-22 14:03:43
+1328	E2004701D9006422803E010F	PROCESSED: Entry	Entry	2026-10-22 17:29:36
+1329	E28068900000000257981EBF	PROCESSED: Exit	Exit	2026-10-22 17:31:24
+1513	E2806894000050175DD6F0ED	PROCESSED: Exit	Exit	2026-10-22 19:28:30
+1514	E2004701054064227302010A	PROCESSED: Exit	Exit	2026-10-22 19:28:36
+1515	E20047115010642222E20107	PROCESSED: Exit	Exit	2026-10-22 19:28:52
+1516	E20047105CA0642213AB010D	PROCESSED: Entry	Entry	2026-10-22 19:29:14
+1517	E20047106510642214320108	PROCESSED: Exit	Exit	2026-10-22 19:29:37
+1518	E20047013380642275E6010D	PROCESSED: Entry	Entry	2026-10-22 19:29:47
+1519	E200470351006823DB38010D	PROCESSED: Exit	Exit	2026-10-22 19:29:59
+1520	E2803821200060260A99C57E	PROCESSED: Entry	Entry	2026-10-22 19:30:21
+1521	E2004701D9006422803E010F	PROCESSED: Exit	Exit	2026-10-22 19:30:58
+1522	E200470172E0642279DC0107	PROCESSED: Entry	Entry	2026-10-22 19:31:06
+1523	E20047013380642275E6010D	PROCESSED: Exit	Exit	2026-10-22 19:31:09
+1524	E20047112210642220020113	PROCESSED: Entry	Entry	2026-10-22 19:31:58
+1525	E2004701DD50642280830112	PROCESSED: Exit	Exit	2026-10-22 19:34:06
+1526	E20047019C8064227C76010E	PROCESSED: Exit	Exit	2026-10-22 19:34:48
+1527	E28068940000403153C090F9	PROCESSED: Entry	Entry	2026-10-22 19:34:58
+1528	E20047112210642220020113	PROCESSED: Exit	Exit	2026-10-22 19:35:23
+1529	E2004701298064227546010B	PROCESSED: Exit	Exit	2026-10-22 19:35:32
+1530	E20047014C4064227772010D	PROCESSED: Entry	Entry	2026-10-22 19:35:51
+1531	E2004701DD50642280830112	PROCESSED: Exit	Exit	2026-10-22 19:36:06
+1532	E20047014390642276E7010C	PROCESSED: Exit	Exit	2026-10-22 19:36:24
+1533	E280689000000002564446B5	PROCESSED: Exit	Exit	2026-10-22 19:37:35
+1534	E20047014C4064227772010D	PROCESSED: Exit	Exit	2026-10-22 19:38:16
+1535	E2004701DB70642280650113	PROCESSED: Exit	Exit	2026-10-22 19:38:38
+1536	E20047110FD064221EDE0109	PROCESSED: Exit	Exit	2026-10-22 19:39:42
+1537	E2004710D89064221B6A0110	PROCESSED: Entry	Entry	2026-10-22 19:39:47
+1538	E20047019DE064227C8C0113	PROCESSED: Exit	Exit	2026-10-22 19:40:00
+1539	E200470159C06422784A010A	PROCESSED: Entry	Entry	2026-10-22 19:41:23
+1540	E2004701E9D06422814B010B	PROCESSED: Entry	Entry	2026-10-22 19:41:46
+1541	E2806890000000025797E34E	PROCESSED: Exit	Exit	2026-10-22 19:44:21
+1542	E20034120129F6000FE06F26	PROCESSED: Entry	Entry	2026-10-22 19:45:13
+1543	E280F33620003000000B433D	PROCESSED: Entry	Entry	2026-10-22 19:47:52
+1544	E20047112310642220120112	PROCESSED: Exit	Exit	2026-10-22 19:48:18
+1545	E2004710661064221442010B	PROCESSED: Exit	Exit	2026-10-22 19:49:40
+1546	E20047103B2064221193010C	PROCESSED: Exit	Exit	2026-10-22 19:52:13
+1547	E2004710A1E0642217FF010C	PROCESSED: Exit	Exit	2026-10-22 19:54:09
+1548	E280F3362000600000554DF9	PROCESSED: Entry	Entry	2026-10-22 19:55:43
+1549	E2004710F85064221D66010D	PROCESSED: Exit	Exit	2026-10-22 19:56:14
+1550	E280F3362000600000661ACA	PROCESSED: Exit	Exit	2026-10-22 19:56:45
+1551	E20034120133010000D75E83	PROCESSED: Exit	Exit	2026-10-22 19:57:09
+1552	E2004701B55064227E03010F	PROCESSED: Exit	Exit	2026-10-22 19:57:25
+1553	E2004701A3C064227CEA0110	PROCESSED: Entry	Entry	2026-10-22 19:57:50
+1554	E2806890000000025799CC04	PROCESSED: Exit	Exit	2026-10-22 19:58:17
+1555	E20047013F30642276A10112	PROCESSED: Exit	Exit	2026-10-22 19:58:30
+1556	E2806890000000025799D2C4	PROCESSED: Exit	Exit	2026-10-22 19:59:54
+1557	E20047115AF0642223900115	PROCESSED: Exit	Exit	2026-10-22 20:00:32
+1558	E2806890000000025798F801	PROCESSED: Exit	Exit	2026-10-22 20:01:40
+1559	E2806890000000025798217F	PROCESSED: Entry	Entry	2026-10-22 20:03:36
+1560	E2003412012CFE0007B1E549	PROCESSED: Exit	Exit	2026-10-22 20:03:49
+1561	E200470189E064227B4C010D	PROCESSED: Entry	Entry	2026-10-22 20:06:43
+1562	E20047015A006422784E010D	PROCESSED: Entry	Entry	2026-10-22 20:06:53
+1563	E20047016450642278F30111	PROCESSED: Exit	Exit	2026-10-22 20:07:01
+1564	E28068900000000256447F84	PROCESSED: Exit	Exit	2026-10-22 20:08:43
+1565	E28068900000000257992995	PROCESSED: Exit	Exit	2026-10-22 20:09:06
+1566	E2004701812064227AC00106	PROCESSED: Exit	Exit	2026-10-22 20:10:07
+1567	E20047021110642283BF0107	PROCESSED: Exit	Exit	2026-10-22 20:10:32
+1568	E28068900000000257982126	PROCESSED: Exit	Exit	2026-10-22 20:12:11
+1569	E20047015290642277D70109	PROCESSED: Exit	Exit	2026-10-22 20:12:22
+1570	E20047012880642275360112	PROCESSED: Exit	Exit	2026-10-22 20:14:30
+1571	E20047021C70642284750109	PROCESSED: Exit	Exit	2026-10-22 20:17:17
+1190	E2806890000000025797E74F	PROCESSED: Exit	Exit	2026-10-22 14:04:50
+1191	E20047115620642223430111	PROCESSED: Exit	Exit	2026-10-22 14:07:53
+1192	E2806894000040175DD7C4EF	PROCESSED: Exit	Exit	2026-10-22 14:11:12
+1193	E2806995A05B220082C7A47C	PROCESSED: Exit	Exit	2026-10-22 14:12:45
+1194	E20034120128F6000FE097FD	PROCESSED: Entry	Entry	2026-10-22 14:13:27
+1195	E28068900000000256448322	PROCESSED: Entry	Entry	2026-10-22 14:13:27
+1196	E200470985F06821503A0110	PROCESSED: Exit	Exit	2026-10-22 14:15:31
+1197	E20047012440642274F20109	PROCESSED: Exit	Exit	2026-10-22 14:19:00
+1198	E2806894000040175DD304F0	PROCESSED: Exit	Exit	2026-10-22 14:20:29
+1199	E280689000000002564480F5	PROCESSED: Exit	Exit	2026-10-22 14:25:09
+1200	E20047019B3064227C61010D	PROCESSED: Exit	Exit	2026-10-22 14:25:40
+1201	E20047103CE0642211AF010D	PROCESSED: Exit	Exit	2026-10-22 14:28:33
+1202	E28068900000000256448928	PROCESSED: Entry	Entry	2026-10-22 14:30:55
+1203	E20047106510642214320108	PROCESSED: Exit	Exit	2026-10-22 14:32:45
+1204	E28038212000642601E2A3F6	PROCESSED: Entry	Entry	2026-10-22 14:32:52
+1205	E2004701879064227B270111	PROCESSED: Exit	Exit	2026-10-22 14:33:22
+1206	E200470189E064227B4C010D	PROCESSED: Exit	Exit	2026-10-22 14:37:59
+1207	E2003412012D010008A54C27	PROCESSED: Exit	Exit	2026-10-22 14:38:11
+1208	E20034120128F6000FE097FD	PROCESSED: Exit	Exit	2026-10-22 14:38:15
+1209	E28068900000000256448322	PROCESSED: Exit	Exit	2026-10-22 14:38:16
+1210	E20047114720642222530113	PROCESSED: Exit	Exit	2026-10-22 14:39:07
+1211	E2004710BA30642219840110	PROCESSED: Entry	Entry	2026-10-22 14:39:32
+1212	E20034120136F50004CB3A79	PROCESSED: Exit	Exit	2026-10-22 14:40:19
+1213	E2004710BA30642219840110	PROCESSED: Exit	Exit	2026-10-22 14:40:35
+1214	E280F33620003000000911C2	PROCESSED: Exit	Exit	2026-10-22 14:43:58
+1215	E2004710A5F064221840010B	PROCESSED: Exit	Exit	2026-10-22 14:46:22
+1216	E200470170A0642279B8010A	PROCESSED: Exit	Exit	2026-10-22 14:50:12
+1217	E28038212000642601E2A3F6	PROCESSED: Exit	Exit	2026-10-22 14:50:51
+1218	E200F336200060000016AA1D	PROCESSED: Exit	Exit	2026-10-22 14:50:57
+1219	E200471038E06422116F010F	PROCESSED: Exit	Exit	2026-10-22 14:51:14
+1220	E200471159A06422237B0111	PROCESSED: Exit	Exit	2026-10-22 14:52:06
+1221	E2004701B65064227E13010E	PROCESSED: Exit	Exit	2026-10-22 14:54:17
+1222	E2806894000040175DD0A0EF	PROCESSED: Exit	Exit	2026-10-22 14:54:35
+1223	E2806890000000025799DB4A	PROCESSED: Exit	Exit	2026-10-22 14:59:10
+1224	E280F336200060000068CE51	PROCESSED: Entry	Entry	2026-10-22 14:59:16
+1225	E2806890000000025799C4B9	PROCESSED: Exit	Exit	2026-10-22 15:01:07
+1330	E20047101EC064220FCD0110	PROCESSED: Entry	Entry	2026-10-22 17:37:10
+1331	E2004702595064228843010A	PROCESSED: Entry	Entry	2026-10-22 17:38:53
+1332	E20047016AD06422795B010C	PROCESSED: Exit	Exit	2026-10-22 17:39:47
+1333	E2806894000040175DD190EE	PROCESSED: Exit	Exit	2026-10-22 17:40:08
+1334	E200470224B0642284F90112	PROCESSED: Entry	Entry	2026-10-22 17:41:07
+1335	E2004710D79064221B5A010B	PROCESSED: Entry	Entry	2026-10-22 17:41:36
+1336	E20047012E106422758F010F	PROCESSED: Entry	Entry	2026-10-22 17:42:32
+1337	E200470190E064227BBC010D	PROCESSED: Entry	Entry	2026-10-22 17:42:37
+1338	E20047011240642273D20112	PROCESSED: Entry	Entry	2026-10-22 17:42:40
+1339	E20034120133010000D75E83	PROCESSED: Entry	Entry	2026-10-22 17:42:49
+1340	E20047019DE064227C8C0113	PROCESSED: Entry	Entry	2026-10-22 17:43:06
+1341	E20047014390642276E7010C	PROCESSED: Entry	Entry	2026-10-22 17:43:22
+1342	E2806894000040175DD400F0	PROCESSED: Entry	Entry	2026-10-22 17:44:00
+1343	E20047016250642278D3010E	PROCESSED: Exit	Exit	2026-10-22 17:45:13
+1344	E20047025E106422888F010B	PROCESSED: Entry	Entry	2026-10-22 17:45:28
+1345	E2806894000050286F12D142	PROCESSED: Entry	Entry	2026-10-22 17:46:00
+1346	E20047015290642277D70109	PROCESSED: Entry	Entry	2026-10-22 17:47:41
+1347	E20047026150642288C30110	PROCESSED: Entry	Entry	2026-10-22 17:49:27
+1348	E2806890000000025799CED8	PROCESSED: Entry	Entry	2026-10-22 17:49:51
+1349	E2004701947064227BF5010D	PROCESSED: Entry	Entry	2026-10-22 17:49:55
+1350	E20047012880642275360112	PROCESSED: Entry	Entry	2026-10-22 17:50:15
+1351	E20047019C8064227C76010E	PROCESSED: Entry	Entry	2026-10-22 17:50:35
+1352	E2004701897064227B450113	PROCESSED: Exit	Exit	2026-10-22 17:51:09
+1353	E2806894000050175DD4BCEE	PROCESSED: Entry	Entry	2026-10-22 17:51:33
+1354	E2004701812064227AC00106	PROCESSED: Entry	Entry	2026-10-22 17:51:53
+1355	E2806894000040175DD7F4EF	PROCESSED: Exit	Exit	2026-10-22 17:53:00
+1356	E280F33620003000000B01FF	PROCESSED: Exit	Exit	2026-10-22 17:53:42
+1357	E2806890000000025799337E	PROCESSED: Entry	Entry	2026-10-22 17:53:43
+1358	E280F3362000600000663E65	PROCESSED: Entry	Entry	2026-10-22 17:53:58
+1359	E20047011240642273D20112	PROCESSED: Exit	Exit	2026-10-22 17:54:15
+1360	E2004710D79064221B5A010B	PROCESSED: Exit	Exit	2026-10-22 17:54:25
+1361	E2806890000000025798F7CC	PROCESSED: Entry	Entry	2026-10-22 17:54:43
+1362	E2004701947064227BF5010D	PROCESSED: Exit	Exit	2026-10-22 17:55:03
+1363	E20047112310642220120112	PROCESSED: Entry	Entry	2026-10-22 17:55:15
+1364	E2004701AD7064227D85010C	PROCESSED: Entry	Entry	2026-10-22 17:56:56
+1365	E20047026150642288C30110	PROCESSED: Exit	Exit	2026-10-22 17:57:49
+1366	E2806894000050175DD8A8EE	PROCESSED: Entry	Entry	2026-10-22 17:58:43
+1367	E28068940000403153C06CF9	PROCESSED: Entry	Entry	2026-10-22 17:59:30
+1368	E280F33620003000000B3DAA	PROCESSED: Entry	Entry	2026-10-22 17:59:35
+1369	E2806890000000025798DCCD	PROCESSED: Exit	Exit	2026-10-22 17:59:46
+1370	E2004701AD7064227D85010C	PROCESSED: Exit	Exit	2026-10-22 18:00:24
+1371	E2004701B56064227E040109	PROCESSED: Entry	Entry	2026-10-22 18:00:57
+1372	E200470351006823DB38010D	PROCESSED: Entry	Entry	2026-10-22 18:01:20
+1373	E2806894000050175DD8A8EE	PROCESSED: Exit	Exit	2026-10-22 18:02:09
+1374	E20047101EC064220FCD0110	PROCESSED: Exit	Exit	2026-10-22 18:04:25
+1375	E28068940000403153C06CF9	PROCESSED: Exit	Exit	2026-10-22 18:04:32
+1376	E280689000000002564446B5	PROCESSED: Entry	Entry	2026-10-22 18:05:34
+1377	E2806894000050175DD8A8EE	PROCESSED: Exit	Exit	2026-10-22 18:05:55
+1378	E28068900000000256448ABE	PROCESSED: Exit	Exit	2026-10-22 18:06:31
+1379	E2806890000000025799367E	PROCESSED: Entry	Entry	2026-10-22 18:06:54
+1380	E280F3362000300000081A12	PROCESSED: Entry	Entry	2026-10-22 18:07:58
+1381	E200470179C064227A4A0110	PROCESSED: Exit	Exit	2026-10-22 18:08:17
+1226	E2806890000000025798F30E	PROCESSED: Exit	Exit	2026-10-22 15:04:17
+1227	E20047010640642273120107	PROCESSED: Exit	Exit	2026-10-22 15:07:39
+1228	E20047103BC06422119D0110	PROCESSED: Entry	Entry	2026-10-22 15:07:57
+1229	E20047103BC06422119D0110	PROCESSED: Exit	Exit	2026-10-22 15:10:19
+1230	E2806894000050175DD574ED	PROCESSED: Exit	Exit	2026-10-22 15:21:35
+1231	E280F336200060000068CE51	PROCESSED: Exit	Exit	2026-10-22 15:22:48
+1382	E2003412012BFD000E32AE53	PROCESSED: Entry	Entry	2026-10-22 18:10:35
+1383	E20047014F90642277A7010B	PROCESSED: Entry	Entry	2026-10-22 18:10:51
+1384	E20047014C4064227772010D	PROCESSED: Entry	Entry	2026-10-22 18:11:07
+1385	E20047115010642222E20107	PROCESSED: Entry	Entry	2026-10-22 18:11:16
+1386	E2004701ACE064227D7C0110	PROCESSED: Entry	Entry	2026-10-22 18:11:46
+1387	E20047014F90642277A7010B	PROCESSED: Exit	Exit	2026-10-22 18:12:25
+1388	E2003412012BFD000E32AE53	PROCESSED: Exit	Exit	2026-10-22 18:12:30
+1389	E2806890000000025798236B	PROCESSED: Exit	Exit	2026-10-22 18:13:30
+1390	E20047014C4064227772010D	PROCESSED: Exit	Exit	2026-10-22 18:13:41
+1391	E20047113DE0642221BF010D	PROCESSED: Entry	Entry	2026-10-22 18:14:51
+1392	E2806894000050175DD620EF	PROCESSED: Entry	Entry	2026-10-22 18:16:48
+1393	E2004701A47064227CF50109	PROCESSED: Entry	Entry	2026-10-22 18:16:51
+1394	E28068900000000257982DDF	PROCESSED: Entry	Entry	2026-10-22 18:17:34
+1395	E20047012440642274F20109	PROCESSED: Exit	Exit	2026-10-22 18:18:17
+1396	E2806894000050175DD620EF	PROCESSED: Exit	Exit	2026-10-22 18:18:44
+1397	E2806894000040175DD250ED	PROCESSED: Entry	Entry	2026-10-22 18:19:34
+1398	E200F3362000600000178D49	PROCESSED: Entry	Entry	2026-10-22 18:20:03
+1399	E20047113DE0642221BF010D	PROCESSED: Exit	Exit	2026-10-22 18:20:09
+1400	E2806894000050175DD8A8EE	PROCESSED: Exit	Exit	2026-10-22 18:20:16
+1401	E20047101CB064220FAC0109	PROCESSED: Exit	Exit	2026-10-22 18:20:23
+1402	E2004704CE306823F30B010F	PROCESSED: Exit	Exit	2026-10-22 18:20:41
+1403	E2003412013BF6000F733D50	PROCESSED: Exit	Exit	2026-10-22 18:22:33
+1404	E2806890000000025799E81E	PROCESSED: Entry	Entry	2026-10-22 18:23:25
+1405	E2806894000040175DD250ED	PROCESSED: Exit	Exit	2026-10-22 18:23:31
+1406	E2003412013BF6000F739AEE	PROCESSED: Entry	Entry	2026-10-22 18:23:59
+1407	E2004701AD7064227D85010C	PROCESSED: Entry	Entry	2026-10-22 18:25:27
+1408	E280F3362000300000081A12	PROCESSED: Exit	Exit	2026-10-22 18:25:34
+1409	E200F3362000600000178D49	PROCESSED: Exit	Exit	2026-10-22 18:25:44
+1410	E20047021110642283BF0107	PROCESSED: Entry	Entry	2026-10-22 18:26:02
+1411	E2003412013BF6000F739AEE	PROCESSED: Exit	Exit	2026-10-22 18:27:18
+1412	E2806890000000025799E81E	PROCESSED: Exit	Exit	2026-10-22 18:27:18
+1413	E2004702265064228513010F	PROCESSED: Entry	Entry	2026-10-22 18:27:45
+1414	E20047106410642214220110	PROCESSED: Exit	Exit	2026-10-22 18:28:51
+1415	E28068900000000256448080	PROCESSED: Exit	Exit	2026-10-22 18:29:03
+1416	E2201F000000000000000000	PROCESSED: Exit	Exit	2026-10-22 18:29:40
+1417	E200470156006422780E0108	PROCESSED: Entry	Entry	2026-10-22 18:30:52
+1418	E20047103B2064221193010C	PROCESSED: Entry	Entry	2026-10-22 18:31:33
+1419	E200470178A064227A38010E	PROCESSED: Exit	Exit	2026-10-22 18:32:57
+1420	E20047109BB06422179C010F	PROCESSED: Entry	Entry	2026-10-22 18:33:07
+1421	E20047106510642214320108	PROCESSED: Entry	Entry	2026-10-22 18:33:16
+1422	E200470155B0642278090110	PROCESSED: Exit	Exit	2026-10-22 18:34:12
+1423	E20047110B1064221E920116	PROCESSED: Exit	Exit	2026-10-22 18:34:21
+1424	E20047017030642279B10109	PROCESSED: Entry	Entry	2026-10-22 18:34:33
+1425	E280F33620003000000922FA	PROCESSED: Entry	Entry	2026-10-22 18:34:38
+1426	E2004701B61064227E0F0111	PROCESSED: Entry	Entry	2026-10-22 18:34:41
+1427	E200470156006422780E0108	PROCESSED: Exit	Exit	2026-10-22 18:34:56
+1428	E2806890000000025799D116	PROCESSED: Entry	Entry	2026-10-22 18:35:37
+1429	E28068900000000257981EC9	PROCESSED: Entry	Entry	2026-10-22 18:35:40
+1430	E20047021C70642284750109	PROCESSED: Entry	Entry	2026-10-22 18:36:09
+1431	E2806894000050175DD388ED	PROCESSED: Exit	Exit	2026-10-22 18:36:20
+1432	E2806890000000025799C310	PROCESSED: Entry	Entry	2026-10-22 18:37:24
+1433	E2806894000050175DD8A8EE	PROCESSED: Entry	Entry	2026-10-22 18:39:05
+1434	E20047016350642278E3010F	PROCESSED: Exit	Exit	2026-10-22 18:39:23
+1435	E20034120139010008ACFF5D	PROCESSED: Entry	Entry	2026-10-22 18:40:53
+1436	E2004710D96064221B770111	PROCESSED: Exit	Exit	2026-10-22 18:42:09
+1437	E2806890000000025797D984	PROCESSED: Exit	Exit	2026-10-22 18:42:30
+1438	E20047014F90642277A7010B	PROCESSED: Entry	Entry	2026-10-22 18:43:41
+1439	E200471134906422212A010A	PROCESSED: Exit	Exit	2026-10-22 18:43:54
+1440	E2004701A67064227D15010A	PROCESSED: Entry	Entry	2026-10-22 18:44:07
+1441	E2004710C120642219F30111	PROCESSED: Entry	Entry	2026-10-22 18:44:56
+1442	E28068900000000256448521	PROCESSED: Entry	Entry	2026-10-22 18:45:16
+1443	E2004712946060220A8B010D	PROCESSED: Entry	Entry	2026-10-22 18:45:41
+1444	E20047015D2064227880010A	PROCESSED: Entry	Entry	2026-10-22 18:45:43
+1445	E200470143F0642276ED010B	PROCESSED: Entry	Entry	2026-10-22 18:46:32
+1446	E20047011380642273E6010C	PROCESSED: Entry	Entry	2026-10-22 18:48:11
+1447	E200470140D0642276BB010B	PROCESSED: Entry	Entry	2026-10-22 18:48:20
+1448	E2806890000000025797F0C1	PROCESSED: Exit	Exit	2026-10-22 18:48:44
+1449	E2004710B9E06422197F010D	PROCESSED: Entry	Entry	2026-10-22 18:49:29
+1450	E2004710D89064221B6A0110	PROCESSED: Entry	Entry	2026-10-22 18:49:32
+1451	E20047014F90642277A7010B	PROCESSED: Exit	Exit	2026-10-22 18:50:50
+1452	E200470100C0642272BA010F	PROCESSED: Entry	Entry	2026-10-22 18:51:04
+1453	E2004701A67064227D15010A	PROCESSED: Exit	Exit	2026-10-22 18:53:07
+1454	E2003098911900900900C06A	PROCESSED: Entry	Entry	2026-10-22 18:53:49
+1455	E200471115A064221F3B010A	PROCESSED: Entry	Entry	2026-10-22 18:53:54
+1456	E2806890000000025798ED94	PROCESSED: Exit	Exit	2026-10-22 18:54:00
+1457	E200471159A06422237B0111	PROCESSED: Exit	Exit	2026-10-22 18:54:10
+1458	E2806890000000025799D794	PROCESSED: Entry	Entry	2026-10-22 18:54:35
+1459	E28068900000000257992547	PROCESSED: Entry	Entry	2026-10-22 18:54:35
+1460	E200470156006422780E0108	PROCESSED: Entry	Entry	2026-10-22 18:54:53
+1461	E2806894000040175DD7F4EF	PROCESSED: Entry	Entry	2026-10-22 18:55:56
+1462	E2806890000000025799D116	PROCESSED: Exit	Exit	2026-10-22 18:57:55
+1463	E28068940000403153C06CF9	PROCESSED: Exit	Exit	2026-10-22 18:58:14
+1589	E20034120139F50004CBBE24	PROCESSED: Entry	Entry	2026-10-22 20:29:37
+1590	E200470190E064227BBC010D	PROCESSED: Exit	Exit	2026-10-22 20:29:52
+1591	E2004701B61064227E0F0111	PROCESSED: Exit	Exit	2026-10-22 20:30:30
+1592	E20047115250642223060111	PROCESSED: Entry	Entry	2026-10-22 20:31:05
+1593	E20034120139010008ACFF5D	PROCESSED: Exit	Exit	2026-10-22 20:32:08
+1594	E28068900000000256445C4A	PROCESSED: Exit	Exit	2026-10-22 20:33:17
+1595	E2004712946060220A8B010D	PROCESSED: Exit	Exit	2026-10-22 20:33:49
+1596	E20047015D2064227880010A	PROCESSED: Exit	Exit	2026-10-22 20:33:50
+1597	E2004710DBD064221B9E0116	PROCESSED: Exit	Exit	2026-10-22 20:34:54
+1598	E2002075641201710880BD48	PROCESSED: Exit	Exit	2026-10-22 20:35:13
+1599	E200471138006823B9A8010D	PROCESSED: Exit	Exit	2026-10-22 20:35:46
+1600	E2004701A2A064227CD80109	PROCESSED: Exit	Exit	2026-10-22 20:35:46
+1601	E2004714D4406820AA0E010A	PROCESSED: Exit	Exit	2026-10-22 20:35:54
+1602	E2004702265064228513010F	PROCESSED: Exit	Exit	2026-10-22 20:36:03
+1603	E200470172E0642279DC0107	PROCESSED: Exit	Exit	2026-10-22 20:36:32
+1604	E200470172E0642279DC0107	PROCESSED: Entry	Entry	2026-10-22 20:38:58
+1605	E280F3362000600000684977	PROCESSED: Entry	Entry	2026-10-22 20:39:19
+1606	E28068940000503153D6C88A	PROCESSED: Entry	Entry	2026-10-22 20:40:20
+1607	E280F3362000600000684977	PROCESSED: Exit	Exit	2026-10-22 20:42:38
+1608	E280689000000002579929A8	PROCESSED: Exit	Exit	2026-10-22 20:42:43
+1609	E2004710C120642219F30111	PROCESSED: Exit	Exit	2026-10-22 20:43:15
+1610	E28068900000000257982F72	PROCESSED: Exit	Exit	2026-10-22 20:43:23
+1611	E2004710CA9064221A8A0109	PROCESSED: Entry	Entry	2026-10-22 20:46:12
+1612	E20047113160642220F70114	PROCESSED: Entry	Entry	2026-10-22 20:46:38
+1613	E280F33620003000000B433D	PROCESSED: Exit	Exit	2026-10-22 20:47:21
+1614	E2004710B9E06422197F010D	PROCESSED: Exit	Exit	2026-10-22 20:49:32
+1615	E200470143F0642276ED010B	PROCESSED: Exit	Exit	2026-10-22 20:50:21
+1616	E200470156006422780E0108	PROCESSED: Exit	Exit	2026-10-22 20:52:02
+1617	E20034120132F6000F6F39EA	PROCESSED: Entry	Entry	2026-10-22 20:52:14
+1618	E2004700ED006422717E0110	PROCESSED: Entry	Entry	2026-10-22 20:53:04
+1619	E20034120131F50004CBD83C	PROCESSED: Entry	Entry	2026-10-22 20:55:01
+1620	E2806890000000025799D879	PROCESSED: Exit	Exit	2026-10-22 20:55:25
+1621	E2004710CA9064221A8A0109	PROCESSED: Exit	Exit	2026-10-22 20:55:36
+1622	E20034120137F50004CBC66D	PROCESSED: Exit	Exit	2026-10-22 20:55:57
+1623	E2806890000000025644584C	PROCESSED: Exit	Exit	2026-10-22 20:56:01
+1624	E2806890000000025798F9CC	PROCESSED: Exit	Exit	2026-10-22 20:56:05
+1625	E2004710182064220F63010A	PROCESSED: Entry	Entry	2026-10-22 20:56:15
+1626	E2803821200060260A99C57E	PROCESSED: Exit	Exit	2026-10-22 20:57:05
+1627	E2004701922064227BD00114	PROCESSED: Exit	Exit	2026-10-22 20:58:06
+1628	E200470159C06422784A010A	PROCESSED: Exit	Exit	2026-10-22 20:59:13
+1629	E28068940000403153C090F9	PROCESSED: Exit	Exit	2026-10-22 21:01:26
+1630	E2004701B8F064227E3D0108	PROCESSED: Entry	Entry	2026-10-22 21:04:09
+1631	E2004701B56064227E040109	PROCESSED: Exit	Exit	2026-10-22 21:05:33
+1632	E2004701B46064227DF40107	PROCESSED: Exit	Exit	2026-10-22 21:05:33
+1633	E20047115190642222FA010D	PROCESSED: Exit	Exit	2026-10-22 21:09:33
+1634	E280F33620006000006079C9	PROCESSED: Entry	Entry	2026-10-22 21:09:45
+1635	E20047015A006422784E010D	PROCESSED: Exit	Exit	2026-10-22 21:10:34
+1636	E28068900000000257981EC9	PROCESSED: Exit	Exit	2026-10-22 21:11:13
+1637	E200470189E064227B4C010D	PROCESSED: Exit	Exit	2026-10-22 21:12:26
+1638	E2806890000000025799354F	PROCESSED: Exit	Exit	2026-10-22 21:12:44
+1639	E28068900000000257982DDF	PROCESSED: Exit	Exit	2026-10-22 21:13:24
+1640	E2806890000000025797D219	PROCESSED: Exit	Exit	2026-10-22 21:14:19
+1641	E2806890000000025797E025	PROCESSED: Entry	Entry	2026-10-22 21:16:04
+1642	E20047021D40642284820106	PROCESSED: Exit	Exit	2026-10-22 21:18:40
+1643	E200471155906422233A010F	PROCESSED: Entry	Entry	2026-10-22 21:19:02
+1644	E200470149D06422774B0111	PROCESSED: Entry	Entry	2026-10-22 21:21:08
+1645	E2806890000000025799CC04	PROCESSED: Exit	Exit	2026-10-22 21:21:09
+1646	E20047025E106422888F010B	PROCESSED: Exit	Exit	2026-10-22 21:21:50
+1647	E2006B060000000000000000	PROCESSED: Exit	Exit	2026-10-22 21:22:57
+1648	E200471018D064220F6E010C	PROCESSED: Exit	Exit	2026-10-22 21:24:35
+1649	E2004710F41064221D220111	PROCESSED: Exit	Exit	2026-10-22 21:25:22
+1650	E28068900000000256448521	PROCESSED: Exit	Exit	2026-10-22 21:26:03
+1651	E2806890000000025799DD1E	PROCESSED: Exit	Exit	2026-10-22 21:26:37
+1652	E200470149D06422774B0111	PROCESSED: Exit	Exit	2026-10-22 21:26:50
+1653	E280F33620006000006684C5	PROCESSED: Exit	Exit	2026-10-22 21:26:55
+1654	E2806890000000025797E712	PROCESSED: Exit	Exit	2026-10-22 21:27:04
+1655	E2004701A47064227CF50109	PROCESSED: Exit	Exit	2026-10-22 21:27:16
+1656	E2004701947064227BF5010D	PROCESSED: Entry	Entry	2026-10-22 21:29:25
+1657	E2004701A3C064227CEA0110	PROCESSED: Exit	Exit	2026-10-22 21:29:31
+1658	E2806894000050175DD074F0	PROCESSED: Exit	Exit	2026-10-22 21:29:57
+1659	E2806894000040175DD7F4EF	PROCESSED: Entry	Entry	2026-10-22 21:30:03
+1660	E2806890000000025799D52D	PROCESSED: Exit	Exit	2026-10-22 21:30:19
+1661	E2806890000000025799D468	PROCESSED: Exit	Exit	2026-10-22 21:30:19
+1662	E2004701947064227BF5010D	PROCESSED: Exit	Exit	2026-10-22 21:30:53
+1663	E20047103BC06422119D0110	PROCESSED: Exit	Exit	2026-10-22 21:31:20
+1664	E2806894000040175DD7F4EF	PROCESSED: Exit	Exit	2026-10-22 21:32:24
+1665	E2004711565064222346010F	PROCESSED: Exit	Exit	2026-10-22 21:32:59
+1666	E280F3362000600000661ACA	PROCESSED: Exit	Exit	2026-10-22 21:34:08
+1667	E20034120139F50004CBBA46	PROCESSED: Exit	Exit	2026-10-22 21:35:12
+1668	E2004710D89064221B6A0110	PROCESSED: Exit	Exit	2026-10-22 21:35:58
+1669	E200F336200060000016D86E	PROCESSED: Exit	Exit	2026-10-22 21:37:37
+1670	E2806890000000025797DA33	PROCESSED: Exit	Exit	2026-10-22 21:39:26
+1671	E20034120139F50004CBBA46	PROCESSED: Exit	Exit	2026-10-22 21:40:07
+1672	E20047105A5064221386010F	PROCESSED: Entry	Entry	2026-10-22 21:41:27
+1673	E2003098911900900900C06A	PROCESSED: Exit	Exit	2026-10-22 21:42:22
+1674	E20034120134FF00082B8703	PROCESSED: Exit	Exit	2026-10-22 21:42:26
+1675	E280F3362000600000554DF9	PROCESSED: Exit	Exit	2026-10-22 21:42:39
+1676	E2004701E9D06422814B010B	PROCESSED: Exit	Exit	2026-10-22 21:43:58
+1677	E2806890000000025798217F	PROCESSED: Exit	Exit	2026-10-22 21:44:47
+1678	E20047014380642276E60111	PROCESSED: Exit	Exit	2026-10-22 21:46:22
+1679	E2806894000040175DD1C4EF	PROCESSED: Entry	Entry	2026-10-22 21:46:26
+1680	E2004702595064228843010A	PROCESSED: Exit	Exit	2026-10-22 21:47:12
+1681	E20047113EA0642221CB010A	PROCESSED: Entry	Entry	2026-10-22 21:47:47
+1682	E20034120129F6000FE06F26	PROCESSED: Exit	Exit	2026-10-22 21:48:48
+1683	E2003412012F1700004715D2	PROCESSED: Entry	Entry	2026-10-22 21:48:58
+1684	E20047112210642220020113	PROCESSED: Exit	Exit	2026-10-22 21:49:34
+1685	E20034120137F6000F738C5B	PROCESSED: Entry	Entry	2026-10-22 21:51:43
+1686	E2004700E740642271220109	PROCESSED: Exit	Exit	2026-10-22 21:52:12
+1687	E280F33620006000006079C9	PROCESSED: Exit	Exit	2026-10-22 21:54:00
+1688	E2806894000050175DD708ED	PROCESSED: Exit	Exit	2026-10-22 21:54:10
+1689	E20047011380642273E6010C	PROCESSED: Exit	Exit	2026-10-22 21:54:43
+1690	E28068900000000256445A1E	PROCESSED: Exit	Exit	2026-10-22 21:57:20
+1691	E20047114920642222730107	PROCESSED: Exit	Exit	2026-10-22 21:57:24
+1692	E2004701DD50642280830112	PROCESSED: Exit	Exit	2026-10-22 22:00:40
+1693	E200470100C0642272BA010F	PROCESSED: Exit	Exit	2026-10-22 22:00:46
+1694	E2004700D31064226FDF010A	PROCESSED: Exit	Exit	2026-10-22 22:01:35
+1695	E20034120139F50004CBBE24	PROCESSED: Exit	Exit	2026-10-22 22:03:06
+1696	E2806890000000025799367E	PROCESSED: Exit	Exit	2026-10-22 22:03:57
+1697	E2806894000050175DD6B0EF	PROCESSED: Entry	Entry	2026-10-22 22:04:54
+1698	E28068900000000257981F92	PROCESSED: Exit	Exit	2026-10-22 22:16:20
+1699	E200471155906422233A010F	PROCESSED: Exit	Exit	2026-10-22 22:16:44
+1700	E2004710182064220F63010A	PROCESSED: Exit	Exit	2026-10-22 22:17:34
+1701	E20047105CA0642213AB010D	PROCESSED: Exit	Exit	2026-10-22 22:18:00
+1702	E2004701B8F064227E3D0108	PROCESSED: Exit	Exit	2026-10-22 22:21:28
+1703	E2003412012FF6000F739499	PROCESSED: Entry	Entry	2026-10-22 22:22:36
+1704	E200470197F064227C2D010D	PROCESSED: Entry	Entry	2026-10-22 22:23:13
+1705	E2806890000000025797EF3D	PROCESSED: Exit	Exit	2026-10-22 22:25:30
+1706	E20047115250642223060111	PROCESSED: Exit	Exit	2026-10-22 22:31:39
+1707	E2806890000000025799282D	PROCESSED: Exit	Exit	2026-10-22 22:33:23
+1708	E280F33620003000000B2123	PROCESSED: Entry	Entry	2026-10-22 22:33:34
+1709	E20047017F3064227AA10109	PROCESSED: Entry	Entry	2026-10-22 22:34:36
+1710	E28068900000000257982AD7	PROCESSED: Exit	Exit	2026-10-22 22:34:43
+1711	E200F336200060000016D86E	PROCESSED: Entry	Entry	2026-10-22 22:37:51
+1712	E2806890000000025797E025	PROCESSED: Exit	Exit	2026-10-22 22:38:16
+1713	E20034120132F6000F6F39EA	PROCESSED: Exit	Exit	2026-10-22 22:39:45
+1714	E200F336200060000016D86E	PROCESSED: Exit	Exit	2026-10-22 22:40:08
+1715	E2004701ACE064227D7C0110	PROCESSED: Exit	Exit	2026-10-22 22:42:11
+1716	E2806894000040175DD3DCEE	PROCESSED: Exit	Exit	2026-10-22 22:42:19
+1717	E28068940000503153D6C88A	PROCESSED: Exit	Exit	2026-10-22 22:42:27
+1718	E2004700ED006422717E0110	PROCESSED: Exit	Exit	2026-10-22 22:44:54
+1719	E2004701A9A064227D480115	PROCESSED: Exit	Exit	2026-10-22 22:48:06
+1720	E2806890000000025799337E	PROCESSED: Exit	Exit	2026-10-22 22:49:36
+1721	E2806890000000025799C310	PROCESSED: Exit	Exit	2026-10-22 22:50:17
+1722	E200470172E0642279DC0107	PROCESSED: Exit	Exit	2026-10-22 22:57:12
+1723	E20047105A5064221386010F	PROCESSED: Exit	Exit	2026-10-22 22:59:03
+1724	E20047113160642220F70114	PROCESSED: Exit	Exit	2026-10-22 23:04:26
+1725	E280F33620003000000B2123	PROCESSED: Exit	Exit	2026-10-22 23:04:39
+1726	E2806890000000025797D219	PROCESSED: Entry	Entry	2026-10-22 23:04:55
+1727	E2806890000000025797D219	PROCESSED: Exit	Exit	2026-10-22 23:06:20
+1728	E200F3362000600000169FC4	PROCESSED: Entry	Entry	2026-10-22 23:06:25
+1729	E2806894000050175DD4BCEE	PROCESSED: Exit	Exit	2026-10-22 23:07:49
+1730	E20047113EA0642221CB010A	PROCESSED: Exit	Exit	2026-10-22 23:08:25
+1731	E280F33620006000005F1CF3	PROCESSED: Exit	Exit	2026-10-22 23:14:53
+1732	E280ECD540D4B76CC068CCFF	PROCESSED: Entry	Entry	2026-10-22 23:14:59
+1733	E2003412012F1700004715D2	PROCESSED: Exit	Exit	2026-10-22 23:16:04
+1734	E200470197F064227C2D010D	PROCESSED: Exit	Exit	2026-10-22 23:23:33
+1735	E20047017F3064227AA10109	PROCESSED: Exit	Exit	2026-10-22 23:33:19
+1736	E20047017F3064227AA10109	PROCESSED: Entry	Entry	2026-10-22 23:35:40
+1737	E2806890000000025797E9AC	PROCESSED: Entry	Entry	2026-10-22 23:41:28
+1738	E20034120137F6000F738C5B	PROCESSED: Exit	Exit	2026-10-22 23:41:55
+1739	E20047017F3064227AA10109	PROCESSED: Exit	Exit	2026-10-22 23:54:55
+1740	E2004710CE6064221AC7010F	PROCESSED: Entry	Entry	2026-10-23 00:15:46
+1741	E2806890000000025797E9AC	PROCESSED: Entry	Entry	2026-10-23 00:22:15
+1742	E2003412012FF6000F739499	PROCESSED: Entry	Entry	2026-10-23 00:31:55
+1743	E2003412012FF6000F739499	PROCESSED: Exit	Exit	2026-10-23 00:37:32
+1744	E20047018DA064227B88010A	PROCESSED: Entry	Entry	2026-10-23 05:14:01
+1745	E200470221F0642284CD010A	PROCESSED: Entry	Entry	2026-10-23 05:52:53
+1746	E20047110B1064221E920116	PROCESSED: Entry	Entry	2026-10-23 05:55:50
+1747	E2806894000050175DD3CCF0	PROCESSED: Entry	Entry	2026-10-23 06:28:43
+1748	E20047018DA064227B88010A	PROCESSED: Exit	Exit	2026-10-23 06:29:43
+1749	E2004710A920642218730113	PROCESSED: Entry	Entry	2026-10-23 06:41:53
+1750	E2004701928064227BD6010B	PROCESSED: Entry	Entry	2026-10-23 07:00:41
+1751	E28068900000000257982A67	PROCESSED: Entry	Entry	2026-10-23 07:09:01
+1752	E28068900000000257993562	PROCESSED: Exit	Exit	2026-10-23 07:20:15
+1753	E2004710A920642218730113	PROCESSED: Exit	Exit	2026-10-23 07:28:12
+1754	E20034120134F6000F7380FB	PROCESSED: Entry	Entry	2026-10-23 07:29:50
+1755	E20034120134F6000F7380FB	PROCESSED: Exit	Exit	2026-10-23 07:32:23
+1756	E2806890000000025797EDE1	PROCESSED: Entry	Entry	2026-10-23 07:37:33
+1757	E20047103EF0642211D0010D	PROCESSED: Entry	Entry	2026-10-23 07:37:58
+1758	E2806890000000025798E319	PROCESSED: Entry	Entry	2026-10-23 07:38:14
+1759	E200470221F0642284CD010A	PROCESSED: Exit	Exit	2026-10-23 07:41:38
+1760	E2004701800064227AAE010E	PROCESSED: Entry	Entry	2026-10-23 07:57:38
+1761	E2000015690D01631190A11B	PROCESSED: Entry	Entry	2026-10-23 08:02:22
+1762	E20047105C40642213A50108	PROCESSED: Exit	Exit	2026-10-23 08:10:47
+1763	E2004701973064227C210111	PROCESSED: Entry	Entry	2026-10-23 08:16:43
+1764	E20047021F106422849F0112	PROCESSED: Exit	Exit	2026-10-23 08:21:48
+1765	E2803821200064260B101DA0	PROCESSED: Entry	Entry	2026-10-23 08:25:43
+1766	E280F336200030000009FD54	PROCESSED: Exit	Exit	2026-10-23 08:25:58
+1767	E2003412012FF6000F6F85AB	PROCESSED: Entry	Entry	2026-10-23 08:26:12
+1768	E2003412012FF6000F6F85AB	PROCESSED: Exit	Exit	2026-10-23 08:32:47
+1769	E20047010300642272DE0103	PROCESSED: Exit	Exit	2026-10-23 08:34:36
+1770	E2806890000000025798E405	PROCESSED: Entry	Entry	2026-10-23 08:36:18
+1771	E20047103EF0642211D0010D	PROCESSED: Exit	Exit	2026-10-23 08:38:03
+1772	E20047012440642274F20109	PROCESSED: Entry	Entry	2026-10-23 08:40:22
+1773	E2007DD2B1015FF0B3BA357F	PROCESSED: Entry	Entry	2026-10-23 08:44:29
+1774	E20047016AD06422795B010C	PROCESSED: Entry	Entry	2026-10-23 08:45:51
+1775	E2803821200060260A9A754B	PROCESSED: Entry	Entry	2026-10-23 08:47:00
+1776	E20034120136F50004CB3A79	PROCESSED: Entry	Entry	2026-10-23 08:52:28
+1777	E2806894000040175DD7F4EF	PROCESSED: Entry	Entry	2026-10-23 08:54:37
+1778	E200471147F0642222600114	PROCESSED: Entry	Entry	2026-10-23 08:58:36
+1779	E280F336200060000067B399	PROCESSED: Exit	Exit	2026-10-23 09:00:37
+1780	E2004710661064221442010B	PROCESSED: Entry	Entry	2026-10-23 09:08:10
+1781	E200470155F06422780D010A	PROCESSED: Entry	Entry	2026-10-23 09:13:14
+1782	E20047015360642277E40103	PROCESSED: Exit	Exit	2026-10-23 09:14:15
+1783	E20047106040642213E5010A	PROCESSED: Exit	Exit	2026-10-23 09:16:46
+1784	E2004710FD1064221DB20110	PROCESSED: Entry	Entry	2026-10-23 09:19:45
+1785	E2004710B97064221978010B	PROCESSED: Entry	Entry	2026-10-23 09:22:29
+1786	E2806894000050175DD3CCF0	PROCESSED: Exit	Exit	2026-10-23 09:26:54
+1787	E20047106C80642214A9010F	PROCESSED: Exit	Exit	2026-10-23 09:29:27
+1788	E200470164F0642278FD010E	PROCESSED: Exit	Exit	2026-10-23 09:31:05
+1789	E2806894000040175DD7F4EF	PROCESSED: Exit	Exit	2026-10-23 09:32:16
+1790	E2803821200064260B10285C	PROCESSED: Entry	Entry	2026-10-23 09:33:30
+1791	E200470100F0642272BD0107	PROCESSED: Exit	Exit	2026-10-23 09:35:26
+1792	E2004701476064227724010B	PROCESSED: Exit	Exit	2026-10-23 09:37:16
+1793	E20047015200642277CE010D	PROCESSED: Entry	Entry	2026-10-23 09:42:57
+1794	E200470100F0642272BD0107	PROCESSED: Exit	Exit	2026-10-23 09:50:15
+1795	E2004701E9D06422814B010B	PROCESSED: Entry	Entry	2026-10-23 09:52:11
+1796	E200471147F0642222600114	PROCESSED: Exit	Exit	2026-10-23 09:54:21
+1797	E20047110B1064221E920116	PROCESSED: Exit	Exit	2026-10-23 09:56:41
+1798	E20047109EA0642217CB010F	PROCESSED: Exit	Exit	2026-10-23 09:57:05
+1799	E20047010A006422734E0111	PROCESSED: Exit	Exit	2026-10-23 10:07:25
+1800	E2806890000000025798E405	PROCESSED: Exit	Exit	2026-10-23 10:15:08
+1801	E20034120132F6000FE0DC6B	PROCESSED: Entry	Entry	2026-10-23 10:20:47
+1802	E2806890000000025799E7D3	PROCESSED: Exit	Exit	2026-10-23 10:22:33
+1803	E2803821200064260B101DA0	PROCESSED: Exit	Exit	2026-10-23 10:27:14
+1804	E2806890000000025799D116	PROCESSED: Entry	Entry	2026-10-23 10:27:49
+1805	E20047106C80642214A9010F	PROCESSED: Exit	Exit	2026-10-23 10:30:10
+1806	E200470189E064227B4C010D	PROCESSED: Entry	Entry	2026-10-23 10:33:16
+1807	E2004710D61064221B42010C	PROCESSED: Entry	Entry	2026-10-23 10:34:18
+1808	E20047010A30642273510112	PROCESSED: Exit	Exit	2026-10-23 10:37:20
+1809	E20047105C40642213A50108	PROCESSED: Exit	Exit	2026-10-23 10:38:36
+1810	E200470108E06422733C0105	PROCESSED: Entry	Entry	2026-10-23 10:41:21
+1811	E2803821200064260B10285C	PROCESSED: Exit	Exit	2026-10-23 10:45:50
+1812	E2806894000040175DD77CEF	PROCESSED: Entry	Entry	2026-10-23 10:47:48
+1813	E2806890000000025799354F	PROCESSED: Entry	Entry	2026-10-23 10:52:37
+1814	E20047109EA0642217CB010F	PROCESSED: Exit	Exit	2026-10-23 10:55:11
+1815	E20047010A006422734E0111	PROCESSED: Exit	Exit	2026-10-23 10:56:59
+1816	E2806890000000025797E9AC	PROCESSED: Exit	Exit	2026-10-23 11:00:30
+1817	E280F336200060000055701E	PROCESSED: Entry	Entry	2026-10-23 11:03:09
+1818	E20034120136F50004CB3A79	PROCESSED: Exit	Exit	2026-10-23 11:06:35
+1819	E21A3F000000000000000000	PROCESSED: Entry	Entry	2026-10-23 11:11:54
+1820	E2004704CE306823F30B010F	PROCESSED: Entry	Entry	2026-10-23 11:12:41
+1821	E28068900000000257982868	PROCESSED: Entry	Entry	2026-10-23 11:24:52
+1822	E20047111DD064221FBE0108	PROCESSED: Entry	Entry	2026-10-23 11:28:56
+1823	E2203B000000000000000000	PROCESSED: Entry	Entry	2026-10-23 11:29:40
+1824	E20034120129F6000FE08F5F	PROCESSED: Entry	Entry	2026-10-23 11:29:46
+1825	E2004701D5C06422800A010E	PROCESSED: Entry	Entry	2026-10-23 11:36:36
+1826	E2004701ACE064227D7C0110	PROCESSED: Entry	Entry	2026-10-23 11:37:44
+1827	E200471144D06422222E0108	PROCESSED: Entry	Entry	2026-10-23 11:43:17
+1828	E2004701A9A064227D480115	PROCESSED: Entry	Entry	2026-10-23 11:44:48
+1829	E200F336200060000016AA1D	PROCESSED: Entry	Entry	2026-10-23 11:45:44
+1830	E2004701A09064227CB70110	PROCESSED: Entry	Entry	2026-10-23 11:45:56
+1831	E2003412012FF6000FE067D6	PROCESSED: Entry	Entry	2026-10-23 11:46:03
+1832	E20034120129F6000FE08F5F	PROCESSED: Exit	Exit	2026-10-23 11:53:09
+1833	E2806894000040175DD0ACEF	PROCESSED: Entry	Entry	2026-10-23 12:05:24
+1834	E2004701876064227B24010A	PROCESSED: Entry	Entry	2026-10-23 12:06:08
+1835	E20047103CE0642211AF010D	PROCESSED: Entry	Entry	2026-10-23 12:08:28
+1836	E2803821200060260A9A754B	PROCESSED: Exit	Exit	2026-10-23 12:11:59
+1837	E2806894000040175DD0ACEF	PROCESSED: Exit	Exit	2026-10-23 12:16:06
+1838	E2806894000050175DD4BCEE	PROCESSED: Entry	Entry	2026-10-23 12:20:20
+1839	E2003412012F1700004715D2	PROCESSED: Entry	Entry	2026-10-23 12:22:13
+1840	E2806894000050175DD1C4F0	PROCESSED: Entry	Entry	2026-10-23 12:25:03
+1841	E2806890000000025799D116	PROCESSED: Exit	Exit	2026-10-23 12:25:13
+1842	E20047110FD064221EDE0109	PROCESSED: Entry	Entry	2026-10-23 12:32:40
+1843	E2806894000050175DD1C4F0	PROCESSED: Exit	Exit	2026-10-23 12:34:55
+1844	E200471112E064221F0F0108	PROCESSED: Entry	Entry	2026-10-23 12:44:05
+1845	E2004711341064222122010D	PROCESSED: Entry	Entry	2026-10-23 12:50:44
+1846	E2004701E9D06422814B010B	PROCESSED: Exit	Exit	2026-10-23 12:50:56
+1847	E280F3362000600000660877	PROCESSED: Entry	Entry	2026-10-23 12:53:11
+1848	E20047026150642288C30110	PROCESSED: Entry	Entry	2026-10-23 12:55:08
+1849	E280F3362000600000675013	PROCESSED: Entry	Entry	2026-10-23 13:00:11
+1850	E280F33620003000000B2211	PROCESSED: Entry	Entry	2026-10-23 13:00:58
+1851	E2004710A5F064221840010B	PROCESSED: Entry	Entry	2026-10-23 13:01:11
+1852	E20047018DA064227B88010A	PROCESSED: Entry	Entry	2026-10-23 13:03:46
+1853	E2004701922064227BD00114	PROCESSED: Entry	Entry	2026-10-23 13:05:12
+1854	E20047010640642273120107	PROCESSED: Entry	Entry	2026-10-23 13:07:49
+1855	E20047015D6064227884010E	PROCESSED: Entry	Entry	2026-10-23 13:11:48
+1856	E200001D750801791450A015	PROCESSED: Entry	Entry	2026-10-23 13:16:12
+1857	E2806894000040175DD3A4EE	PROCESSED: Entry	Entry	2026-10-23 13:16:49
+1858	E20047017E8064227A96010E	PROCESSED: Entry	Entry	2026-10-23 13:20:31
+1859	E2803821200064260B10FE7B	PROCESSED: Entry	Entry	2026-10-23 13:22:33
+1860	E2803821200064260D05C21E	PROCESSED: Entry	Entry	2026-10-23 13:23:19
+1861	E280F3362000600000692CAA	PROCESSED: Entry	Entry	2026-10-23 13:26:02
+1862	E20047104180642211F9010A	PROCESSED: Entry	Entry	2026-10-23 13:29:17
+1863	E2004710C22064221A030111	PROCESSED: Entry	Entry	2026-10-23 13:30:05
+1864	E2004710A860642218670110	PROCESSED: Entry	Entry	2026-10-23 13:32:36
+1865	E2004701B56064227E040109	PROCESSED: Entry	Entry	2026-10-23 13:39:19
+1866	E20034120130F6000E761442	PROCESSED: Entry	Entry	2026-10-23 13:40:10
+1867	E20047013310642275DF0113	PROCESSED: Entry	Entry	2026-10-23 13:43:32
+1868	E20047021E70642284950113	PROCESSED: Entry	Entry	2026-10-23 13:54:41
+1869	E2004710213064220FF4010B	PROCESSED: Entry	Entry	2026-10-23 14:01:17
+1870	E2803821200064260B10285C	PROCESSED: Entry	Entry	2026-10-23 14:01:30
+1871	E20047103CE0642211AF010D	PROCESSED: Exit	Exit	2026-10-23 14:01:50
+1872	E2004710A4E06422182F010F	PROCESSED: Entry	Entry	2026-10-23 14:03:15
+1873	E200471065F0642214400110	PROCESSED: Entry	Entry	2026-10-23 14:03:20
+1874	E28068900000000256448650	PROCESSED: Entry	Entry	2026-10-23 14:03:44
+1875	E2803821200064260B10285C	PROCESSED: Exit	Exit	2026-10-23 14:06:01
+1876	E2806894000050175DD33CEE	PROCESSED: Entry	Entry	2026-10-23 14:14:59
+1877	E2806894000050175DD650ED	PROCESSED: Entry	Entry	2026-10-23 14:17:53
+1878	E2806894000040175DD7F4EF	PROCESSED: Entry	Entry	2026-10-23 14:18:13
 \.
 
 
@@ -26130,13 +28488,13 @@ bulk_exit_exceptions	[]
 club_name	Karachi Gymkhana Club
 parking_capacity	100
 traffic_msg	SPEED LIMIT 5 KM/H,WELCOME TO KARACHI GYMKHANA CLUB
-entry_reader_name	REAR GATE (ENTRY)
+entry_reader_name	REAR GATE ( ENTRY )
 entry_reader_ip	192.168.0.217
-exit_reader_name	REAR GATE (EXIT)
+exit_reader_name	REAR GATE ( EXIT )
 exit_reader_ip	192.168.0.216
-clubroad_entry_reader_name	CLUB GATE (ENTRY)
+clubroad_entry_reader_name	CLUB GATE ( ENTRY )
 clubroad_entry_reader_ip	192.168.0.214
-clubroad_exit_reader_name	CLUB GATE (EXIT)
+clubroad_exit_reader_name	CLUB GATE ( EXIT )
 clubroad_exit_reader_ip	192.168.0.213
 rfid_cooldown_seconds	60
 hikvision_cam_url	rtsp://admin:TheKG1886@192.168.0.220:554/Streaming/Channels/101
@@ -26149,177 +28507,167 @@ hikvision_cam_url	rtsp://admin:TheKG1886@192.168.0.220:554/Streaming/Channels/10
 
 COPY public.unregistered_tags (id, tag, first_seen, last_seen, direction, current_location, read_count, tag_type) FROM stdin;
 2	E2004708E69068233491010F	2026-10-21 09:33:28	2026-10-21 10:48:12	Exit	Outside	2	Unassigned Gymkhana Tag
-3	E28068900000000257982AD7	2026-10-21 09:34:07	2026-10-21 09:34:07	Exit	Outside	1	Unassigned Gymkhana Tag
 8	E2004718AD206821EA4E010A	2026-10-21 09:51:43	2026-10-21 09:51:43	Exit	Outside	1	Unassigned Gymkhana Tag
 10	E280F33620006000005F2C6E	2026-10-21 09:53:13	2026-10-21 18:37:34	Exit	Outside	3	Third-Party Fleet Tag
 11	E2004707537060232D32010C	2026-10-21 09:53:55	2026-10-21 09:53:55	Exit	Outside	1	Unassigned Gymkhana Tag
+189	E280F33620006000006684C5	2026-10-21 15:05:31	2026-10-22 21:26:55	Exit	Outside	3	Third-Party Fleet Tag
 16	E280F336200060000055E9A3	2026-10-21 09:56:10	2026-10-21 09:56:10	Exit	Outside	1	Third-Party Fleet Tag
-29	E280F3362000600000660877	2026-10-21 10:37:47	2026-10-21 10:41:13	Exit	Outside	2	Third-Party Fleet Tag
-38	E20047105C40642213A50108	2026-10-21 10:58:41	2026-10-21 10:58:41	Exit	Outside	1	Unassigned Gymkhana Tag
+2135	E2004710182064220F63010A	2026-10-22 20:56:15	2026-10-22 22:17:34	Exit	Outside	2	Unassigned Gymkhana Tag
+3	E28068900000000257982AD7	2026-10-21 09:34:07	2026-10-22 22:34:43	Exit	Outside	2	Unassigned Gymkhana Tag
 42	E280F33620003000000A82AB	2026-10-21 11:09:56	2026-10-21 11:09:56	Exit	Outside	1	Third-Party Fleet Tag
 43	E20047025510642287FF0111	2026-10-21 11:11:01	2026-10-21 13:09:34	Exit	Outside	2	Unassigned Gymkhana Tag
 47	E2003412013EF6000F726E05	2026-10-21 11:17:24	2026-10-21 11:23:14	Exit	Outside	2	Society / Resident Tag
-48	E2004711179064221F5A010B	2026-10-21 11:18:03	2026-10-21 14:18:41	Exit	Outside	2	Unassigned Gymkhana Tag
-49	E20047111DD064221FBE0108	2026-10-21 11:19:19	2026-10-21 18:22:09	Exit	Outside	2	Unassigned Gymkhana Tag
 54	E200470196C064227C1A0109	2026-10-21 11:27:36	2026-10-21 12:56:00	Exit	Outside	2	Unassigned Gymkhana Tag
-55	E2004710B870642219680112	2026-10-21 11:29:06	2026-10-21 12:36:31	Exit	Outside	4	Unassigned Gymkhana Tag
-57	E2004710A4E06422182F010F	2026-10-21 11:35:13	2026-10-21 20:05:24	Exit	Outside	2	Unassigned Gymkhana Tag
 58	E280F336200030000009531E	2026-10-21 11:35:37	2026-10-21 13:24:43	Exit	Outside	2	Third-Party Fleet Tag
+35	E2004710FD1064221DB20110	2026-10-21 10:48:18	2026-10-23 09:19:45	Entry	Inside	4	Unassigned Gymkhana Tag
 62	E20047018BE064227B6C010D	2026-10-21 11:50:04	2026-10-21 12:43:27	Exit	Outside	2	Unassigned Gymkhana Tag
-66	E2004701A9A064227D480115	2026-10-21 11:59:40	2026-10-21 22:23:23	Exit	Outside	2	Unassigned Gymkhana Tag
 67	E20047104880642212690107	2026-10-21 12:01:57	2026-10-21 13:08:46	Exit	Outside	2	Unassigned Gymkhana Tag
 68	E2004710DB9064221B9A0107	2026-10-21 12:04:32	2026-10-21 17:48:59	Exit	Outside	3	Unassigned Gymkhana Tag
-73	E2003412012D010008A54C27	2026-10-21 12:10:01	2026-10-21 13:35:02	Exit	Outside	4	Society / Resident Tag
-79	E2004701ACE064227D7C0110	2026-10-21 12:23:29	2026-10-21 20:17:35	Exit	Outside	4	Unassigned Gymkhana Tag
+17	E20047110B1064221E920116	2026-10-21 10:08:52	2026-10-23 09:56:41	Exit	Outside	9	Unassigned Gymkhana Tag
+38	E20047105C40642213A50108	2026-10-21 10:58:41	2026-10-23 10:38:36	Exit	Outside	3	Unassigned Gymkhana Tag
 89	E28068940000503153C0A8F9	2026-10-21 12:39:19	2026-10-21 16:30:23	Exit	Outside	2	Unassigned Gymkhana Tag
 96	E200F3362000600000169D0D	2026-10-21 12:52:02	2026-10-21 12:56:29	Exit	Outside	2	Unregistered Visitor
 98	E200471106E064221E4F0105	2026-10-21 12:53:57	2026-10-21 21:50:48	Exit	Outside	3	Unassigned Gymkhana Tag
-101	E20047101EC064220FCD0110	2026-10-21 12:56:18	2026-10-21 20:52:21	Exit	Outside	5	Unassigned Gymkhana Tag
+19	E20034120136F50004CB3A79	2026-10-21 10:19:29	2026-10-23 11:06:35	Exit	Outside	7	Society / Resident Tag
+49	E20047111DD064221FBE0108	2026-10-21 11:19:19	2026-10-23 11:28:56	Entry	Inside	3	Unassigned Gymkhana Tag
 105	E280F336200030000009CF09	2026-10-21 13:00:36	2026-10-21 13:02:52	Exit	Outside	2	Third-Party Fleet Tag
-114	E2004710A860642218670110	2026-10-21 13:16:31	2026-10-21 20:22:43	Exit	Outside	5	Unassigned Gymkhana Tag
+79	E2004701ACE064227D7C0110	2026-10-21 12:23:29	2026-10-23 11:37:44	Entry	Inside	7	Unassigned Gymkhana Tag
+60	E200471144D06422222E0108	2026-10-21 11:41:58	2026-10-23 11:43:17	Entry	Inside	6	Unassigned Gymkhana Tag
 117	E20047021E70642284950113	2026-10-21 13:34:01	2026-10-21 19:14:22	Exit	Outside	2	Unassigned Gymkhana Tag
-119	E200471112E064221F0F0108	2026-10-21 13:36:34	2026-10-21 15:37:02	Exit	Outside	2	Unassigned Gymkhana Tag
+66	E2004701A9A064227D480115	2026-10-21 11:59:40	2026-10-23 11:44:48	Entry	Inside	5	Unassigned Gymkhana Tag
 120	E2004701916064227BC40111	2026-10-21 13:42:54	2026-10-21 13:42:54	Exit	Outside	1	Unassigned Gymkhana Tag
 121	E280F33620003000000A595E	2026-10-21 13:43:42	2026-10-21 15:07:40	Exit	Outside	2	Third-Party Fleet Tag
-124	E2006B060000000000000000	2026-10-21 13:47:34	2026-10-21 13:47:34	Exit	Outside	1	Unregistered Visitor
 125	E200001D7508006215001F0F	2026-10-21 13:48:26	2026-10-21 16:34:20	Exit	Outside	2	Unregistered Visitor
 126	E280F33620003000000AA9AA	2026-10-21 13:48:47	2026-10-21 16:31:38	Exit	Outside	2	Third-Party Fleet Tag
 127	E2004710A6A06422184B010F	2026-10-21 13:50:02	2026-10-21 16:57:52	Exit	Outside	2	Unassigned Gymkhana Tag
 128	E200470069006823ACB80113	2026-10-21 13:52:10	2026-10-21 13:56:47	Exit	Outside	2	Unassigned Gymkhana Tag
-130	E20047106510642214320108	2026-10-21 13:53:58	2026-10-21 19:41:57	Exit	Outside	4	Unassigned Gymkhana Tag
 138	E280689000000002564446B9	2026-10-21 13:58:45	2026-10-21 13:58:45	Exit	Outside	1	Unassigned Gymkhana Tag
 141	E21FDA000000000000000000	2026-10-21 14:00:06	2026-10-21 14:09:54	Exit	Outside	2	Unregistered Visitor
 142	E20047110EE064221ECF010D	2026-10-21 14:00:51	2026-10-21 19:15:02	Exit	Outside	3	Unassigned Gymkhana Tag
-143	E2004710F91064221D72010E	2026-10-21 14:01:26	2026-10-21 14:03:17	Exit	Outside	2	Unassigned Gymkhana Tag
+119	E200471112E064221F0F0108	2026-10-21 13:36:34	2026-10-23 12:44:05	Entry	Inside	5	Unassigned Gymkhana Tag
 148	E20047105D40642213B5010B	2026-10-21 14:04:26	2026-10-21 23:52:39	Exit	Outside	4	Unassigned Gymkhana Tag
-149	E20047115620642223430111	2026-10-21 14:05:52	2026-10-21 16:23:28	Exit	Outside	6	Unassigned Gymkhana Tag
-152	E20047104600642212410110	2026-10-21 14:15:48	2026-10-21 14:15:48	Exit	Outside	1	Unassigned Gymkhana Tag
-163	E280F3362000300000081A12	2026-10-21 14:30:52	2026-10-21 15:35:59	Exit	Outside	2	Third-Party Fleet Tag
-171	E2004710D96064221B770111	2026-10-21 14:42:34	2026-10-21 19:11:56	Exit	Outside	2	Unassigned Gymkhana Tag
+29	E280F3362000600000660877	2026-10-21 10:37:47	2026-10-23 12:53:11	Entry	Inside	5	Third-Party Fleet Tag
+114	E2004710A860642218670110	2026-10-21 13:16:31	2026-10-23 13:32:36	Entry	Inside	7	Unassigned Gymkhana Tag
+71	E20047103CE0642211AF010D	2026-10-21 12:08:47	2026-10-23 14:01:50	Exit	Outside	5	Unassigned Gymkhana Tag
 172	E20047057E806823FE100115	2026-10-21 14:42:59	2026-10-21 14:42:59	Exit	Outside	1	Unassigned Gymkhana Tag
-175	E20047110FE064221EDF010D	2026-10-21 14:49:08	2026-10-21 17:08:49	Exit	Outside	2	Unassigned Gymkhana Tag
-184	E200471065F0642214400110	2026-10-21 14:57:04	2026-10-21 18:33:39	Exit	Outside	2	Unassigned Gymkhana Tag
-187	E2004710A1E0642217FF010C	2026-10-21 15:02:01	2026-10-21 19:04:48	Exit	Outside	2	Unassigned Gymkhana Tag
+57	E2004710A4E06422182F010F	2026-10-21 11:35:13	2026-10-23 14:03:15	Entry	Inside	3	Unassigned Gymkhana Tag
+184	E200471065F0642214400110	2026-10-21 14:57:04	2026-10-23 14:03:20	Entry	Inside	3	Unassigned Gymkhana Tag
 188	E20034120139F6000FE12102	2026-10-21 15:02:24	2026-10-21 15:02:24	Exit	Outside	1	Society / Resident Tag
-189	E280F33620006000006684C5	2026-10-21 15:05:31	2026-10-21 16:02:05	Exit	Outside	2	Third-Party Fleet Tag
 200	E2004710D55064221B360111	2026-10-21 15:18:44	2026-10-21 15:18:44	Exit	Outside	1	Unassigned Gymkhana Tag
+12	E2803821200064260B10285C	2026-10-21 09:54:04	2026-10-23 14:06:01	Exit	Outside	12	Society / Resident Tag
 4	E2004710B7E06422195F0113	2026-10-21 09:37:46	2026-10-22 09:55:48	Exit	Outside	3	Unassigned Gymkhana Tag
-109	E2004710A5F064221840010B	2026-10-21 13:07:04	2026-10-22 10:34:34	Exit	Outside	4	Unassigned Gymkhana Tag
-35	E2004710FD1064221DB20110	2026-10-21 10:48:18	2026-10-22 10:44:16	Exit	Outside	3	Unassigned Gymkhana Tag
-12	E2803821200064260B10285C	2026-10-21 09:54:04	2026-10-22 11:10:06	Exit	Outside	8	Society / Resident Tag
-17	E20047110B1064221E920116	2026-10-21 10:08:52	2026-10-22 11:38:19	Exit	Outside	5	Unassigned Gymkhana Tag
 28	E2004702555064228803010D	2026-10-21 10:36:24	2026-10-22 11:42:16	Exit	Outside	4	Unassigned Gymkhana Tag
-71	E20047103CE0642211AF010D	2026-10-21 12:08:47	2026-10-22 12:18:56	Entry	Inside	2	Unassigned Gymkhana Tag
-60	E200471144D06422222E0108	2026-10-21 11:41:58	2026-10-22 13:08:44	Exit	Outside	4	Unassigned Gymkhana Tag
-19	E20034120136F50004CB3A79	2026-10-21 10:19:29	2026-10-22 13:09:25	Entry	Inside	4	Society / Resident Tag
+48	E2004711179064221F5A010B	2026-10-21 11:18:03	2026-10-22 13:38:33	Exit	Outside	3	Unassigned Gymkhana Tag
+152	E20047104600642212410110	2026-10-21 14:15:48	2026-10-22 16:14:42	Exit	Outside	2	Unassigned Gymkhana Tag
+149	E20047115620642223430111	2026-10-21 14:05:52	2026-10-22 16:14:49	Exit	Outside	9	Unassigned Gymkhana Tag
+73	E2003412012D010008A54C27	2026-10-21 12:10:01	2026-10-22 16:16:05	Exit	Outside	7	Society / Resident Tag
+143	E2004710F91064221D72010E	2026-10-21 14:01:26	2026-10-22 16:27:57	Exit	Outside	5	Unassigned Gymkhana Tag
+55	E2004710B870642219680112	2026-10-21 11:29:06	2026-10-22 16:35:30	Exit	Outside	6	Unassigned Gymkhana Tag
+175	E20047110FE064221EDF010D	2026-10-21 14:49:08	2026-10-22 17:00:33	Exit	Outside	3	Unassigned Gymkhana Tag
+101	E20047101EC064220FCD0110	2026-10-21 12:56:18	2026-10-22 18:04:25	Exit	Outside	7	Unassigned Gymkhana Tag
+163	E280F3362000300000081A12	2026-10-21 14:30:52	2026-10-22 18:25:34	Exit	Outside	4	Third-Party Fleet Tag
+171	E2004710D96064221B770111	2026-10-21 14:42:34	2026-10-22 18:42:09	Exit	Outside	3	Unassigned Gymkhana Tag
+130	E20047106510642214320108	2026-10-21 13:53:58	2026-10-22 19:29:37	Exit	Outside	7	Unassigned Gymkhana Tag
+187	E2004710A1E0642217FF010C	2026-10-21 15:02:01	2026-10-22 19:54:09	Exit	Outside	3	Unassigned Gymkhana Tag
 201	E2003412012EF50004CB23D9	2026-10-21 15:19:57	2026-10-21 16:18:53	Exit	Outside	3	Society / Resident Tag
 202	E20047111C2064221FA30113	2026-10-21 15:22:58	2026-10-21 15:22:58	Exit	Outside	1	Unassigned Gymkhana Tag
 203	E2003412013A010008A32EC9	2026-10-21 15:27:06	2026-10-21 16:58:24	Exit	Outside	2	Society / Resident Tag
-204	E2004710E76064221C570110	2026-10-21 15:28:31	2026-10-21 15:28:31	Exit	Outside	1	Unassigned Gymkhana Tag
-205	E20047110FD064221EDE0109	2026-10-21 15:31:14	2026-10-21 19:39:16	Exit	Outside	2	Unassigned Gymkhana Tag
+377	E2004710C120642219F30111	2026-10-21 19:06:27	2026-10-22 20:43:15	Exit	Outside	3	Unassigned Gymkhana Tag
+355	E2004710B9E06422197F010D	2026-10-21 18:43:19	2026-10-22 20:49:32	Exit	Outside	4	Unassigned Gymkhana Tag
 206	E200471110A064221EEB010E	2026-10-21 15:31:26	2026-10-21 15:58:40	Exit	Outside	2	Unassigned Gymkhana Tag
 211	E2004710A2E06422180F0113	2026-10-21 15:43:04	2026-10-21 15:43:04	Exit	Outside	1	Unassigned Gymkhana Tag
 213	E20047109EF0642217D0010C	2026-10-21 15:45:28	2026-10-21 16:49:25	Exit	Outside	2	Unassigned Gymkhana Tag
-222	E2003412013BF6000F733D50	2026-10-21 16:03:47	2026-10-21 18:25:36	Exit	Outside	2	Society / Resident Tag
 224	E280F3362000600000673DB8	2026-10-21 16:05:35	2026-10-21 16:05:35	Exit	Outside	1	Third-Party Fleet Tag
 225	E2004710AC60642218A70113	2026-10-21 16:05:55	2026-10-21 16:06:52	Exit	Outside	2	Unassigned Gymkhana Tag
 227	E2806890000000025798EB9F	2026-10-21 16:09:00	2026-10-21 22:35:53	Exit	Outside	2	Unassigned Gymkhana Tag
 228	E2806894000050286F12B142	2026-10-21 16:10:50	2026-10-21 20:37:54	Exit	Outside	4	Unassigned Gymkhana Tag
-231	E20034120129F6000FE06F26	2026-10-21 16:15:29	2026-10-21 16:15:29	Exit	Outside	1	Society / Resident Tag
+231	E20034120129F6000FE06F26	2026-10-21 16:15:29	2026-10-22 21:48:48	Exit	Outside	3	Society / Resident Tag
 239	E200F336200060000016EFB4	2026-10-21 16:25:06	2026-10-21 16:25:06	Exit	Outside	1	Unregistered Visitor
-241	E200471134906422212A010A	2026-10-21 16:28:24	2026-10-21 19:05:23	Exit	Outside	2	Unassigned Gymkhana Tag
+409	E20047112210642220020113	2026-10-21 19:24:04	2026-10-22 21:49:34	Exit	Outside	7	Unassigned Gymkhana Tag
 245	E2004710D29064221B0A010E	2026-10-21 16:30:43	2026-10-21 16:59:49	Exit	Outside	2	Unassigned Gymkhana Tag
 249	E2004710B93064221974010C	2026-10-21 16:33:07	2026-10-21 16:33:07	Exit	Outside	1	Unassigned Gymkhana Tag
 252	E20047111CD064221FAE010B	2026-10-21 16:35:12	2026-10-21 16:35:12	Exit	Outside	1	Unassigned Gymkhana Tag
 256	E280F3362000600000677847	2026-10-21 16:41:26	2026-10-21 17:35:40	Exit	Outside	2	Third-Party Fleet Tag
 269	E280F336200060000067065E	2026-10-21 16:50:17	2026-10-21 16:50:17	Exit	Outside	1	Third-Party Fleet Tag
-273	E200471138006823B9A8010D	2026-10-21 16:55:15	2026-10-21 20:06:48	Exit	Outside	2	Unassigned Gymkhana Tag
-279	E20047101CB064220FAC0109	2026-10-21 16:59:26	2026-10-21 18:07:07	Exit	Outside	2	Unassigned Gymkhana Tag
-285	E2004710661064221442010B	2026-10-21 17:09:03	2026-10-21 19:50:36	Exit	Outside	2	Unassigned Gymkhana Tag
+2138	E280F33620006000006079C9	2026-10-22 21:09:45	2026-10-22 21:54:00	Exit	Outside	2	Third-Party Fleet Tag
+418	E2004701DD50642280830112	2026-10-21 19:28:39	2026-10-22 22:00:40	Exit	Outside	6	Unassigned Gymkhana Tag
 294	E280F33620003000000AA04E	2026-10-21 17:25:12	2026-10-21 18:07:37	Exit	Outside	2	Third-Party Fleet Tag
 296	E2004710B370642219180108	2026-10-21 17:32:46	2026-10-21 17:32:46	Exit	Outside	1	Unassigned Gymkhana Tag
-303	E2004710F85064221D66010D	2026-10-21 17:42:27	2026-10-21 19:21:08	Exit	Outside	2	Unassigned Gymkhana Tag
+408	E20034120134F6000F7380FB	2026-10-21 19:22:48	2026-10-23 07:32:23	Exit	Outside	3	Society / Resident Tag
 304	E280F3362000600000673010	2026-10-21 17:43:42	2026-10-21 18:59:53	Exit	Outside	3	Third-Party Fleet Tag
 306	E200F336200060000016EFA6	2026-10-21 17:46:31	2026-10-21 20:13:18	Exit	Outside	2	Unregistered Visitor
-307	E2806894000050286F12D142	2026-10-21 17:47:04	2026-10-21 17:47:04	Exit	Outside	1	Unassigned Gymkhana Tag
-315	E280F3362000600000675013	2026-10-21 17:57:10	2026-10-21 18:05:01	Exit	Outside	2	Third-Party Fleet Tag
+285	E2004710661064221442010B	2026-10-21 17:09:03	2026-10-23 09:08:10	Entry	Inside	5	Unassigned Gymkhana Tag
 316	E20034120129F6000FE02AD4	2026-10-21 17:58:29	2026-10-21 18:49:53	Exit	Outside	3	Society / Resident Tag
-321	E20034120139010008ACFF5D	2026-10-21 18:07:02	2026-10-21 20:25:34	Exit	Outside	2	Society / Resident Tag
+398	E2004710D61064221B42010C	2026-10-21 19:18:23	2026-10-23 10:34:18	Entry	Inside	5	Unassigned Gymkhana Tag
 324	E200F336200060000016E4EF	2026-10-21 18:09:16	2026-10-21 18:09:16	Exit	Outside	1	Unregistered Visitor
-328	E20047103B2064221193010C	2026-10-21 18:11:53	2026-10-21 19:59:25	Exit	Outside	2	Unassigned Gymkhana Tag
+205	E20047110FD064221EDE0109	2026-10-21 15:31:14	2026-10-23 12:32:40	Entry	Inside	4	Unassigned Gymkhana Tag
 331	E20047101C9064220FAA010B	2026-10-21 18:15:37	2026-10-21 19:29:50	Exit	Outside	2	Unassigned Gymkhana Tag
 344	E20047018C8064227B760106	2026-10-21 18:28:01	2026-10-21 18:28:01	Exit	Outside	1	Unassigned Gymkhana Tag
-345	E2003098911900900900C06A	2026-10-21 18:30:50	2026-10-21 21:08:15	Exit	Outside	2	Unregistered Visitor
-353	E2002075641201710880BD48	2026-10-21 18:38:03	2026-10-21 19:46:50	Exit	Outside	2	Unregistered Visitor
-355	E2004710B9E06422197F010D	2026-10-21 18:43:19	2026-10-21 20:56:04	Exit	Outside	2	Unassigned Gymkhana Tag
+315	E280F3362000600000675013	2026-10-21 17:57:10	2026-10-23 13:00:11	Entry	Inside	3	Third-Party Fleet Tag
+423	E200001D750801791450A015	2026-10-21 19:36:16	2026-10-23 13:16:12	Entry	Inside	3	Unregistered Visitor
 359	E2003412012EF50004CB23DA	2026-10-21 18:48:43	2026-10-21 20:08:19	Exit	Outside	2	Society / Resident Tag
 361	E2000020660E02210560C7AE	2026-10-21 18:49:42	2026-10-21 18:49:42	Exit	Outside	1	Unregistered Visitor
 365	E280F33620003000000A886E	2026-10-21 18:53:37	2026-10-21 18:54:32	Exit	Outside	2	Third-Party Fleet Tag
-368	E2004710D79064221B5A010B	2026-10-21 18:56:58	2026-10-21 19:54:33	Exit	Outside	2	Unassigned Gymkhana Tag
 373	E2004710F51064221D32010A	2026-10-21 19:04:41	2026-10-21 20:03:35	Exit	Outside	2	Unassigned Gymkhana Tag
-377	E2004710C120642219F30111	2026-10-21 19:06:27	2026-10-21 19:06:27	Exit	Outside	1	Unassigned Gymkhana Tag
-382	E200470256106422880F0110	2026-10-21 19:10:10	2026-10-21 19:35:57	Exit	Outside	2	Unassigned Gymkhana Tag
 383	E2000017381400921580765E	2026-10-21 19:10:57	2026-10-21 19:11:42	Exit	Outside	2	Unregistered Visitor
-391	E2004702265064228513010F	2026-10-21 19:13:00	2026-10-21 20:57:15	Exit	Outside	2	Unassigned Gymkhana Tag
 395	E280F336200030000008B9CF	2026-10-21 19:14:52	2026-10-21 22:10:46	Exit	Outside	2	Third-Party Fleet Tag
-398	E2004710D61064221B42010C	2026-10-21 19:18:23	2026-10-21 21:09:07	Exit	Outside	4	Unassigned Gymkhana Tag
 399	E2803821200060260510D568	2026-10-21 19:19:03	2026-10-21 19:25:43	Exit	Outside	3	Society / Resident Tag
 400	E20047112910642220720112	2026-10-21 19:20:09	2026-10-21 20:48:17	Exit	Outside	4	Unassigned Gymkhana Tag
 405	E280F33620003000000A2A0D	2026-10-21 19:21:27	2026-10-21 19:21:27	Exit	Outside	1	Third-Party Fleet Tag
 406	E201ED00320302380530E0D1	2026-10-21 19:21:40	2026-10-21 20:21:41	Exit	Outside	2	Unregistered Visitor
-407	E20047115AF0642223900115	2026-10-21 19:22:10	2026-10-21 19:22:10	Exit	Outside	1	Unassigned Gymkhana Tag
-408	E20034120134F6000F7380FB	2026-10-21 19:22:48	2026-10-21 19:22:48	Exit	Outside	1	Society / Resident Tag
-409	E20047112210642220020113	2026-10-21 19:24:04	2026-10-21 21:27:01	Exit	Outside	4	Unassigned Gymkhana Tag
 416	E280F336200030000009860C	2026-10-21 19:28:02	2026-10-21 20:45:33	Exit	Outside	2	Third-Party Fleet Tag
-418	E2004701DD50642280830112	2026-10-21 19:28:39	2026-10-21 21:23:11	Exit	Outside	2	Unassigned Gymkhana Tag
-421	E2806890000000025797F0C1	2026-10-21 19:33:52	2026-10-21 19:33:52	Exit	Outside	1	Unassigned Gymkhana Tag
-423	E200001D750801791450A015	2026-10-21 19:36:16	2026-10-21 20:50:39	Exit	Outside	2	Unregistered Visitor
 426	E2004711119064221EFA010A	2026-10-21 19:40:31	2026-10-21 22:12:24	Exit	Outside	2	Unassigned Gymkhana Tag
 429	E200471104E064221E2F0110	2026-10-21 19:44:10	2026-10-21 22:11:23	Exit	Outside	2	Unassigned Gymkhana Tag
 431	E200471513E068234C330112	2026-10-21 19:47:47	2026-10-21 21:07:24	Exit	Outside	2	Unassigned Gymkhana Tag
-438	E280F33620003000000B2123	2026-10-21 19:57:44	2026-10-21 22:22:40	Exit	Outside	2	Third-Party Fleet Tag
-452	E20034120134FF00082B8703	2026-10-21 20:09:40	2026-10-21 20:09:40	Exit	Outside	1	Society / Resident Tag
+382	E200470256106422880F0110	2026-10-21 19:10:10	2026-10-22 17:23:10	Exit	Outside	3	Unassigned Gymkhana Tag
+368	E2004710D79064221B5A010B	2026-10-21 18:56:58	2026-10-22 17:54:25	Exit	Outside	4	Unassigned Gymkhana Tag
+279	E20047101CB064220FAC0109	2026-10-21 16:59:26	2026-10-22 18:20:23	Exit	Outside	3	Unassigned Gymkhana Tag
+222	E2003412013BF6000F733D50	2026-10-21 16:03:47	2026-10-22 18:22:33	Exit	Outside	4	Society / Resident Tag
+241	E200471134906422212A010A	2026-10-21 16:28:24	2026-10-22 18:43:54	Exit	Outside	4	Unassigned Gymkhana Tag
+421	E2806890000000025797F0C1	2026-10-21 19:33:52	2026-10-22 18:48:44	Exit	Outside	2	Unassigned Gymkhana Tag
+328	E20047103B2064221193010C	2026-10-21 18:11:53	2026-10-22 19:52:13	Exit	Outside	4	Unassigned Gymkhana Tag
+407	E20047115AF0642223900115	2026-10-21 19:22:10	2026-10-22 20:00:32	Exit	Outside	2	Unassigned Gymkhana Tag
+307	E2806894000050286F12D142	2026-10-21 17:47:04	2026-10-22 20:19:41	Exit	Outside	3	Unassigned Gymkhana Tag
+321	E20034120139010008ACFF5D	2026-10-21 18:07:02	2026-10-22 20:32:08	Exit	Outside	4	Society / Resident Tag
+353	E2002075641201710880BD48	2026-10-21 18:38:03	2026-10-22 20:35:13	Exit	Outside	4	Unregistered Visitor
+273	E200471138006823B9A8010D	2026-10-21 16:55:15	2026-10-22 20:35:46	Exit	Outside	3	Unassigned Gymkhana Tag
+391	E2004702265064228513010F	2026-10-21 19:13:00	2026-10-22 20:36:03	Exit	Outside	4	Unassigned Gymkhana Tag
 453	E2004710FA2064221D830105	2026-10-21 20:10:33	2026-10-21 22:52:40	Exit	Outside	2	Unassigned Gymkhana Tag
 457	E20034120136030004787C5F	2026-10-21 20:15:50	2026-10-21 20:40:17	Exit	Outside	2	Society / Resident Tag
-461	E200471018D064220F6E010C	2026-10-21 20:19:55	2026-10-21 21:18:12	Exit	Outside	2	Unassigned Gymkhana Tag
 463	E200001D7508018214509C07	2026-10-21 20:21:33	2026-10-21 20:21:33	Exit	Outside	1	Unregistered Visitor
 465	E2001071291201192320276C	2026-10-21 20:22:18	2026-10-21 21:19:37	Exit	Outside	2	Unregistered Visitor
 469	E20047189ED06821E969010A	2026-10-21 20:28:19	2026-10-21 21:29:46	Exit	Outside	2	Unassigned Gymkhana Tag
-474	E20047113DE0642221BF010D	2026-10-21 20:32:50	2026-10-21 21:21:37	Exit	Outside	2	Unassigned Gymkhana Tag
+124	E2006B060000000000000000	2026-10-21 13:47:34	2026-10-22 21:22:57	Exit	Outside	2	Unregistered Visitor
 489	E2003412012DFD000221A357	2026-10-21 20:48:26	2026-10-21 22:03:39	Exit	Outside	2	Society / Resident Tag
 491	E20047105E80642213C90107	2026-10-21 20:49:07	2026-10-21 21:53:49	Exit	Outside	2	Unassigned Gymkhana Tag
 494	E20034120130050001586C90	2026-10-21 20:50:54	2026-10-21 20:50:54	Exit	Outside	1	Society / Resident Tag
-496	E200471115A064221F3B010A	2026-10-21 20:51:06	2026-10-21 20:51:06	Exit	Outside	1	Unassigned Gymkhana Tag
-497	E2201F000000000000000000	2026-10-21 20:51:24	2026-10-21 22:14:33	Exit	Outside	2	Unregistered Visitor
+452	E20034120134FF00082B8703	2026-10-21 20:09:40	2026-10-22 21:42:26	Exit	Outside	3	Society / Resident Tag
+509	E280F3362000600000554DF9	2026-10-21 20:59:36	2026-10-22 21:42:39	Exit	Outside	3	Third-Party Fleet Tag
 499	E280F336200030000008F79F	2026-10-21 20:53:45	2026-10-21 22:52:44	Exit	Outside	2	Third-Party Fleet Tag
 502	E200471048C06422126D00F9	2026-10-21 20:57:23	2026-10-21 22:07:10	Exit	Outside	2	Unassigned Gymkhana Tag
 503	E280F3362000600000690524	2026-10-21 20:57:27	2026-10-21 20:57:27	Exit	Outside	1	Third-Party Fleet Tag
 506	E2803821200060260A9A384C	2026-10-21 20:58:51	2026-10-21 22:38:52	Exit	Outside	2	Society / Resident Tag
 507	E280F3362000600000602A62	2026-10-21 20:58:56	2026-10-21 22:45:24	Exit	Outside	2	Third-Party Fleet Tag
-509	E280F3362000600000554DF9	2026-10-21 20:59:36	2026-10-21 20:59:36	Exit	Outside	1	Third-Party Fleet Tag
+519	E2004700D31064226FDF010A	2026-10-21 21:07:30	2026-10-22 22:01:35	Exit	Outside	3	Unassigned Gymkhana Tag
 511	E2004710179064220F5A010F	2026-10-21 21:00:37	2026-10-21 22:51:08	Exit	Outside	2	Unassigned Gymkhana Tag
-519	E2004700D31064226FDF010A	2026-10-21 21:07:30	2026-10-21 22:11:30	Exit	Outside	2	Unassigned Gymkhana Tag
-530	E20047113160642220F70114	2026-10-21 21:18:06	2026-10-21 23:00:40	Exit	Outside	2	Unassigned Gymkhana Tag
 543	E200471144E06422222F0109	2026-10-21 21:35:16	2026-10-21 22:25:15	Exit	Outside	4	Unassigned Gymkhana Tag
 546	E2004700524068230019010C	2026-10-21 21:36:38	2026-10-21 22:32:37	Exit	Outside	2	Unassigned Gymkhana Tag
-548	E20034120131F50004CBD83C	2026-10-21 21:41:51	2026-10-21 21:41:51	Exit	Outside	1	Society / Resident Tag
-549	E20034120139F50004CBBE24	2026-10-21 21:49:20	2026-10-21 22:41:00	Exit	Outside	2	Society / Resident Tag
+549	E20034120139F50004CBBE24	2026-10-21 21:49:20	2026-10-22 22:03:06	Exit	Outside	4	Society / Resident Tag
 579	E2004710C57064221A38010C	2026-10-21 22:36:26	2026-10-21 22:36:26	Exit	Outside	1	Unassigned Gymkhana Tag
-580	E200470190E064227BBC010D	2026-10-21 22:37:24	2026-10-21 22:37:24	Exit	Outside	1	Unassigned Gymkhana Tag
 599	E200001D7508004614901243	2026-10-22 00:18:51	2026-10-22 00:18:51	Exit	Outside	1	Unregistered Visitor
 1311	E2003412012EFD00068A6EC6	2026-10-18 02:49:10	2026-10-18 12:14:20	Exit	Outside	4	Society / Resident Tag
 1312	E280F336200060000067E4FB	2026-10-18 04:07:03	2026-10-18 05:51:07	Exit	Outside	2	Third-Party Fleet Tag
 1314	E20047105B5064221396010A	2026-10-18 07:53:33	2026-10-18 09:08:18	Exit	Outside	2	Unassigned Gymkhana Tag
+530	E20047113160642220F70114	2026-10-21 21:18:06	2026-10-22 23:04:26	Exit	Outside	4	Unassigned Gymkhana Tag
 1316	E2004710AFF0642218E0010F	2026-10-18 08:33:37	2026-10-18 10:28:03	Exit	Outside	2	Unassigned Gymkhana Tag
 1317	E200471042C06422120D010A	2026-10-18 08:40:07	2026-10-18 09:25:36	Exit	Outside	2	Unassigned Gymkhana Tag
 1318	E28068940000403153C0ECF8	2026-10-18 08:46:42	2026-10-18 08:46:42	Exit	Outside	1	Unassigned Gymkhana Tag
 1319	E20034120130FE0007B205D7	2026-10-18 09:01:43	2026-10-18 09:01:43	Exit	Outside	1	Society / Resident Tag
 1321	E20047182B50682328DD010B	2026-10-18 09:20:16	2026-10-18 10:59:39	Exit	Outside	2	Unassigned Gymkhana Tag
-1322	E2004714D4406820AA0E010A	2026-10-18 09:27:51	2026-10-18 10:38:46	Exit	Outside	2	Unassigned Gymkhana Tag
+438	E280F33620003000000B2123	2026-10-21 19:57:44	2026-10-22 23:04:39	Exit	Outside	4	Third-Party Fleet Tag
+548	E20034120131F50004CBD83C	2026-10-21 21:41:51	2026-10-22 20:55:01	Exit	Outside	2	Society / Resident Tag
 1325	E2004701846064227AF40113	2026-10-18 10:51:23	2026-10-18 10:51:23	Exit	Outside	1	Unassigned Gymkhana Tag
 1326	E9C2DE75D9D8B62DBEBB94CC	2026-10-18 10:56:50	2026-10-18 10:56:50	Exit	Outside	1	Unregistered Visitor
-1329	E2003412012FF6000F6F85AB	2026-10-18 11:17:54	2026-10-18 12:54:30	Exit	Outside	2	Society / Resident Tag
-1332	E200471147F0642222600114	2026-10-18 11:52:16	2026-10-18 13:07:26	Exit	Outside	2	Unassigned Gymkhana Tag
 1333	E20034120137F6000FE0CEF1	2026-10-18 11:56:12	2026-10-18 11:56:12	Exit	Outside	1	Society / Resident Tag
 1338	E280F3362000600000604B04	2026-10-18 12:40:02	2026-10-18 13:46:43	Exit	Outside	2	Third-Party Fleet Tag
 1339	E2003412012E03000478C6FA	2026-10-18 13:00:06	2026-10-18 13:00:06	Exit	Outside	1	Society / Resident Tag
@@ -26327,42 +28675,47 @@ COPY public.unregistered_tags (id, tag, first_seen, last_seen, direction, curren
 1342	E280F33620003000000A4F3C	2026-10-18 13:21:36	2026-10-18 13:21:36	Exit	Outside	1	Third-Party Fleet Tag
 1343	E20034120139030004782B45	2026-10-18 13:24:37	2026-10-18 13:26:43	Exit	Outside	2	Society / Resident Tag
 1345	E200471143A06422221B0101	2026-10-18 14:47:08	2026-10-18 14:47:08	Exit	Outside	1	Unassigned Gymkhana Tag
-1346	E2003098191902521440822B	2026-10-18 14:58:29	2026-10-18 15:25:13	Exit	Outside	2	Unregistered Visitor
-1348	E280F33620003000000911C2	2026-10-18 15:17:09	2026-10-18 15:17:09	Exit	Outside	1	Third-Party Fleet Tag
+1329	E2003412012FF6000F6F85AB	2026-10-18 11:17:54	2026-10-23 08:32:47	Exit	Outside	4	Society / Resident Tag
 1349	E20034120131F6000F6F2395	2026-10-18 15:31:30	2026-10-18 15:40:26	Exit	Outside	2	Society / Resident Tag
 1350	E280F33620006000006683D5	2026-10-18 15:59:41	2026-10-18 16:29:45	Exit	Outside	2	Third-Party Fleet Tag
 1351	E2002075821800950610D4C1	2026-10-18 16:04:25	2026-10-18 16:04:25	Exit	Outside	1	Unregistered Visitor
 1352	E2803821200064260B10FE99	2026-10-18 16:12:16	2026-10-18 16:12:16	Exit	Outside	1	Society / Resident Tag
-1353	E20047115010642222E20107	2026-10-18 16:15:21	2026-10-18 16:15:21	Exit	Outside	1	Unassigned Gymkhana Tag
 1354	E20034120131F6000FE08F5B	2026-10-18 16:25:45	2026-10-18 19:32:17	Exit	Outside	4	Society / Resident Tag
 1355	E280F33620003000000B6B42	2026-10-18 16:27:49	2026-10-18 16:27:49	Exit	Outside	1	Third-Party Fleet Tag
 1356	E200471139E06422217F010E	2026-10-18 16:31:16	2026-10-18 18:23:36	Exit	Outside	2	Unassigned Gymkhana Tag
+1332	E200471147F0642222600114	2026-10-18 11:52:16	2026-10-23 09:54:21	Exit	Outside	4	Unassigned Gymkhana Tag
 1358	E2806894000040154CC629C3	2026-10-18 17:09:41	2026-10-18 17:43:11	Exit	Outside	2	Unassigned Gymkhana Tag
 1359	E200471135E06422213F010D	2026-10-18 17:21:22	2026-10-18 20:43:05	Exit	Outside	2	Unassigned Gymkhana Tag
 1315	E2004701A8E064227D3C010A	2026-10-18 08:24:40	2026-10-22 10:06:48	Exit	Outside	4	Unassigned Gymkhana Tag
 1357	E280F33620006000005FD277	2026-10-18 17:04:17	2026-10-22 11:48:32	Exit	Outside	6	Third-Party Fleet Tag
+1348	E280F33620003000000911C2	2026-10-18 15:17:09	2026-10-22 14:43:58	Exit	Outside	2	Third-Party Fleet Tag
+1346	E2003098191902521440822B	2026-10-18 14:58:29	2026-10-22 16:48:08	Exit	Outside	4	Unregistered Visitor
+474	E20047113DE0642221BF010D	2026-10-21 20:32:50	2026-10-22 18:20:09	Exit	Outside	5	Unassigned Gymkhana Tag
+497	E2201F000000000000000000	2026-10-21 20:51:24	2026-10-22 18:29:40	Exit	Outside	4	Unregistered Visitor
+1353	E20047115010642222E20107	2026-10-18 16:15:21	2026-10-22 19:28:52	Exit	Outside	3	Unassigned Gymkhana Tag
+496	E200471115A064221F3B010A	2026-10-21 20:51:06	2026-10-22 20:26:51	Exit	Outside	3	Unassigned Gymkhana Tag
+580	E200470190E064227BBC010D	2026-10-21 22:37:24	2026-10-22 20:29:52	Exit	Outside	3	Unassigned Gymkhana Tag
+1322	E2004714D4406820AA0E010A	2026-10-18 09:27:51	2026-10-22 20:35:54	Exit	Outside	4	Unassigned Gymkhana Tag
 1360	E2000020660E0097253042A8	2026-10-18 17:24:20	2026-10-20 15:34:44	Exit	Outside	4	Unregistered Visitor
 1361	E2004710AAA06422188B010D	2026-10-18 17:31:20	2026-10-18 19:15:42	Exit	Outside	2	Unassigned Gymkhana Tag
 1362	E2004710BC60642219A70111	2026-10-18 17:31:53	2026-10-18 19:10:39	Exit	Outside	2	Unassigned Gymkhana Tag
 1363	E280F3362000300000087053	2026-10-18 17:44:44	2026-10-18 21:05:43	Exit	Outside	2	Third-Party Fleet Tag
-1364	E20047113EA0642221CB010A	2026-10-18 17:49:46	2026-10-20 23:19:39	Exit	Outside	4	Unassigned Gymkhana Tag
-1365	E280F33620006000005F1CF3	2026-10-18 17:53:19	2026-10-18 19:43:34	Exit	Outside	2	Third-Party Fleet Tag
 1366	E200471019D064220F7E010C	2026-10-18 17:55:56	2026-10-18 20:53:50	Exit	Outside	2	Unassigned Gymkhana Tag
 1369	E280F33620003000000B4921	2026-10-18 18:05:54	2026-10-18 18:06:57	Exit	Outside	2	Third-Party Fleet Tag
 1370	E2004710D26064221B070114	2026-10-18 18:08:18	2026-10-18 20:04:55	Exit	Outside	2	Unassigned Gymkhana Tag
+461	E200471018D064220F6E010C	2026-10-21 20:19:55	2026-10-22 21:24:35	Exit	Outside	4	Unassigned Gymkhana Tag
 1374	E280F33620003000000AB264	2026-10-18 18:39:45	2026-10-18 21:45:00	Exit	Outside	2	Third-Party Fleet Tag
-1377	E20047115250642223060111	2026-10-18 18:59:06	2026-10-20 23:35:46	Exit	Outside	6	Unassigned Gymkhana Tag
 1379	E2004710C2A064221A0B0111	2026-10-18 19:06:06	2026-10-18 20:11:36	Exit	Outside	2	Unassigned Gymkhana Tag
 1380	E280F3362000600000661B40	2026-10-18 19:08:11	2026-10-18 20:09:41	Exit	Outside	2	Third-Party Fleet Tag
 1381	E200F3362000600000178ACD	2026-10-18 19:08:16	2026-10-20 09:52:20	Exit	Outside	3	Unregistered Visitor
 1382	E28038212000642601E291D1	2026-10-18 19:10:28	2026-10-18 19:12:44	Exit	Outside	4	Society / Resident Tag
 1383	E28038212000642202D4577D	2026-10-18 19:12:51	2026-10-18 20:40:08	Exit	Outside	2	Society / Resident Tag
-1384	E20034120139F50004CBBA46	2026-10-18 19:13:40	2026-10-18 21:25:58	Exit	Outside	2	Society / Resident Tag
+1377	E20047115250642223060111	2026-10-18 18:59:06	2026-10-22 22:31:39	Exit	Outside	8	Unassigned Gymkhana Tag
 1386	E200471145906422223A010D	2026-10-18 19:16:52	2026-10-18 20:32:12	Exit	Outside	2	Unassigned Gymkhana Tag
 1389	E20034120131F6000FE01504	2026-10-18 19:30:39	2026-10-18 21:33:06	Exit	Outside	2	Society / Resident Tag
 1390	E280F336200060000068B565	2026-10-18 19:53:28	2026-10-18 19:53:28	Exit	Outside	1	Third-Party Fleet Tag
 1391	E20047104730642212540106	2026-10-18 20:01:01	2026-10-18 21:30:31	Exit	Outside	2	Unassigned Gymkhana Tag
-1392	E2003412013BF6000F739AEE	2026-10-18 20:15:23	2026-10-20 15:35:58	Exit	Outside	3	Society / Resident Tag
+1364	E20047113EA0642221CB010A	2026-10-18 17:49:46	2026-10-22 23:08:25	Exit	Outside	6	Unassigned Gymkhana Tag
 1393	E280F3362000600000550E12	2026-10-18 20:16:44	2026-10-18 20:40:56	Exit	Outside	2	Third-Party Fleet Tag
 1394	E20034120134F50004CBDB55	2026-10-18 20:39:28	2026-10-18 22:16:11	Exit	Outside	2	Society / Resident Tag
 1395	E2004710430064221211010F	2026-10-18 20:39:50	2026-10-20 13:52:06	Exit	Outside	3	Unassigned Gymkhana Tag
@@ -26371,23 +28724,24 @@ COPY public.unregistered_tags (id, tag, first_seen, last_seen, direction, curren
 1398	E2004710DC2064221BA3010E	2026-10-18 21:42:33	2026-10-18 22:51:11	Exit	Outside	2	Unassigned Gymkhana Tag
 1399	E280F336200060000066616F	2026-10-18 21:56:12	2026-10-18 21:56:12	Exit	Outside	1	Third-Party Fleet Tag
 1400	E280F336200060000055FD8E	2026-10-18 22:10:45	2026-10-20 20:25:54	Exit	Outside	3	Third-Party Fleet Tag
-1401	E280F3362000600000604A0F	2026-10-18 22:27:38	2026-10-18 22:27:38	Exit	Outside	1	Third-Party Fleet Tag
+1365	E280F33620006000005F1CF3	2026-10-18 17:53:19	2026-10-22 23:14:53	Exit	Outside	3	Third-Party Fleet Tag
 1402	E200F336200060000017890C	2026-10-18 23:00:33	2026-10-18 23:00:33	Exit	Outside	1	Unregistered Visitor
 1403	E20047064C0068211C9B0113	2026-10-18 23:03:36	2026-10-19 22:51:52	Exit	Outside	3	Unassigned Gymkhana Tag
 1404	E280F336200030000008CA33	2026-10-19 07:41:49	2026-10-19 09:24:31	Exit	Outside	2	Third-Party Fleet Tag
 1405	E280F336200060000068747A	2026-10-19 07:58:48	2026-10-19 09:04:52	Exit	Outside	2	Third-Party Fleet Tag
-1407	E20047106040642213E5010A	2026-10-19 08:09:35	2026-10-21 09:11:13	Exit	Outside	4	Unassigned Gymkhana Tag
+1372	E2003412012CF40005C48223	2026-10-18 18:16:09	2026-10-22 12:15:49	Exit	Outside	2	Society / Resident Tag
 1408	E2004710A7A06422185B0111	2026-10-19 08:26:30	2026-10-19 08:26:30	Exit	Outside	1	Unassigned Gymkhana Tag
+1412	E280F336200030000009FD54	2026-10-19 08:46:03	2026-10-23 08:25:58	Exit	Outside	7	Third-Party Fleet Tag
 1410	E20047104950642212760114	2026-10-19 08:36:25	2026-10-19 09:11:43	Exit	Outside	4	Unassigned Gymkhana Tag
 1411	E20047021D2064228480010E	2026-10-19 08:43:46	2026-10-19 10:19:52	Exit	Outside	2	Unassigned Gymkhana Tag
-1416	E280F336200060000067B399	2026-10-19 09:33:38	2026-10-20 09:12:07	Exit	Outside	2	Third-Party Fleet Tag
+1416	E280F336200060000067B399	2026-10-19 09:33:38	2026-10-23 09:00:37	Exit	Outside	3	Third-Party Fleet Tag
 1418	E20047105BB06422139C0114	2026-10-19 09:40:45	2026-10-20 09:51:36	Exit	Outside	3	Unassigned Gymkhana Tag
 1419	E280F3362000600000551E4C	2026-10-19 10:33:05	2026-10-20 18:45:07	Exit	Outside	4	Third-Party Fleet Tag
 1420	E2004710A9B06422187C010C	2026-10-19 10:52:43	2026-10-20 12:14:49	Exit	Outside	4	Unassigned Gymkhana Tag
 1421	E20034120129F6000FE01953	2026-10-19 10:53:57	2026-10-19 10:53:57	Exit	Outside	1	Society / Resident Tag
 1425	E200F33620006000001702EC	2026-10-19 11:59:25	2026-10-19 12:13:31	Exit	Outside	2	Unregistered Visitor
 1426	E200001B07130114155076C8	2026-10-19 12:41:12	2026-10-19 13:01:51	Exit	Outside	2	Unregistered Visitor
-1427	E200470351006823DB38010D	2026-10-19 13:07:44	2026-10-20 19:49:19	Exit	Outside	4	Unassigned Gymkhana Tag
+1407	E20047106040642213E5010A	2026-10-19 08:09:35	2026-10-23 09:16:46	Exit	Outside	5	Unassigned Gymkhana Tag
 1428	E2004701878064227B260109	2026-10-19 13:49:01	2026-10-19 13:49:01	Exit	Outside	1	Unassigned Gymkhana Tag
 1429	E20047109BF0642217A0010E	2026-10-19 13:54:12	2026-10-19 14:00:22	Exit	Outside	2	Unassigned Gymkhana Tag
 1430	E20068060000000000000000	2026-10-19 13:58:15	2026-10-19 14:25:13	Exit	Outside	2	Unregistered Visitor
@@ -26396,22 +28750,23 @@ COPY public.unregistered_tags (id, tag, first_seen, last_seen, direction, curren
 1433	E2004711091064221E72010B	2026-10-19 14:25:47	2026-10-19 16:22:29	Exit	Outside	4	Unassigned Gymkhana Tag
 1434	E200F3362000600000169724	2026-10-19 15:01:19	2026-10-20 17:00:05	Exit	Outside	3	Unregistered Visitor
 1435	E200470E3480682389700109	2026-10-19 15:06:44	2026-10-19 16:13:09	Exit	Outside	2	Unassigned Gymkhana Tag
-1436	E20047112A5064222086010E	2026-10-19 15:10:01	2026-10-19 16:19:11	Exit	Outside	2	Unassigned Gymkhana Tag
+1440	E21A3F000000000000000000	2026-10-19 16:33:28	2026-10-23 11:11:54	Entry	Inside	3	Unregistered Visitor
 1437	E280689000000002579829EC	2026-10-19 15:37:17	2026-10-19 15:37:17	Exit	Outside	1	Unassigned Gymkhana Tag
 1439	E280F336200060000068818A	2026-10-19 16:28:32	2026-10-19 16:28:32	Exit	Outside	1	Third-Party Fleet Tag
-1440	E21A3F000000000000000000	2026-10-19 16:33:28	2026-10-19 16:45:01	Exit	Outside	2	Unregistered Visitor
-1443	E20047104180642211F9010A	2026-10-19 16:47:38	2026-10-19 16:50:59	Exit	Outside	2	Unassigned Gymkhana Tag
 1444	E200471108E064221E6F010B	2026-10-19 16:50:26	2026-10-19 22:08:51	Exit	Outside	2	Unassigned Gymkhana Tag
-1412	E280F336200030000009FD54	2026-10-19 08:46:03	2026-10-22 08:23:11	Exit	Outside	6	Third-Party Fleet Tag
+1443	E20047104180642211F9010A	2026-10-19 16:47:38	2026-10-23 13:29:17	Entry	Inside	3	Unassigned Gymkhana Tag
 1409	E200470D6AB068237CD3010A	2026-10-19 08:30:48	2026-10-22 09:30:35	Exit	Outside	7	Unassigned Gymkhana Tag
-1372	E2003412012CF40005C48223	2026-10-18 18:16:09	2026-10-22 12:15:49	Entry	Inside	2	Society / Resident Tag
+1436	E20047112A5064222086010E	2026-10-19 15:10:01	2026-10-22 16:20:01	Exit	Outside	3	Unassigned Gymkhana Tag
+1392	E2003412013BF6000F739AEE	2026-10-18 20:15:23	2026-10-22 18:27:18	Exit	Outside	6	Society / Resident Tag
+1427	E200470351006823DB38010D	2026-10-19 13:07:44	2026-10-22 19:29:59	Exit	Outside	6	Unassigned Gymkhana Tag
+1401	E280F3362000600000604A0F	2026-10-18 22:27:38	2026-10-22 20:19:17	Exit	Outside	2	Third-Party Fleet Tag
 1445	E280F33620003000000A9340	2026-10-19 17:06:50	2026-10-19 17:29:54	Exit	Outside	2	Third-Party Fleet Tag
 1446	E200470763106026CA1E010C	2026-10-19 17:12:53	2026-10-19 19:40:45	Exit	Outside	2	Unassigned Gymkhana Tag
-1447	E280F33620003000000B01F4	2026-10-19 17:25:52	2026-10-19 22:35:08	Exit	Outside	8	Third-Party Fleet Tag
 1449	E280F3362000600000679BFC	2026-10-19 17:48:20	2026-10-19 21:29:58	Exit	Outside	2	Third-Party Fleet Tag
 1451	E200470FFA006823A5C80111	2026-10-19 17:52:28	2026-10-19 17:54:05	Exit	Outside	2	Unassigned Gymkhana Tag
 1454	E280F3362000600000600AC5	2026-10-19 18:29:41	2026-10-19 20:10:31	Exit	Outside	2	Third-Party Fleet Tag
-1456	E20047105CA0642213AB010D	2026-10-19 18:55:44	2026-10-20 22:42:04	Exit	Outside	4	Unassigned Gymkhana Tag
+1480	E2803821200060260A99C57E	2026-10-19 21:36:22	2026-10-22 20:57:05	Exit	Outside	6	Society / Resident Tag
+2142	E2004710F41064221D220111	2026-10-22 21:25:22	2026-10-22 21:25:22	Exit	Outside	1	Unassigned Gymkhana Tag
 1457	E280F336200060000055CCDE	2026-10-19 18:57:32	2026-10-19 20:25:46	Exit	Outside	2	Third-Party Fleet Tag
 1458	E200471149E06422227F0111	2026-10-19 19:09:39	2026-10-19 19:09:39	Exit	Outside	1	Unassigned Gymkhana Tag
 1460	E200471046906422124A010D	2026-10-19 19:20:06	2026-10-19 22:25:58	Exit	Outside	2	Unassigned Gymkhana Tag
@@ -26431,10 +28786,9 @@ COPY public.unregistered_tags (id, tag, first_seen, last_seen, direction, curren
 1475	E200471037906422115A0104	2026-10-19 20:38:10	2026-10-19 22:16:49	Exit	Outside	2	Unassigned Gymkhana Tag
 1476	E20047112650642220460107	2026-10-19 20:47:59	2026-10-19 22:59:19	Exit	Outside	2	Unassigned Gymkhana Tag
 1477	E280F33620006000005C0047	2026-10-19 20:50:38	2026-10-19 21:26:10	Exit	Outside	2	Third-Party Fleet Tag
+1483	E20034120132F6000F6F39EA	2026-10-19 22:30:22	2026-10-22 22:39:45	Exit	Outside	6	Society / Resident Tag
 1479	E2803821200060260511DE88	2026-10-19 21:25:48	2026-10-19 23:19:49	Exit	Outside	3	Society / Resident Tag
-1480	E2803821200060260A99C57E	2026-10-19 21:36:22	2026-10-20 21:22:56	Exit	Outside	4	Society / Resident Tag
 1482	E20034120130FC0003D08EB0	2026-10-19 22:19:08	2026-10-19 22:19:08	Exit	Outside	1	Society / Resident Tag
-1483	E20034120132F6000F6F39EA	2026-10-19 22:30:22	2026-10-20 21:51:40	Exit	Outside	4	Society / Resident Tag
 1484	E2004709EBA0602356B5010E	2026-10-19 22:57:13	2026-10-19 22:57:13	Exit	Outside	1	Unassigned Gymkhana Tag
 1485	E2803821200060260510FFA1	2026-10-19 22:57:27	2026-10-19 22:57:27	Exit	Outside	1	Society / Resident Tag
 1486	E200470138106422762F010B	2026-10-20 05:56:22	2026-10-21 07:19:21	Exit	Outside	4	Unassigned Gymkhana Tag
@@ -26442,19 +28796,19 @@ COPY public.unregistered_tags (id, tag, first_seen, last_seen, direction, curren
 1489	E200470195C064227C0A010B	2026-10-20 06:46:13	2026-10-20 08:20:55	Exit	Outside	2	Unassigned Gymkhana Tag
 1490	E200F336200060000017825F	2026-10-20 07:17:34	2026-10-20 07:19:40	Exit	Outside	2	Unregistered Visitor
 1491	E200471673E06820C4080112	2026-10-20 08:22:57	2026-10-20 08:30:53	Exit	Outside	2	Unassigned Gymkhana Tag
-1494	E2004701DDB0642280890113	2026-10-20 09:50:33	2026-10-20 17:59:29	Exit	Outside	2	Unassigned Gymkhana Tag
+1496	E2803821200064260B101DA0	2026-10-20 10:37:51	2026-10-23 10:27:14	Exit	Outside	5	Society / Resident Tag
 1495	E2004701987064227C35010E	2026-10-20 10:15:16	2026-10-20 19:25:26	Exit	Outside	7	Unassigned Gymkhana Tag
+1501	E200F336200060000016AA1D	2026-10-20 11:35:47	2026-10-23 11:45:44	Entry	Inside	5	Unregistered Visitor
 1497	E28068900000000257982D09	2026-10-20 10:40:16	2026-10-20 10:40:16	Exit	Outside	1	Unassigned Gymkhana Tag
 1498	E200471130D0642220EE0108	2026-10-20 11:11:07	2026-10-20 11:11:07	Exit	Outside	1	Unassigned Gymkhana Tag
 1500	E200341201330100087CDBF0	2026-10-20 11:27:26	2026-10-20 12:12:14	Exit	Outside	2	Society / Resident Tag
-1501	E200F336200060000016AA1D	2026-10-20 11:35:47	2026-10-20 13:48:03	Exit	Outside	2	Unregistered Visitor
+1478	E2004711341064222122010D	2026-10-19 20:54:31	2026-10-23 12:50:44	Entry	Inside	3	Unassigned Gymkhana Tag
 1502	E20034120134020009F361C9	2026-10-20 11:38:12	2026-10-20 11:38:12	Exit	Outside	1	Society / Resident Tag
 1503	E200471107E064221E5F010F	2026-10-20 11:40:04	2026-10-20 11:50:20	Exit	Outside	2	Unassigned Gymkhana Tag
 1504	E280F33620003000000B8157	2026-10-20 13:08:35	2026-10-20 13:08:35	Exit	Outside	1	Third-Party Fleet Tag
 1506	E28068900000000257992A6A	2026-10-20 13:31:49	2026-10-20 13:31:49	Exit	Outside	1	Unassigned Gymkhana Tag
 1507	E200F3362000600000169EE4	2026-10-20 14:07:40	2026-10-20 15:47:47	Exit	Outside	2	Unregistered Visitor
 1508	E2004711295064222076010B	2026-10-20 14:08:05	2026-10-20 14:08:05	Exit	Outside	1	Unassigned Gymkhana Tag
-1509	E20034120128F6000FE097FD	2026-10-20 14:14:46	2026-10-20 16:48:47	Exit	Outside	2	Society / Resident Tag
 1510	E200001D7508003316200A30	2026-10-20 14:20:16	2026-10-20 15:31:52	Exit	Outside	2	Unregistered Visitor
 1511	E2000020660E01882680A2BA	2026-10-20 14:21:29	2026-10-20 15:46:31	Exit	Outside	2	Unregistered Visitor
 1512	E2806894000050154CC629CB	2026-10-20 14:29:57	2026-10-20 15:44:01	Exit	Outside	2	Unassigned Gymkhana Tag
@@ -26466,9 +28820,9 @@ COPY public.unregistered_tags (id, tag, first_seen, last_seen, direction, curren
 1519	E2004710AC20642218A3010B	2026-10-20 15:18:36	2026-10-20 15:18:36	Exit	Outside	1	Unassigned Gymkhana Tag
 1522	E280F33620003000000A6DB5	2026-10-20 15:37:50	2026-10-20 16:23:13	Exit	Outside	2	Third-Party Fleet Tag
 1455	E2004710B120642218F3010D	2026-10-19 18:49:39	2026-10-22 10:19:55	Exit	Outside	4	Unassigned Gymkhana Tag
-1496	E2803821200064260B101DA0	2026-10-20 10:37:51	2026-10-22 10:57:26	Exit	Outside	3	Society / Resident Tag
-1505	E28038212000642202D509B7	2026-10-20 13:28:08	2026-10-22 12:17:00	Entry	Inside	2	Society / Resident Tag
-1478	E2004711341064222122010D	2026-10-19 20:54:31	2026-10-22 12:34:23	Entry	Inside	2	Unassigned Gymkhana Tag
+1505	E28038212000642202D509B7	2026-10-20 13:28:08	2026-10-22 13:26:16	Exit	Outside	3	Society / Resident Tag
+1509	E20034120128F6000FE097FD	2026-10-20 14:14:46	2026-10-22 14:38:15	Exit	Outside	4	Society / Resident Tag
+1447	E280F33620003000000B01F4	2026-10-19 17:25:52	2026-10-22 17:07:55	Exit	Outside	9	Third-Party Fleet Tag
 1523	E20034120128F6000F6FD5E0	2026-10-20 15:49:13	2026-10-20 15:49:13	Exit	Outside	1	Society / Resident Tag
 1524	E2004710A6E06422184F0115	2026-10-20 16:23:06	2026-10-20 16:23:06	Exit	Outside	1	Unassigned Gymkhana Tag
 1525	E2004701DDF06422808D0111	2026-10-20 16:28:24	2026-10-20 18:03:22	Exit	Outside	2	Unassigned Gymkhana Tag
@@ -26478,26 +28832,22 @@ COPY public.unregistered_tags (id, tag, first_seen, last_seen, direction, curren
 1529	E20047104110642211F20108	2026-10-20 16:46:08	2026-10-20 17:27:48	Exit	Outside	2	Unassigned Gymkhana Tag
 1530	E2004710BA70642219880113	2026-10-20 17:22:30	2026-10-20 18:40:58	Exit	Outside	2	Unassigned Gymkhana Tag
 1532	E20047105EF0642213D0010A	2026-10-20 17:37:06	2026-10-20 17:37:06	Exit	Outside	1	Unassigned Gymkhana Tag
-1533	E20034120137F50004CBC66D	2026-10-20 17:37:32	2026-10-20 19:38:51	Exit	Outside	2	Society / Resident Tag
 1534	E2803821200064260B109220	2026-10-20 17:52:56	2026-10-20 17:52:56	Exit	Outside	1	Society / Resident Tag
 1535	E200471038D06422116E010B	2026-10-20 18:13:52	2026-10-20 20:13:43	Exit	Outside	2	Unassigned Gymkhana Tag
 1536	E200470109E06422734C010E	2026-10-20 18:16:09	2026-10-20 21:18:03	Exit	Outside	2	Unassigned Gymkhana Tag
-1537	E280F3362000600000661ACA	2026-10-20 18:27:54	2026-10-20 21:09:13	Exit	Outside	2	Third-Party Fleet Tag
+1549	E280F3362000600000684977	2026-10-20 20:18:58	2026-10-22 20:42:38	Exit	Outside	5	Third-Party Fleet Tag
 1538	E2806890000000025797EAC5	2026-10-20 18:31:12	2026-10-20 18:31:12	Exit	Outside	1	Unassigned Gymkhana Tag
 1539	E2004710C160642219F70110	2026-10-20 18:52:00	2026-10-20 19:52:26	Exit	Outside	2	Unassigned Gymkhana Tag
-1540	E20047109BB06422179C010F	2026-10-20 19:05:20	2026-10-20 21:46:32	Exit	Outside	2	Unassigned Gymkhana Tag
+1550	E280F33620003000000B433D	2026-10-20 20:49:37	2026-10-22 20:47:21	Exit	Outside	3	Third-Party Fleet Tag
 1541	E2806894000050154CC625B0	2026-10-20 19:30:08	2026-10-20 19:30:08	Exit	Outside	1	Unassigned Gymkhana Tag
 1542	E20047022250642284D3010B	2026-10-20 19:40:00	2026-10-20 21:05:34	Exit	Outside	2	Unassigned Gymkhana Tag
 1543	E280F33620003000000AC5BB	2026-10-20 19:40:07	2026-10-20 22:38:56	Exit	Outside	2	Third-Party Fleet Tag
-1544	E2806890000000025799D2C4	2026-10-20 19:40:15	2026-10-20 20:28:59	Exit	Outside	4	Unassigned Gymkhana Tag
+1537	E280F3362000600000661ACA	2026-10-20 18:27:54	2026-10-22 21:34:08	Exit	Outside	4	Third-Party Fleet Tag
 1545	E28068900000000257992B27	2026-10-20 19:47:14	2026-10-20 21:10:53	Exit	Outside	2	Unassigned Gymkhana Tag
 1546	E200471118D064221F6E010C	2026-10-20 19:55:45	2026-10-20 20:35:30	Exit	Outside	3	Unassigned Gymkhana Tag
 1548	E280F33620003000000A68E9	2026-10-20 20:08:54	2026-10-20 20:08:54	Exit	Outside	1	Third-Party Fleet Tag
-1549	E280F3362000600000684977	2026-10-20 20:18:58	2026-10-20 20:18:58	Exit	Outside	1	Third-Party Fleet Tag
-1550	E280F33620003000000B433D	2026-10-20 20:49:37	2026-10-20 20:49:37	Exit	Outside	1	Third-Party Fleet Tag
 1551	E2004710427064221208010E	2026-10-20 20:50:55	2026-10-20 22:08:58	Exit	Outside	2	Unassigned Gymkhana Tag
 1552	E280F33620006000005FADCB	2026-10-20 21:32:06	2026-10-20 21:32:06	Exit	Outside	1	Third-Party Fleet Tag
-1553	E200F3362000600000178D49	2026-10-21 08:16:57	2026-10-21 08:18:23	Exit	Outside	2	Unregistered Visitor
 1555	E20047103BF0642211A0010F	2026-10-14 12:16:32	2026-10-15 12:23:03	Exit	Outside	3	Unassigned Gymkhana Tag
 1556	E20047076F5068212ED0010B	2026-10-14 14:37:08	2026-10-14 14:37:08	Exit	Outside	1	Unassigned Gymkhana Tag
 1557	E2803821200060260510DF8C	2026-10-14 15:45:39	2026-10-14 16:24:13	Exit	Outside	2	Society / Resident Tag
@@ -26534,6 +28884,9 @@ COPY public.unregistered_tags (id, tag, first_seen, last_seen, direction, curren
 1609	ECCFFFF200510003000E2806	2026-10-09 09:52:33	2026-10-09 09:52:33	Exit	Outside	1	Unregistered Visitor
 1610	E388BDEACCFFFF2005100030	2026-10-09 09:53:05	2026-10-09 09:53:05	Exit	Outside	1	Unregistered Visitor
 1613	EF55555555AA4778ABC206	2026-10-09 10:12:03	2026-10-09 10:12:03	Exit	Outside	1	Unregistered Visitor
+1553	E200F3362000600000178D49	2026-10-21 08:16:57	2026-10-22 18:25:44	Exit	Outside	4	Unregistered Visitor
+1540	E20047109BB06422179C010F	2026-10-20 19:05:20	2026-10-22 18:59:39	Exit	Outside	4	Unassigned Gymkhana Tag
+1544	E2806890000000025799D2C4	2026-10-20 19:40:15	2026-10-22 19:59:54	Exit	Outside	5	Unassigned Gymkhana Tag
 1614	EF55555555AA140025BB3E	2026-10-09 10:12:18	2026-10-09 10:12:18	Exit	Outside	1	Unregistered Visitor
 1615	EF55555555AA140025BF3A	2026-10-09 10:12:20	2026-10-09 10:12:20	Exit	Outside	1	Unregistered Visitor
 1616	EF55555555AA140025C336	2026-10-09 10:12:21	2026-10-09 10:12:21	Exit	Outside	1	Unregistered Visitor
@@ -26740,30 +29093,28 @@ COPY public.unregistered_tags (id, tag, first_seen, last_seen, direction, curren
 1891	E2B850CCFFFF200510003400	2026-10-08 23:04:56	2026-10-08 23:04:56	Entry	Outside	1	Unregistered Visitor
 1309	E2004701DCF06422807D010D	2026-10-18 01:41:14	2026-10-18 15:24:52	Exit	Outside	2	Unassigned Gymkhana Tag
 1310	E2004711085064221E660109	2026-10-18 02:30:54	2026-10-18 14:50:24	Exit	Outside	3	Unassigned Gymkhana Tag
-1320	E2004710BA30642219840110	2026-10-18 09:12:19	2026-10-18 12:25:07	Exit	Outside	2	Unassigned Gymkhana Tag
-1324	E200471155906422233A010F	2026-10-18 10:33:38	2026-10-18 10:33:38	Exit	Outside	1	Unassigned Gymkhana Tag
 1327	E200471045A06422123B0108	2026-10-18 10:57:38	2026-10-18 10:57:38	Exit	Outside	1	Unassigned Gymkhana Tag
 1328	E200471023B06422101C0111	2026-10-18 10:59:46	2026-10-18 12:19:33	Exit	Outside	2	Unassigned Gymkhana Tag
 1330	E2003412012EF6000FE188D1	2026-10-18 11:23:34	2026-10-18 11:23:34	Exit	Outside	1	Society / Resident Tag
+1347	E20047103BC06422119D0110	2026-10-18 15:03:08	2026-10-22 21:31:20	Exit	Outside	5	Unassigned Gymkhana Tag
 1334	E2003412013803000054D962	2026-10-18 12:01:28	2026-10-18 12:01:28	Exit	Outside	1	Society / Resident Tag
 1335	E28038212000642202D57F99	2026-10-18 12:20:20	2026-10-18 12:20:20	Exit	Outside	1	Society / Resident Tag
 1336	E280F33620003000000B2CA4	2026-10-18 12:34:50	2026-10-18 12:34:50	Exit	Outside	1	Third-Party Fleet Tag
 1337	E280F33620006000005BE508	2026-10-18 12:37:05	2026-10-18 12:37:05	Exit	Outside	1	Third-Party Fleet Tag
 1340	E2003412012C010008AD5C24	2026-10-18 13:06:15	2026-10-18 13:06:15	Exit	Outside	1	Society / Resident Tag
 1344	E2004701D5E06422800C010F	2026-10-18 13:48:13	2026-10-18 13:48:13	Exit	Outside	1	Unassigned Gymkhana Tag
-1347	E20047103BC06422119D0110	2026-10-18 15:03:08	2026-10-18 15:03:08	Exit	Outside	1	Unassigned Gymkhana Tag
+1384	E20034120139F50004CBBA46	2026-10-18 19:13:40	2026-10-22 21:40:07	Exit	Outside	5	Society / Resident Tag
 1367	E2803821200060260A99844B	2026-10-18 18:01:18	2026-10-18 20:20:07	Exit	Outside	3	Society / Resident Tag
 1368	E2003412012C010008B04BD5	2026-10-18 18:02:05	2026-10-18 18:02:05	Exit	Outside	1	Society / Resident Tag
-1371	E2004712946060220A8B010D	2026-10-18 18:13:12	2026-10-18 18:13:12	Exit	Outside	1	Unassigned Gymkhana Tag
+1452	E28068940000503153D6C88A	2026-10-19 17:57:02	2026-10-22 22:42:27	Exit	Outside	3	Unassigned Gymkhana Tag
 1373	E280F336200060000068C5DC	2026-10-18 18:24:07	2026-10-18 20:35:28	Exit	Outside	5	Third-Party Fleet Tag
 1375	E20047103E00642211C1010D	2026-10-18 18:41:16	2026-10-18 18:41:16	Exit	Outside	1	Unassigned Gymkhana Tag
 1376	E20047103DF0642211C0010B	2026-10-18 18:45:36	2026-10-18 18:45:36	Exit	Outside	1	Unassigned Gymkhana Tag
 1378	E20034120135F6000F6F7E54	2026-10-18 18:59:48	2026-10-18 21:13:16	Exit	Outside	3	Society / Resident Tag
 1385	E20047110BE064221E9F010C	2026-10-18 19:16:45	2026-10-18 19:16:45	Exit	Outside	1	Unassigned Gymkhana Tag
 1387	E2000020660E010710305105	2026-10-18 19:21:02	2026-10-18 19:21:02	Exit	Outside	1	Unregistered Visitor
-1388	E280F33620003000000B3DAA	2026-10-18 19:30:03	2026-10-20 18:04:34	Exit	Outside	2	Third-Party Fleet Tag
+1521	E2803821200064260B10A9EF	2026-10-20 15:31:03	2026-10-22 16:01:25	Exit	Outside	3	Society / Resident Tag
 1414	E20035120129F6000FE01953	2026-10-19 09:03:23	2026-10-19 09:03:23	Exit	Outside	1	Unregistered Visitor
-1415	E20047109EA0642217CB010F	2026-10-19 09:27:25	2026-10-19 09:27:25	Exit	Outside	1	Unassigned Gymkhana Tag
 1417	E2000015690D02111190A1DB	2026-10-19 09:36:52	2026-10-21 08:04:27	Exit	Outside	3	Unregistered Visitor
 1422	E28038212000642202D36EBC	2026-10-19 11:11:11	2026-10-19 11:11:11	Exit	Outside	1	Society / Resident Tag
 1423	E2004701900064227BAE010F	2026-10-19 11:22:10	2026-10-19 11:22:10	Exit	Outside	1	Unassigned Gymkhana Tag
@@ -26771,9 +29122,8 @@ COPY public.unregistered_tags (id, tag, first_seen, last_seen, direction, curren
 1438	E20047101A6064220F87010E	2026-10-19 16:26:09	2026-10-19 16:26:09	Exit	Outside	1	Unassigned Gymkhana Tag
 1441	E2004710AFE0642218DF0113	2026-10-19 16:33:38	2026-10-19 19:28:42	Exit	Outside	2	Unassigned Gymkhana Tag
 1442	E20047156FF06823FD27010C	2026-10-19 16:46:42	2026-10-19 18:41:29	Exit	Outside	2	Unassigned Gymkhana Tag
-1448	E20034120133010000D75E83	2026-10-19 17:28:35	2026-10-20 17:22:39	Exit	Outside	2	Society / Resident Tag
+1487	E200470221F0642284CD010A	2026-10-20 05:57:36	2026-10-23 07:41:38	Exit	Outside	4	Unassigned Gymkhana Tag
 1450	E20047101D6064220FB7010F	2026-10-19 17:48:33	2026-10-19 17:48:33	Exit	Outside	1	Unassigned Gymkhana Tag
-1452	E28068940000503153D6C88A	2026-10-19 17:57:02	2026-10-19 17:57:02	Exit	Outside	1	Unassigned Gymkhana Tag
 1453	E280F336200060000069095D	2026-10-19 18:29:28	2026-10-20 16:44:56	Exit	Outside	10	Third-Party Fleet Tag
 1459	E200001B0713010820903EC4	2026-10-19 19:12:09	2026-10-19 19:12:09	Exit	Outside	1	Unregistered Visitor
 1471	E20034120139F6000F6F63FE	2026-10-19 20:18:26	2026-10-19 20:18:26	Exit	Outside	1	Society / Resident Tag
@@ -26782,16 +29132,18 @@ COPY public.unregistered_tags (id, tag, first_seen, last_seen, direction, curren
 1499	E2004702C7C06823D2A4010D	2026-10-20 11:15:03	2026-10-20 11:15:03	Exit	Outside	1	Unassigned Gymkhana Tag
 1515	E2003412012FF6000F72A858	2026-10-20 14:56:01	2026-10-20 16:44:26	Exit	Outside	2	Society / Resident Tag
 1520	E280689000000002579926C3	2026-10-20 15:24:06	2026-10-20 15:24:06	Exit	Outside	1	Unassigned Gymkhana Tag
-1521	E2803821200064260B10A9EF	2026-10-20 15:31:03	2026-10-20 15:51:36	Exit	Outside	2	Society / Resident Tag
-1531	E20047106410642214220110	2026-10-20 17:24:52	2026-10-20 17:24:52	Exit	Outside	1	Unassigned Gymkhana Tag
+1415	E20047109EA0642217CB010F	2026-10-19 09:27:25	2026-10-23 10:55:11	Exit	Outside	3	Unassigned Gymkhana Tag
 1547	E28068940000503153C528F4	2026-10-20 19:57:51	2026-10-20 19:57:51	Exit	Outside	1	Unassigned Gymkhana Tag
 1554	E2806890000000025799D6AF	2026-10-21 08:27:17	2026-10-21 08:27:17	Exit	Outside	1	Unassigned Gymkhana Tag
 1558	E2803821200064260B103C7C	2026-10-14 15:45:47	2026-10-14 15:45:47	Exit	Outside	1	Society / Resident Tag
 1562	E2803821200064260B109E7C	2026-10-15 15:37:10	2026-10-15 15:37:10	Exit	Outside	1	Society / Resident Tag
 1566	E2803821200064260B10DB23	2026-10-15 18:44:57	2026-10-15 18:44:57	Exit	Outside	1	Society / Resident Tag
-1487	E200470221F0642284CD010A	2026-10-20 05:57:36	2026-10-22 07:44:31	Exit	Outside	2	Unassigned Gymkhana Tag
-1413	E2004701DB70642280650113	2026-10-19 09:02:32	2026-10-22 09:19:03	Entry	Inside	4	Unassigned Gymkhana Tag
-1331	E200470985F06821503A0110	2026-10-18 11:46:06	2026-10-22 12:20:18	Entry	Inside	2	Unassigned Gymkhana Tag
+1331	E200470985F06821503A0110	2026-10-18 11:46:06	2026-10-22 14:15:31	Exit	Outside	3	Unassigned Gymkhana Tag
+1320	E2004710BA30642219840110	2026-10-18 09:12:19	2026-10-22 14:40:35	Exit	Outside	4	Unassigned Gymkhana Tag
+1531	E20047106410642214220110	2026-10-20 17:24:52	2026-10-22 18:28:51	Exit	Outside	3	Unassigned Gymkhana Tag
+1413	E2004701DB70642280650113	2026-10-19 09:02:32	2026-10-22 19:38:38	Exit	Outside	5	Unassigned Gymkhana Tag
+1448	E20034120133010000D75E83	2026-10-19 17:28:35	2026-10-22 19:57:09	Exit	Outside	4	Society / Resident Tag
+1371	E2004712946060220A8B010D	2026-10-18 18:13:12	2026-10-22 20:33:49	Exit	Outside	3	Unassigned Gymkhana Tag
 1571	E200471147B06422225C0109	2026-10-16 06:53:17	2026-10-16 07:58:05	Exit	Outside	2	Unassigned Gymkhana Tag
 1572	E28038212000602605119A8D	2026-10-16 07:55:59	2026-10-16 07:55:59	Exit	Outside	1	Society / Resident Tag
 1576	E2806890000000025797ECCB	2026-10-16 17:03:41	2026-10-16 17:03:41	Exit	Outside	1	Unassigned Gymkhana Tag
@@ -26826,7 +29178,6 @@ COPY public.unregistered_tags (id, tag, first_seen, last_seen, direction, curren
 1634	E2004710B53064221934010E	2026-10-09 16:58:31	2026-10-09 17:08:54	Exit	Outside	3	Unregistered Visitor
 1641	E2004710F12064221CF3010B	2026-10-10 18:54:50	2026-10-10 18:54:50	Exit	Outside	1	Unregistered Visitor
 1642	ECCFFFF2005100030003035D	2026-10-10 18:58:55	2026-10-10 18:58:55	Exit	Outside	1	Unregistered Visitor
-1643	E200F336200060000016A4F8	2026-10-10 19:03:35	2026-10-11 17:20:07	Exit	Outside	2	Unregistered Visitor
 1644	E1BCCFFFF200510003000E28	2026-10-10 19:23:01	2026-10-10 19:23:01	Exit	Outside	1	Unregistered Visitor
 1645	E1BCCFFFF2005100030001C8	2026-10-10 19:30:26	2026-10-10 19:30:26	Exit	Outside	1	Unregistered Visitor
 1646	E2000020660E010918505242	2026-10-10 19:50:36	2026-10-10 19:50:36	Exit	Outside	1	Unregistered Visitor
@@ -26885,19 +29236,74 @@ COPY public.unregistered_tags (id, tag, first_seen, last_seen, direction, curren
 1743	EBF0ECCFFFF200510003400E	2026-10-11 21:04:16	2026-10-11 21:04:16	Exit	Outside	1	Unregistered Visitor
 1744	EFBACCCCFFFF200510003400	2026-10-11 21:04:16	2026-10-11 21:04:16	Exit	Outside	1	Unregistered Visitor
 1745	EBF0ECCFFFF2005100030003	2026-10-11 21:04:16	2026-10-11 21:04:16	Exit	Outside	1	Unregistered Visitor
-1313	E2004710A920642218730113	2026-10-18 06:34:15	2026-10-22 07:28:20	Exit	Outside	5	Unassigned Gymkhana Tag
-104	E20047021F106422849F0112	2026-10-21 13:00:03	2026-10-22 08:17:50	Exit	Outside	6	Unassigned Gymkhana Tag
-1806	E20047103EF0642211D0010D	2026-10-08 08:38:21	2026-10-22 08:38:53	Exit	Outside	3	Unassigned Gymkhana Tag
+345	E2003098911900900900C06A	2026-10-21 18:30:50	2026-10-22 21:42:22	Exit	Outside	4	Unregistered Visitor
+1324	E200471155906422233A010F	2026-10-18 10:33:38	2026-10-22 22:16:44	Exit	Outside	3	Unassigned Gymkhana Tag
+1456	E20047105CA0642213AB010D	2026-10-19 18:55:44	2026-10-22 22:18:00	Exit	Outside	6	Unassigned Gymkhana Tag
+2147	E200F336200060000016D86E	2026-10-22 21:37:37	2026-10-22 22:40:08	Exit	Outside	3	Unregistered Visitor
+2149	E20047105A5064221386010F	2026-10-22 21:41:27	2026-10-22 22:59:03	Exit	Outside	2	Unassigned Gymkhana Tag
+2157	E20034120137F6000F738C5B	2026-10-22 21:51:43	2026-10-22 23:41:55	Exit	Outside	2	Society / Resident Tag
+1494	E2004701DDB0642280890113	2026-10-20 09:50:33	2026-10-22 19:18:41	Exit	Outside	3	Unassigned Gymkhana Tag
+1388	E280F33620003000000B3DAA	2026-10-18 19:30:03	2026-10-22 17:59:35	Exit	Outside	3	Third-Party Fleet Tag
+2162	E2806894000050175DD6B0EF	2026-10-22 22:04:54	2026-10-22 22:04:54	Exit	Outside	1	Unassigned Gymkhana Tag
+2179	E200F3362000600000169FC4	2026-10-22 23:06:25	2026-10-22 23:06:25	Exit	Outside	1	Unregistered Visitor
+2182	E280ECD540D4B76CC068CCFF	2026-10-22 23:14:59	2026-10-22 23:14:59	Exit	Outside	1	Unregistered Visitor
+2185	E2004710CE6064221AC7010F	2026-10-23 00:15:46	2026-10-23 00:15:46	Entry	Inside	1	Unassigned Gymkhana Tag
+2166	E2003412012FF6000F739499	2026-10-22 22:22:36	2026-10-23 00:37:32	Exit	Outside	3	Society / Resident Tag
+2191	E2004701928064227BD6010B	2026-10-23 07:00:41	2026-10-23 07:00:41	Entry	Inside	1	Unassigned Gymkhana Tag
+2217	E20034120132F6000FE0DC6B	2026-10-23 10:20:47	2026-10-23 10:20:47	Entry	Inside	1	Society / Resident Tag
+2223	E280F336200060000055701E	2026-10-23 11:03:09	2026-10-23 11:03:09	Entry	Inside	1	Third-Party Fleet Tag
+2228	E2203B000000000000000000	2026-10-23 11:29:40	2026-10-23 11:29:40	Entry	Inside	1	Unregistered Visitor
+2234	E2003412012FF6000FE067D6	2026-10-23 11:46:03	2026-10-23 11:46:03	Entry	Inside	1	Society / Resident Tag
+2229	E20034120129F6000FE08F5F	2026-10-23 11:29:46	2026-10-23 11:53:09	Exit	Outside	2	Society / Resident Tag
+2205	E2803821200060260A9A754B	2026-10-23 08:47:00	2026-10-23 12:11:59	Exit	Outside	2	Society / Resident Tag
+2155	E2003412012F1700004715D2	2026-10-22 21:48:58	2026-10-23 12:22:13	Entry	Inside	3	Society / Resident Tag
+2244	E280F33620003000000B2211	2026-10-23 13:00:58	2026-10-23 13:00:58	Entry	Inside	1	Third-Party Fleet Tag
+2247	E2803821200064260B10FE7B	2026-10-23 13:22:33	2026-10-23 13:22:33	Entry	Inside	1	Society / Resident Tag
+2248	E2803821200064260D05C21E	2026-10-23 13:23:19	2026-10-23 13:23:19	Entry	Inside	1	Society / Resident Tag
+2249	E280F3362000600000692CAA	2026-10-23 13:26:02	2026-10-23 13:26:02	Entry	Inside	1	Third-Party Fleet Tag
+2252	E20034120130F6000E761442	2026-10-23 13:40:10	2026-10-23 13:40:10	Entry	Inside	1	Society / Resident Tag
+2253	E20047013310642275DF0113	2026-10-23 13:43:32	2026-10-23 13:43:32	Entry	Inside	1	Unassigned Gymkhana Tag
+2254	E2004710213064220FF4010B	2026-10-23 14:01:17	2026-10-23 14:01:17	Entry	Inside	1	Unassigned Gymkhana Tag
+1313	E2004710A920642218730113	2026-10-18 06:34:15	2026-10-23 07:28:12	Exit	Outside	7	Unassigned Gymkhana Tag
+1406	E2000015690D01631190A11B	2026-10-19 08:07:28	2026-10-23 08:02:22	Entry	Inside	5	Unregistered Visitor
+104	E20047021F106422849F0112	2026-10-21 13:00:03	2026-10-23 08:21:48	Exit	Outside	7	Unassigned Gymkhana Tag
+1806	E20047103EF0642211D0010D	2026-10-08 08:38:21	2026-10-23 08:38:03	Exit	Outside	5	Unassigned Gymkhana Tag
 1493	E280F336200060000066F92B	2026-10-20 09:32:11	2026-10-22 09:06:52	Exit	Outside	4	Third-Party Fleet Tag
-1323	E2004710B97064221978010B	2026-10-18 09:53:41	2026-10-22 09:17:45	Exit	Outside	4	Unassigned Gymkhana Tag
-1406	E2000015690D01631190A11B	2026-10-19 08:07:28	2026-10-22 09:39:28	Exit	Outside	4	Unregistered Visitor
 1921	E200471148A06422226B010B	2026-10-22 10:30:14	2026-10-22 10:30:14	Exit	Outside	1	Unassigned Gymkhana Tag
-1926	E2004704CE306823F30B010F	2026-10-22 10:58:14	2026-10-22 10:58:14	Exit	Outside	1	Unassigned Gymkhana Tag
+1323	E2004710B97064221978010B	2026-10-18 09:53:41	2026-10-23 09:22:29	Entry	Inside	5	Unassigned Gymkhana Tag
 1928	E2004710AB60642218970111	2026-10-22 11:05:23	2026-10-22 11:05:23	Exit	Outside	1	Unassigned Gymkhana Tag
+1926	E2004704CE306823F30B010F	2026-10-22 10:58:14	2026-10-23 11:12:41	Entry	Inside	3	Unassigned Gymkhana Tag
 1931	E28068940000503153C1A8F2	2026-10-22 11:21:08	2026-10-22 11:28:43	Exit	Outside	2	Unassigned Gymkhana Tag
 1939	E2004711061064221E42010B	2026-10-22 12:07:54	2026-10-22 12:26:14	Exit	Outside	2	Unassigned Gymkhana Tag
 1937	E200471159B06422237C010A	2026-10-22 11:44:04	2026-10-22 12:56:40	Exit	Outside	2	Unassigned Gymkhana Tag
 1940	E280F33620003000000B6054	2026-10-22 12:11:29	2026-10-22 13:08:36	Exit	Outside	2	Third-Party Fleet Tag
+1643	E200F336200060000016A4F8	2026-10-10 19:03:35	2026-10-22 13:13:41	Exit	Outside	3	Unregistered Visitor
+1952	E200471154D06422232E0107	2026-10-22 13:24:45	2026-10-22 13:24:45	Exit	Outside	1	Unassigned Gymkhana Tag
+1956	E20047114A6064222287010F	2026-10-22 13:40:23	2026-10-22 13:40:23	Exit	Outside	1	Unassigned Gymkhana Tag
+1957	E200471567F06823FCA7010B	2026-10-22 13:58:05	2026-10-22 13:58:05	Exit	Outside	1	Unassigned Gymkhana Tag
+109	E2004710A5F064221840010B	2026-10-21 13:07:04	2026-10-23 13:01:11	Entry	Inside	7	Unassigned Gymkhana Tag
+1966	E28038212000642601E2A3F6	2026-10-22 14:32:52	2026-10-22 14:50:51	Exit	Outside	2	Society / Resident Tag
+1976	E200471038E06422116F010F	2026-10-22 14:51:14	2026-10-22 14:51:14	Exit	Outside	1	Unassigned Gymkhana Tag
+1977	E280F336200060000068CE51	2026-10-22 14:59:16	2026-10-22 15:22:48	Exit	Outside	2	Third-Party Fleet Tag
+1961	E2806995A05B220082C7A47C	2026-10-22 14:12:45	2026-10-22 16:23:01	Exit	Outside	3	Unregistered Visitor
+1983	E2004703FE506823E60D010A	2026-10-22 15:44:39	2026-10-22 15:44:39	Exit	Outside	1	Unassigned Gymkhana Tag
+204	E2004710E76064221C570110	2026-10-21 15:28:31	2026-10-22 15:48:26	Exit	Outside	3	Unassigned Gymkhana Tag
+1987	E2007DAF0CCB5030D0441D40	2026-10-22 15:58:15	2026-10-22 15:58:15	Exit	Outside	1	Unregistered Visitor
+2007	E28068940000403153D7048C	2026-10-22 16:45:37	2026-10-22 16:45:37	Exit	Outside	1	Unassigned Gymkhana Tag
+2008	E280689000000002579820CF	2026-10-22 16:46:35	2026-10-22 16:46:35	Exit	Outside	1	Unassigned Gymkhana Tag
+1997	E280F33620003000000B01FF	2026-10-22 16:15:03	2026-10-22 17:53:42	Exit	Outside	2	Third-Party Fleet Tag
+2000	E2004710AB20642218930114	2026-10-22 16:20:54	2026-10-22 19:01:05	Exit	Outside	2	Unassigned Gymkhana Tag
+1533	E20034120137F50004CBC66D	2026-10-20 17:37:32	2026-10-22 20:55:57	Exit	Outside	4	Society / Resident Tag
+2017	E200471568006823FCA8010C	2026-10-22 17:13:55	2026-10-22 17:24:16	Exit	Outside	2	Unassigned Gymkhana Tag
+2092	E28068940000403153C090F9	2026-10-22 19:34:58	2026-10-22 21:01:26	Exit	Outside	2	Unassigned Gymkhana Tag
+2057	E280F33620003000000922FA	2026-10-22 18:34:38	2026-10-22 18:34:38	Exit	Outside	1	Third-Party Fleet Tag
+2113	E21AC5000000000000000000	2026-10-22 20:21:06	2026-10-22 20:21:06	Exit	Outside	1	Unregistered Visitor
+2036	E2003412012BFD000E32AE53	2026-10-22 18:10:35	2026-10-22 18:12:30	Exit	Outside	2	Society / Resident Tag
+2030	E28068940000403153C06CF9	2026-10-22 17:59:30	2026-10-22 19:00:56	Exit	Outside	4	Unassigned Gymkhana Tag
+2028	E280F3362000600000663E65	2026-10-22 17:53:58	2026-10-22 19:02:31	Exit	Outside	2	Third-Party Fleet Tag
+303	E2004710F85064221D66010D	2026-10-21 17:42:27	2026-10-22 19:56:14	Exit	Outside	3	Unassigned Gymkhana Tag
+2075	E2003412012CFE0007B1E549	2026-10-22 19:10:45	2026-10-22 20:03:49	Exit	Outside	3	Society / Resident Tag
+2115	E280F33620003000000B60E7	2026-10-22 20:28:27	2026-10-22 20:28:27	Exit	Outside	1	Third-Party Fleet Tag
 \.
 
 
@@ -26910,6 +29316,12 @@ mba8fwn-RTaV68toJRGsA0Pzz9nV5fHiIhlf6Vdp-RY	1	2026-10-22 01:21:39.81397	2026-10-
 rYUUrVf3Cd4mLzJiubm20k3pJ3gdhOB9oqX8UeShfIY	1	2026-10-22 02:26:28.532141	2026-10-24 02:26:28
 HwnlV4iMAu0qF-DZFm1-PbQyxJaKZR7DW-7rGnX94nk	1	2026-10-22 05:58:57.576825	2026-10-24 05:58:57
 zeLSPPyi76VE66m2oq3gMmsyfmatYNguWJZRAJziNIE	1	2026-10-22 06:02:26.787695	2026-10-24 06:02:26
+yLOIk-V9j7OUG47edp11UAcs0Ze-4vgPrTyn86lxSTI	1	2026-10-22 16:11:02.986749	2026-10-24 16:11:02
+W-YaP5yjBb5I69SFBcYUB_Sv9oObeOZJaASLxbLvqvw	1	2026-10-22 16:49:35.891004	2026-10-24 16:49:35
+zdHGcKnnmnROyCU_64j0WzsZK6duTaGJcl8oV1VAPpQ	1	2026-10-22 17:05:01.652852	2026-10-24 17:05:01
+Dpw0tq73gxMHDmfRA7T_fE9-FEwbXAkKPMBhMmv_stY	1	2026-10-22 17:24:50.43388	2026-10-24 17:24:50
+C10X1EStF07f6Y5RO4EKIOdmOeWZrX3SG0FoKOjTeAc	1	2026-10-22 20:38:10.472012	2026-10-24 20:38:10
+bqjwU5yVN4V-yB4HsHZRQqubHfm4XCwYeYHMMs7X8tQ	1	2026-10-23 02:00:49.812782	2026-10-25 02:00:49
 \.
 
 
@@ -26920,7 +29332,7 @@ zeLSPPyi76VE66m2oq3gMmsyfmatYNguWJZRAJziNIE	1	2026-10-22 06:02:26.787695	2026-10
 COPY public.users (id, username, password_hash, salt, full_name, role, is_active, created_at, last_login) FROM stdin;
 2	operator	d685d5e314d157b83bd60a850b95e7d6381b0d09122d976f052c267548d0d71e	617a48f3a2ac920fdb3b09ac3f166d2d	Gate Operator	Editor	1	2026-10-21 09:30:14	\N
 3	security	9a6e37aba55d04367b31d71ce4661d708c2860a5a3f06acc90630f7a19dac200	df0d04fbe293228a69b10880636ec81f	Security Guard	Viewer	1	2026-10-21 09:30:14	\N
-1	admin	564f3fb6829ab66af8d4d419e6034e02636676d82a08cd77b344fef12def84bf	53620b4851020759974753d801d3f105	System Administrator	Admin	1	2026-10-21 09:30:14	2026-10-22 06:02:26.718108
+1	admin	564f3fb6829ab66af8d4d419e6034e02636676d82a08cd77b344fef12def84bf	53620b4851020759974753d801d3f105	System Administrator	Admin	1	2026-10-21 09:30:14	2026-10-23 02:00:49.750447
 \.
 
 
@@ -26928,14 +29340,14 @@ COPY public.users (id, username, password_hash, salt, full_name, role, is_active
 -- Name: camera_audit_logs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.camera_audit_logs_id_seq', 16034, true);
+SELECT pg_catalog.setval('public.camera_audit_logs_id_seq', 16932, true);
 
 
 --
 -- Name: daily_logs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.daily_logs_id_seq', 9704, true);
+SELECT pg_catalog.setval('public.daily_logs_id_seq', 10448, true);
 
 
 --
@@ -26949,14 +29361,14 @@ SELECT pg_catalog.setval('public.members_id_seq', 10849, true);
 -- Name: raw_reader_logs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.raw_reader_logs_id_seq', 1162, true);
+SELECT pg_catalog.setval('public.raw_reader_logs_id_seq', 1878, true);
 
 
 --
 -- Name: unregistered_tags_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.unregistered_tags_id_seq', 1950, true);
+SELECT pg_catalog.setval('public.unregistered_tags_id_seq', 2259, true);
 
 
 --
@@ -27213,5 +29625,5 @@ ALTER TABLE ONLY public.user_sessions
 -- PostgreSQL database dump complete
 --
 
-\unrestrict zC3dDd5exQCZ80CcChCRTsZM1fD4r9LoFCQJhgzuTda8NOu3lIcfx3wsYOHiDJf
+\unrestrict R0ecGesngKaLSwQ8L4pt9MRglfTdwydfE5RoVGqtT1zNLvjyunmcL1olOW3Z6Mx
 

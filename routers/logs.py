@@ -455,6 +455,29 @@ def _audit_sort_key(a):
     latest_id = max(ent.get('id') or 0, ext.get('id') or 0)
     return (latest_ts, latest_id)
 
+def _build_kiosk_gate_sql(target_station: str | None) -> tuple[str, list]:
+    """
+    Constructs SQL WHERE clauses for Kiosk live terminal and recent passage cards:
+    1. Strictly matches physical gate readers case-insensitively (ILIKE / LOWER)
+    2. Excludes software/system reconciliation events (System Auto-Clearance, 12 AM Auto Midnight Exit, Bulk Clearance, Manual Exit)
+    """
+    sql = (" AND (d.gate_no NOT ILIKE '%System%' AND d.gate_no NOT ILIKE '%Clearance%' AND d.gate_no NOT ILIKE '%Bulk%')"
+           " AND (d.access_type NOT ILIKE '%Midnight%' AND d.access_type NOT ILIKE '%Bulk%' AND d.access_type NOT ILIKE '%Manual Exit%')")
+    params = []
+    if not target_station:
+        return sql, params
+
+    st = str(target_station).lower().strip()
+    if st in ("clubroad", "club", "main"):
+        sql += " AND (LOWER(d.gate_no) LIKE '%club%' OR LOWER(d.gate_no) LIKE '%main%')"
+    elif st in ("gate01", "gate1", "rear"):
+        sql += (" AND (LOWER(d.gate_no) LIKE '%rear%' OR LOWER(d.gate_no) LIKE '%01%' OR LOWER(d.gate_no) LIKE '%gate%')"
+                " AND LOWER(d.gate_no) NOT LIKE '%club%' AND LOWER(d.gate_no) NOT LIKE '%main%'")
+    else:
+        sql += " AND LOWER(d.gate_no) LIKE ?"
+        params.append(f"%{st}%")
+    return sql, params
+
 @router.get("/latest-log")
 async def get_latest_log(direction: str = None, gate: str = None):
     target_station = None
@@ -492,10 +515,9 @@ async def get_latest_log(direction: str = None, gate: str = None):
             if direction:
                 query += " AND LOWER(d.direction) = LOWER(?)"
                 params.append(direction)
-            if target_station == "clubroad":
-                query += " AND (d.gate_no LIKE '%Club%' OR d.gate_no LIKE '%Main%')"
-            elif target_station == "gate01":
-                query += " AND (d.gate_no NOT LIKE '%Club%' AND d.gate_no NOT LIKE '%Main%')"
+            kiosk_sql, kiosk_params = _build_kiosk_gate_sql(target_station)
+            query += kiosk_sql
+            params.extend(kiosk_params)
             query += " ORDER BY d.id DESC LIMIT 1"
 
             row = conn.execute(query, params).fetchone()
@@ -530,20 +552,29 @@ async def get_recent_entries(limit: int = 4, gate: str = None):
         conn = get_db_connection()
         try:
             query = """SELECT d.id, d.mem_id, d.name, d.vehicle_number, d.access_type, d.direction,
-                    d.gate_no, d.image_path, d.plate_image_path, d.scanned_tag, d.timestamp,
-                    m.Make_Model as make_model, m.Profile_pic as profile_pic
-                FROM daily_logs d LEFT JOIN members m ON d.mem_id = m.Mem_id AND d.vehicle_number = m.Car_number
+                    d.gate_no, d.image_path, d.plate_image_path, d.scanned_tag, d.timestamp
+                FROM daily_logs d
                 WHERE (d.scanned_tag != 'NO_TAG' AND d.scanned_tag IS NOT NULL AND d.scanned_tag != '')"""
             params = []
-            if target_station == "clubroad":
-                query += " AND (d.gate_no LIKE '%Club%' OR d.gate_no LIKE '%Main%')"
-            elif target_station == "gate01":
-                query += " AND (d.gate_no NOT LIKE '%Club%' AND d.gate_no NOT LIKE '%Main%')"
+            kiosk_sql, kiosk_params = _build_kiosk_gate_sql(target_station)
+            query += kiosk_sql
+            params.extend(kiosk_params)
             query += " ORDER BY d.id DESC LIMIT ?"
-            params.append(limit)
+            params.append(limit * 2)
 
-            rows = conn.execute(query, params).fetchall()
-            return [dict(r) for r in rows]
+            raw_rows = conn.execute(query, params).fetchall()
+            mem_lookup = get_member_directory_lookup(conn)
+            seen_ids = set()
+            unique_logs = []
+            for r in raw_rows:
+                r_dict = dict(r)
+                lid = r_dict.get("id")
+                if lid not in seen_ids:
+                    seen_ids.add(lid)
+                    unique_logs.append(enrich_daily_log_with_members(r_dict, mem_lookup))
+                if len(unique_logs) >= limit:
+                    break
+            return unique_logs
         finally:
             conn.close()
 
