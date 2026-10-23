@@ -1,6 +1,8 @@
 let currentGate = 'gate01'; // 'gate01' (Rear Gate) or 'clubroad' (Main Gate)
 let lastEntryLogId = 0;
 let idleResetTimer = null;
+let recentEntriesReqSeq = 0;
+let pollLogsReqSeq = 0;
 
 function initGateSelection() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -30,7 +32,9 @@ function initGateSelection() {
 }
 
 function setKioskGate(gate) {
-    currentGate = (gate === 'clubroad') ? 'clubroad' : 'gate01';
+    const target = (gate === 'clubroad') ? 'clubroad' : 'gate01';
+    if (currentGate === target) return;
+    currentGate = target;
     try {
         localStorage.setItem('kiosk_gate', currentGate);
     } catch (e) {}
@@ -41,6 +45,14 @@ function setKioskGate(gate) {
 
     applyGateUI(currentGate);
     lastEntryLogId = 0;
+
+    // Reset view to idle mode for the new gate
+    clearTimeout(idleResetTimer);
+    const viewIdle = document.getElementById('viewIdle');
+    const viewActive = document.getElementById('viewActive');
+    if (viewActive) viewActive.classList.add('hidden');
+    if (viewIdle) viewIdle.classList.remove('hidden');
+
     updateRecentEntries();
     pollEntryLogs();
 }
@@ -217,10 +229,15 @@ function renderLicensePlate(carNum) {
 }
 
 async function updateRecentEntries() {
+    const reqSeq = ++recentEntriesReqSeq;
+    const reqGate = currentGate;
     try {
-        const res = await fetch(`/api/recent-entries?limit=4&gate=${encodeURIComponent(currentGate)}`);
+        const res = await fetch(`/api/recent-entries?limit=4&gate=${encodeURIComponent(reqGate)}`);
         if (!res.ok) return;
         let entries = await res.json();
+        // Discard stale responses from older gate requests
+        if (reqSeq !== recentEntriesReqSeq || reqGate !== currentGate) return;
+
         const container = document.getElementById('recentCardsContainer');
         if (!container) return;
 
@@ -322,8 +339,6 @@ async function updateRecentEntries() {
         console.error('Error fetching recent entry cards:', err);
     }
 }
-setInterval(updateRecentEntries, 3000);
-updateRecentEntries();
 
 function displayEntry(log) {
     clearTimeout(idleResetTimer);
@@ -465,10 +480,14 @@ function displayEntry(log) {
 }
 
 async function pollEntryLogs() {
+    const reqSeq = ++pollLogsReqSeq;
+    const reqGate = currentGate;
     try {
-        const res = await fetch(`/api/latest-log?gate=${encodeURIComponent(currentGate)}`);
+        const res = await fetch(`/api/latest-log?gate=${encodeURIComponent(reqGate)}`);
         if (!res.ok) return;
         const latest = await res.json();
+        // Discard stale responses from older gate requests
+        if (reqSeq !== pollLogsReqSeq || reqGate !== currentGate) return;
         if (!latest || !latest.id) return;
 
         if (lastEntryLogId === 0) {
@@ -485,7 +504,14 @@ async function pollEntryLogs() {
         console.error('Error polling entry logs:', err);
     }
 }
-setInterval(pollEntryLogs, 400);
 
-// Initialize gate selection on page load
+// 1. Initialize gate selection from URL / localStorage FIRST
 initGateSelection();
+
+// 2. Fetch initial recent cards and start polling in strict sequence
+updateRecentEntries();
+pollEntryLogs();
+
+// 3. Register repeating background intervals
+setInterval(updateRecentEntries, 3000);
+setInterval(pollEntryLogs, 400);
