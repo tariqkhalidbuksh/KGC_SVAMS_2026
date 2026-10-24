@@ -5,11 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gate Access Terminal - Karachi Gymkhana</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
         .font-display { font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif; }
+        
+        :focus-visible {
+            outline: 2px solid #059669;
+            outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, ::before, ::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+            .radar-sweep-fast, .radar-ring-reverse, .pulse-ring-1, .pulse-ring-2, .pulse-ring-3, .beacon-badge, .animate-ping, .animate-pulse {
+                animation: none !important;
+            }
+        }
         
         /* Pro Light Theme Base */
         body { 
@@ -203,7 +222,7 @@
         <!-- Club Brand & Gate Identity -->
         <div class="flex items-center gap-4">
             <div class="bg-white p-2.5 rounded-2xl border border-slate-200/90 shadow-sm flex items-center justify-center relative">
-                <img src="/api/logo" alt="Club Logo" class="h-11 w-11 object-contain" onerror="this.style.display='none'">
+                <img src="/api/logo" alt="Karachi Gymkhana Crest" width="44" height="44" fetchpriority="high" class="h-11 w-11 object-contain" onerror="this.style.display='none'">
                 <span class="absolute -top-1 -right-1 flex h-3 w-3">
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                     <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
@@ -224,20 +243,20 @@
         <!-- Center / Right Controls Cluster -->
         <div class="flex items-center gap-3">
             <!-- Modern Dual-Gate Segmented Switcher -->
-            <div class="bg-slate-200/60 p-1 rounded-2xl border border-slate-200 flex items-center gap-1 shadow-inner backdrop-blur-md">
-                <button id="btnGate01" type="button" onclick="setKioskGate('gate01')" class="px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2 bg-emerald-600 text-white shadow-md active:scale-95">
-                    <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+            <div role="tablist" aria-label="Gate Selection" class="bg-slate-200/60 p-1 rounded-2xl border border-slate-200 flex items-center gap-1 shadow-inner backdrop-blur-md">
+                <button id="btnGate01" type="button" role="tab" aria-selected="true" aria-label="Switch to Gate 01 (Rear Gate)" onclick="setKioskGate('gate01')" class="px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-colors flex items-center gap-2 bg-emerald-600 text-white shadow-md active:scale-95">
+                    <span class="w-2 h-2 rounded-full bg-white animate-pulse" aria-hidden="true"></span>
                     <span>Gate 01 (Rear Gate)</span>
                 </button>
-                <button id="btnClubRoad" type="button" onclick="setKioskGate('clubroad')" class="px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2 text-slate-600 hover:text-slate-900 hover:bg-white/80 active:scale-95">
-                    <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+                <button id="btnClubRoad" type="button" role="tab" aria-selected="false" aria-label="Switch to Club Road Gate" onclick="setKioskGate('clubroad')" class="px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-colors flex items-center gap-2 text-slate-600 hover:text-slate-900 hover:bg-white/80 active:scale-95">
+                    <span class="w-2 h-2 rounded-full bg-slate-400" aria-hidden="true"></span>
                     <span>Club Road Gate</span>
                 </button>
             </div>
 
             <!-- Fullscreen Action Button -->
-            <button type="button" onclick="toggleFullScreen()" title="Toggle Fullscreen" class="p-2.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl text-slate-500 hover:text-slate-800 shadow-sm transition active:scale-95">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+            <button type="button" onclick="toggleFullScreen()" title="Toggle Fullscreen" aria-label="Toggle Fullscreen View" class="p-2.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl text-slate-500 hover:text-slate-800 shadow-sm transition-colors active:scale-95">
+                <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
             </button>
 
             <!-- Real-Time Facility Telemetry: Parking & Clock -->
@@ -249,8 +268,8 @@
                         <span class="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">OPEN</span>
                     </div>
                     <div class="flex items-baseline gap-1.5">
-                        <span id="slotsCount" class="text-xl font-black font-mono text-emerald-600">--</span>
-                        <span class="text-xs text-slate-400 font-bold">/ <span id="totalSlots">--</span> Slots</span>
+                        <span id="slotsCount" class="text-xl font-black font-mono tabular-nums text-emerald-600">--</span>
+                        <span class="text-xs text-slate-400 font-bold">/ <span id="totalSlots" class="tabular-nums">--</span> Slots</span>
                     </div>
                 </div>
 
@@ -259,7 +278,7 @@
                 <!-- Live Atomic Clock -->
                 <div class="text-right">
                     <div class="flex items-baseline gap-1.5 justify-end">
-                        <span id="kioskClock" class="text-2xl font-black font-mono tracking-tight text-slate-900">00:00:00</span>
+                        <span id="kioskClock" class="text-2xl font-black font-mono tabular-nums tracking-tight text-slate-900">00:00:00</span>
                         <span id="kioskAmpm" class="text-xs font-extrabold text-indigo-600">PKT</span>
                     </div>
                     <span id="kioskDate" class="text-[10px] font-bold text-slate-500 tracking-wider block uppercase"></span>

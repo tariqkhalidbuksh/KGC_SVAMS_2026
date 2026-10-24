@@ -384,7 +384,7 @@ async function updateRecentEntries() {
             const makeModel = entry.make_model || (isUnreg ? 'Unknown Vehicle' : 'Registered Member');
 
             return `
-                <div onclick="selectRecentCard(${idx})" class="kiosk-card p-3 rounded-2xl border ${cardBorder} hover:border-indigo-400 hover:shadow-lg cursor-pointer transition-all flex flex-col justify-between shadow-xs active:scale-[0.98] group relative overflow-hidden bg-white/95" title="Click to view full details on main terminal">
+                <div role="button" tabindex="0" onclick="selectRecentCard(${idx})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectRecentCard(${idx});}" aria-label="View recent activity for ${displayName}, plate ${plate}" class="kiosk-card p-3 rounded-2xl border ${cardBorder} hover:border-indigo-400 hover:shadow-lg cursor-pointer transition-all flex flex-col justify-between shadow-xs active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none group relative overflow-hidden bg-white/95" title="Click to view full details on main terminal">
                     <div class="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-slate-100/50 to-transparent rounded-bl-3xl pointer-events-none"></div>
                     
                     <!-- Top Bar: Direction Pill + Timestamp -->
@@ -393,13 +393,13 @@ async function updateRecentEntries() {
                             <span class="font-bold leading-none">${badgeIcon}</span>
                             <span>${badgeLabel}</span>
                         </span>
-                        <span class="text-[11px] font-mono font-extrabold text-slate-400 group-hover:text-indigo-600 transition-colors">${timeStr}</span>
+                        <span class="text-[11px] font-mono tabular-nums font-extrabold text-slate-400 group-hover:text-indigo-600 transition-colors">${timeStr}</span>
                     </div>
 
                     <!-- Middle: Member Profile Photo + Name + ID -->
                     <div class="flex items-center gap-2.5 mb-2.5">
                         ${picUrl ? `
-                            <img src="${picUrl}" alt="${displayName}" class="w-10 h-10 rounded-xl object-cover border-2 border-slate-200/90 shadow-sm shrink-0" onerror="this.outerHTML='<div class=\\'w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-50 to-slate-100 border-2 border-slate-200/90 shadow-sm flex items-center justify-center font-black text-xs text-indigo-700 shrink-0\\'>${initials}</div>'">
+                            <img src="${picUrl}" alt="${displayName}" width="40" height="40" loading="lazy" class="w-10 h-10 rounded-xl object-cover border-2 border-slate-200/90 shadow-sm shrink-0" onerror="this.outerHTML='<div class=\\'w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-50 to-slate-100 border-2 border-slate-200/90 shadow-sm flex items-center justify-center font-black text-xs text-indigo-700 shrink-0\\'>${initials}</div>'">
                         ` : `
                             <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-50 to-slate-100 border-2 border-slate-200/90 shadow-sm flex items-center justify-center font-black text-xs text-indigo-700 shrink-0">
                                 ${initials}

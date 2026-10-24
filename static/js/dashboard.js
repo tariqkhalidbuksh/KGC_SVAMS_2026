@@ -1909,12 +1909,12 @@ async function loadAudit(page = currentAuditPage, isSilent = false) {
             const displayVehicleNumber = isUnreg ? (isPlateEpc ? 'UNREGISTERED' : (thumb.vehicle_number || 'UNREGISTERED')) : (thumb.vehicle_number || 'UNKNOWN');
 
             return `
-            <tr class="group hover:bg-slate-50/90 transition-colors duration-150 cursor-pointer border-b border-slate-100 last:border-0" onclick='openAudit(${JSON.stringify(a).replace(/'/g, "&#39;")})'>
+            <tr tabindex="0" role="button" aria-label="Inspect audit log for ${displayVehicleNumber}" class="group hover:bg-slate-50/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-inset transition-colors duration-150 cursor-pointer border-b border-slate-100 last:border-0" onclick='openAudit(${JSON.stringify(a).replace(/'/g, "&#39;")})' onkeydown='if(event.key==="Enter"||event.key===" "){event.preventDefault();openAudit(${JSON.stringify(a).replace(/'/g, "&#39;")});}'>
                 <td class="py-3.5 px-4 pl-6">
                     <div class="flex items-center gap-3">
                         <div class="relative flex-shrink-0">
                             ${imgPath
-                                ? `<img src="/${imgPath}" class="w-14 h-10 rounded-xl object-cover border border-slate-200 shadow-2xs group-hover:scale-105 group-hover:shadow-sm transition duration-200">`
+                                ? `<img src="/${imgPath}" alt="Vehicle capture proof" width="56" height="40" loading="lazy" class="w-14 h-10 rounded-xl object-cover border border-slate-200 shadow-2xs group-hover:scale-105 group-hover:shadow-sm transition duration-200">`
                                 : `<div class="w-14 h-10 rounded-xl bg-slate-100 border border-slate-200 flex flex-col items-center justify-center text-[9px] font-bold text-slate-400 gap-0.5">
                                     <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/></svg>
                                     <span>NO IMG</span>
@@ -1936,7 +1936,7 @@ async function loadAudit(page = currentAuditPage, isSilent = false) {
                     <div class="flex items-center gap-2.5">
                         <div class="relative flex-shrink-0">
                             ${pfp
-                                ? `<img src="/${pfp}" class="w-8 h-8 rounded-full object-cover ring-2 ring-white shadow-xs">`
+                                ? `<img src="/${pfp}" alt="Driver portrait" width="32" height="32" loading="lazy" class="w-8 h-8 rounded-full object-cover ring-2 ring-white shadow-xs">`
                                 : `<div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center font-black text-xs ${isUnreg ? 'bg-slate-100 text-slate-500 ring-2 ring-slate-100' : 'bg-indigo-600 text-white ring-2 ring-indigo-100'}">${initial}</div>`
                             }
                         </div>
@@ -3124,9 +3124,9 @@ async function loadMembers(page = currentMemPage) {
                  </span>`;
 
             return `
-            <tr class="hover:bg-slate-50 transition-colors cursor-pointer group" onclick='openMemberFleetModal(${JSON.stringify(m).replace(/'/g, "&#39;")})'>
+            <tr tabindex="0" role="button" aria-label="Open fleet management for ${m.Name || 'Member'}" class="hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-inset transition-colors cursor-pointer group" onclick='openMemberFleetModal(${JSON.stringify(m).replace(/'/g, "&#39;")})' onkeydown='if(event.key==="Enter"||event.key===" "){event.preventDefault();openMemberFleetModal(${JSON.stringify(m).replace(/'/g, "&#39;")});}'>
                 <td class="p-3.5 pl-4">
-                    ${m.Profile_pic ? `<img src="/${m.Profile_pic}" class="w-10 h-10 rounded-full object-cover border border-slate-200 shadow-sm">` :
+                    ${m.Profile_pic ? `<img src="/${m.Profile_pic}" alt="${m.Name || 'Member'} avatar" width="40" height="40" loading="lazy" class="w-10 h-10 rounded-full object-cover border border-slate-200 shadow-sm">` :
                     `<div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-700 text-sm shadow-xs">${initial}</div>`}
                 </td>
                 <td class="p-3.5">
@@ -5176,7 +5176,7 @@ async function loadRecentEtagTags(searchQuery = currentEtagDirSearch, page = cur
                 welcomeTable.innerHTML = tags.map((t, idx) => {
                     const isMem = Boolean(t.mem_id && t.mem_id !== 'GUEST-LOG' && t.mem_id !== 'UNREGISTERED');
                     return `
-                        <tr class="hover:bg-slate-50/80 transition cursor-pointer" onclick="auditEtag('${t.scanned_tag}')">
+                        <tr tabindex="0" role="button" aria-label="Audit scans for tag ${t.scanned_tag}" class="hover:bg-slate-50/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-inset transition cursor-pointer" onclick="auditEtag('${t.scanned_tag}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();auditEtag('${t.scanned_tag}');}">
                             <td class="py-3 px-4 font-mono font-bold text-xs text-indigo-700">
                                 <div class="flex items-center gap-2">
                                     <span class="w-2 h-2 rounded-full ${isMem ? 'bg-emerald-500' : 'bg-amber-500'} shrink-0"></span>

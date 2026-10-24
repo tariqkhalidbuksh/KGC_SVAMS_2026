@@ -7,10 +7,29 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="/static/js/chart.umd.min.js"></script>
     <script>if (typeof Chart === 'undefined') { document.write('<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"><\/script>'); }</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <style>
         * { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
+        :focus-visible {
+            outline: 2px solid #059669;
+            outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, ::before, ::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            .pulse-indicator, .pulse-badge, .radar-sweep, .pulse-ring-1, .pulse-ring-2, .pulse-ring-3 {
+                animation: none !important;
+            }
+        }
+
         body { background: #F8FAFC; color: #334155; }
         .nav-btn.active { background: #ECFDF5; color: #059669; border-right: 3px solid #059669; font-weight: 700; }
         .nav-btn:hover { background: #F1F5F9; }
@@ -79,12 +98,14 @@
     </style>
 </head>
 <body class="flex h-screen overflow-hidden bg-slate-50/50">
+    <a href="#mainContent" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2 focus:bg-emerald-600 focus:text-white focus:rounded-xl focus:shadow-lg focus:outline-none">Skip to main content</a>
+
     <aside class="w-68 bg-white border-r border-slate-200/90 flex flex-col justify-between hidden md:flex shrink-0 shadow-2xs z-40">
         <div>
             <!-- Brand Logo Header -->
             <div class="h-24 flex items-center gap-3 px-6 border-b border-slate-100 bg-slate-50/60">
                 <div class="w-12 h-12 rounded-2xl bg-white border border-slate-200/90 shadow-2xs p-1.5 flex items-center justify-center shrink-0">
-                    <img src="/api/logo" alt="Club Logo" class="max-h-full max-w-full object-contain" onerror="this.src='/static/club_logo.png'">
+                    <img src="/api/logo" alt="Karachi Gymkhana Club Logo" width="48" height="48" fetchpriority="high" class="max-h-full max-w-full object-contain" onerror="this.src='/static/club_logo.png'">
                 </div>
                 <div>
                     <h2 class="text-sm font-extrabold text-slate-900 tracking-tight leading-tight">Karachi Gymkhana</h2>
@@ -225,11 +246,11 @@
         </div>
     </div>
 
-    <main class="flex-1 flex flex-col h-screen overflow-hidden">
+    <main id="mainContent" class="flex-1 flex flex-col h-screen overflow-hidden">
         <header class="h-16 flex items-center justify-between px-4 md:px-8 bg-white border-b border-slate-200 shrink-0 relative z-30">
             <div class="flex items-center gap-3">
-                <button type="button" onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100 border border-slate-200" title="Toggle Navigation Menu">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                <button type="button" onclick="toggleMobileMenu()" aria-label="Toggle Navigation Menu" class="md:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100 border border-slate-200" title="Toggle Navigation Menu">
+                    <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                 </button>
                 <div>
                     <h1 id="pageTitle" class="text-base md:text-lg font-bold text-slate-800 leading-tight">Command Overview</h1>
@@ -240,17 +261,17 @@
             <!-- Global Quick Search Bar (Ctrl+K) -->
             <div class="flex-1 max-w-md mx-8 relative hidden md:block">
                 <div class="relative flex items-center">
-                    <svg class="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                    <input type="text" id="globalSearchInput" placeholder="Quick Search member, vehicle plate, or EPC tag..." class="w-full bg-slate-50 hover:bg-slate-100 focus:bg-white border border-slate-200 focus:border-indigo-500 rounded-xl pl-10 pr-16 py-2 text-xs font-semibold text-slate-800 placeholder-slate-400 outline-none transition shadow-2xs">
-                    <span class="absolute right-2.5 px-1.5 py-0.5 text-[10px] font-bold font-mono text-slate-400 bg-white border border-slate-200 rounded shadow-2xs pointer-events-none">Ctrl K</span>
+                    <svg class="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <input type="text" id="globalSearchInput" name="globalSearch" aria-label="Global search member, plate, or tag" autocomplete="off" spellcheck="false" placeholder="Quick Search member, vehicle plate, or EPC tag…" class="w-full bg-slate-50 hover:bg-slate-100 focus:bg-white border border-slate-200 focus:border-indigo-500 focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-xl pl-10 pr-16 py-2 text-xs font-semibold text-slate-800 placeholder-slate-400 outline-none transition shadow-2xs">
+                    <span class="absolute right-2.5 px-1.5 py-0.5 text-[10px] font-bold font-mono text-slate-400 bg-white border border-slate-200 rounded shadow-2xs pointer-events-none" aria-hidden="true">Ctrl K</span>
                 </div>
                 <div id="globalSearchResults" class="hidden absolute left-0 right-0 top-11 bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden z-50"></div>
             </div>
 
             <div class="flex items-center gap-3 md:gap-4">
-                <span id="liveClock" class="text-xs md:text-sm font-bold text-slate-500 font-mono hidden sm:inline"></span>
+                <span id="liveClock" class="text-xs md:text-sm font-bold text-slate-500 font-mono tabular-nums hidden sm:inline"></span>
                 <div class="flex items-center bg-emerald-100 border border-emerald-200 px-2.5 md:px-3 py-1 md:py-1.5 rounded-full">
-                    <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse mr-1.5 md:mr-2"></div>
+                    <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse mr-1.5 md:mr-2" aria-hidden="true"></div>
                     <span class="text-[10px] md:text-xs font-bold text-emerald-700">LIVE FEED</span>
                 </div>
 
@@ -643,7 +664,7 @@
                                         <div class="flex items-center gap-3 min-w-0">
                                             <div class="relative shrink-0">
                                                 <div class="p-0.5 rounded-2xl bg-gradient-to-tr from-emerald-500 via-teal-400 to-indigo-500 shadow-xs">
-                                                    <img id="kioskMiniPhoto" src="" class="w-14 h-14 rounded-[14px] object-cover border border-white hidden" />
+                                                    <img id="kioskMiniPhoto" src="" alt="Member portrait photograph" width="56" height="56" loading="lazy" class="w-14 h-14 rounded-[14px] object-cover border border-white hidden" />
                                                     <div id="kioskMiniAvatar" class="w-14 h-14 rounded-[14px] bg-gradient-to-br from-indigo-50 to-slate-100 border border-white flex items-center justify-center font-black text-base text-indigo-700 shadow-inner">KG</div>
                                                 </div>
                                                 <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white shadow-2xs"></span>
@@ -967,16 +988,16 @@
                                 <button type="button" id="auditPresetYesterday" onclick="setAuditDatePreset('yesterday')" class="audit-date-btn px-2.5 py-1 text-xs font-bold rounded-lg text-slate-700 hover:bg-slate-100 transition">Yesterday</button>
                                 <button type="button" id="auditPresetWeek" onclick="setAuditDatePreset('week')" class="audit-date-btn px-2.5 py-1 text-xs font-bold rounded-lg text-slate-700 hover:bg-slate-100 transition">7 Days</button>
                                 <button type="button" id="auditPresetAll" onclick="setAuditDatePreset('all')" class="audit-date-btn px-2.5 py-1 text-xs font-bold rounded-lg text-slate-700 hover:bg-slate-100 transition">All Time</button>
-                                <div class="h-4 w-px bg-slate-200 mx-0.5"></div>
-                                <input type="date" id="auditDate" onchange="onAuditDateChange()" class="text-xs font-bold border-0 bg-transparent px-1.5 py-1 text-slate-800" title="Start Date">
-                                <span class="text-[11px] text-slate-400 font-bold">&ndash;</span>
-                                <input type="date" id="auditEndDate" onchange="onAuditDateChange()" class="text-xs font-bold border-0 bg-transparent px-1.5 py-1 text-slate-800" title="End Date (optional)">
+                                <div class="h-4 w-px bg-slate-200 mx-0.5" aria-hidden="true"></div>
+                                <input type="date" id="auditDate" aria-label="Audit start date" onchange="onAuditDateChange()" class="text-xs font-bold border-0 bg-transparent px-1.5 py-1 text-slate-800" title="Start Date">
+                                <span class="text-[11px] text-slate-400 font-bold" aria-hidden="true">&ndash;</span>
+                                <input type="date" id="auditEndDate" aria-label="Audit end date (optional)" onchange="onAuditDateChange()" class="text-xs font-bold border-0 bg-transparent px-1.5 py-1 text-slate-800" title="End Date (optional)">
                             </div>
 
                             <!-- Gate / Camera Filter -->
                             <div class="flex items-center gap-1.5 bg-white border border-slate-200 rounded-xl px-3 py-1.5 shadow-sm">
-                                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                                <select id="auditCamera" onchange="loadAudit(1)" class="text-xs font-bold border-0 bg-transparent text-slate-700 focus:outline-none pr-1">
+                                <svg class="w-3.5 h-3.5 text-slate-400" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                <select id="auditCamera" aria-label="Filter by gate or camera" onchange="loadAudit(1)" class="text-xs font-bold border-0 bg-transparent text-slate-700 focus:outline-none pr-1">
                                     <option value="all">All Gates &amp; Cameras</option>
                                     <option value="Gate-01">Gate-01</option>
                                     <option value="Club Road">Main Gate (Club Road)</option>
@@ -988,8 +1009,8 @@
 
                             <!-- Tag / Vehicle Classification Filter -->
                             <div class="flex items-center gap-1.5 bg-white border border-slate-200 rounded-xl px-3 py-1.5 shadow-sm">
-                                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
-                                <select id="auditTagType" onchange="loadAudit(1)" class="text-xs font-bold border-0 bg-transparent text-slate-700 focus:outline-none pr-1">
+                                <svg class="w-3.5 h-3.5 text-slate-400" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                                <select id="auditTagType" aria-label="Filter by vehicle classification" onchange="loadAudit(1)" class="text-xs font-bold border-0 bg-transparent text-slate-700 focus:outline-none pr-1">
                                     <option value="all">All Vehicle Types</option>
                                     <option value="members">Verified Members Only</option>
                                     <option value="nha">🚗 Flagged NHA M-Tags</option>
@@ -1001,8 +1022,8 @@
                             </div>
 
                             <!-- Search Input -->
-                            <input id="auditSearch" oninput="onAuditSearchInput()" placeholder="Search plate, name, EPC, ID..."
-                                   class="text-xs font-bold border border-slate-200 rounded-xl pl-3 pr-3 py-2 bg-white w-48 md:w-56 shadow-sm focus:outline-none focus:border-indigo-500">
+                            <input id="auditSearch" name="auditSearch" aria-label="Search RFID audit logs" autocomplete="off" spellcheck="false" oninput="onAuditSearchInput()" placeholder="Search plate, name, EPC, ID…"
+                                   class="text-xs font-bold border border-slate-200 rounded-xl pl-3 pr-3 py-2 bg-white w-48 md:w-56 shadow-sm focus:outline-none focus:border-indigo-500 focus-visible:ring-2 focus-visible:ring-indigo-500">
 
                             <!-- Export & Action Buttons -->
                             <div class="flex items-center gap-1.5">
@@ -1161,16 +1182,16 @@
                                 <button type="button" id="camPresetYesterday" onclick="setCamAuditPreset('yesterday')" class="cam-date-btn px-2.5 py-1 text-xs font-bold rounded-lg text-slate-700 hover:bg-slate-100 transition">Yesterday</button>
                                 <button type="button" id="camPresetWeek" onclick="setCamAuditPreset('week')" class="cam-date-btn px-2.5 py-1 text-xs font-bold rounded-lg text-slate-700 hover:bg-slate-100 transition">7 Days</button>
                                 <button type="button" id="camPresetAll" onclick="setCamAuditPreset('all')" class="cam-date-btn px-2.5 py-1 text-xs font-bold rounded-lg text-slate-700 hover:bg-slate-100 transition">All Time</button>
-                                <div class="h-4 w-px bg-slate-200 mx-0.5"></div>
-                                <input type="date" id="camAuditDate" onchange="onCamAuditDateChange()" class="text-xs font-bold border-0 bg-transparent px-1.5 py-1 text-slate-800" title="Start Date">
-                                <span class="text-[11px] text-slate-400 font-bold">&ndash;</span>
-                                <input type="date" id="camAuditEndDate" onchange="onCamAuditDateChange()" class="text-xs font-bold border-0 bg-transparent px-1.5 py-1 text-slate-800" title="End Date (optional)">
+                                <div class="h-4 w-px bg-slate-200 mx-0.5" aria-hidden="true"></div>
+                                <input type="date" id="camAuditDate" aria-label="Camera audit start date" onchange="onCamAuditDateChange()" class="text-xs font-bold border-0 bg-transparent px-1.5 py-1 text-slate-800" title="Start Date">
+                                <span class="text-[11px] text-slate-400 font-bold" aria-hidden="true">&ndash;</span>
+                                <input type="date" id="camAuditEndDate" aria-label="Camera audit end date (optional)" onchange="onCamAuditDateChange()" class="text-xs font-bold border-0 bg-transparent px-1.5 py-1 text-slate-800" title="End Date (optional)">
                             </div>
 
                             <!-- Direction / Movement Filter -->
                             <div class="flex items-center gap-1.5 bg-white border border-slate-200 rounded-xl px-3 py-1.5 shadow-sm">
-                                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                                <select id="camAuditDirection" onchange="loadCameraAudit(1)" class="text-xs font-bold border-0 bg-transparent text-slate-700 focus:outline-none pr-1">
+                                <svg class="w-3.5 h-3.5 text-slate-400" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                <select id="camAuditDirection" aria-label="Filter by camera direction" onchange="loadCameraAudit(1)" class="text-xs font-bold border-0 bg-transparent text-slate-700 focus:outline-none pr-1">
                                     <option value="all">All Directions</option>
                                     <option value="Entry">Entry Only</option>
                                     <option value="Exit">Exit Only</option>
@@ -1181,7 +1202,7 @@
                             <!-- Per Page Selector -->
                             <div class="flex items-center gap-1.5 bg-white border border-slate-200 rounded-xl px-2.5 py-1.5 shadow-sm text-xs font-bold text-slate-500">
                                 <span>Per Page:</span>
-                                <select id="camAuditLimitSelect" onchange="changeCamAuditLimit()" class="border-0 bg-transparent text-slate-700 font-bold focus:outline-none">
+                                <select id="camAuditLimitSelect" aria-label="Select items per page" onchange="changeCamAuditLimit()" class="border-0 bg-transparent text-slate-700 font-bold focus:outline-none">
                                     <option value="12">12</option>
                                     <option value="24" selected>24</option>
                                     <option value="48">48</option>
@@ -1189,7 +1210,7 @@
                             </div>
 
                             <!-- Search Input -->
-                            <input id="camAuditSearch" oninput="onCamAuditSearchInput()" placeholder="Search vehicle captures..." class="text-xs font-bold border border-slate-200 rounded-xl px-3 py-2 bg-white w-44 md:w-52 shadow-sm focus:outline-none focus:border-indigo-500">
+                            <input id="camAuditSearch" name="camAuditSearch" aria-label="Search camera vehicle captures" autocomplete="off" spellcheck="false" oninput="onCamAuditSearchInput()" placeholder="Search vehicle captures…" class="text-xs font-bold border border-slate-200 rounded-xl px-3 py-2 bg-white w-44 md:w-52 shadow-sm focus:outline-none focus:border-indigo-500 focus-visible:ring-2 focus-visible:ring-indigo-500">
 
                             <!-- Action & Reset Buttons -->
                             <div class="flex items-center gap-1.5">
@@ -1293,7 +1314,7 @@
                                 <div class="flex gap-3 items-center">
                                     <input type="file" id="nPicFile" accept="image/*"
                                            class="text-sm border rounded-xl p-2 bg-slate-50 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-slate-200 file:text-xs file:font-bold">
-                                    <img id="nPicPreview" class="w-12 h-12 rounded-full object-cover border-2 border-slate-200 hidden">
+                                    <img id="nPicPreview" alt="Member portrait preview" width="48" height="48" loading="lazy" class="w-12 h-12 rounded-full object-cover border-2 border-slate-200 hidden">
                                     <input type="hidden" id="nPic" value="">
                                     <span id="picName" class="text-xs text-slate-400"></span>
                                 </div>
@@ -1344,8 +1365,8 @@
                                     <option value="100">100 per page</option>
                                 </select>
                             </div>
-                            <input id="memSearch" oninput="onMemSearchInput()" placeholder="Search name, plate, EPC..."
-                                   class="text-sm border border-slate-200 rounded-xl pl-3 pr-4 py-2 bg-white w-64 md:w-80 shadow-sm">
+                            <input id="memSearch" name="memSearch" aria-label="Search members by name, plate, or EPC" autocomplete="off" spellcheck="false" oninput="onMemSearchInput()" placeholder="Search name, plate, EPC…"
+                                   class="text-sm border border-slate-200 rounded-xl pl-3 pr-4 py-2 bg-white w-64 md:w-80 shadow-sm focus:outline-none focus:border-indigo-500 focus-visible:ring-2 focus-visible:ring-indigo-500">
                         </div>
                     </div>
 
@@ -1399,8 +1420,8 @@
                                 <span id="unregTotalSummaryPill" class="text-[11px] font-black px-2.5 py-1.5 bg-white text-amber-900 border border-amber-200 rounded-lg shadow-2xs">
                                     Loading tags...
                                 </span>
-                                <input id="unregSearch" oninput="onUnregSearchInput()" placeholder="Search unassigned tag..."
-                                       class="text-xs border border-amber-200 rounded-xl px-3 py-1.5 bg-white text-slate-800 w-44 md:w-56 shadow-2xs focus:outline-none focus:ring-1 focus:ring-amber-500">
+                                <input id="unregSearch" name="unregSearch" aria-label="Search unassigned tags" autocomplete="off" spellcheck="false" oninput="onUnregSearchInput()" placeholder="Search unassigned tag…"
+                                       class="text-xs border border-amber-200 rounded-xl px-3 py-1.5 bg-white text-slate-800 w-44 md:w-56 shadow-2xs focus:outline-none focus:ring-1 focus:ring-amber-500 focus-visible:ring-2 focus-visible:ring-amber-500">
                                 <div class="flex items-center gap-1 text-xs font-bold text-amber-900">
                                     <span>Limit:</span>
                                     <select id="unregLimitSelect" onchange="loadUnregisteredTags(false)" class="border border-amber-300 rounded-lg px-2 py-1.5 bg-white text-xs font-bold text-slate-700 shadow-2xs">
@@ -1859,7 +1880,7 @@
                                 <p class="text-xs text-slate-500 mt-0.5">Manage operator credentials and designate permissions: View-Only monitoring vs Full Edit operational control.</p>
                             </div>
                             <div class="flex items-center gap-3">
-                                <input type="text" id="userSearchInput" oninput="filterUsersTable()" placeholder="Search username, name, or role..." class="text-xs font-bold border border-slate-200 rounded-xl px-3.5 py-2.5 bg-white w-56 shadow-2xs outline-none focus:border-indigo-500">
+                                <input type="text" id="userSearchInput" name="userSearch" aria-label="Search user accounts" autocomplete="off" spellcheck="false" oninput="filterUsersTable()" placeholder="Search username, name, or role…" class="text-xs font-bold border border-slate-200 rounded-xl px-3.5 py-2.5 bg-white w-56 shadow-2xs outline-none focus:border-indigo-500 focus-visible:ring-2 focus-visible:ring-indigo-500">
                                 <button type="button" id="addUserBtn" onclick="openAddUserModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm flex items-center gap-2 transition">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6-0H6"/></svg>
                                     <span>Add New User</span>
@@ -2112,21 +2133,21 @@
                                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
                                     <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" /></svg>
                                 </div>
-                                <input type="text" id="etagSearchInput" placeholder="Paste EPC Tag ID (e.g. E2004701B8B064227E39010E)..." 
-                                       class="w-full pl-12 pr-28 py-3.5 rounded-2xl bg-slate-50 hover:bg-slate-100 focus:bg-white text-slate-900 placeholder-slate-400 text-sm font-mono font-bold border border-slate-200 focus:border-indigo-500 focus:outline-none shadow-2xs transition"
+                                <input type="text" id="etagSearchInput" name="etagSearch" aria-label="Paste EPC Tag ID" placeholder="Paste EPC Tag ID (e.g. E2004701B8B064227E39010E)…" 
+                                       class="w-full pl-12 pr-28 py-3.5 rounded-2xl bg-slate-50 hover:bg-slate-100 focus:bg-white text-slate-900 placeholder-slate-400 text-sm font-mono font-bold border border-slate-200 focus:border-indigo-500 focus-visible:ring-2 focus-visible:ring-indigo-500 focus:outline-none shadow-2xs transition"
                                        autocomplete="off" spellcheck="false">
-                                <button type="button" onclick="pasteEtagFromClipboard()" class="absolute right-2.5 top-2.5 px-3 py-1.5 rounded-xl bg-white hover:bg-slate-50 text-indigo-600 text-xs font-bold border border-slate-200 shadow-2xs transition flex items-center gap-1.5" title="Paste from clipboard">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                                <button type="button" onclick="pasteEtagFromClipboard()" class="absolute right-2.5 top-2.5 px-3 py-1.5 rounded-xl bg-white hover:bg-slate-50 text-indigo-600 text-xs font-bold border border-slate-200 shadow-2xs transition flex items-center gap-1.5" title="Paste from clipboard" aria-label="Paste EPC from clipboard">
+                                    <svg class="w-3.5 h-3.5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
                                     <span>Paste</span>
                                 </button>
                             </div>
                             <div class="flex items-center gap-2">
-                                <button type="button" onclick="captureEtagLive()" class="px-4 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition flex items-center gap-2 whitespace-nowrap" title="Read tag currently at RFID antenna">
-                                    <svg class="w-4 h-4 text-emerald-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                <button type="button" onclick="captureEtagLive()" class="px-4 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition flex items-center gap-2 whitespace-nowrap" title="Read tag currently at RFID antenna" aria-label="Read tag currently at RFID antenna">
+                                    <svg class="w-4 h-4 text-emerald-100" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                                     <span>Live Antenna Read</span>
                                 </button>
                                 <button type="submit" id="btnRunEtagAudit" class="px-6 py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black shadow-xs transition flex items-center gap-2 whitespace-nowrap">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                    <svg class="w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                                     <span>Audit Tag History</span>
                                 </button>
                             </div>
@@ -2159,14 +2180,14 @@
                         <div class="flex justify-between items-center mb-4 flex-wrap gap-3">
                             <div>
                                 <h4 class="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-2">
-                                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                    <span class="w-2 h-2 rounded-full bg-emerald-500" aria-hidden="true"></span>
                                     <span>All Unique RFID Tags &amp; Transponders Directory</span>
                                 </h4>
                                 <p class="text-[11px] text-slate-500">Deduplicated index of active UHF RFID tags detected across the facility with distinct total scans and member identities.</p>
                             </div>
                             <div class="flex items-center gap-3">
-                                <input type="text" id="etagDirectorySearchInput" oninput="onEtagDirectorySearch(this.value)" placeholder="Filter tags, plates, members..." 
-                                       class="text-xs font-mono font-bold px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:border-indigo-500 w-56">
+                                <input type="text" id="etagDirectorySearchInput" name="etagDirectorySearch" aria-label="Filter tags directory" autocomplete="off" spellcheck="false" oninput="onEtagDirectorySearch(this.value)" placeholder="Filter tags, plates, members…" 
+                                       class="text-xs font-mono font-bold px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:border-indigo-500 focus-visible:ring-2 focus-visible:ring-indigo-500 w-56">
                                 <span class="text-[11px] font-mono font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-200" id="etagUniqueTagsTotalBadge">-- Unique Tags</span>
                             </div>
                         </div>
@@ -2371,12 +2392,12 @@
                 <div class="space-y-2">
                     <div class="flex justify-between items-center">
                         <label class="text-xs font-bold text-slate-700">Optional Optical Proof (View &amp; Hand-Pick Camera Evidence)</label>
-                        <span id="manualExitCapturesCount" class="text-[10px] font-mono text-slate-400">Loading camera captures...</span>
+                        <span id="manualExitCapturesCount" class="text-[10px] font-mono text-slate-400">Loading camera captures…</span>
                     </div>
                     <!-- Selected Proof Preview -->
                     <div id="manualExitSelectedProofBox" class="p-3 bg-emerald-50/60 border border-emerald-200 rounded-xl flex items-center justify-between hidden">
                         <div class="flex items-center gap-3">
-                            <img id="manualExitSelectedProofImg" src="" class="w-16 h-11 object-cover rounded-lg border border-emerald-300">
+                            <img id="manualExitSelectedProofImg" src="" alt="Attached optical evidence" width="64" height="44" loading="lazy" class="w-16 h-11 object-cover rounded-lg border border-emerald-300">
                             <div>
                                 <span class="text-[10px] font-black text-emerald-800 uppercase">Attached Optical Evidence</span>
                                 <p id="manualExitSelectedProofTime" class="text-xs font-mono font-bold text-slate-800 mt-0.5">--</p>
@@ -2386,7 +2407,7 @@
                     </div>
                     <!-- Gallery Slider/Grid -->
                     <div id="manualExitGallery" class="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-48 overflow-y-auto p-2 bg-slate-50 rounded-xl border border-slate-200 text-xs">
-                        <div class="col-span-full py-4 text-center text-slate-400">Loading camera captures...</div>
+                        <div class="col-span-full py-4 text-center text-slate-400">Loading camera captures…</div>
                     </div>
                 </div>
 
@@ -2631,7 +2652,8 @@
                 </div>
             </form>
         </div>
-    </div>
+    <!-- Screen Reader & Dynamic Status Announcer -->
+    <div id="dashboardLiveAnnouncer" class="sr-only" aria-live="polite" role="status"></div>
 
     <script src="/static/js/dashboard.js?v=20261022_modern_v4"></script>
 </body>

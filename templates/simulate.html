@@ -5,10 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulation &amp; Testbench Console | Karachi Gymkhana</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
+        :focus-visible {
+            outline: 2px solid #2563EB;
+            outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, ::before, ::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            .pulse-indicator, .animate-spin {
+                animation: none !important;
+            }
+        }
         
         body {
             background: #F8FAFC;
@@ -59,22 +77,24 @@
     </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased">
+    <a href="#mainSimulateContent" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-xl focus:shadow-lg focus:outline-none">Skip to main content</a>
+
     <!-- System Error Banner -->
-    <div id="errBanner" class="hidden bg-rose-600 text-white text-xs font-bold px-6 py-2.5 flex justify-between items-center z-50">
+    <div id="errBanner" role="alert" aria-live="polite" class="hidden bg-rose-600 text-white text-xs font-bold px-6 py-2.5 flex justify-between items-center z-50">
         <span id="errText">Notice</span>
-        <button type="button" onclick="document.getElementById('errBanner').classList.add('hidden')" class="bg-rose-800 hover:bg-rose-900 px-2.5 py-0.5 rounded text-[11px] transition">Dismiss</button>
+        <button type="button" onclick="document.getElementById('errBanner').classList.add('hidden')" aria-label="Dismiss error notice" class="bg-rose-800 hover:bg-rose-900 px-2.5 py-0.5 rounded text-[11px] transition">Dismiss</button>
     </div>
 
     <!-- Header (Gold Standard Light Theme) -->
     <header class="h-20 bg-white border-b border-slate-200 sticky top-0 z-40 px-6 lg:px-10 flex items-center justify-between shadow-xs">
         <div class="flex items-center gap-5">
             <a href="/" class="flex items-center gap-3 group">
-                <img src="/api/logo" alt="Logo" class="h-11 object-contain" onerror="this.style.display='none'">
+                <img src="/api/logo" alt="Karachi Gymkhana Club Logo" width="44" height="44" fetchpriority="high" class="h-11 w-auto object-contain" onerror="this.style.display='none'">
                 <div>
                     <div class="flex items-center gap-2">
                         <h1 class="text-lg lg:text-xl font-extrabold tracking-tight text-slate-900">Simulation &amp; Testbench Console</h1>
                         <span class="text-[10px] font-mono font-bold bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded uppercase tracking-wider flex items-center gap-1.5">
-                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 pulse-indicator"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 pulse-indicator" aria-hidden="true"></span>
                             SANDBOX TESTBENCH
                         </span>
                     </div>
@@ -85,12 +105,12 @@
 
         <div class="flex items-center gap-3">
             <button type="button" onclick="toggleDiagnosticsDrawer()" id="diagToggleBtn" class="text-xs font-bold border border-slate-200 rounded-xl px-4 py-2.5 bg-slate-50 hover:bg-white text-slate-700 shadow-xs transition flex items-center gap-1.5">
-                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <svg class="w-4 h-4 text-slate-500" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 <span>System Self-Test</span>
             </button>
             <a href="/" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-xs transition flex items-center gap-1.5">
                 <span>Return to Dashboard</span>
-                <span class="text-slate-400">&rarr;</span>
+                <span class="text-slate-400" aria-hidden="true">&rarr;</span>
             </a>
         </div>
     </header>
@@ -107,7 +127,7 @@
                     <button type="button" onclick="runSelfTest()" class="text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg shadow-xs transition">
                         Run Diagnostics
                     </button>
-                    <button type="button" onclick="toggleDiagnosticsDrawer()" class="text-xs text-slate-400 hover:text-slate-600 p-1">&times;</button>
+                    <button type="button" onclick="toggleDiagnosticsDrawer()" aria-label="Close diagnostics drawer" class="text-xs text-slate-400 hover:text-slate-600 p-1">&times;</button>
                 </div>
             </div>
             <div id="selfTestGrid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2.5 text-xs">
@@ -494,7 +514,7 @@
                         <p class="text-xs text-slate-500">Side-by-side comparison of Hikvision Overview and Dahua ANPR close-up with timestamp overlay.</p>
                     </div>
                 </div>
-                <button type="button" onclick="closeDualInspectModal()" class="w-8 h-8 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold flex items-center justify-center transition">
+                <button type="button" onclick="closeDualInspectModal()" aria-label="Close synchronized inspection view" class="w-8 h-8 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold flex items-center justify-center transition">
                     &times;
                 </button>
             </div>
