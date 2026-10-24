@@ -270,14 +270,14 @@ function renderMiniSindhPlate(carNum, isUnreg) {
     }
 
     return `
-        <div class="mini-sindh-plate w-34 h-10 shrink-0 shadow-xs group-hover:shadow transition-shadow">
+        <div class="mini-sindh-plate w-32 h-10 shrink-0 shadow-xs group-hover:shadow transition-shadow">
             <div class="mini-ajrak-banner"></div>
-            <div class="flex-1 flex items-center justify-center gap-1.5 px-1 my-0.5">
-                ${series ? `<span class="mini-plate-emboss text-xs tracking-tight uppercase">${series}</span>` : ''}
+            <div class="flex-1 flex items-center justify-center gap-1.5 px-1.5 my-0.5">
+                ${series ? `<span class="mini-plate-emboss text-xs font-black tracking-tight uppercase">${series}</span>` : ''}
                 <div class="w-3.5 h-3.5 rounded-full bg-gradient-to-tr from-amber-500 via-yellow-400 to-amber-200 border border-amber-600 shadow-xs flex items-center justify-center shrink-0">
                     <div class="w-1.5 h-1.5 rounded-full bg-amber-950/80"></div>
                 </div>
-                <span class="mini-plate-emboss text-xs tracking-tight uppercase">${digits}</span>
+                <span class="mini-plate-emboss text-xs font-black tracking-tight uppercase">${digits}</span>
             </div>
             <div class="text-center py-0.2 bg-slate-100/90 border-t border-slate-200">
                 <span class="text-[7px] font-black tracking-[0.3em] text-slate-900 uppercase font-mono leading-none block">SINDH</span>
@@ -396,30 +396,40 @@ async function updateRecentEntries() {
                         <span class="text-[11px] font-mono tabular-nums font-extrabold text-slate-400 group-hover:text-indigo-600 transition-colors">${timeStr}</span>
                     </div>
 
-                    <!-- Middle: Member Profile Photo + Name + ID -->
-                    <div class="flex items-center gap-2.5 mb-2.5">
-                        ${picUrl ? `
-                            <img src="${picUrl}" alt="${displayName}" width="40" height="40" loading="lazy" class="w-10 h-10 rounded-xl object-cover border-2 border-slate-200/90 shadow-sm shrink-0" onerror="this.outerHTML='<div class=\\'w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-50 to-slate-100 border-2 border-slate-200/90 shadow-sm flex items-center justify-center font-black text-xs text-indigo-700 shrink-0\\'>${initials}</div>'">
-                        ` : `
-                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-50 to-slate-100 border-2 border-slate-200/90 shadow-sm flex items-center justify-center font-black text-xs text-indigo-700 shrink-0">
-                                ${initials}
+                    <!-- Middle: Member Profile Photo + Name + ID on Left, Sindh Plate on Right -->
+                    <div class="flex items-center justify-between gap-2.5 my-1.5">
+                        <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                            ${picUrl ? `
+                                <img src="${picUrl}" alt="${displayName}" width="40" height="40" loading="lazy" class="w-10 h-10 rounded-xl object-cover border-2 border-slate-200/90 shadow-sm shrink-0" onerror="this.outerHTML='<div class=\\'w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-50 to-slate-100 border-2 border-slate-200/90 shadow-sm flex items-center justify-center font-black text-xs text-indigo-700 shrink-0\\'>${initials}</div>'">
+                            ` : `
+                                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-50 to-slate-100 border-2 border-slate-200/90 shadow-sm flex items-center justify-center font-black text-xs text-indigo-700 shrink-0">
+                                    ${initials}
+                                </div>
+                            `}
+                            <div class="min-w-0 flex-1">
+                                <h5 class="text-xs font-black text-slate-900 truncate leading-snug group-hover:text-indigo-950 transition-colors" title="${displayName}">${displayName}</h5>
+                                <div class="flex items-center gap-1.5 text-[10px] text-slate-500 font-mono mt-0.5 truncate">
+                                    ${isMember ? `<span class="font-black text-indigo-700 bg-indigo-50 px-1.5 py-0.2 rounded border border-indigo-200/80 shrink-0">${memId}</span>` : ''}
+                                    <span class="truncate text-slate-400 font-bold">${makeModel}</span>
+                                </div>
                             </div>
-                        `}
-                        <div class="min-w-0 flex-1">
-                            <h5 class="text-xs font-black text-slate-900 truncate leading-tight group-hover:text-indigo-950 transition-colors">${displayName}</h5>
-                            <div class="flex items-center gap-1 text-[10px] text-slate-500 font-mono mt-0.5 truncate">
-                                ${isMember ? `<span class="font-black text-indigo-600 bg-indigo-50 px-1 py-0.2 rounded border border-indigo-200/70">${memId}</span>` : ''}
-                                <span class="truncate text-slate-400 font-bold">${makeModel}</span>
-                            </div>
+                        </div>
+
+                        <!-- Miniature Authentic Sindh License Plate placed on the right of profile & name -->
+                        <div class="shrink-0 transition-transform duration-200 group-hover:scale-105">
+                            ${renderMiniSindhPlate(plate, isUnreg)}
                         </div>
                     </div>
 
-                    <!-- Bottom: Miniature Authentic Sindh License Plate + Gate Indicator -->
+                    <!-- Bottom: Gate Indicator + Interactive Inspect Cue -->
                     <div class="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
-                        ${renderMiniSindhPlate(plate, isUnreg)}
-                        <div class="flex flex-col items-end justify-center text-right shrink-0">
-                            <span class="text-[9px] font-extrabold text-slate-400 group-hover:text-indigo-600 uppercase tracking-tight truncate max-w-[80px]" title="${gateLabel}">${gateLabel}</span>
-                            <span class="text-[9px] font-black text-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity">VIEW ↗</span>
+                        <div class="flex items-center gap-1.5 min-w-0">
+                            <span class="w-1.5 h-1.5 rounded-full ${isUnreg ? 'bg-rose-400' : isExit ? 'bg-blue-400' : 'bg-emerald-400'} shrink-0"></span>
+                            <span class="text-[9px] font-extrabold text-slate-400 group-hover:text-slate-600 uppercase tracking-tight font-mono truncate" title="${gateLabel}">${gateLabel}</span>
+                        </div>
+                        <div class="flex items-center gap-1 text-[9px] font-black text-indigo-600 shrink-0 opacity-80 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all">
+                            <span>INSPECT</span>
+                            <span>→</span>
                         </div>
                     </div>
                 </div>
