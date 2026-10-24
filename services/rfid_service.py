@@ -96,6 +96,19 @@ def process_rfid_direct(tag: str, direction: str, gate_name: str = None):
             config.LAST_GATE_PASSAGE["time"] = now
             config.LAST_GATE_PASSAGE["log_id"] = log_id
 
+def parse_host_port(ip_string: str, default_port: int = 49152) -> tuple[str, int]:
+    """Parses IP strings supporting both plain '192.168.0.214' and '192.168.0.214:6000' notation."""
+    if not ip_string:
+        return "", default_port
+    s = ip_string.strip()
+    if ":" in s:
+        parts = s.split(":")
+        try:
+            return parts[0].strip(), int(parts[1].strip())
+        except Exception:
+            return parts[0].strip(), default_port
+    return s, default_port
+
 def rfid_tcp_client_worker(direction: str, ip_setting_key: str, gate_name: str = None, reader_id: str = None, name_setting_key: str = None):
     r_key = reader_id or direction
     default_gate = gate_name or f"Gate-01 {direction} Reader"
@@ -110,7 +123,8 @@ def rfid_tcp_client_worker(direction: str, ip_setting_key: str, gate_name: str =
             name_setting_key = "clubroad_exit_reader_name"
 
     while True:
-        target_ip = get_setting(ip_setting_key, "")
+        target_ip_raw = get_setting(ip_setting_key, "")
+        target_ip, target_port = parse_host_port(target_ip_raw, 49152)
         if not target_ip:
             config.READER_STATUS[r_key] = "NO_IP"
             if direction in ("Entry", "Exit") and ("Gate01" in r_key or r_key == direction):
@@ -124,7 +138,7 @@ def rfid_tcp_client_worker(direction: str, ip_setting_key: str, gate_name: str =
 
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.settimeout(5.0)
-            sock.connect((target_ip, 49152))
+            sock.connect((target_ip, target_port))
 
             # Enable TCP keepalive to detect silent hardware/switch disconnects
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
@@ -141,6 +155,8 @@ def rfid_tcp_client_worker(direction: str, ip_setting_key: str, gate_name: str =
             config.READER_STATUS[r_key] = "CONNECTED"
             if direction in ("Entry", "Exit") and ("Gate01" in r_key or r_key == direction):
                 config.READER_STATUS[direction] = "CONNECTED"
+            if r_key in config.READER_TELEMETRY:
+                config.READER_TELEMETRY[r_key]["last_error"] = None
 
             buffer = b""
             while True:
@@ -242,12 +258,14 @@ def rfid_tcp_client_worker(direction: str, ip_setting_key: str, gate_name: str =
                     buffer = buffer[consumed_bytes:]
                 elif len(buffer) > 512:
                     buffer = buffer[-64:]
-        except Exception:
+        except Exception as e:
             config.READER_STATUS[r_key] = "DISCONNECTED"
             if direction in ("Entry", "Exit") and ("Gate01" in r_key or r_key == direction):
                 config.READER_STATUS[direction] = "DISCONNECTED"
             if r_key in config.READER_TELEMETRY:
                 config.READER_TELEMETRY[r_key]["reconnects"] += 1
+                config.READER_TELEMETRY[r_key]["last_error"] = f"{e.__class__.__name__}: {str(e)}"
+                config.READER_TELEMETRY[r_key]["last_error_time"] = time.time()
             time.sleep(2)
         finally:
             config.READER_SOCKETS.pop(r_key, None)

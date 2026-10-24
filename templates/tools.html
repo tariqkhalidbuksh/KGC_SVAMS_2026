@@ -341,6 +341,162 @@
         </footer>
     </main>
 
+    <!-- Deep Hardware Reader Diagnostic Modal -->
+    <div id="diagnoseModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-3xl w-full max-h-[92vh] flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200">
+            <!-- Modal Header -->
+            <div class="px-6 py-4.5 border-b border-slate-200 flex items-center justify-between bg-slate-50/80">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-purple-50 border border-purple-200 flex items-center justify-center text-purple-700 text-lg font-bold shadow-2xs">
+                        🔍
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h3 id="diagModalTitle" class="text-base font-extrabold text-slate-900">Hardware Reader Deep Diagnostic Auditor</h3>
+                            <span id="diagBadge" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">RUNNING AUDIT</span>
+                        </div>
+                        <p id="diagModalSubtitle" class="text-xs text-slate-500 font-mono">Target: Analyzing physical connection &amp; socket state...</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeDiagModal()" class="p-2 text-slate-400 hover:text-slate-700 rounded-xl hover:bg-slate-200/60 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <!-- Modal Content (Scrollable) -->
+            <div class="p-6 overflow-y-auto space-y-5 flex-1">
+                <!-- Loading State -->
+                <div id="diagLoading" class="py-12 flex flex-col items-center justify-center text-center space-y-4">
+                    <div class="relative w-14 h-14">
+                        <div class="w-14 h-14 rounded-full border-4 border-purple-100 border-t-purple-600 animate-spin"></div>
+                        <span class="absolute inset-0 flex items-center justify-center text-lg">📡</span>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-bold text-slate-800">Conducting Multi-Layer Hardware Audit</h4>
+                        <p class="text-xs text-slate-400 max-w-sm mt-1">Executing ICMP latency ping, ARP hardware resolution, multi-port TCP probe, and local socket lock analysis...</p>
+                    </div>
+                </div>
+
+                <!-- Results Container -->
+                <div id="diagResults" class="space-y-5 hidden">
+                    <!-- Root Cause & Action Plan Alert Banner -->
+                    <div id="diagRootCauseCard" class="rounded-2xl p-4.5 border transition">
+                        <div class="flex items-start gap-3">
+                            <span id="diagAlertIcon" class="text-xl">⚠️</span>
+                            <div class="space-y-1 flex-1">
+                                <h4 id="diagAlertHeading" class="text-sm font-black text-slate-900">Diagnostic Verdict</h4>
+                                <p id="diagRootCauseText" class="text-xs leading-relaxed text-slate-700 font-medium"></p>
+                            </div>
+                        </div>
+                        <div id="diagActionItemsBox" class="mt-3.5 pt-3 border-t border-dashed space-y-1.5">
+                            <p class="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-500">Recommended Resolution Steps:</p>
+                            <ul id="diagActionList" class="space-y-1 text-xs text-slate-800 list-disc list-inside"></ul>
+                        </div>
+                    </div>
+
+                    <!-- 4-Pillar Diagnostic Matrix -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <!-- Card 1: Ping / Network Layer -->
+                        <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                                    <span>🌐</span>
+                                    <span>ICMP Ping Echo</span>
+                                </span>
+                                <span id="diagPingBadge" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full">--</span>
+                            </div>
+                            <div class="space-y-1 text-xs font-mono">
+                                <div class="flex justify-between text-slate-600">
+                                    <span>Ping RTT:</span>
+                                    <span id="diagPingRtt" class="font-bold text-slate-900">-- ms</span>
+                                </div>
+                                <div class="flex justify-between text-slate-600">
+                                    <span>Host Target:</span>
+                                    <span id="diagPingHost" class="font-bold text-slate-900">--</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: Physical Hardware & MAC Check -->
+                        <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                                    <span>🏷️</span>
+                                    <span>Physical MAC Identity</span>
+                                </span>
+                                <span id="diagMacBadge" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full">--</span>
+                            </div>
+                            <div class="space-y-1 text-xs font-mono">
+                                <div class="flex justify-between text-slate-600">
+                                    <span>MAC Address:</span>
+                                    <span id="diagMacAddress" class="font-bold text-slate-900">--</span>
+                                </div>
+                                <div class="flex justify-between text-slate-600">
+                                    <span>Vendor Match:</span>
+                                    <span id="diagVendorMatch" class="font-bold text-slate-900">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Port Scan & Local Conflict Matrix -->
+                    <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                                <span>🔌</span>
+                                <span>TCP Port Scan Results on Target</span>
+                            </span>
+                            <span class="text-[10px] font-mono text-slate-400">Common RFID &amp; Management Ports</span>
+                        </div>
+                        <div id="diagPortGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                            <!-- Populated with Port Status Chips -->
+                        </div>
+                    </div>
+
+                    <!-- Process Conflict Alert (if any local software has socket locked) -->
+                    <div id="diagConflictBox" class="bg-amber-50 border border-amber-200 rounded-2xl p-4 space-y-2 hidden">
+                        <div class="flex items-center gap-2 text-amber-800 text-xs font-bold">
+                            <span>⚠️</span>
+                            <span>Local Process Socket Conflict Detected!</span>
+                        </div>
+                        <div id="diagConflictList" class="text-xs text-amber-900 font-mono space-y-1"></div>
+                    </div>
+
+                    <!-- Subnet Discovery Alert (if reader found on another IP) -->
+                    <div id="diagSubnetBox" class="bg-blue-50 border border-blue-200 rounded-2xl p-4 space-y-2 hidden">
+                        <div class="flex items-center justify-between">
+                            <span class="text-blue-900 text-xs font-bold flex items-center gap-1.5">
+                                <span>🔎</span>
+                                <span>RFID Reader Detected on Adjacent IP Address!</span>
+                            </span>
+                            <button type="button" id="diagApplyDiscoveredBtn" class="text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg transition shadow-2xs">
+                                Apply Discovered IP
+                            </button>
+                        </div>
+                        <p id="diagSubnetText" class="text-xs text-blue-800 font-mono"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-6 py-4 border-t border-slate-200 bg-slate-50 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="copyDiagReport()" class="text-xs font-bold px-3 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 transition flex items-center gap-1.5 shadow-2xs">
+                        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+                        <span>Copy Diagnostic Report</span>
+                    </button>
+                    <button type="button" id="diagRerunBtn" class="text-xs font-bold px-3 py-2 rounded-xl border border-purple-200 bg-purple-50 hover:bg-purple-100 text-purple-700 transition flex items-center gap-1.5 shadow-2xs">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                        <span>Re-test Reader</span>
+                    </button>
+                </div>
+                <button type="button" onclick="closeDiagModal()" class="text-xs font-bold px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white transition shadow-2xs">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="/static/js/tools.js"></script>
 </body>
 </html>

@@ -64,10 +64,10 @@ READER_STATUS = {
     "ClubRoad_Exit": "DISCONNECTED"
 }
 READER_TELEMETRY = {
-    "Gate01_Entry": {"bytes_total": 0, "last_packet_time": None, "last_raw_hex": None, "reconnects": 0},
-    "Gate01_Exit": {"bytes_total": 0, "last_packet_time": None, "last_raw_hex": None, "reconnects": 0},
-    "ClubRoad_Entry": {"bytes_total": 0, "last_packet_time": None, "last_raw_hex": None, "reconnects": 0},
-    "ClubRoad_Exit": {"bytes_total": 0, "last_packet_time": None, "last_raw_hex": None, "reconnects": 0},
+    "Gate01_Entry": {"bytes_total": 0, "last_packet_time": None, "last_raw_hex": None, "reconnects": 0, "last_error": None, "last_error_time": None},
+    "Gate01_Exit": {"bytes_total": 0, "last_packet_time": None, "last_raw_hex": None, "reconnects": 0, "last_error": None, "last_error_time": None},
+    "ClubRoad_Entry": {"bytes_total": 0, "last_packet_time": None, "last_raw_hex": None, "reconnects": 0, "last_error": None, "last_error_time": None},
+    "ClubRoad_Exit": {"bytes_total": 0, "last_packet_time": None, "last_raw_hex": None, "reconnects": 0, "last_error": None, "last_error_time": None},
 }
 READER_SOCKETS = {}
 CAM_STATUS = {"Hikvision": "UNKNOWN"}

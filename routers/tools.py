@@ -3,12 +3,14 @@ import re
 import time
 import socket
 import random
+import subprocess
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
 from fastapi import APIRouter, HTTPException, Request, Query
 import config
 from database import get_setting, get_db_connection
 from services.camera_service import grab_hikvision_snapshot, save_snapshot
+from services.rfid_service import reconnect_reader, parse_host_port
 
 router = APIRouter(prefix="/api/tools", tags=["Hardware Diagnostics"])
 
@@ -90,42 +92,43 @@ def probe_single_device(device_id: str, allow_synthetic: bool = True) -> dict:
             }
 
     # Network devices configuration resolution
-    ip = ""
+    from services.rfid_service import parse_host_port
+    raw_ip = ""
     port = 49152
     label = device_id
     role = "RFID Reader"
     protocol = "TCP Socket"
 
     if device_id == "Gate01_Entry":
-        ip = get_setting("entry_reader_ip", "")
-        port = 49152
+        raw_ip = get_setting("entry_reader_ip", "")
+        ip, port = parse_host_port(raw_ip, 49152)
         label = get_setting("entry_reader_name", "Gate-01 Entry Reader")
         role = "North Barrier Fixed UHF Antenna"
-        protocol = "TCP Socket (Passive)"
+        protocol = f"TCP Socket (Port {port})"
     elif device_id == "Gate01_Exit":
-        ip = get_setting("exit_reader_ip", "")
-        port = 49152
+        raw_ip = get_setting("exit_reader_ip", "")
+        ip, port = parse_host_port(raw_ip, 49152)
         label = get_setting("exit_reader_name", "Gate-01 Exit Reader")
         role = "South Barrier Fixed UHF Antenna"
-        protocol = "TCP Socket (Passive)"
+        protocol = f"TCP Socket (Port {port})"
     elif device_id == "ClubRoad_Entry":
-        ip = get_setting("clubroad_entry_reader_ip", "")
-        port = 49152
+        raw_ip = get_setting("clubroad_entry_reader_ip", "")
+        ip, port = parse_host_port(raw_ip, 49152)
         label = get_setting("clubroad_entry_reader_name", "Main Gate (Club Road) Entry Reader")
         role = "Main Gate Inbound UHF Antenna"
-        protocol = "TCP Socket (Passive)"
+        protocol = f"TCP Socket (Port {port})"
     elif device_id == "ClubRoad_Exit":
-        ip = get_setting("clubroad_exit_reader_ip", "")
-        port = 49152
+        raw_ip = get_setting("clubroad_exit_reader_ip", "")
+        ip, port = parse_host_port(raw_ip, 49152)
         label = get_setting("clubroad_exit_reader_name", "Main Gate (Club Road) Exit Reader")
         role = "Main Gate Outbound UHF Antenna"
-        protocol = "TCP Socket (Passive)"
+        protocol = f"TCP Socket (Port {port})"
     elif device_id == "Hikvision":
         url = get_setting("hikvision_cam_url", "")
         ip, port = _parse_cam_host(url)
         label = "Hikvision AI Camera"
         role = "ANPR & Optical Line-Crossing Viewport"
-        protocol = "RTSP / HTTP 80"
+        protocol = f"RTSP / Port {port}"
 
     if not ip or not ip.strip():
         return {
@@ -141,6 +144,7 @@ def probe_single_device(device_id: str, allow_synthetic: bool = True) -> dict:
         }
 
     target_ip = ip.strip()
+    telemetry_item = config.READER_TELEMETRY.get(device_id, {})
 
     # Fast TCP Handshake Probe
     # IMPORTANT: If this reader is ALREADY connected via background streaming worker,
@@ -159,7 +163,9 @@ def probe_single_device(device_id: str, allow_synthetic: bool = True) -> dict:
             "protocol": protocol,
             "status": "CONNECTED",
             "latency_ms": measured_ms,
-            "is_synthetic": False
+            "is_synthetic": False,
+            "last_error": None,
+            "reconnects": telemetry_item.get("reconnects", 0)
         }
 
     t0 = time.perf_counter()
@@ -219,7 +225,9 @@ def probe_single_device(device_id: str, allow_synthetic: bool = True) -> dict:
         "protocol": protocol,
         "status": status,
         "latency_ms": measured_ms,
-        "is_synthetic": is_synthetic
+        "is_synthetic": is_synthetic,
+        "last_error": telemetry_item.get("last_error"),
+        "reconnects": telemetry_item.get("reconnects", 0)
     }
 
 @router.get("/telemetry")
@@ -351,6 +359,217 @@ async def force_reconnect_reader(reader_id: str):
         "message": f"Reader socket cycle initiated for {reader_id}. The background worker will re-establish connection."
     }
 
+def _exec_cmd(cmd: list[str], timeout_sec: float = 2.0) -> str:
+    try:
+        res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=timeout_sec)
+        return (res.stdout or "").strip()
+    except Exception:
+        return ""
+
+def _lookup_arp_entry(ip: str) -> str:
+    out = _exec_cmd(["arp", "-a", ip], timeout_sec=1.5)
+    m = re.search(r'([0-9a-fA-F]{2}[:-][0-9a-fA-F]{2}[:-][0-9a-fA-F]{2}[:-][0-9a-fA-F]{2}[:-][0-9a-fA-F]{2}[:-][0-9a-fA-F]{2})', out)
+    if m:
+        return m.group(1).replace("-", ":").upper()
+    return "NOT_IN_ARP_CACHE"
+
+def _check_conflicting_processes(port: int, host_ip: str) -> list[dict]:
+    """Finds if any local Windows process currently holds an active connection to target IP:port."""
+    conflicts = []
+    out = _exec_cmd(["netstat", "-ano", "-p", "tcp"], timeout_sec=2.5)
+    for line in out.splitlines():
+        if host_ip in line or f":{port}" in line:
+            parts = line.split()
+            if len(parts) >= 5 and parts[3] in ("ESTABLISHED", "SYN_SENT", "TIME_WAIT"):
+                pid = parts[4]
+                proc_name = "Unknown"
+                task_out = _exec_cmd(["tasklist", "/FI", f"PID eq {pid}", "/FO", "CSV", "/NH"], timeout_sec=1.5)
+                if task_out and '"' in task_out:
+                    proc_name = task_out.split('","')[0].replace('"', '')
+                conflicts.append({"line": line.strip(), "pid": pid, "process_name": proc_name, "state": parts[3]})
+    return conflicts
+
+@router.api_route("/diagnose-reader/{reader_id}", methods=["GET", "POST"])
+async def diagnose_hardware_reader(reader_id: str, custom_ip: str = Query(None)):
+    """
+    Automated Deep Diagnostic Auditor for RFID Readers.
+    Solves the 'Ping 1ms but Reader Shows Offline' conundrum:
+    1. Verifies ICMP Ping RTT & packet reception.
+    2. Analyzes ARP MAC address & compares hardware OUI with working readers.
+    3. Multi-port scan across common RFID (49152, 6000, 4001, 5000, 20058) & Web ports (80, 8080).
+    4. Detects if any local tool (Demo.exe, UHFReader.exe, old Python PID) is locking the socket.
+    5. Scans adjacent LAN addresses for active RFID readers.
+    6. Returns plain-English diagnostic summary with exact resolution steps.
+    """
+    from services.rfid_service import parse_host_port
+
+    key_map = {
+        "ClubRoad_Entry": ("clubroad_entry_reader_ip", "clubroad_entry_reader_name", "Main Gate (Club Road) Entry Reader"),
+        "ClubRoad_Exit": ("clubroad_exit_reader_ip", "clubroad_exit_reader_name", "Main Gate (Club Road) Exit Reader"),
+        "Gate01_Entry": ("entry_reader_ip", "entry_reader_name", "Gate-01 Entry Reader"),
+        "Gate01_Exit": ("exit_reader_ip", "exit_reader_name", "Gate-01 Exit Reader")
+    }
+
+    if reader_id not in key_map and not custom_ip:
+        raise HTTPException(400, f"Unknown reader_id '{reader_id}'. Must be one of {list(key_map.keys())}")
+
+    ip_key, name_key, default_name = key_map.get(reader_id, ("", "", reader_id))
+    raw_ip = custom_ip or (get_setting(ip_key, "") if ip_key else "")
+    reader_name = get_setting(name_key, default_name) if name_key else reader_id
+
+    if not raw_ip:
+        return {
+            "ok": False,
+            "reader_id": reader_id,
+            "error": "UNCONFIGURED_IP",
+            "message": f"{reader_name} has no IP address configured in Settings."
+        }
+
+    host, target_port = parse_host_port(raw_ip, 49152)
+
+    # 1. ICMP Ping Test
+    ping_ok = False
+    ping_ms = None
+    ping_raw = _exec_cmd(["ping", "-n", "2", "-w", "1000", host], timeout_sec=3.0)
+    if "TTL=" in ping_raw or "ttl=" in ping_raw:
+        ping_ok = True
+        m = re.search(r'time[<=]([0-9.]+)ms', ping_raw, re.IGNORECASE)
+        ping_ms = float(m.group(1)) if m else 1.0
+
+    # 2. ARP MAC Resolution & Vendor Comparison
+    mac_address = _lookup_arp_entry(host)
+    working_reader_macs = {}
+    for rk, (rk_ip, _, _) in key_map.items():
+        if rk != reader_id:
+            w_ip_raw = get_setting(rk_ip, "")
+            if w_ip_raw:
+                w_host, _ = parse_host_port(w_ip_raw)
+                w_mac = _lookup_arp_entry(w_host)
+                if w_mac and w_mac != "NOT_IN_ARP_CACHE":
+                    working_reader_macs[rk] = {"ip": w_host, "mac": w_mac}
+
+    # Compare MAC prefix (OUI)
+    vendor_match = False
+    if mac_address != "NOT_IN_ARP_CACHE":
+        target_oui = mac_address[:8]
+        for w_info in working_reader_macs.values():
+            if w_info["mac"].startswith(target_oui):
+                vendor_match = True
+                break
+
+    # 3. Check for local socket lock (another software using port or connection)
+    conflicting_procs = _check_conflicting_processes(target_port, host)
+
+    # 4. Multi-Port TCP Scan on Host
+    candidate_ports = [49152, 6000, 4001, 5000, 8088, 80, 8080, 20058, 23, 10001]
+    port_scan_results = {}
+    open_ports = []
+    for p in candidate_ports:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(0.4)
+        try:
+            err = s.connect_ex((host, p))
+            if err == 0:
+                port_scan_results[p] = "OPEN"
+                open_ports.append(p)
+            elif err in (10061, 111):
+                port_scan_results[p] = "CONNECTION_REFUSED"
+            elif err in (10060, 110):
+                port_scan_results[p] = "TIMED_OUT"
+            else:
+                port_scan_results[p] = f"ERR_{err}"
+        except Exception as ex:
+            port_scan_results[p] = str(ex)
+        finally:
+            try:
+                s.close()
+            except Exception:
+                pass
+
+    # 5. Check if target_port (49152) is open on adjacent IPs if closed here
+    discovered_readers = []
+    if target_port not in open_ports and host.startswith("192.168."):
+        prefix = host.rsplit(".", 1)[0]
+        for last_octet in range(210, 223):
+            test_ip = f"{prefix}.{last_octet}"
+            if test_ip != host:
+                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                s.settimeout(0.15)
+                try:
+                    if s.connect_ex((test_ip, target_port)) == 0:
+                        discovered_readers.append({"ip": test_ip, "port": target_port})
+                except Exception:
+                    pass
+                finally:
+                    try:
+                        s.close()
+                    except Exception:
+                        pass
+
+    # 6. Formulate Root Cause & Actionable Instructions
+    root_cause = ""
+    remedy = []
+
+    if not ping_ok:
+        root_cause = f"Host {host} is unreachable via ICMP Ping (0% packet reply). The reader may be powered off, physical ethernet cable unplugged, or PoE injector switch port inactive."
+        remedy.append("1. Verify physical power to the reader (ensure 12V DC power LED is illuminated).")
+        remedy.append("2. Check network cable connecting reader to the club network switch.")
+        remedy.append("3. Verify the reader IP matches your subnet (192.168.0.x).")
+    elif target_port in open_ports:
+        root_cause = f"Port {target_port} is OPEN and reachable! Hardware is ready for tag ingestion."
+        remedy.append("1. Socket is functional. Background worker will claim the connection.")
+    elif conflicting_procs:
+        proc_names = ", ".join([f"{cp['process_name']} (PID {cp['pid']})" for cp in conflicting_procs])
+        root_cause = f"PORT CONFLICT: Local process {proc_names} currently holds an active TCP connection to {host}:{target_port}. UHF RFID readers only support ONE single client connection."
+        remedy.append(f"1. Close {proc_names} or any Demo / UHFReader tools on the server PC.")
+        remedy.append("2. Click 'Re-sync' in Tools to allow the VAMS app to claim the reader socket.")
+    elif any(p in open_ports for p in [6000, 4001, 5000, 20058]):
+        alt_p = next(p for p in [6000, 4001, 5000, 20058] if p in open_ports)
+        root_cause = f"PORT MISMATCH: Port {target_port} is closed, but RFID Port {alt_p} is OPEN and LISTENING on {host}!"
+        remedy.append(f"1. Update the reader IP in Settings to '{host}:{alt_p}'.")
+        remedy.append("2. The VAMS app will automatically connect to the detected open port.")
+    elif any(p in open_ports for p in [80, 8080, 8088]):
+        web_p = next(p for p in [80, 8080, 8088] if p in open_ports)
+        root_cause = f"WEB GUI ACTIVE: The reader responds to ping and has Web GUI open on port {web_p}, but TCP RFID port {target_port} is closed (Connection Refused)."
+        remedy.append(f"1. Open http://{host}:{web_p} in your server browser to access the reader's configuration portal.")
+        remedy.append(f"2. In the reader network settings, verify 'Work Mode' is set to 'TCP Server' and port is '{target_port}'.")
+        remedy.append("3. Power-cycle the reader by disconnecting its 12V power adapter for 10 seconds.")
+    else:
+        root_cause = f"PORT REJECTION: Device at {host} responds to ICMP ping (1ms), but actively REFUSES TCP connections on port {target_port} (WinError 10061)."
+        if mac_address != "NOT_IN_ARP_CACHE" and not vendor_match and working_reader_macs:
+            root_cause += f" CAUTION: MAC address ({mac_address}) does not match the manufacturer of other club RFID readers ({list(working_reader_macs.values())[0]['mac'][:8]}...). This may be an IP CONFLICT with another computer/phone/printer!"
+            remedy.append(f"1. Check for IP conflict: Ensure no other device on the club network was assigned {host}.")
+        remedy.append(f"2. Power-cycle the reader (turn off 12V power supply for 10 seconds and power back on).")
+        remedy.append(f"3. Verify reader is set to 'TCP Server' listening mode, not 'TCP Client'.")
+        if discovered_readers:
+            remedy.append(f"4. Found another RFID reader listening on {discovered_readers[0]['ip']}:{discovered_readers[0]['port']}! Verify if the reader IP changed to {discovered_readers[0]['ip']}.")
+
+    return {
+        "ok": True,
+        "reader_id": reader_id,
+        "label": reader_name,
+        "host": host,
+        "configured_port": target_port,
+        "ping": {
+            "status": "ONLINE" if ping_ok else "UNREACHABLE",
+            "latency_ms": ping_ms,
+            "raw": ping_raw[:300] if ping_raw else ""
+        },
+        "hardware": {
+            "mac_address": mac_address,
+            "vendor_matched": vendor_match,
+            "reference_macs": working_reader_macs
+        },
+        "port_scan": port_scan_results,
+        "open_ports": open_ports,
+        "conflicting_processes": conflicting_procs,
+        "discovered_readers_on_subnet": discovered_readers,
+        "diagnosis": {
+            "root_cause": root_cause,
+            "action_items": remedy
+        }
+    }
+
 @router.post("/capture/{cam}")
 async def capture_diagnostic_frame(cam: str):
     img = grab_hikvision_snapshot()
@@ -444,4 +663,33 @@ async def receive_camera_trigger(request: Request):
         return Response(content=xml_resp, media_type="application/xml")
 
     return {"ok": True, "status": "triggered" if (temp_path and os.path.exists(temp_path)) else "acknowledged", "mode": "instant_http"}
+
+
+@router.post("/update-reader-ip/{reader_id}")
+async def update_reader_ip_endpoint(reader_id: str, request: Request):
+    """Updates reader IP (with optional port) in settings and cycles socket immediately."""
+    key_map = {
+        "ClubRoad_Entry": "clubroad_entry_reader_ip",
+        "ClubRoad_Exit": "clubroad_exit_reader_ip",
+        "Gate01_Entry": "entry_reader_ip",
+        "Gate01_Exit": "exit_reader_ip"
+    }
+    if reader_id not in key_map:
+        raise HTTPException(400, f"Invalid reader_id '{reader_id}'. Must be one of {list(key_map.keys())}")
+    
+    body = await request.json()
+    new_ip = body.get("ip", "").strip()
+    if not new_ip:
+        raise HTTPException(400, "IP address cannot be empty")
+    
+    from database import set_setting
+    set_setting(key_map[reader_id], new_ip)
+    reconnect_reader(reader_id)
+    return {
+        "ok": True,
+        "reader_id": reader_id,
+        "new_ip": new_ip,
+        "message": f"Successfully updated {reader_id} to {new_ip} and cycled reader socket."
+    }
+
 

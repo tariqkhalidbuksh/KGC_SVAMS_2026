@@ -661,21 +661,34 @@ function renderDeviceCards(devices) {
                     <span class="truncate" title="${d.ip}:${d.port}">📍 ${d.ip}:${d.port}</span>
                     <span class="text-slate-400 font-semibold">${d.protocol}</span>
                 </div>
+
+                ${d.last_error ? `
+                <div class="mt-2.5 bg-rose-50 border border-rose-200 text-rose-800 text-[10px] font-mono p-2.5 rounded-xl flex items-start gap-2 break-all">
+                    <span class="text-rose-500 font-bold shrink-0 mt-0.5">⚠️</span>
+                    <div class="flex-1">
+                        <div class="font-bold text-rose-900">${d.last_error}</div>
+                        ${d.reconnects ? `<div class="text-[9px] text-rose-600 font-medium mt-0.5">Reconnect attempts: ${d.reconnects}</div>` : ''}
+                    </div>
+                </div>` : ''}
             </div>
 
             <!-- Single Node Ping Action Button & Socket Re-sync -->
-            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                <span id="pingResult_${key}" class="text-[10px] font-mono text-slate-400">Ready for probe</span>
-                <div class="flex items-center gap-1.5">
+            <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
+                <span id="pingResult_${key}" class="text-[10px] font-mono text-slate-400 truncate max-w-[130px]">Ready for probe</span>
+                <div class="flex items-center gap-1.5 shrink-0">
                     ${key.includes('Gate') || key.includes('ClubRoad') ? `
+                    <button type="button" onclick="diagnoseReader('${key}', this)" title="Run Deep Diagnostic Audit (Ping, MAC check, Port scan, Conflict detector)"
+                            class="text-[11px] font-bold px-2.5 py-1.5 rounded-lg border border-purple-200 bg-purple-50 hover:bg-purple-100 text-purple-700 transition flex items-center gap-1 shadow-2xs">
+                        <span>🔍 Diagnose</span>
+                    </button>
                     <button type="button" onclick="reconnectReaderSocket('${key}', this)" title="Cycle TCP Socket & Reconnect"
-                            class="text-[11px] font-bold px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 transition flex items-center gap-1 shadow-2xs">
+                            class="text-[11px] font-bold px-2 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 transition flex items-center gap-1 shadow-2xs">
                         <span>Re-sync</span>
                     </button>
                     ` : ''}
                     <button type="button" onclick="pingDevice('${key}', this)"
-                            class="text-[11px] font-bold px-3 py-1.5 rounded-lg border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700 transition flex items-center gap-1.5 shadow-2xs">
-                        <span>Ping Node</span>
+                            class="text-[11px] font-bold px-2.5 py-1.5 rounded-lg border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700 transition flex items-center gap-1 shadow-2xs">
+                        <span>Ping</span>
                     </button>
                 </div>
             </div>
@@ -972,3 +985,266 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchTelemetry();
     pollTimer = setInterval(fetchTelemetry, pollIntervalMs);
 });
+
+/* ==========================================================================
+   9. Deep Hardware Reader Diagnostic Auditor
+   ========================================================================== */
+let currentDiagReaderId = null;
+let lastDiagReportData = null;
+
+async function diagnoseReader(readerId, btn) {
+    currentDiagReaderId = readerId;
+    const modal = document.getElementById('diagnoseModal');
+    if (!modal) return;
+
+    modal.classList.remove('hidden');
+
+    const loadingEl = document.getElementById('diagLoading');
+    const resultsEl = document.getElementById('diagResults');
+    const rerunBtn = document.getElementById('diagRerunBtn');
+    if (rerunBtn) rerunBtn.onclick = () => diagnoseReader(currentDiagReaderId);
+
+    if (loadingEl) loadingEl.classList.remove('hidden');
+    if (resultsEl) resultsEl.classList.add('hidden');
+
+    const cfg = DEVICE_CONFIG[readerId] || { name: readerId };
+    const titleEl = document.getElementById('diagModalTitle');
+    const subEl = document.getElementById('diagModalSubtitle');
+    const badgeEl = document.getElementById('diagBadge');
+
+    if (titleEl) titleEl.innerText = `${cfg.name} Deep Hardware Audit`;
+    if (subEl) subEl.innerText = 'Transmitting ICMP ping & scanning reader socket layer...';
+    if (badgeEl) {
+        badgeEl.innerText = 'AUDITING';
+        badgeEl.className = 'text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 animate-pulse';
+    }
+
+    try {
+        const res = await fetch(`/api/tools/diagnose-reader/${readerId}`);
+        const data = await res.json();
+        lastDiagReportData = data;
+        renderDiagResults(data);
+    } catch (e) {
+        if (loadingEl) loadingEl.classList.add('hidden');
+        if (resultsEl) resultsEl.classList.remove('hidden');
+        const alertCard = document.getElementById('diagRootCauseCard');
+        if (alertCard) {
+            alertCard.className = 'rounded-2xl p-4.5 border border-rose-200 bg-rose-50 text-rose-800';
+            document.getElementById('diagAlertHeading').innerText = 'Diagnostic Execution Failed';
+            document.getElementById('diagRootCauseText').innerText = 'Could not communicate with local diagnostic auditor: ' + e.message;
+            document.getElementById('diagActionList').innerHTML = '<li>Check server process health.</li>';
+        }
+    }
+}
+
+function renderDiagResults(data) {
+    const loadingEl = document.getElementById('diagLoading');
+    const resultsEl = document.getElementById('diagResults');
+    const subEl = document.getElementById('diagModalSubtitle');
+    const badgeEl = document.getElementById('diagBadge');
+
+    if (loadingEl) loadingEl.classList.add('hidden');
+    if (resultsEl) resultsEl.classList.remove('hidden');
+
+    if (!data.ok) {
+        if (subEl) subEl.innerText = `Target: ${data.reader_id} (${data.error})`;
+        if (badgeEl) {
+            badgeEl.innerText = 'ERROR';
+            badgeEl.className = 'text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200';
+        }
+        const card = document.getElementById('diagRootCauseCard');
+        card.className = 'rounded-2xl p-4.5 border border-rose-200 bg-rose-50';
+        document.getElementById('diagAlertHeading').innerText = 'Configuration Error';
+        document.getElementById('diagRootCauseText').innerText = data.message || 'Reader unconfigured';
+        document.getElementById('diagActionList').innerHTML = '<li>Set IP address in Settings.</li>';
+        return;
+    }
+
+    if (subEl) subEl.innerText = `Target: ${data.host}:${data.configured_port} (${data.label})`;
+    if (badgeEl) {
+        badgeEl.innerText = 'AUDIT COMPLETE';
+        badgeEl.className = 'text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200';
+    }
+
+    // 1. Root Cause Alert Banner
+    const diag = data.diagnosis || {};
+    const rootCause = diag.root_cause || '';
+    const actions = diag.action_items || [];
+    const rootCard = document.getElementById('diagRootCauseCard');
+    const heading = document.getElementById('diagAlertHeading');
+    const textEl = document.getElementById('diagRootCauseText');
+    const iconEl = document.getElementById('diagAlertIcon');
+
+    textEl.innerText = rootCause;
+    if (rootCause.includes('PORT CONFLICT')) {
+        rootCard.className = 'rounded-2xl p-4.5 border border-amber-300 bg-amber-50';
+        heading.className = 'text-sm font-black text-amber-900';
+        iconEl.innerText = '⚡';
+    } else if (rootCause.includes('OPEN and reachable')) {
+        rootCard.className = 'rounded-2xl p-4.5 border border-emerald-300 bg-emerald-50';
+        heading.className = 'text-sm font-black text-emerald-900';
+        iconEl.innerText = '✅';
+    } else if (rootCause.includes('PORT MISMATCH') || rootCause.includes('WEB GUI ACTIVE')) {
+        rootCard.className = 'rounded-2xl p-4.5 border border-blue-300 bg-blue-50';
+        heading.className = 'text-sm font-black text-blue-900';
+        iconEl.innerText = '💡';
+    } else {
+        rootCard.className = 'rounded-2xl p-4.5 border border-rose-300 bg-rose-50';
+        heading.className = 'text-sm font-black text-rose-900';
+        iconEl.innerText = '⚠️';
+    }
+
+    const actionList = document.getElementById('diagActionList');
+    if (actionList) {
+        actionList.innerHTML = actions.map(act => `<li class="font-medium text-slate-800">${act}</li>`).join('');
+    }
+
+    // 2. Ping Echo Box
+    const ping = data.ping || {};
+    const pingBadge = document.getElementById('diagPingBadge');
+    if (pingBadge) {
+        const isOnline = ping.status === 'ONLINE';
+        pingBadge.innerText = isOnline ? 'ONLINE' : 'UNREACHABLE';
+        pingBadge.className = `text-[10px] font-mono font-bold px-2 py-0.5 rounded-full ${isOnline ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'}`;
+    }
+    document.getElementById('diagPingRtt').innerText = ping.latency_ms !== null && ping.latency_ms !== undefined ? `${ping.latency_ms.toFixed(1)} ms` : 'No Echo';
+    document.getElementById('diagPingHost').innerText = data.host;
+
+    // 3. Physical MAC Address Box
+    const hw = data.hardware || {};
+    const macBadge = document.getElementById('diagMacBadge');
+    if (macBadge) {
+        const hasMac = hw.mac_address && hw.mac_address !== 'NOT_IN_ARP_CACHE';
+        macBadge.innerText = hasMac ? 'RESOLVED' : 'UNKNOWN';
+        macBadge.className = `text-[10px] font-mono font-bold px-2 py-0.5 rounded-full ${hasMac ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-slate-100 text-slate-500 border-slate-200'}`;
+    }
+    document.getElementById('diagMacAddress').innerText = hw.mac_address || 'Not in cache';
+    const vendorEl = document.getElementById('diagVendorMatch');
+    if (vendorEl) {
+        if (hw.vendor_matched) {
+            vendorEl.innerHTML = '<span class="text-emerald-700 font-bold">Verified &bull; Matches Club Readers</span>';
+        } else if (hw.mac_address && hw.mac_address !== 'NOT_IN_ARP_CACHE') {
+            vendorEl.innerHTML = '<span class="text-amber-600 font-bold">Unverified &bull; Possible IP Conflict</span>';
+        } else {
+            vendorEl.innerHTML = '<span class="text-slate-400">Cannot inspect OUI</span>';
+        }
+    }
+
+    // 4. Port Scan Grid
+    const portGrid = document.getElementById('diagPortGrid');
+    if (portGrid) {
+        const portScan = data.port_scan || {};
+        portGrid.innerHTML = Object.keys(portScan).map(p => {
+            const status = portScan[p];
+            const isOpen = status === 'OPEN';
+            const isRefused = status === 'CONNECTION_REFUSED';
+            const isTimedOut = status === 'TIMED_OUT';
+
+            const chipClass = isOpen
+                ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                : isRefused
+                    ? 'bg-rose-50 border-rose-200 text-rose-800'
+                    : 'bg-slate-100 border-slate-200 text-slate-500';
+
+            const portDesc = p === '49152' ? 'RFID Default' : (p === '6000' || p === '4001' || p === '5000') ? 'Alt RFID' : (p === '80' || p === '8080') ? 'Web GUI' : 'Port';
+
+            return `
+            <div class="p-2.5 rounded-xl border ${chipClass} flex flex-col justify-between">
+                <div class="flex items-center justify-between">
+                    <span class="font-mono text-xs font-black">${p}</span>
+                    <span class="text-[9px] font-mono font-bold uppercase">${status}</span>
+                </div>
+                <div class="flex items-center justify-between mt-1 text-[10px]">
+                    <span class="opacity-75">${portDesc}</span>
+                    ${isOpen && p !== String(data.configured_port) && (p === '6000' || p === '4001' || p === '5000' || p === '49152') ? `
+                    <button type="button" onclick="applyDiscoveredIp('${data.reader_id}', '${data.host}:${p}')" class="underline font-bold text-blue-700 hover:text-blue-900">
+                        Use Port
+                    </button>` : ''}
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    // 5. Conflicting Processes
+    const conflictBox = document.getElementById('diagConflictBox');
+    const conflictList = document.getElementById('diagConflictList');
+    const procs = data.conflicting_processes || [];
+    if (procs.length > 0) {
+        conflictBox.classList.remove('hidden');
+        conflictList.innerHTML = procs.map(pr => `
+        <div class="flex items-center justify-between bg-white/80 p-2 rounded-lg border border-amber-200">
+            <span>Process: <strong>${pr.process_name}</strong> (PID ${pr.pid})</span>
+            <span class="text-[10px] text-amber-700">${pr.state} &bull; Socket Held</span>
+        </div>`).join('');
+    } else {
+        conflictBox.classList.add('hidden');
+    }
+
+    // 6. Subnet Discovery
+    const subnetBox = document.getElementById('diagSubnetBox');
+    const subnetText = document.getElementById('diagSubnetText');
+    const discovered = data.discovered_readers_on_subnet || [];
+    if (discovered.length > 0) {
+        subnetBox.classList.remove('hidden');
+        const dReader = discovered[0];
+        subnetText.innerText = `Active RFID listener detected at ${dReader.ip}:${dReader.port}`;
+        const applyBtn = document.getElementById('diagApplyDiscoveredBtn');
+        if (applyBtn) {
+            applyBtn.onclick = () => applyDiscoveredIp(data.reader_id, `${dReader.ip}:${dReader.port}`);
+        }
+    } else {
+        subnetBox.classList.add('hidden');
+    }
+}
+
+function closeDiagModal() {
+    const modal = document.getElementById('diagnoseModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+async function applyDiscoveredIp(readerId, newIp) {
+    if (!confirm(`Update ${readerId} IP to '${newIp}' and reconnect?`)) return;
+    try {
+        const res = await fetch(`/api/tools/update-reader-ip/${readerId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ip: newIp })
+        });
+        const data = await res.json();
+        alert(data.message || 'IP updated successfully.');
+        diagnoseReader(readerId);
+        fetchTelemetry();
+    } catch (e) {
+        alert('Failed to update reader IP: ' + e.message);
+    }
+}
+
+function copyDiagReport() {
+    if (!lastDiagReportData) {
+        alert('No diagnostic data to copy.');
+        return;
+    }
+    const d = lastDiagReportData;
+    const diag = d.diagnosis || {};
+    const lines = [
+        `=== KGC VAMS Hardware Diagnostic Report ===`,
+        `Reader: ${d.label} (${d.reader_id})`,
+        `Target Host: ${d.host}`,
+        `Configured Port: ${d.configured_port}`,
+        `Ping Status: ${d.ping?.status} (${d.ping?.latency_ms} ms)`,
+        `MAC Address: ${d.hardware?.mac_address} (Vendor Match: ${d.hardware?.vendor_matched})`,
+        `Open Ports: ${(d.open_ports || []).join(', ') || 'None'}`,
+        `Conflicting Local Processes: ${(d.conflicting_processes || []).map(p => `${p.process_name} (PID ${p.pid})`).join(', ') || 'None'}`,
+        `Root Cause: ${diag.root_cause}`,
+        `Recommended Fixes:`,
+        ...(diag.action_items || []).map(a => ` - ${a}`),
+        `Generated: ${new Date().toISOString()}`
+    ];
+
+    navigator.clipboard.writeText(lines.join('\n')).then(() => {
+        alert('Diagnostic report copied to clipboard!');
+    }).catch(() => {
+        alert('Failed to copy to clipboard.');
+    });
+}
+
