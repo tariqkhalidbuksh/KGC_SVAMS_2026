@@ -31,6 +31,10 @@ PG_USER = os.environ.get("PG_USER", "postgres")
 PG_PASSWORD = os.environ.get("PG_PASSWORD", "")
 
 BACKUP_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "kgc_vams_backup.sql")
+if not os.path.exists(BACKUP_FILE):
+    _alt_backup = os.path.join(os.path.dirname(os.path.abspath(__file__)), "backups", "kgc_vams_backup.sql")
+    if os.path.exists(_alt_backup):
+        BACKUP_FILE = _alt_backup
 
 def find_psql() -> str | None:
     # 1. Check PATH

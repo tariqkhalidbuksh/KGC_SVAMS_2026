@@ -95,42 +95,104 @@
 ```
 RFID_VAMS/
 ├── app.py                      # FastAPI application entry point & lifespan manager
-├── database.py                 # PostgreSQL 14.15 connection pooling, schema init, indexes
-├── startup.bat                 # One-click production launcher & dependency installer
-├── etag tariq.xls              # Master membership Excel dataset
-├── yolov8n.pt                  # YOLOv8 nano model for vehicle visual verification
-├── requirements.txt            # Python dependencies
+├── config.py                   # Central environment, network, and hardware configurations
+├── database.py                 # PostgreSQL connection pooling, schema init, and migrations
+├── requirements.txt            # Python production dependencies
+├── pytest.ini                  # Pytest configuration & test path registry
+├── .env.example                # Environment variables template
+├── .gitignore                  # Git ignore rules for bytecode, caches, logs, and artifacts
+├── README.md                   # Comprehensive system documentation
+│
+├── startup.bat                 # One-click setup, PostgreSQL check, and launcher
 ├── start_server.bat            # Production launcher with auto-restart watchdog
-├── install_autostart.bat       # Auto-start registration on Windows reboot
-├── uninstall_autostart.bat     # Disable auto-start registration
-├── start_server_background.vbs # Silent background runner (no CMD window)
+├── start_server_background.vbs # Silent background runner (no terminal window)
+├── install_autostart.bat       # Windows autostart installer (Task Scheduler & Startup)
+├── uninstall_autostart.bat     # Windows autostart uninstaller
+├── restore_db.bat              # One-click database restoration helper
+├── restore_db.py               # Database restore script for PostgreSQL
+├── kgc_vams_backup.sql         # Canonical base database dump
+├── yolov8n.pt                  # YOLOv8 nano model for vehicle verification
+│
 ├── routers/                    # Modular FastAPI APIRouters
-│   ├── logs.py                 # Daily gate pass logs & CSV exports
-│   ├── members.py              # Member CRUD, search, photo alignment, Excel import
-│   ├── settings.py             # Hardware IP, capacity, and traffic alert configuration
-│   ├── stats.py                # Parking occupancy and entry/exit analytics
-│   ├── tools.py                # Diagnostics, ping tests, reader resets
-│   └── simulate.py             # Virtual RFID & camera hardware simulation suite
-├── services/                   # Background daemons & business logic
+│   ├── auth.py                 # User authentication, RBAC, session management
+│   ├── logs.py                 # Daily gate pass logs, pairing, and CSV exports
+│   ├── members.py              # Member directory, photo alignment, spreadsheet import
+│   ├── settings.py             # Hardware IP, capacity, traffic alert configurations
+│   ├── stats.py                # Live parking occupancy and analytical reporting
+│   ├── tools.py                # Hardware diagnostics, socket monitors, reader resets
+│   ├── simulate.py             # Virtual RFID & camera hardware simulation suite
+│   └── etag.py                 # E-tag verification and audit endpoints
+│
+├── services/                   # Background daemons & business logic engines
 │   ├── access_service.py       # Gate decision engine, cooldowns, image attachment
 │   ├── camera_service.py       # RTSP capture, image integrity, stream workers
-│   ├── rfid_service.py         # Asynchronous TCP client for UHF RFID readers
+│   ├── rfid_service.py         # Asynchronous TCP socket client for UHF RFID readers
 │   ├── member_service.py       # Membership synchronization and image matching
-│   └── event_daemons.py        # Embedded FTP (2121) & SMTP (2525) event listeners
-├── scripts/
-│   └── manage_autostart.ps1    # PowerShell automation helper for Windows Startup
-├── static/                     # Web assets & media storage
-│   ├── club_logo.png           # KGC official emblem
-│   ├── kiosk_bg.png            # Luxury kiosk background branding
-│   ├── js/                     # Vanilla ES6 client modules (dashboard, kiosk, tools)
-│   ├── camera_audits/          # Captured vehicle audit images
-│   └── member_profile_img/     # Member directory portrait photos
+│   ├── event_daemons.py        # Embedded FTP (2121) & SMTP (2525) event listeners
+│   └── pdf_service.py          # Professional executive PDF export generator
+│
+├── static/                     # Web assets, styles, client scripts & media
+│   ├── js/                     # Modular client-side JavaScript controllers
+│   │   ├── dashboard.js        # Executive dashboard UI logic & real-time updates
+│   │   ├── kiosk.js            # Dual-gate kiosk terminal controller & Sindh plate renderer
+│   │   ├── tools.js            # Hardware diagnostic and ping monitor controller
+│   │   └── simulate.js         # Virtual hardware simulation controller
+│   ├── club_logo.png           # Karachi Gymkhana Club official crest
+│   ├── kiosk_bg.png            # Luxury architectural terminal backdrop
+│   ├── camera_audits/          # Captured vehicle audit scene images
+│   ├── member_profile_img/     # Member directory portrait photographs
+│   └── snapshots/              # Real-time camera snapshots
+│
 ├── templates/                  # Server-rendered HTML5 templates
 │   ├── dashboard.html          # Operational dashboard & management console
-│   ├── kiosk.html              # High-visibility luxury gate display
-│   ├── tools.html              # Hardware diagnostics utility
-│   └── simulate.html           # Full end-to-end simulation environment
-└── test_app.py                 # Automated unit and integration test suite
+│   ├── kiosk.html              # High-visibility luxury gate access display
+│   ├── tools.html              # Hardware diagnostics and socket monitoring utility
+│   ├── simulate.html           # Full end-to-end hardware simulation environment
+│   └── login.html              # Secure administrative authentication portal
+│
+├── tests/                      # Automated Test Suite (144+ Specifications)
+│   ├── __init__.py
+│   ├── conftest.py             # Test isolation fixtures & temporary DB configuration
+│   ├── test_app.py             # Core routes, middleware, and lifecycle tests
+│   ├── test_auth_and_user_mgmt.py # User authentication and RBAC permission tests
+│   ├── test_dahua_linecross_alignment.py # Dual-camera synchronization & alignment
+│   ├── test_deep_production_verification.py # 15-point deep production integrity verification
+│   ├── test_dual_camera_benchmark.py # Camera capture and latency benchmarks
+│   ├── test_etag_audit.py      # E-tag audit, history, and status filtering tests
+│   ├── test_manual_and_bulk_exit.py # Manual pass, bulk midnight clearance tests
+│   ├── test_multi_gate_kiosk_qa.py # Dual-gate kiosk isolation and switcher tests
+│   ├── test_multi_gate_tracking.py # Gate 01 vs Club Road multi-gate tracking tests
+│   ├── test_new_features.py    # Recent features, photo modal, and PDF tests
+│   ├── test_reader_diagnostic_qa.py # Hardware diagnostics and port scanner tests
+│   ├── test_reader_rename_and_cooldown_qa.py # Reader cooldown & anti-passback tests
+│   ├── test_rfid_gate_qa.py    # Tag stream processing & antenna event tests
+│   ├── test_unregistered_and_enrollment.py # Unregistered vehicle holding & alert tests
+│   └── test_vehicle_audit_and_reports.py # Vehicle reporting, date range & filter tests
+│
+├── scripts/                    # Maintenance, migration, and automation utilities
+│   ├── analyze_legacy_dbs.py   # Legacy SQLite database schema analyzer
+│   ├── clear_legacy_inside.py  # Reset and cleanup stale inside vehicle states
+│   ├── ensure_pg.py            # PostgreSQL service availability and auto-start
+│   ├── ingest_legacy_dbs.py    # Ingest legacy SQLite records into PostgreSQL
+│   ├── inspect_schema.py       # Database schema and index validation helper
+│   ├── manage_autostart.ps1    # PowerShell automation helper for Windows Startup
+│   ├── migrate_sqlite_to_pg.py # One-time SQLite to PostgreSQL migration script
+│   ├── process_system_outside.py # System auto-clearance processing script
+│   ├── reset_activity_data.py  # Factory reset for activity logs
+│   └── setup_pg_compat.py      # PostgreSQL compatibility layer setup
+│
+├── data/                       # Datasets, templates, and spreadsheets
+│   └── imports/                # Raw membership spreadsheets for import
+│       ├── etag tariq.xls      # Master membership Excel dataset
+│       └── my_tags.xlsx        # Reference RFID tag assignment workbook
+│
+├── backups/                    # Database snapshot archives
+│   └── kgc_vams_backup_20261022_131153_full.sql # Historical database snapshot
+│
+├── legacy_dbs/                 # Archived SQLite databases from historical deployments
+│
+└── .agents/                    # Workspace agent customizations and skills
+    └── skills/                 # High-performance design & UI engineering skills
 ```
 
 ---
@@ -199,13 +261,13 @@ Once the application is running, navigate to:
 
 ## 🧪 Testing & Quality Assurance
 
-The codebase includes comprehensive integration and stress tests covering atomic transactions, anti-passback locks, and deduplication logic:
+The codebase includes an enterprise-grade automated test suite with 144+ comprehensive specifications covering atomic access decisions, dual-camera synchronization, multi-gate tracking, anti-passback locks, and deep production verification:
 
 ```bash
-pytest -v
+pytest
 ```
 
-All 28 automated test specifications execute in an isolated temporary sandbox (`tmp_path`) to ensure zero side-effects to the production `gate_access.db`.
+All 144 automated test specifications execute in an isolated test database sandbox (`kgc_vams_test` & `tmp_path`) with automatic rollback and sequence resets, guaranteeing zero side-effects to the production database.
 
 ---
 
